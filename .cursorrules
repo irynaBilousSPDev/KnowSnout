@@ -1,0 +1,17 @@
+# Project Rules & Tech Stack
+
+## Tech Stack
+- Frontend/Mobile: React Native with Expo (TypeScript)
+- Navigation: Expo Router (file-based)
+- Styling: NativeWind (Tailwind CSS for React Native)
+- Backend & Database: Supabase (PostgreSQL, Auth, Storage, Edge Functions)
+- AI Integration: OpenAI GPT-4o Vision via Supabase Edge Function only (never expose OPENAI_API_KEY in the client)
+
+## Code Standards
+- Use TypeScript for all components and functions.
+- Keep components modular and reusable under `src/`.
+- Handle loading and error states for all asynchronous operations (API calls, camera access, database queries).
+- Do not use deprecated React Native components.
+- Write clean code with clear naming conventions.
+- Prefer mock AI mode (`EXPO_PUBLIC_USE_MOCK_AI=true`) when keys are missing so UI can be built without spend.
+- Never commit `.env` files or secrets.
