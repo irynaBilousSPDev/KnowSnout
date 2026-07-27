@@ -44,6 +44,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="breed-quiz"
+        options={{
+          headerShown: true,
+          title: t('check.quizTitle'),
+        }}
+      />
+      <Stack.Screen
         name="result"
         options={{
           headerShown: true,

@@ -8,7 +8,7 @@ import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { brand } from '@/src/theme/brand';
 
-type CheckKind = 'food' | 'plant' | 'breed';
+type CheckKind = 'food' | 'plant' | 'breed' | 'quiz';
 
 function CheckCard({
   kind,
@@ -65,6 +65,11 @@ export default function CheckHubScreen() {
           kind="breed"
           icon="paw-outline"
           onPress={() => router.push('/(app)/breed-scan')}
+        />
+        <CheckCard
+          kind="quiz"
+          icon="help-circle-outline"
+          onPress={() => router.push('/(app)/breed-quiz')}
         />
 
         <Text style={styles.hint}>{t('check.journalHint')}</Text>

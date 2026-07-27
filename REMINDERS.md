@@ -37,6 +37,8 @@
 | Розширити каталог рослин / paid Plant ID | ⏳ пізніше |
 | SnoutStories cloud client | ⏳ SQL є |
 | Домен + веб-хостинг | ✅ knowsnout.com на Vercel; демо-банер зник (Supabase env ок) |
+| Меню «Догляд»: годування · гра · вода | ⏳ ідея (див. PRODUCT_VISION) |
+| Квіз про тварин (Wikidata / Open Trivia DB / breed APIs) | ✅ v1: візуальний «вгадай породу» (TheDogAPI/TheCatAPI) |
 
 ## Наступні кроки (порядок гнучкий)
 

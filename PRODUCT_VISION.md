@@ -186,5 +186,51 @@ Ship order: ~~share buttons~~ → ~~contest entry UI v1~~ → ~~contest public d
 
 ---
 
+## Captured 2026-07-27 — Care menu + animal quiz
+
+### P1 — «Догляд» as its own menu/hub
+**Idea:** lift daily care out of buried pet-profile sections into a clear **Догляд** entry point with:
+- **Годування** (feeding log / ate fully / note)
+- **Гра** (~5 min play / enrichment)
+- **Вода** (fresh water bowl)
+
+| Option | Notes |
+|--|--|
+| A | New hub screen (pick pet → care today: water / play / feed) linked from Улюбленці or Перевір |
+| B | Replace / expand current `pet-care` into a 3-tile menu (Годування · Гра · Вода) |
+| C | New bottom tab «Догляд» (heavier IA change) |
+
+**Recommended direction (2026-07-27):** soft **C*** — not a 5th forever-tab yet.
+1. First ship **«Догляд сьогодні»** hub (pick pet → 3 tiles: вода / гра / годування) — entry from Улюбленці header + deep link from profile.
+2. If it becomes the daily open habit, **promote to bottom tab** and demote Стрічка or merge journal (decide with usage).
+Rationale: 5 tabs now crowded; care must feel daily, but tab only earns a slot once the checklist is sticky.
+
+**Status:** recommended path above; user leaned C, open to better.
+
+### P1 — Animal quiz — make it *fun*, not generic trivia
+**Idea:** in-app quiz about animals (dogs/cats first).
+
+| Candidate | Fit for KnowSnout |
+|--|--|
+| Wikidata alone | Powerful facts, but raw SPARQL → dry Q&A unless heavily designed |
+| Open Trivia DB | Easy MC, but generic “animals” — off-brand, often dull |
+| **TheDogAPI / TheCatAPI (visual)** | On-brand, photo-first, already integrated |
+
+**Recommended direction (cool quiz v1):**
+| Round | Mechanic | Data |
+|--|--|
+| 1 · Вгадай породу | 1 photo + 4 name choices | Dog/Cat API images + breeds |
+| 2 · Темперамент | “Яка риса пасує?” | API temperament strings |
+| 3 · Fun fact (optional later) | Short fact after answer | Wikidata enrichment by breed name |
+
+Rules: confidence never = pedigree; UA UI; streak / “quiz of the day” later; attribute APIs (+ Wikidata if used).
+
+**Do not start with:** Wikipedia article scrape or plain Open Trivia as the hero experience.
+
+**Status:** direction set — visual breed quiz first; Wikidata as spice later, not the core.  
+**v1 shipped (2026-07-27):** `breed-quiz` — 5 rounds, dog/cat, photo + 4 choices, temperament/origin fact after answer; entry from Перевір hub.
+
+---
+
 ## Implementation rule
 Ship **one vertical slice at a time**. Ideas stay here until pulled into `PRODUCT_STRUCTURE.md` “Status” columns.
