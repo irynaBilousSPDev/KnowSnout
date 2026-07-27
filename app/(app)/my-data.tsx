@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LoadingState } from '@/src/components/LoadingState';
+import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { TextField } from '@/src/components/TextField';
 import { UserAvatar } from '@/src/components/UserAvatar';
@@ -24,7 +25,9 @@ import {
 import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { persistPickerAsset } from '@/src/lib/image';
+import { listPets } from '@/src/services/pets';
 import { getUserProfile, saveUserProfile } from '@/src/services/userProfile';
+import type { PetRow } from '@/src/types/pet';
 import type { UserProfile } from '@/src/types/userProfile';
 
 const GENDERS: { id: UserGender; labelKey: string }[] = [
@@ -33,19 +36,32 @@ const GENDERS: { id: UserGender; labelKey: string }[] = [
   { id: 'unspecified', labelKey: 'me.genderUnspecified' },
 ];
 
+function speciesLabel(species: PetRow['species']) {
+  if (species === 'dog') return t('pets.speciesDog');
+  if (species === 'cat') return t('pets.speciesCat');
+  return t('pets.speciesOther');
+}
+
 export default function MyDataScreen() {
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [pets, setPets] = useState<PetRow[]>([]);
   const [displayName, setDisplayName] = useState('');
+  const [city, setCity] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const next = await getUserProfile();
+      const [next, nextPets] = await Promise.all([
+        getUserProfile(),
+        listPets().catch(() => [] as PetRow[]),
+      ]);
       setProfile(next);
       setDisplayName(next?.display_name ?? '');
+      setCity(next?.city ?? '');
+      setPets(nextPets);
     } finally {
       setLoading(false);
     }
@@ -68,6 +84,9 @@ export default function MyDataScreen() {
       if (patch.display_name !== undefined) {
         setDisplayName(next.display_name ?? '');
       }
+      if (patch.city !== undefined) {
+        setCity(next.city ?? '');
+      }
       if (!opts?.silent) {
         Alert.alert(t('me.savedTitle'), t('me.savedBody'));
       }
@@ -83,13 +102,16 @@ export default function MyDataScreen() {
     }
   };
 
-  const onSaveName = async () => {
+  const onSaveProfileBasics = async () => {
     const name = displayName.trim();
     if (!name) {
       Alert.alert(t('common.error'), t('me.displayNameRequired'));
       return;
     }
-    await persist({ display_name: name });
+    await persist({
+      display_name: name,
+      city: city.trim() || null,
+    });
   };
 
   const onPickPhoto = async () => {
@@ -159,6 +181,11 @@ export default function MyDataScreen() {
             <Text className="mt-4 font-display text-3xl text-forest-900">
               {shownName ?? t('me.title')}
             </Text>
+            {profile.city ? (
+              <Text className="mt-1 font-body text-sm text-forest-600">
+                {profile.city}
+              </Text>
+            ) : null}
             <Text className="mt-1 text-center font-body text-sm text-forest-600">
               {t('me.subtitle')}
             </Text>
@@ -187,11 +214,71 @@ export default function MyDataScreen() {
               placeholder={t('me.displayNamePlaceholder')}
               autoCapitalize="words"
             />
+            <View className="mt-3">
+              <TextField
+                label={t('me.city')}
+                value={city}
+                onChangeText={setCity}
+                placeholder={t('me.cityPlaceholder')}
+                autoCapitalize="words"
+              />
+            </View>
             <View className="mt-1">
               <PrimaryButton
-                label={t('me.saveName')}
+                label={t('me.saveProfile')}
                 loading={saving}
-                onPress={() => void onSaveName()}
+                onPress={() => void onSaveProfileBasics()}
+              />
+            </View>
+          </View>
+
+          <View className="mt-4 rounded-3xl border border-forest-100 bg-white px-5 py-5">
+            <Text className="font-body-bold text-lg text-forest-900">
+              {t('me.kidsTitle')}
+            </Text>
+            <Text className="mt-1 font-body text-sm text-forest-600">
+              {t('me.kidsCount', { count: String(pets.length) })}
+            </Text>
+            {pets.length === 0 ? (
+              <Text className="mt-3 font-body text-sm text-forest-600">
+                {t('me.kidsEmpty')}
+              </Text>
+            ) : (
+              pets.map((pet) => (
+                <Pressable
+                  key={pet.id}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/(app)/pet-profile',
+                      params: { id: pet.id },
+                    })
+                  }
+                  className="mt-3 flex-row items-center border-t border-forest-100 pt-3"
+                >
+                  <PetAvatar
+                    avatarKey={pet.avatar_key}
+                    avatarUri={pet.avatar_uri}
+                    species={pet.species}
+                    size={44}
+                    name={pet.name}
+                  />
+                  <View className="ml-3 flex-1">
+                    <Text className="font-body-bold text-base text-forest-900">
+                      {pet.name}
+                    </Text>
+                    <Text className="font-body text-xs text-forest-500">
+                      {speciesLabel(pet.species)}
+                      {pet.breed ? ` · ${pet.breed}` : ''}
+                    </Text>
+                  </View>
+                </Pressable>
+              ))
+            )}
+            <View className="mt-4">
+              <PrimaryButton
+                label={t('me.openPets')}
+                variant="secondary"
+                onPress={() => router.push('/(app)/(tabs)/pets')}
               />
             </View>
           </View>

@@ -12,6 +12,8 @@ export type ActivityLevel = 'low' | 'medium' | 'high' | 'unknown';
 
 export type DietType = 'dry' | 'wet' | 'mixed' | 'raw' | 'homemade' | 'unknown';
 
+export type LifeStage = 'puppy' | 'kitten' | 'adult' | 'senior' | 'unknown';
+
 export type IndoorOutdoor = 'indoor' | 'outdoor' | 'both' | 'unknown';
 
 export type PetRow = {
@@ -40,6 +42,7 @@ export type PetRow = {
   medications: string | null;
   activity_level: ActivityLevel | null;
   diet_type: DietType | null;
+  life_stage: LifeStage | null;
   indoor_outdoor: IndoorOutdoor | null;
   personality: string | null;
   distinctive_marks: string | null;
@@ -77,6 +80,7 @@ export type PetInput = {
   medications?: string | null;
   activity_level?: ActivityLevel | null;
   diet_type?: DietType | null;
+  life_stage?: LifeStage | null;
   indoor_outdoor?: IndoorOutdoor | null;
   personality?: string | null;
   distinctive_marks?: string | null;

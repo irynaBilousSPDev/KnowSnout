@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -30,6 +30,11 @@ import {
   listPetPhotos,
   setPetFavoriteFood,
 } from '@/src/services/pets';
+import {
+  foodMatchHitKey,
+  lifeStageLabelKey,
+  matchFoodToPet,
+} from '@/src/services/foodMatch';
 import { listScans } from '@/src/services/scans';
 import {
   listPetVaccines,
@@ -46,6 +51,7 @@ import type {
   CompanionSpecies,
   DietType,
   IndoorOutdoor,
+  LifeStage,
   PetPhotoRow,
   PetRow,
   PetSex,
@@ -100,6 +106,18 @@ function dietLabel(value: DietType | null) {
   if (value === 'raw') return t('pets.dietRaw');
   if (value === 'homemade') return t('pets.dietHomemade');
   return null;
+}
+
+function lifeStageLabel(value: LifeStage | null) {
+  const key = lifeStageLabelKey(value);
+  return key ? t(key) : null;
+}
+
+function matchToneClass(level: 'ok' | 'caution' | 'alert' | 'unknown') {
+  if (level === 'alert') return 'border-rose-200 bg-rose-50';
+  if (level === 'caution') return 'border-amber-200 bg-amber-50';
+  if (level === 'ok') return 'border-emerald-200 bg-emerald-50';
+  return 'border-forest-100 bg-forest-50';
 }
 
 function indoorLabel(value: IndoorOutdoor | null) {
@@ -196,6 +214,22 @@ export default function PetProfileScreen() {
       void load();
     }, [load]),
   );
+
+  const favoriteMatch = useMemo(() => {
+    if (!pet?.favorite_food?.trim()) return null;
+    const scan =
+      (pet.favorite_product_id
+        ? scans.find((s) => s.product_id === pet.favorite_product_id)
+        : undefined) ??
+      scans.find((s) => s.product_name === pet.favorite_food);
+    return matchFoodToPet(pet, {
+      productName: scan?.product_name ?? pet.favorite_food,
+      summary: scan?.summary ?? '',
+      pros: scan?.pros ?? [],
+      cons: scan?.cons ?? [],
+      species: scan?.species ?? null,
+    });
+  }, [pet, scans]);
 
   const onAddPhoto = async () => {
     if (!petId) return;
@@ -411,9 +445,36 @@ export default function PetProfileScreen() {
           />
           <Fact label={t('pets.dietType')} value={dietLabel(pet.diet_type)} />
           <Fact
+            label={t('pets.lifeStage')}
+            value={lifeStageLabel(pet.life_stage)}
+          />
+          <Fact
             label={t('pets.favoriteFood')}
             value={pet.favorite_food || t('pets.favoriteFoodEmpty')}
           />
+          {favoriteMatch && favoriteMatch.level !== 'unknown' ? (
+            <View
+              className={`mt-2 rounded-2xl border px-3 py-3 ${matchToneClass(favoriteMatch.level)}`}
+            >
+              <Text className="font-body-bold text-sm text-forest-900">
+                {t('foodMatch.title')}
+              </Text>
+              {favoriteMatch.hits.map((hit, index) => (
+                <Text
+                  key={`${hit.kind}-${hit.detail}-${index}`}
+                  className="mt-1 font-body text-sm text-forest-800"
+                >
+                  {t(foodMatchHitKey(hit), {
+                    detail: hit.detail,
+                    stage: lifeStageLabel(hit.detail as LifeStage) ?? hit.detail,
+                  })}
+                </Text>
+              ))}
+              <Text className="mt-2 font-body text-xs text-forest-600">
+                {t('foodMatch.disclaimer')}
+              </Text>
+            </View>
+          ) : null}
           <View className="mt-1 gap-2">
             <PrimaryButton
               label={t('pets.pickFavoriteFood')}

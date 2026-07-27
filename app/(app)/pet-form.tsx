@@ -40,6 +40,7 @@ import type {
   CompanionSpecies,
   DietType,
   IndoorOutdoor,
+  LifeStage,
   PetSex,
   SizeCategory,
 } from '@/src/types/pet';
@@ -132,6 +133,7 @@ export default function PetFormScreen() {
   const [medications, setMedications] = useState('');
   const [activity, setActivity] = useState<ActivityLevel>('unknown');
   const [dietType, setDietType] = useState<DietType>('unknown');
+  const [lifeStage, setLifeStage] = useState<LifeStage>('unknown');
   const [indoorOutdoor, setIndoorOutdoor] = useState<IndoorOutdoor>('unknown');
   const [personality, setPersonality] = useState('');
   const [marks, setMarks] = useState('');
@@ -210,6 +212,7 @@ export default function PetFormScreen() {
         setMedications(pet.medications ?? '');
         setActivity(pet.activity_level ?? 'unknown');
         setDietType(pet.diet_type ?? 'unknown');
+        setLifeStage(pet.life_stage ?? 'unknown');
         setIndoorOutdoor(pet.indoor_outdoor ?? 'unknown');
         setPersonality(pet.personality ?? '');
         setMarks(pet.distinctive_marks ?? '');
@@ -309,6 +312,7 @@ export default function PetFormScreen() {
         medications,
         activity_level: activity === 'unknown' ? null : activity,
         diet_type: dietType === 'unknown' ? null : dietType,
+        life_stage: lifeStage === 'unknown' ? null : lifeStage,
         indoor_outdoor: indoorOutdoor === 'unknown' ? null : indoorOutdoor,
         personality,
         distinctive_marks: marks,
@@ -457,6 +461,11 @@ export default function PetFormScreen() {
               if (!avatarUri) {
                 setAvatarKey(pickUniqueAvatarKey(next, usedKeys));
               }
+              setLifeStage((prev) => {
+                if (next === 'cat' && prev === 'puppy') return 'kitten';
+                if (next === 'dog' && prev === 'kitten') return 'puppy';
+                return prev;
+              });
             }}
             options={[
               { id: 'dog', label: t('pets.speciesDog') },
@@ -629,6 +638,24 @@ export default function PetFormScreen() {
               { id: 'mixed', label: t('pets.dietMixed') },
               { id: 'raw', label: t('pets.dietRaw') },
               { id: 'homemade', label: t('pets.dietHomemade') },
+              { id: 'unknown', label: t('pets.unknown') },
+            ]}
+          />
+          <Text className="mb-2 font-body-medium text-sm text-forest-700">
+            {t('pets.lifeStage')}
+          </Text>
+          <OptionChips
+            value={lifeStage}
+            onChange={setLifeStage}
+            options={[
+              ...(species !== 'cat'
+                ? [{ id: 'puppy' as const, label: t('pets.lifePuppy') }]
+                : []),
+              ...(species !== 'dog'
+                ? [{ id: 'kitten' as const, label: t('pets.lifeKitten') }]
+                : []),
+              { id: 'adult', label: t('pets.lifeAdult') },
+              { id: 'senior', label: t('pets.lifeSenior') },
               { id: 'unknown', label: t('pets.unknown') },
             ]}
           />

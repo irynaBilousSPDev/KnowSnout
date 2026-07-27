@@ -21,6 +21,7 @@ import type {
   CompanionSpecies,
   DietType,
   IndoorOutdoor,
+  LifeStage,
   PetInput,
   PetOrigin,
   PetPhotoRow,
@@ -124,6 +125,19 @@ function asDiet(value: unknown): DietType | null {
   return null;
 }
 
+function asLifeStage(value: unknown): LifeStage | null {
+  if (
+    value === 'puppy' ||
+    value === 'kitten' ||
+    value === 'adult' ||
+    value === 'senior' ||
+    value === 'unknown'
+  ) {
+    return value;
+  }
+  return null;
+}
+
 function asIndoorOutdoor(value: unknown): IndoorOutdoor | null {
   if (
     value === 'indoor' ||
@@ -191,6 +205,8 @@ function mapRow(row: Record<string, unknown>): PetRow {
     medications: optionalText(row.medications),
     activity_level: asActivity(row.activity_level),
     diet_type: asDiet(row.diet_type),
+    life_stage:
+      asLifeStage(row.life_stage) ?? asLifeStage(extras.life_stage),
     indoor_outdoor: asIndoorOutdoor(row.indoor_outdoor),
     personality: optionalText(row.personality),
     distinctive_marks: optionalText(row.distinctive_marks),
@@ -256,6 +272,7 @@ function normalizeInput(input: PetInput, usedKeys: string[] = []) {
     medications: input.medications?.trim() || null,
     activity_level: input.activity_level ?? null,
     diet_type: input.diet_type ?? null,
+    life_stage: input.life_stage ?? null,
     indoor_outdoor: input.indoor_outdoor ?? null,
     personality: input.personality?.trim() || null,
     distinctive_marks: input.distinctive_marks?.trim() || null,
@@ -365,6 +382,7 @@ export async function createPet(input: PetInput): Promise<PetRow> {
   const now = new Date().toISOString();
   const extras: Record<string, unknown> = {};
   if (withStablePhoto.avatar_uri) extras.avatar_uri = withStablePhoto.avatar_uri;
+  if (payload.life_stage) extras.life_stage = payload.life_stage;
 
   if (env.isDemoMode || !supabase) {
     const pet: PetRow = {
@@ -394,11 +412,7 @@ export async function createPet(input: PetInput): Promise<PetRow> {
     .select('*')
     .single();
 
-  if (
-    error &&
-    isMissingSchemaError(error.message) &&
-    error.message.includes('favorite_product_id')
-  ) {
+  if (error && isMissingSchemaError(error.message)) {
     const retry = await supabase
       .from('pets')
       .insert(stripOptionalPetColumns(insertRow))
@@ -436,13 +450,15 @@ export async function updatePet(id: string, input: PetInput): Promise<PetRow> {
     const pets = await readLocalPets();
     const index = pets.findIndex((p) => p.id === id);
     if (index < 0) throw new Error('Pet not found');
-    const extras = {
+    const extras: Record<string, unknown> = {
       ...pets[index].extras,
       ...(stableAvatarUri ? { avatar_uri: stableAvatarUri } : {}),
     };
     if (!stableAvatarUri && input.avatar_key) {
       delete extras.avatar_uri;
     }
+    if (payload.life_stage) extras.life_stage = payload.life_stage;
+    else delete extras.life_stage;
     const updated: PetRow = {
       ...pets[index],
       ...payload,
@@ -458,13 +474,15 @@ export async function updatePet(id: string, input: PetInput): Promise<PetRow> {
   }
 
   const existing = await getPet(id);
-  const extras = {
+  const extras: Record<string, unknown> = {
     ...(existing?.extras ?? {}),
     ...(stableAvatarUri ? { avatar_uri: stableAvatarUri } : {}),
   };
   if (!stableAvatarUri && input.avatar_key) {
     delete extras.avatar_uri;
   }
+  if (payload.life_stage) extras.life_stage = payload.life_stage;
+  else delete extras.life_stage;
 
   const updateRow = {
     ...payload,
@@ -479,11 +497,7 @@ export async function updatePet(id: string, input: PetInput): Promise<PetRow> {
     .select('*')
     .single();
 
-  if (
-    error &&
-    isMissingSchemaError(error.message) &&
-    error.message.includes('favorite_product_id')
-  ) {
+  if (error && isMissingSchemaError(error.message)) {
     const retry = await supabase
       .from('pets')
       .update(stripOptionalPetColumns(updateRow))
@@ -642,6 +656,7 @@ export async function setPetFavoriteFood(
     medications: pet.medications,
     activity_level: pet.activity_level,
     diet_type: pet.diet_type,
+    life_stage: pet.life_stage,
     indoor_outdoor: pet.indoor_outdoor,
     personality: pet.personality,
     distinctive_marks: pet.distinctive_marks,

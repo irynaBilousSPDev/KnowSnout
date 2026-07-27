@@ -257,7 +257,13 @@ const uk: Dict = {
   'stories.loadError': 'Не вдалося завантажити стрічку',
 
   'me.title': 'Мої дані',
-  'me.subtitle': 'Аватар, ім’я та приватність',
+  'me.subtitle': 'Аватар, місто й улюбленці',
+  'me.city': 'Місто',
+  'me.cityPlaceholder': 'Наприклад, Київ',
+  'me.saveProfile': 'Зберегти профіль',
+  'me.kidsTitle': 'Мої діти (улюбленці)',
+  'me.kidsCount': 'У профілі: {count}',
+  'me.kidsEmpty': 'Поки немає улюбленців — додай у вкладці Улюбленці.',
   'me.privacyTitle': 'Приватність SnoutStories',
   'me.privacyBody':
     'За замовчуванням нові пости видно у стрічці. У «Мої» можна зробити пост лише для себе.',
@@ -271,7 +277,8 @@ const uk: Dict = {
   'me.displayNameRequired': 'Вкажи ім’я, щоб зберегти',
   'me.saveName': 'Зберегти ім’я',
   'me.savedTitle': 'Збережено',
-  'me.savedBody': 'Ім’я збережено на цьому пристрої. На веб і в телефоні дані окремі, поки немає хмари.',
+  'me.savedBody':
+    'Профіль збережено на цьому пристрої. На веб і в телефоні дані окремі, поки немає хмари.',
   'me.photoSavedBody': 'Фото профілю оновлено на цьому пристрої.',
   'me.saveError': 'Не вдалося зберегти профіль',
   'me.localOnlyHint':
@@ -424,6 +431,15 @@ const uk: Dict = {
   'result.enNote':
     'Тексти з відкритих баз інколи англійською — після повного AI-скана етикетки вердикт буде українською.',
   'result.share': 'Поділитися оцінкою',
+
+  'foodMatch.title': 'Сумісність з улюбленцем',
+  'foodMatch.disclaimer':
+    'Підказка за профілем, не ветеринарна рекомендація.',
+  'foodMatch.allergy': 'Можлива алергія: {detail}',
+  'foodMatch.lifeOk': 'Пасує до етапу життя ({stage})',
+  'foodMatch.lifeCaution': 'Може не пасувати до етапу життя ({stage})',
+  'foodMatch.diet': 'Тип раціону може не збігатися',
+  'foodMatch.species': 'Корм, ймовірно, для іншої тварини',
 
   'pets.title': 'Улюбленці',
   'pets.subtitle': 'Профілі для кормів, щеплень і подорожей',
@@ -623,6 +639,11 @@ const uk: Dict = {
   'pets.dietMixed': 'Змішаний',
   'pets.dietRaw': 'Raw / BARF',
   'pets.dietHomemade': 'Домашній',
+  'pets.lifeStage': 'Етап життя',
+  'pets.lifePuppy': 'Щеня',
+  'pets.lifeKitten': 'Кошеня',
+  'pets.lifeAdult': 'Дорослий',
+  'pets.lifeSenior': 'Старший',
   'pets.indoorOutdoor': 'Дім / вулиця',
   'pets.indoor': 'Тільки вдома',
   'pets.outdoor': 'Більше на вулиці',

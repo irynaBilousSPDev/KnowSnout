@@ -12,9 +12,15 @@ import { t } from '@/src/i18n';
 import { getPendingAnalysis, setPendingAnalysis } from '@/src/lib/resultStore';
 import { buildScanShareMessage, shareText } from '@/src/lib/share';
 import { resolveSpecies } from '@/src/lib/species';
+import {
+  foodMatchHitKey,
+  lifeStageLabelKey,
+  matchFoodToPet,
+  type FoodMatchLevel,
+} from '@/src/services/foodMatch';
 import { listPets, setPetFavoriteFood } from '@/src/services/pets';
 import { saveScan } from '@/src/services/scans';
-import type { PetRow } from '@/src/types/pet';
+import type { LifeStage, PetRow } from '@/src/types/pet';
 import type { PetSpecies } from '@/src/types/scan';
 
 const SPECIES_OPTIONS: { id: PetSpecies; labelKey: string }[] = [
@@ -22,6 +28,13 @@ const SPECIES_OPTIONS: { id: PetSpecies; labelKey: string }[] = [
   { id: 'cat', labelKey: 'history.speciesCat' },
   { id: 'unknown', labelKey: 'history.filterOther' },
 ];
+
+function matchToneClass(level: FoodMatchLevel) {
+  if (level === 'alert') return 'text-rose-700';
+  if (level === 'caution') return 'text-amber-800';
+  if (level === 'ok') return 'text-emerald-800';
+  return 'text-forest-600';
+}
 
 export default function ResultScreen() {
   const pending = getPendingAnalysis();
@@ -170,35 +183,65 @@ export default function ResultScreen() {
             <View className="mt-4 gap-2">
               {pets.map((pet) => {
                 const active = assignedPetId === pet.id;
+                const match = matchFoodToPet(pet, {
+                  productName: result.productName,
+                  summary: result.summary,
+                  pros: result.pros,
+                  cons: result.cons,
+                  species,
+                });
+                const topHit = match.hits[0];
                 return (
                   <Pressable
                     key={pet.id}
                     onPress={() => void onAssign(pet)}
                     disabled={assigningId === pet.id}
-                    className={`flex-row items-center rounded-2xl px-3 py-3 ${
+                    className={`rounded-2xl px-3 py-3 ${
                       active ? 'bg-forest-700' : 'bg-forest-100'
                     }`}
                   >
-                    <PetAvatar
-                      avatarKey={pet.avatar_key}
-                      avatarUri={pet.avatar_uri}
-                      species={pet.species}
-                      size={40}
-                      name={pet.name}
-                    />
-                    <Text
-                      className={`ml-3 flex-1 font-body-bold text-base ${
-                        active ? 'text-sand-50' : 'text-forest-900'
-                      }`}
-                    >
-                      {pet.name}
-                    </Text>
-                    {active ? (
-                      <Text className="font-body text-xs text-sand-50">✓</Text>
+                    <View className="flex-row items-center">
+                      <PetAvatar
+                        avatarKey={pet.avatar_key}
+                        avatarUri={pet.avatar_uri}
+                        species={pet.species}
+                        size={40}
+                        name={pet.name}
+                      />
+                      <Text
+                        className={`ml-3 flex-1 font-body-bold text-base ${
+                          active ? 'text-sand-50' : 'text-forest-900'
+                        }`}
+                      >
+                        {pet.name}
+                      </Text>
+                      {active ? (
+                        <Text className="font-body text-xs text-sand-50">✓</Text>
+                      ) : null}
+                    </View>
+                    {topHit ? (
+                      <Text
+                        className={`mt-2 font-body text-xs leading-4 ${
+                          active ? 'text-sand-100' : matchToneClass(match.level)
+                        }`}
+                      >
+                        {t(foodMatchHitKey(topHit), {
+                          detail: topHit.detail,
+                          stage: (() => {
+                            const key = lifeStageLabelKey(
+                              topHit.detail as LifeStage,
+                            );
+                            return key ? t(key) : topHit.detail;
+                          })(),
+                        })}
+                      </Text>
                     ) : null}
                   </Pressable>
                 );
               })}
+              <Text className="mt-2 font-body text-xs text-forest-500">
+                {t('foodMatch.disclaimer')}
+              </Text>
             </View>
           )}
         </View>

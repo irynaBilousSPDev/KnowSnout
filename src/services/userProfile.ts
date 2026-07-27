@@ -10,25 +10,49 @@ import { getCurrentUser } from '@/src/services/auth';
 import type { UserProfile, UserProfileInput } from '@/src/types/userProfile';
 
 const STORAGE_KEY = 'snoutscore.user_profiles';
+const STORAGE_KEY_NEW = 'knowsnout.user_profiles.v1';
 
 async function readAll(): Promise<Record<string, UserProfile>> {
-  const raw = await AsyncStorage.getItem(STORAGE_KEY);
+  const raw =
+    (await AsyncStorage.getItem(STORAGE_KEY_NEW)) ??
+    (await AsyncStorage.getItem(STORAGE_KEY));
   if (!raw) return {};
   try {
-    return JSON.parse(raw) as Record<string, UserProfile>;
+    const parsed = JSON.parse(raw) as Record<string, Partial<UserProfile>>;
+    const out: Record<string, UserProfile> = {};
+    for (const [id, value] of Object.entries(parsed)) {
+      if (!value?.user_id) continue;
+      out[id] = normalizeProfile(value as Partial<UserProfile> & { user_id: string });
+    }
+    return out;
   } catch {
     return {};
   }
 }
 
 async function writeAll(map: Record<string, UserProfile>) {
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+  await AsyncStorage.setItem(STORAGE_KEY_NEW, JSON.stringify(map));
+}
+
+function normalizeProfile(
+  raw: Partial<UserProfile> & { user_id: string },
+): UserProfile {
+  return {
+    user_id: raw.user_id,
+    display_name: raw.display_name ?? null,
+    city: raw.city ?? null,
+    gender: raw.gender ?? 'unspecified',
+    avatar_key: raw.avatar_key ?? 'person-1',
+    avatar_uri: raw.avatar_uri ?? null,
+    updated_at: raw.updated_at ?? new Date().toISOString(),
+  };
 }
 
 function emptyProfile(userId: string): UserProfile {
   return {
     user_id: userId,
     display_name: null,
+    city: null,
     gender: 'unspecified',
     avatar_key: 'person-1',
     avatar_uri: null,
@@ -64,7 +88,6 @@ export async function saveUserProfile(
     try {
       avatar_uri = await persistLocalImage(avatar_uri, 'user-avatar');
     } catch {
-      // Keep previous URI if image persist fails — don't block name/gender saves
       if (input.avatar_uri === undefined) {
         avatar_uri = prev.avatar_uri;
       }
@@ -77,6 +100,8 @@ export async function saveUserProfile(
       input.display_name !== undefined
         ? input.display_name?.trim() || null
         : prev.display_name,
+    city:
+      input.city !== undefined ? input.city?.trim() || null : prev.city,
     gender,
     avatar_key,
     avatar_uri,

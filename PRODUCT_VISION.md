@@ -20,7 +20,7 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 - [x] Favorite food link (pet ↔ history) + feeding notes (ate all / short note)
 - [x] Vaccine calendar + reminders (UA/PL) — **v1**: log + due status; optional add to device/Google Calendar; in-app push later
 - [x] Travel checklists Schengen / non-Schengen — **v1** checkbox packs on pet profile
-- [ ] User profile (basic): name, city, “how many kids”, list of pets
+- [x] User profile (basic): name, city, pets list (“діти”) in Мої дані
 - [x] **Daily care habits:** water bowl refresh + short play reminder (esp. cats) — **v1** on pet profile
 
 ### P0c — IA: «Перевір» hub + journal (2026-07-21) — **SHIPPED UI**
@@ -45,7 +45,7 @@ Status: **shipped** — search + photo vision Edge (`identify-breed`); enrich fr
 
 
 ### P1 — Care depth
-- Food ↔ pet allergies / life stage match
+- Food ↔ pet allergies / life stage match — **shipped** (informational hints on result + pet profile; `pets.life_stage` column)
 - Passport / docs checklist
 - Meds & vet visit log
 - Toys & how-to-play guides

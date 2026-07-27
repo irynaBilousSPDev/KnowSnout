@@ -31,5 +31,6 @@ export function stripOptionalPetColumns<T extends Record<string, unknown>>(
 ): T {
   const next = { ...row };
   delete next.favorite_product_id;
+  delete next.life_stage;
   return next;
 }
