@@ -29,7 +29,7 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [x] **Нове:** `20260321220000_plant_safety.sql` (кеш рослин + токсичність + історія перевірок)
 - [x] **Нове:** `20260321230000_quiz_sessions.sql` (результати квізу + рейтинг в акаунті)
 - [x] **Нове:** `20260321231000_quiz_sessions_trivia.sql` (категорія Open Trivia Animals)
-- [ ] **Нове:** `20260321235000_pet_life_stage.sql` (`pets.life_stage` для матчу корму ↔ профіль)
+- [x] **Нове:** `20260321235000_pet_life_stage.sql` (`pets.life_stage` для матчу корму ↔ профіль)
 - [ ] Email auth enabled; confirm-email off for MVP
 - [ ] Set secret `OPENAI_API_KEY`
 - [ ] Deploy `analyze-label` function
