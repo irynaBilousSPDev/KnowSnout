@@ -166,6 +166,9 @@ export type BreedHistoryItem = {
   breedNameUk?: string | null;
   confidence: number;
   photoUri?: string | null;
+  temperament?: string | null;
+  origin?: string | null;
+  bredFor?: string | null;
 };
 
 export async function listBreedHistory(): Promise<BreedHistoryItem[]> {
@@ -177,6 +180,14 @@ export async function listBreedHistory(): Promise<BreedHistoryItem[]> {
   } catch {
     return [];
   }
+}
+
+export async function deleteBreedHistoryItem(id: string): Promise<void> {
+  const prev = await listBreedHistory();
+  await AsyncStorage.setItem(
+    HISTORY_KEY,
+    JSON.stringify(prev.filter((item) => item.id !== id)),
+  );
 }
 
 export async function saveBreedHistoryItem(
@@ -193,6 +204,9 @@ export async function saveBreedHistoryItem(
     breedNameUk: item.breedNameUk ?? null,
     confidence: item.confidence,
     photoUri: item.photoUri ?? null,
+    temperament: item.temperament ?? null,
+    origin: item.origin ?? null,
+    bredFor: item.bredFor ?? null,
   };
   const prev = await listBreedHistory();
   const list = [next, ...prev].slice(0, 50);

@@ -60,6 +60,9 @@ export default function BreedScanScreen() {
       breedNameUk: guess.nameUk,
       confidence: guess.confidence,
       photoUri: photo ?? null,
+      temperament: guess.temperament,
+      origin: guess.origin,
+      bredFor: guess.bredFor,
     });
   };
 
@@ -80,6 +83,9 @@ export default function BreedScanScreen() {
         breedNameUk: next.primary.nameUk,
         confidence: next.primary.confidence,
         photoUri,
+        temperament: next.primary.temperament,
+        origin: next.primary.origin,
+        bredFor: next.primary.bredFor,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('breed.checkError'));

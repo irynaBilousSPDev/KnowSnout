@@ -28,17 +28,21 @@ import { isNativeSafeImageUri } from '@/src/lib/image';
 import { setPendingAnalysis } from '@/src/lib/resultStore';
 import {
   listBreedHistory,
+  deleteBreedHistoryItem,
   type BreedHistoryItem,
 } from '@/src/services/breedId';
 import { listPets } from '@/src/services/pets';
 import {
   listPlantHistory,
+  deletePlantHistoryItem,
+  plantLevelTone,
   type PlantHistoryItem,
 } from '@/src/services/plants';
 import { deleteScan, listScans } from '@/src/services/scans';
 import { brand } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 import type { PetSpecies, ScanRow } from '@/src/types/scan';
+import type { PlantToxicityLevel } from '@/src/types/plant';
 
 type JournalKind = 'food' | 'plant' | 'breed';
 type FoodFilter = 'all' | PetSpecies;
@@ -49,12 +53,35 @@ function speciesLabel(species?: PetSpecies | null) {
   return null;
 }
 
-function JournalThumb({ uri }: { uri?: string | null }) {
+function plantLevelLabel(level: string) {
+  switch (level as PlantToxicityLevel) {
+    case 'safe':
+      return t('plants.levelSafe');
+    case 'mild':
+      return t('plants.levelMild');
+    case 'toxic':
+      return t('plants.levelToxic');
+    default:
+      return t('plants.levelUnknown');
+  }
+}
+
+function JournalThumb({
+  uri,
+  large,
+}: {
+  uri?: string | null;
+  large?: boolean;
+}) {
   if (!uri || !isNativeSafeImageUri(uri)) return null;
   return (
     <Image
       source={{ uri }}
-      className="mr-3 h-16 w-16 rounded-xl bg-forest-100"
+      className={
+        large
+          ? 'mb-3 h-40 w-full rounded-2xl bg-forest-100'
+          : 'mr-3 h-16 w-16 rounded-xl bg-forest-100'
+      }
       resizeMode="cover"
       accessibilityIgnoresInvertColors
     />
@@ -145,6 +172,34 @@ export default function JournalScreen() {
         err instanceof Error ? err.message : t('common.error'),
       );
     }
+  };
+
+  const onDeletePlant = async (item: PlantHistoryItem) => {
+    const name = item.name_uk ?? item.query_text ?? t('plants.title');
+    const ok = await confirmAction({
+      title: t('history.deleteTitle'),
+      message: t('history.deleteMessage', { name }),
+      confirmLabel: t('history.delete'),
+      cancelLabel: t('common.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    await deletePlantHistoryItem(item.id);
+    setPlants((prev) => prev.filter((p) => p.id !== item.id));
+  };
+
+  const onDeleteBreed = async (item: BreedHistoryItem) => {
+    const name = item.breedNameUk ?? item.breedName;
+    const ok = await confirmAction({
+      title: t('history.deleteTitle'),
+      message: t('history.deleteMessage', { name }),
+      confirmLabel: t('history.delete'),
+      cancelLabel: t('common.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    await deleteBreedHistoryItem(item.id);
+    setBreeds((prev) => prev.filter((b) => b.id !== item.id));
   };
 
   if (loading) {
@@ -311,24 +366,61 @@ export default function JournalScreen() {
               </View>
             </Section>
           }
-          renderItem={({ item }) => (
-            <View className="mb-3 flex-row items-center rounded-2xl border border-forest-100 bg-white px-4 py-4">
-              <JournalThumb uri={item.photo_uri} />
-              <View className="flex-1">
-                <Text className="font-body-bold text-base text-forest-900">
+          renderItem={({ item }) => {
+            const tone = plantLevelTone(
+              (['safe', 'mild', 'toxic', 'unknown'].includes(item.level)
+                ? item.level
+                : 'unknown') as PlantToxicityLevel,
+            );
+            const species =
+              item.for_species === 'cat'
+                ? t('plants.speciesCat')
+                : t('plants.speciesDog');
+            return (
+              <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
+                <JournalThumb uri={item.photo_uri} large />
+                <Text className="font-body-bold text-lg text-forest-900">
                   {item.name_uk ?? item.query_text ?? t('plants.title')}
                 </Text>
-                <Text className="mt-1 font-body text-xs text-forest-500">
-                  {item.for_species === 'cat'
-                    ? t('plants.speciesCat')
-                    : t('plants.speciesDog')}
+                {item.latin ? (
+                  <Text className="mt-1 font-body text-sm text-forest-600">
+                    {item.latin}
+                    {item.name_en ? ` · ${item.name_en}` : ''}
+                  </Text>
+                ) : null}
+                <View
+                  className={`mt-3 self-start rounded-full border px-3 py-1.5 ${tone.bg} ${tone.border}`}
+                >
+                  <Text className={`font-body-bold text-sm ${tone.text}`}>
+                    {plantLevelLabel(item.level)}
+                  </Text>
+                </View>
+                {item.notes ? (
+                  <Text className="mt-3 font-body text-sm leading-5 text-forest-700">
+                    {item.notes}
+                  </Text>
+                ) : null}
+                <Text className="mt-3 font-body text-xs text-forest-500">
+                  {species}
+                  {typeof item.confidence === 'number'
+                    ? ` · ${t('plants.confidence', {
+                        pct: Math.round(item.confidence * 100),
+                      })}`
+                    : ''}
                   {' · '}
-                  {item.level} ·{' '}
                   {new Date(item.created_at).toLocaleString('uk-UA')}
                 </Text>
+                <View className="mt-2 flex-row justify-end">
+                  <IconButton
+                    name="trash-outline"
+                    color={brand.score.poor}
+                    accessibilityLabel={t('history.delete')}
+                    onPress={() => void onDeletePlant(item)}
+                  />
+                </View>
               </View>
-            </View>
-          )}
+            );
+          }}
         />
       ) : (
         <FlatList
@@ -357,20 +449,46 @@ export default function JournalScreen() {
             </Section>
           }
           renderItem={({ item }) => (
-            <View className="mb-3 flex-row items-center rounded-2xl border border-forest-100 bg-white px-4 py-4">
-              <JournalThumb uri={item.photoUri} />
-              <View className="flex-1">
-                <Text className="font-body-bold text-base text-forest-900">
-                  {item.breedNameUk ?? item.breedName}
+            <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
+              <JournalThumb uri={item.photoUri} large />
+              <Text className="font-body-bold text-lg text-forest-900">
+                {item.breedNameUk ?? item.breedName}
+              </Text>
+              <Text className="mt-1 font-body text-sm text-forest-600">
+                {item.breedName}
+              </Text>
+              <View className="mt-3 self-start rounded-full border border-forest-200 bg-forest-100 px-3 py-1.5">
+                <Text className="font-body-bold text-sm text-forest-800">
+                  {t('breed.confidence', {
+                    pct: Math.round(item.confidence * 100),
+                  })}
                 </Text>
-                <Text className="mt-1 font-body text-xs text-forest-500">
-                  {item.species === 'cat'
-                    ? t('breed.speciesCat')
-                    : t('breed.speciesDog')}
-                  {' · ~'}
-                  {Math.round(item.confidence * 100)}% ·{' '}
-                  {new Date(item.createdAt).toLocaleString('uk-UA')}
+              </View>
+              {item.temperament ? (
+                <Text className="mt-3 font-body text-sm leading-5 text-forest-700">
+                  {item.temperament}
                 </Text>
+              ) : null}
+              {item.bredFor ? (
+                <Text className="mt-1 font-body text-sm text-forest-600">
+                  {item.bredFor}
+                </Text>
+              ) : null}
+              <Text className="mt-3 font-body text-xs text-forest-500">
+                {item.species === 'cat'
+                  ? t('breed.speciesCat')
+                  : t('breed.speciesDog')}
+                {item.origin ? ` · ${item.origin}` : ''}
+                {' · '}
+                {new Date(item.createdAt).toLocaleString('uk-UA')}
+              </Text>
+              <View className="mt-2 flex-row justify-end">
+                <IconButton
+                  name="trash-outline"
+                  color={brand.score.poor}
+                  accessibilityLabel={t('history.delete')}
+                  onPress={() => void onDeleteBreed(item)}
+                />
               </View>
             </View>
           )}

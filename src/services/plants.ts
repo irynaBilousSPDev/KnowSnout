@@ -19,6 +19,10 @@ export type PlantHistoryItem = {
   level: string;
   created_at: string;
   name_uk?: string | null;
+  name_en?: string | null;
+  latin?: string | null;
+  notes?: string | null;
+  confidence?: number | null;
   photo_uri?: string | null;
 };
 
@@ -282,25 +286,77 @@ async function appendLocalPlantHistory(item: PlantHistoryItem): Promise<void> {
   await AsyncStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(next));
 }
 
+export async function deletePlantHistoryItem(id: string): Promise<void> {
+  const prev = await listLocalPlantHistory();
+  await AsyncStorage.setItem(
+    LOCAL_HISTORY_KEY,
+    JSON.stringify(prev.filter((item) => item.id !== id)),
+  );
+}
+
+function enrichPlantHistoryItem(
+  item: PlantHistoryItem,
+  catalog: PlantRecord[],
+): PlantHistoryItem {
+  if (item.name_uk && item.notes && item.latin) return item;
+  const q = item.query_text?.trim();
+  if (!q) return item;
+  const ranked = catalog
+    .map((plant) => ({ plant, score: scoreMatch(plant, q) }))
+    .filter((x) => x.score >= 0.55)
+    .sort((a, b) => b.score - a.score)[0];
+  if (!ranked) return item;
+  const species = (item.for_species === 'cat' ? 'cat' : 'dog') as PlantSpeciesTarget;
+  const { notes } = toxicityFor(ranked.plant, species);
+  return {
+    ...item,
+    name_uk: item.name_uk ?? ranked.plant.name_uk,
+    name_en: item.name_en ?? ranked.plant.name_en,
+    latin: item.latin ?? ranked.plant.latin,
+    notes: item.notes ?? notes,
+  };
+}
+
+function isNearDuplicate(a: PlantHistoryItem, b: PlantHistoryItem) {
+  const sameQuery =
+    (a.query_text ?? a.name_uk ?? '').toLowerCase() ===
+    (b.query_text ?? b.name_uk ?? '').toLowerCase();
+  const sameSpecies = a.for_species === b.for_species;
+  const dt = Math.abs(
+    new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+  );
+  return sameQuery && sameSpecies && dt < 5 * 60 * 1000;
+}
+
 export async function listPlantHistory(): Promise<PlantHistoryItem[]> {
   const local = await listLocalPlantHistory();
-  if (!supabase) return local;
+  const catalog = await listPlantsCatalog();
+  const enrichedLocal = local.map((item) =>
+    enrichPlantHistoryItem(item, catalog),
+  );
+  if (!supabase) return enrichedLocal;
   try {
     const { data, error } = await supabase
       .from('plant_checks')
-      .select('id, query_text, for_species, level, created_at')
+      .select('id, query_text, for_species, level, confidence, created_at')
       .order('created_at', { ascending: false })
       .limit(50);
-    if (error || !data) return local;
-    const cloud = data as PlantHistoryItem[];
-    const seen = new Set(cloud.map((c) => c.id));
-    const merged = [...cloud, ...local.filter((l) => !seen.has(l.id))];
+    if (error || !data) return enrichedLocal;
+    const cloud = (data as PlantHistoryItem[]).map((item) =>
+      enrichPlantHistoryItem(item, catalog),
+    );
+    // Prefer rich local rows (photo/notes) over thin cloud duplicates.
+    const merged = [...enrichedLocal];
+    for (const c of cloud) {
+      if (merged.some((m) => m.id === c.id || isNearDuplicate(m, c))) continue;
+      merged.push(c);
+    }
     return merged.sort(
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
   } catch {
-    return local;
+    return enrichedLocal;
   }
 }
 
@@ -320,6 +376,10 @@ export async function savePlantCheck(input: {
     level: input.result.level,
     created_at: new Date().toISOString(),
     name_uk: input.result.plant.name_uk,
+    name_en: input.result.plant.name_en,
+    latin: input.result.plant.latin,
+    notes: input.result.notes,
+    confidence: input.result.confidence,
     photo_uri: input.photoUri ?? null,
   };
   await appendLocalPlantHistory(localItem);
