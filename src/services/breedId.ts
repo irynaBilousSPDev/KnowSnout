@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { persistCheckPhoto } from '@/src/services/checkImages';
+
 import { env } from '@/src/lib/env';
 import type {
   BreedCheckResult,
@@ -190,12 +192,20 @@ export async function deleteBreedHistoryItem(id: string): Promise<void> {
   );
 }
 
+export async function getBreedHistoryItem(
+  id: string,
+): Promise<BreedHistoryItem | null> {
+  const list = await listBreedHistory();
+  return list.find((item) => item.id === id) ?? null;
+}
+
 export async function saveBreedHistoryItem(
   item: Omit<BreedHistoryItem, 'id' | 'createdAt'> & {
     id?: string;
     createdAt?: string;
   },
-): Promise<BreedHistoryItem[]> {
+): Promise<BreedHistoryItem> {
+  const photoUri = await persistCheckPhoto(item.photoUri, 'breeds');
   const next: BreedHistoryItem = {
     id: item.id ?? `breed-${Date.now()}`,
     createdAt: item.createdAt ?? new Date().toISOString(),
@@ -203,7 +213,7 @@ export async function saveBreedHistoryItem(
     breedName: item.breedName,
     breedNameUk: item.breedNameUk ?? null,
     confidence: item.confidence,
-    photoUri: item.photoUri ?? null,
+    photoUri,
     temperament: item.temperament ?? null,
     origin: item.origin ?? null,
     bredFor: item.bredFor ?? null,
@@ -211,5 +221,5 @@ export async function saveBreedHistoryItem(
   const prev = await listBreedHistory();
   const list = [next, ...prev].slice(0, 50);
   await AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(list));
-  return list;
+  return next;
 }

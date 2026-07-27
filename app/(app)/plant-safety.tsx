@@ -1,4 +1,4 @@
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
@@ -148,11 +148,15 @@ export default function PlantSafetyScreen() {
   ) => {
     setResult(next);
     setSuggestions([]);
-    await savePlantCheck({
+    const saved = await savePlantCheck({
       petId,
       result: next,
       queryText,
       photoUri: photo ?? photoUri,
+    });
+    router.push({
+      pathname: '/(app)/plant-result',
+      params: { id: saved.id },
     });
   };
 

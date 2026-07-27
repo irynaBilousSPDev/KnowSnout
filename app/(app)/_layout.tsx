@@ -113,6 +113,20 @@ export default function AppLayout() {
           title: t('plants.title'),
         }}
       />
+      <Stack.Screen
+        name="plant-result"
+        options={{
+          headerShown: true,
+          title: t('journal.plantDetailTitle'),
+        }}
+      />
+      <Stack.Screen
+        name="breed-result"
+        options={{
+          headerShown: true,
+          title: t('journal.breedDetailTitle'),
+        }}
+      />
     </Stack>
   );
 }

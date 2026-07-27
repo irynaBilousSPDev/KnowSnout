@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import {
   ActivityIndicator,
@@ -54,7 +55,7 @@ export default function BreedScanScreen() {
     };
     setResult(next);
     setSuggestions([]);
-    await saveBreedHistoryItem({
+    const saved = await saveBreedHistoryItem({
       species,
       breedName: guess.name,
       breedNameUk: guess.nameUk,
@@ -63,6 +64,10 @@ export default function BreedScanScreen() {
       temperament: guess.temperament,
       origin: guess.origin,
       bredFor: guess.bredFor,
+    });
+    router.push({
+      pathname: '/(app)/breed-result',
+      params: { id: saved.id },
     });
   };
 
@@ -77,7 +82,7 @@ export default function BreedScanScreen() {
       const imageBase64 = await uriToBase64(photoUri);
       const next = await identifyBreedFromPhoto({ species, imageBase64 });
       setResult(next);
-      await saveBreedHistoryItem({
+      const saved = await saveBreedHistoryItem({
         species,
         breedName: next.primary.name,
         breedNameUk: next.primary.nameUk,
@@ -86,6 +91,10 @@ export default function BreedScanScreen() {
         temperament: next.primary.temperament,
         origin: next.primary.origin,
         bredFor: next.primary.bredFor,
+      });
+      router.push({
+        pathname: '/(app)/breed-result',
+        params: { id: saved.id },
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('breed.checkError'));

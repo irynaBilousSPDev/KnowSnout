@@ -31,6 +31,7 @@ import {
   deleteBreedHistoryItem,
   type BreedHistoryItem,
 } from '@/src/services/breedId';
+import { resolveCheckImageUrl } from '@/src/services/checkImages';
 import { listPets } from '@/src/services/pets';
 import {
   listPlantHistory,
@@ -46,6 +47,28 @@ import type { PlantToxicityLevel } from '@/src/types/plant';
 
 type JournalKind = 'food' | 'plant' | 'breed';
 type FoodFilter = 'all' | PetSpecies;
+
+async function withResolvedPhotoUri<T extends { photo_uri?: string | null }>(
+  item: T,
+): Promise<T> {
+  if (!item.photo_uri) return item;
+  const url = await resolveCheckImageUrl(item.photo_uri);
+  return { ...item, photo_uri: url ?? item.photo_uri };
+}
+
+async function withResolvedBreedPhoto(
+  item: BreedHistoryItem,
+): Promise<BreedHistoryItem> {
+  if (!item.photoUri) return item;
+  const url = await resolveCheckImageUrl(item.photoUri);
+  return { ...item, photoUri: url ?? item.photoUri };
+}
+
+async function withResolvedScanImage(item: ScanRow): Promise<ScanRow> {
+  if (!item.image_path) return item;
+  const url = await resolveCheckImageUrl(item.image_path);
+  return { ...item, image_path: url ?? item.image_path };
+}
 
 function speciesLabel(species?: PetSpecies | null) {
   if (species === 'dog') return t('history.speciesDog');
@@ -131,10 +154,15 @@ export default function JournalScreen() {
         listPlantChecks(),
         listBreedHistory(),
       ]);
-      setScans(scanData);
+      const [scansResolved, plantsResolved, breedsResolved] = await Promise.all([
+        Promise.all(scanData.map(withResolvedScanImage)),
+        Promise.all(plantData.map(withResolvedPhotoUri)),
+        Promise.all(breedData.map(withResolvedBreedPhoto)),
+      ]);
+      setScans(scansResolved);
       setPets(petData);
-      setPlants(plantData);
-      setBreeds(breedData);
+      setPlants(plantsResolved);
+      setBreeds(breedsResolved);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('history.loadError'));
     } finally {
@@ -372,44 +400,41 @@ export default function JournalScreen() {
                 ? item.level
                 : 'unknown') as PlantToxicityLevel,
             );
-            const species =
-              item.for_species === 'cat'
-                ? t('plants.speciesCat')
-                : t('plants.speciesDog');
             return (
               <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
-                <JournalThumb uri={item.photo_uri} large />
-                <Text className="font-body-bold text-lg text-forest-900">
-                  {item.name_uk ?? item.query_text ?? t('plants.title')}
-                </Text>
-                {item.latin ? (
-                  <Text className="mt-1 font-body text-sm text-forest-600">
-                    {item.latin}
-                    {item.name_en ? ` · ${item.name_en}` : ''}
-                  </Text>
-                ) : null}
-                <View
-                  className={`mt-3 self-start rounded-full border px-3 py-1.5 ${tone.bg} ${tone.border}`}
+                <Pressable
+                  onPress={() =>
+                    router.push({
+                      pathname: '/(app)/plant-result',
+                      params: { id: item.id },
+                    })
+                  }
+                  className="flex-row items-center active:opacity-80"
                 >
-                  <Text className={`font-body-bold text-sm ${tone.text}`}>
-                    {plantLevelLabel(item.level)}
-                  </Text>
-                </View>
-                {item.notes ? (
-                  <Text className="mt-3 font-body text-sm leading-5 text-forest-700">
-                    {item.notes}
-                  </Text>
-                ) : null}
-                <Text className="mt-3 font-body text-xs text-forest-500">
-                  {species}
-                  {typeof item.confidence === 'number'
-                    ? ` · ${t('plants.confidence', {
-                        pct: Math.round(item.confidence * 100),
-                      })}`
-                    : ''}
-                  {' · '}
-                  {new Date(item.created_at).toLocaleString('uk-UA')}
-                </Text>
+                  <JournalThumb uri={item.photo_uri} />
+                  <View className="flex-1 pr-2">
+                    <Text className="font-body-bold text-base text-forest-900">
+                      {item.name_uk ?? item.query_text ?? t('plants.title')}
+                    </Text>
+                    <Text className="mt-1 font-body text-xs text-forest-500">
+                      {item.for_species === 'cat'
+                        ? t('plants.speciesCat')
+                        : t('plants.speciesDog')}
+                      {' · '}
+                      {new Date(item.created_at).toLocaleString('uk-UA')}
+                    </Text>
+                  </View>
+                  <View
+                    className={`max-w-[42%] rounded-full border px-2.5 py-1 ${tone.bg} ${tone.border}`}
+                  >
+                    <Text
+                      className={`text-center font-body-bold text-[11px] ${tone.text}`}
+                      numberOfLines={2}
+                    >
+                      {plantLevelLabel(item.level)}
+                    </Text>
+                  </View>
+                </Pressable>
                 <View className="mt-2 flex-row justify-end">
                   <IconButton
                     name="trash-outline"
@@ -450,38 +475,34 @@ export default function JournalScreen() {
           }
           renderItem={({ item }) => (
             <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
-              <JournalThumb uri={item.photoUri} large />
-              <Text className="font-body-bold text-lg text-forest-900">
-                {item.breedNameUk ?? item.breedName}
-              </Text>
-              <Text className="mt-1 font-body text-sm text-forest-600">
-                {item.breedName}
-              </Text>
-              <View className="mt-3 self-start rounded-full border border-forest-200 bg-forest-100 px-3 py-1.5">
-                <Text className="font-body-bold text-sm text-forest-800">
-                  {t('breed.confidence', {
-                    pct: Math.round(item.confidence * 100),
-                  })}
-                </Text>
-              </View>
-              {item.temperament ? (
-                <Text className="mt-3 font-body text-sm leading-5 text-forest-700">
-                  {item.temperament}
-                </Text>
-              ) : null}
-              {item.bredFor ? (
-                <Text className="mt-1 font-body text-sm text-forest-600">
-                  {item.bredFor}
-                </Text>
-              ) : null}
-              <Text className="mt-3 font-body text-xs text-forest-500">
-                {item.species === 'cat'
-                  ? t('breed.speciesCat')
-                  : t('breed.speciesDog')}
-                {item.origin ? ` · ${item.origin}` : ''}
-                {' · '}
-                {new Date(item.createdAt).toLocaleString('uk-UA')}
-              </Text>
+              <Pressable
+                onPress={() =>
+                  router.push({
+                    pathname: '/(app)/breed-result',
+                    params: { id: item.id },
+                  })
+                }
+                className="flex-row items-center active:opacity-80"
+              >
+                <JournalThumb uri={item.photoUri} />
+                <View className="flex-1 pr-2">
+                  <Text className="font-body-bold text-base text-forest-900">
+                    {item.breedNameUk ?? item.breedName}
+                  </Text>
+                  <Text className="mt-1 font-body text-xs text-forest-500">
+                    {item.species === 'cat'
+                      ? t('breed.speciesCat')
+                      : t('breed.speciesDog')}
+                    {' · '}
+                    {new Date(item.createdAt).toLocaleString('uk-UA')}
+                  </Text>
+                </View>
+                <View className="rounded-full border border-forest-200 bg-forest-100 px-2.5 py-1">
+                  <Text className="font-body-bold text-[11px] text-forest-800">
+                    ~{Math.round(item.confidence * 100)}%
+                  </Text>
+                </View>
+              </Pressable>
               <View className="mt-2 flex-row justify-end">
                 <IconButton
                   name="trash-outline"

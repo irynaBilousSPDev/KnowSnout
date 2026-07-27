@@ -70,6 +70,14 @@ const uk: Dict = {
   'journal.breedsEmptyTitle': 'Поки немає перевірок породи',
   'journal.breedsEmptyBody':
     'Зроби фото або пошук у «Перевір → Порода» — запис з’явиться тут.',
+  'journal.plantDetailTitle': 'Рослина в журналі',
+  'journal.breedDetailTitle': 'Порода в журналі',
+  'journal.detailMissingTitle': 'Запис не знайдено',
+  'journal.detailMissingBody': 'Цього запису вже немає в журналі.',
+  'journal.noPhoto': 'Фото не збережено для цього запису',
+  'journal.openJournal': 'До журналу',
+  'journal.checkAnotherPlant': 'Перевірити ще рослину',
+  'journal.checkAnotherBreed': 'Визначити ще породу',
 
   'breed.title': 'Порода',
   'breed.subtitle':

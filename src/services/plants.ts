@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { MOCK_PHOTO_PLANT_ID, PLANTS_SEED } from '@/src/data/plantsSeed';
 import { env } from '@/src/lib/env';
+import { persistCheckPhoto } from '@/src/services/checkImages';
 import { supabase } from '@/src/services/supabase';
 import type {
   PlantCheckResult,
@@ -360,12 +361,20 @@ export async function listPlantHistory(): Promise<PlantHistoryItem[]> {
   }
 }
 
+export async function getPlantHistoryItem(
+  id: string,
+): Promise<PlantHistoryItem | null> {
+  const list = await listPlantHistory();
+  return list.find((item) => item.id === id) ?? null;
+}
+
 export async function savePlantCheck(input: {
   petId?: string | null;
   result: PlantCheckResult;
   queryText?: string;
   photoUri?: string | null;
-}): Promise<void> {
+}): Promise<PlantHistoryItem> {
+  const photoUri = await persistCheckPhoto(input.photoUri, 'plants');
   const localItem: PlantHistoryItem = {
     id: `local-plant-${Date.now()}`,
     query_text:
@@ -380,16 +389,16 @@ export async function savePlantCheck(input: {
     latin: input.result.plant.latin,
     notes: input.result.notes,
     confidence: input.result.confidence,
-    photo_uri: input.photoUri ?? null,
+    photo_uri: photoUri,
   };
   await appendLocalPlantHistory(localItem);
 
-  if (!supabase || input.result.plant.id === 'unknown') return;
+  if (!supabase || input.result.plant.id === 'unknown') return localItem;
   try {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) return localItem;
 
     const plantId = input.result.plant.id.startsWith('seed-')
       ? null
@@ -408,6 +417,7 @@ export async function savePlantCheck(input: {
   } catch {
     // Local history already saved.
   }
+  return localItem;
 }
 
 export function plantLevelTone(level: PlantToxicityLevel): {
