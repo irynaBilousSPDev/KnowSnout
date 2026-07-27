@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 import { ErrorState } from '@/src/components/ErrorState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -18,6 +18,7 @@ import {
   createBreedQuizRound,
   type BreedQuizRound,
 } from '@/src/services/breedQuiz';
+import { saveQuizSession } from '@/src/services/quizResults';
 import {
   enrichBreedFromWikidata,
   type BreedEnrichment,
@@ -39,6 +40,8 @@ export default function BreedQuizScreen() {
   const [sessionDone, setSessionDone] = useState(false);
   const [wiki, setWiki] = useState<BreedEnrichment | null>(null);
   const [wikiLoading, setWikiLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const savedRef = useRef(false);
 
   const loadRound = useCallback(
     async (
@@ -69,9 +72,29 @@ export default function BreedQuizScreen() {
     useCallback(() => {
       setScore(0);
       setRecentCorrectIds([]);
+      savedRef.current = false;
       void loadRound(species, [], 1);
     }, [loadRound, species]),
   );
+
+  const finishSession = async (finalScore: number) => {
+    setSessionDone(true);
+    if (savedRef.current) return;
+    savedRef.current = true;
+    setSaving(true);
+    try {
+      await saveQuizSession({
+        category: 'breed',
+        score: finalScore,
+        total: SESSION_ROUNDS,
+        species,
+      });
+    } catch {
+      savedRef.current = false;
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const onPickSpecies = (next: CompanionBreedSpecies) => {
     if (next === species) return;
@@ -79,6 +102,7 @@ export default function BreedQuizScreen() {
     setScore(0);
     setRecentCorrectIds([]);
     setSessionDone(false);
+    savedRef.current = false;
   };
 
   const onAnswer = (choiceId: string) => {
@@ -98,7 +122,7 @@ export default function BreedQuizScreen() {
 
   const onNext = () => {
     if (roundIndex >= SESSION_ROUNDS) {
-      setSessionDone(true);
+      void finishSession(score);
       return;
     }
     void loadRound(species, recentCorrectIds, roundIndex + 1);
@@ -108,6 +132,7 @@ export default function BreedQuizScreen() {
     setScore(0);
     setRecentCorrectIds([]);
     setSessionDone(false);
+    savedRef.current = false;
     void loadRound(species, [], 1);
   };
 
@@ -183,7 +208,15 @@ export default function BreedQuizScreen() {
             <Text className="mt-3 text-center font-body text-base text-forest-600">
               {t('quiz.sessionBody', { score, total: SESSION_ROUNDS })}
             </Text>
-            <View className="mt-6">
+            <Text className="mt-2 text-center font-body text-sm text-forest-500">
+              {saving ? t('quiz.saving') : t('quiz.savedToAccount')}
+            </Text>
+            <View className="mt-6 gap-3">
+              <PrimaryButton
+                label={t('quiz.viewResults')}
+                variant="secondary"
+                onPress={() => router.push('/(app)/quiz-results')}
+              />
               <PrimaryButton
                 label={t('quiz.playAgain')}
                 onPress={onRestart}

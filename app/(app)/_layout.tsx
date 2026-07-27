@@ -58,6 +58,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="quiz-results"
+        options={{
+          headerShown: true,
+          title: t('quiz.resultsTitle'),
+        }}
+      />
+      <Stack.Screen
         name="result"
         options={{
           headerShown: true,

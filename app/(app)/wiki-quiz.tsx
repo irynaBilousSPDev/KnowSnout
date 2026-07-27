@@ -1,5 +1,5 @@
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ErrorState } from '@/src/components/ErrorState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
+import { saveQuizSession } from '@/src/services/quizResults';
 import {
   createWikiQuizRound,
   type WikiQuizCategory,
@@ -41,6 +42,8 @@ export default function WikiQuizScreen() {
   const [roundIndex, setRoundIndex] = useState(0);
   const [avoid, setAvoid] = useState<string[]>([]);
   const [sessionDone, setSessionDone] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const savedRef = useRef(false);
 
   const loadRound = useCallback(
     async (index: number, skip: string[]) => {
@@ -66,9 +69,28 @@ export default function WikiQuizScreen() {
     useCallback(() => {
       setScore(0);
       setAvoid([]);
+      savedRef.current = false;
       void loadRound(1, []);
     }, [loadRound]),
   );
+
+  const finishSession = async (finalScore: number) => {
+    setSessionDone(true);
+    if (savedRef.current) return;
+    savedRef.current = true;
+    setSaving(true);
+    try {
+      await saveQuizSession({
+        category,
+        score: finalScore,
+        total: SESSION_ROUNDS,
+      });
+    } catch {
+      savedRef.current = false;
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const onAnswer = (choiceId: string) => {
     if (!round || pickedId) return;
@@ -79,7 +101,7 @@ export default function WikiQuizScreen() {
 
   const onNext = () => {
     if (roundIndex >= SESSION_ROUNDS) {
-      setSessionDone(true);
+      void finishSession(score);
       return;
     }
     void loadRound(roundIndex + 1, avoid);
@@ -89,6 +111,7 @@ export default function WikiQuizScreen() {
     setScore(0);
     setAvoid([]);
     setSessionDone(false);
+    savedRef.current = false;
     void loadRound(1, []);
   };
 
@@ -142,7 +165,15 @@ export default function WikiQuizScreen() {
             <Text className="mt-3 text-center font-body text-base text-forest-600">
               {t('quiz.sessionBody', { score, total: SESSION_ROUNDS })}
             </Text>
-            <View className="mt-6">
+            <Text className="mt-2 text-center font-body text-sm text-forest-500">
+              {saving ? t('quiz.saving') : t('quiz.savedToAccount')}
+            </Text>
+            <View className="mt-6 gap-3">
+              <PrimaryButton
+                label={t('quiz.viewResults')}
+                variant="secondary"
+                onPress={() => router.push('/(app)/quiz-results')}
+              />
               <PrimaryButton label={t('quiz.playAgain')} onPress={onRestart} />
             </View>
           </View>
