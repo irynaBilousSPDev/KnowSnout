@@ -14,9 +14,9 @@
 | Статус | Файл | Нотатка |
 |--|--|--|
 | зроблено (користувач) | `140000`…`210000` + stories | |
-| частково / **прогнати ще раз** | `20260321220000_plant_safety.sql` | була помилка policy already exists — файл уже з `drop policy if exists`; запусти знову в SQL Editor |
-| **прогнати** | `20260321230000_quiz_sessions.sql` | результати квізу + середній рейтинг в акаунті |
-| **прогнати** | `20260321231000_quiz_sessions_trivia.sql` | категорія Open Trivia DB (`animals_trivia`) |
+| зроблено (користувач, 2026-07-27) | `20260321220000_plant_safety.sql` | рослини / токсичність / історія |
+| зроблено (користувач, 2026-07-27) | `20260321230000_quiz_sessions.sql` | рейтинг квізу в акаунті |
+| зроблено (користувач, 2026-07-27) | `20260321231000_quiz_sessions_trivia.sql` | категорія Open Trivia |
 
 ## Архітектура вкладок (зафіксовано)
 
@@ -33,27 +33,19 @@
 | Ідея | Статус |
 |--|--|
 | Сканер корму | ✅ працює (`scan-food`) |
-| Plant safety | ✅ v1 екран; потрібен SQL seed |
-| Сканер породи + відкриті API | ✅ v1: пошук TheDogAPI/TheCatAPI; фото = mock → далі vision |
-| Хаб «Перевір» + «Журнал» | ✅ UI зроблено |
-| Vision breed ID (реальне фото) | ⏳ наступний крок після mock |
-| Розширити каталог рослин / paid Plant ID | ⏳ пізніше |
-| SnoutStories cloud client | ⏳ SQL є |
-| Домен + веб-хостинг | ✅ knowsnout.com на Vercel; демо-банер зник (Supabase env ок) |
-| Меню «Догляд»: годування · гра · вода | ⏳ ідея (див. PRODUCT_VISION) |
-| Квіз про тварин (Wikidata / Open Trivia DB / breed APIs) | ✅ вкладка Квіз + категорії; Wikidata SPARQL обов’язково |
+| Plant safety | ✅ v1 екран + SQL |
+| Квіз про тварин (Wikidata / Open Trivia DB / breed APIs) | ✅ вкладка + рейтинг; SQL sessions ✅ |
 
 ## Наступні кроки (порядок гнучкий)
 
-1. Прогнати `20260321220000_plant_safety.sql` (якщо ще ні) — журнал рослин у хмарі  
-2. Supabase Auth: Site URL + Redirect `https://knowsnout.com/**` (якщо ще ні)  
-3. Реальний breed photo ID (AI) → збагачення з TheDogAPI/TheCatAPI  
-4. SnoutStories: підключити клієнт до хмари (SQL уже є)  
-5. Розширити каталог рослин / paid Plant ID за потреби  
+1. Реальний breed photo ID (AI) → збагачення з TheDogAPI/TheCatAPI  
+2. Хаб «Догляд» (годування · гра · вода)  
+3. SnoutStories: підключити клієнт до хмари (SQL уже є)  
+4. Розширити каталог рослин / paid Plant ID за потреби  
 
 ## Як працюємо з ідеями
 
 - Пиши навіть одним рядком → агент **одразу** пише сюди / у `PRODUCT_VISION.md`.
 - Нічого не «губимо бо пізно».
 
-Останнє оновлення: 2026-07-27 — демо зникло на домені; веб живий.
+Останнє оновлення: 2026-07-27 — SQL plant_safety + quiz_sessions (+ trivia) підтверджено користувачем.
