@@ -118,17 +118,22 @@ function decode(value: string): string {
   }
 }
 
-function toRound(item: OtdbItem, index: number): TriviaQuizRound {
+function toRound(item: OtdbItem, index: number): TriviaQuizRound | null {
   const correct = decode(item.correct_answer);
   const incorrect = item.incorrect_answers.map(decode);
+  const prompt = decode(item.question);
+  // Drop obviously broken / empty payloads.
+  if (prompt.length < 8 || correct.length < 1 || incorrect.length < 2) {
+    return null;
+  }
   const labels = shuffle([correct, ...incorrect]).slice(0, 4);
+  if (labels.length < 4) return null;
   const choices = labels.map((label, i) => ({
     id: `c${i}`,
     label,
   }));
   const correctId =
     choices.find((c) => c.label === correct)?.id ?? choices[0]?.id ?? 'c0';
-  const prompt = decode(item.question);
   return {
     id: `otdb-${Date.now()}-${index}`,
     subject: decode(item.category || 'Animals'),
@@ -157,7 +162,10 @@ async function loadPool(): Promise<TriviaQuizRound[]> {
     if (json.response_code !== 0 || !json.results?.length) {
       throw new Error('opentdb empty');
     }
-    poolCache = json.results.map(toRound);
+    poolCache = json.results
+      .map(toRound)
+      .filter((r): r is TriviaQuizRound => Boolean(r));
+    if (poolCache.length < 4) throw new Error('opentdb thin');
   } catch {
     poolCache = FALLBACK_ROUNDS;
   }

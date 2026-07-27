@@ -152,7 +152,7 @@ const FALLBACK_GROUP: GroupRow[] = [
   },
   {
     animalId: 'Q146',
-    animalLabel: 'домашній кіт',
+    animalLabel: 'кіт',
     groupId: 'Q7377',
     groupLabel: 'ссавці',
     description: null,
@@ -165,38 +165,66 @@ const FALLBACK_GROUP: GroupRow[] = [
     description: null,
   },
   {
-    animalId: 'Q2092297',
-    animalLabel: 'курка',
-    groupId: 'Q5113',
-    groupLabel: 'птахи',
+    animalId: 'Q7368',
+    animalLabel: 'вівця',
+    groupId: 'Q7377',
+    groupLabel: 'ссавці',
     description: null,
   },
   {
-    animalId: 'Q25326',
-    animalLabel: 'орел',
-    groupId: 'Q5113',
-    groupLabel: 'птахи',
+    animalId: 'Q9394',
+    animalLabel: 'кріль',
+    groupId: 'Q7377',
+    groupLabel: 'ссавці',
     description: null,
   },
   {
-    animalId: 'Q32059',
-    animalLabel: 'ящірка',
-    groupId: 'Q10811',
-    groupLabel: 'плазуни',
-    description: null,
-  },
-  {
-    animalId: 'Q169330',
+    animalId: 'Q123141',
     animalLabel: 'золота рибка',
     groupId: 'Q152',
     groupLabel: 'риби',
     description: null,
   },
   {
-    animalId: 'Q1134124',
-    animalLabel: 'лосось',
+    animalId: 'Q188879',
+    animalLabel: 'атлантичний лосось',
     groupId: 'Q152',
     groupLabel: 'риби',
+    description: null,
+  },
+  {
+    animalId: 'Q2102',
+    animalLabel: 'змія',
+    groupId: 'Q10811',
+    groupLabel: 'плазуни',
+    description: null,
+  },
+  {
+    animalId: 'Q168745',
+    animalLabel: 'нільський крокодил',
+    groupId: 'Q10811',
+    groupLabel: 'плазуни',
+    description: null,
+  },
+  {
+    animalId: 'Q121076461',
+    animalLabel: 'домашня курка',
+    groupId: 'Q5113',
+    groupLabel: 'птахи',
+    description: null,
+  },
+  {
+    animalId: 'Q16876322',
+    animalLabel: 'крижень',
+    groupId: 'Q5113',
+    groupLabel: 'птахи',
+    description: null,
+  },
+  {
+    animalId: 'Q29907051',
+    animalLabel: 'беркут',
+    groupId: 'Q5113',
+    groupLabel: 'птахи',
     description: null,
   },
 ];
@@ -213,7 +241,8 @@ LIMIT 120
 `;
 
 /**
- * Curated animal→group pairs for correctness; labels/descriptions from Wikidata.
+ * Allowlisted animal QIDs only (verified). Must also be instance/subclass of animal (Q729).
+ * Wrong QIDs previously caused questions like "vegetarianism → reptiles".
  */
 const GROUP_QUERY = `
 SELECT ?animal ?animalLabel ?animalDescription ?group ?groupLabel WHERE {
@@ -223,17 +252,30 @@ SELECT ?animal ?animalLabel ?animalDescription ?group ?groupLabel WHERE {
     (wd:Q726 wd:Q7377)
     (wd:Q42569 wd:Q7377)
     (wd:Q7368 wd:Q7377)
-    (wd:Q83332 wd:Q7377)
-    (wd:Q2092297 wd:Q5113)
-    (wd:Q25326 wd:Q5113)
-    (wd:Q32059 wd:Q10811)
-    (wd:Q83364 wd:Q10811)
-    (wd:Q169330 wd:Q152)
-    (wd:Q1134124 wd:Q152)
+    (wd:Q9394 wd:Q7377)
+    (wd:Q121076461 wd:Q5113)
+    (wd:Q16876322 wd:Q5113)
+    (wd:Q29907051 wd:Q5113)
+    (wd:Q2102 wd:Q10811)
+    (wd:Q168745 wd:Q10811)
+    (wd:Q123141 wd:Q152)
+    (wd:Q188879 wd:Q152)
   }
+  ?animal wdt:P31/wdt:P279* wd:Q729 .
   SERVICE wikibase:label { bd:serviceParam wikibase:language "uk,en". }
 }
 `;
+
+const NONSENSE_LABEL_RE =
+  /vegetarian|вегетар|веган|diet|дієт|list|список|red list|червон|concept|понятт|ideology|ідеолог|religion|реліг|city|місто|ulna|generalitat/i;
+
+function isPlausibleAnimalLabel(label: string, description?: string | null) {
+  const text = `${label} ${description ?? ''}`.trim();
+  if (text.length < 2 || text.length > 60) return false;
+  if (label.startsWith('Q')) return false;
+  if (NONSENSE_LABEL_RE.test(text)) return false;
+  return true;
+}
 
 async function loadOriginRows(): Promise<OriginRow[]> {
   if (originCache && originCache.length >= 8) return originCache;
@@ -247,7 +289,8 @@ async function loadOriginRows(): Promise<OriginRow[]> {
       const countryId = b.country?.value;
       const countryLabel = b.countryLabel?.value;
       if (!breedId || !breedLabel || !countryId || !countryLabel) continue;
-      if (breedLabel.startsWith('Q') || countryLabel.startsWith('Q')) continue;
+      if (!isPlausibleAnimalLabel(breedLabel)) continue;
+      if (countryLabel.startsWith('Q')) continue;
       const key = `${qidFromUri(breedId)}|${qidFromUri(countryId)}`;
       if (seen.has(key)) continue;
       seen.add(key);
@@ -276,8 +319,10 @@ async function loadGroupRows(): Promise<GroupRow[]> {
       const animalLabel = b.animalLabel?.value;
       const groupId = b.group?.value;
       const groupLabel = b.groupLabel?.value;
+      const description = b.animalDescription?.value ?? null;
       if (!animalId || !animalLabel || !groupId || !groupLabel) continue;
-      if (animalLabel.startsWith('Q') || groupLabel.startsWith('Q')) continue;
+      if (!isPlausibleAnimalLabel(animalLabel, description)) continue;
+      if (groupLabel.startsWith('Q')) continue;
       const key = qidFromUri(animalId);
       if (seen.has(key)) continue;
       seen.add(key);
@@ -286,9 +331,10 @@ async function loadGroupRows(): Promise<GroupRow[]> {
         animalLabel,
         groupId: qidFromUri(groupId),
         groupLabel,
-        description: b.animalDescription?.value ?? null,
+        description,
       });
     }
+    // If SPARQL filtered everything oddly, use verified fallback.
     groupCache = rows.length >= 6 ? rows : FALLBACK_GROUP;
   } catch {
     groupCache = FALLBACK_GROUP;

@@ -253,11 +253,12 @@ async function loadDogCatalog(): Promise<QuizBreed[]> {
     const mapped: QuizBreed[] = [];
     for (const b of data) {
       const imageUrl =
-        b.image?.url ??
+        clean(b.image?.url) ??
         (b.reference_image_id
           ? `https://cdn2.thedogapi.com/images/${b.reference_image_id}.jpg`
           : null);
-      if (!imageUrl) continue;
+      // Prefer rows that include official image object (higher trust).
+      if (!imageUrl || !b.image?.url) continue;
       const temperament = clean(b.temperament);
       const origin = clean(b.origin);
       const bredFor = clean(b.bred_for);
@@ -307,11 +308,11 @@ async function loadCatCatalog(): Promise<QuizBreed[]> {
     const mapped: QuizBreed[] = [];
     for (const b of data) {
       const imageUrl =
-        b.image?.url ??
+        clean(b.image?.url) ??
         (b.reference_image_id
           ? `https://cdn2.thecatapi.com/images/${b.reference_image_id}.jpg`
           : null);
-      if (!imageUrl) continue;
+      if (!imageUrl || !b.image?.url) continue;
       const temperament = clean(b.temperament);
       const origin = clean(b.origin);
       const description = clean(b.description);
@@ -352,41 +353,15 @@ export async function loadQuizCatalog(
   return species === 'dog' ? loadDogCatalog() : loadCatCatalog();
 }
 
-async function fetchFreshImage(breed: QuizBreed): Promise<string> {
-  try {
-    if (breed.species === 'dog') {
-      const numericId = breed.id.replace(/^dog-/, '');
-      const res = await fetch(
-        `https://api.thedogapi.com/v1/images/search?breed_ids=${numericId}&limit=1`,
-        { headers: { 'User-Agent': 'KnowSnout/1.0 (breed quiz)' } },
-      );
-      if (res.ok) {
-        const data = (await res.json()) as { url?: string }[];
-        if (data[0]?.url) return data[0].url;
-      }
-    } else {
-      const catId = breed.id.replace(/^cat-/, '');
-      const res = await fetch(
-        `https://api.thecatapi.com/v1/images/search?breed_ids=${catId}&limit=1`,
-        { headers: { 'User-Agent': 'KnowSnout/1.0 (breed quiz)' } },
-      );
-      if (res.ok) {
-        const data = (await res.json()) as { url?: string }[];
-        if (data[0]?.url) return data[0].url;
-      }
-    }
-  } catch {
-    // Fall back to catalog image.
-  }
-  return breed.imageUrl;
-}
-
 export async function createBreedQuizRound(
   species: CompanionBreedSpecies,
   avoidCorrectIds: string[] = [],
 ): Promise<BreedQuizRound> {
   const catalog = await loadQuizCatalog(species);
-  const informative = informativePool(catalog);
+  const withImage = catalog.filter((b) => Boolean(b.imageUrl));
+  const informative = informativePool(
+    withImage.length >= 8 ? withImage : catalog,
+  );
   const base =
     informative.filter((b) => !avoidCorrectIds.includes(b.id)).length >= 4
       ? informative.filter((b) => !avoidCorrectIds.includes(b.id))
@@ -394,7 +369,6 @@ export async function createBreedQuizRound(
         ? informative
         : catalog;
 
-  // Bias toward richer profiles for the correct answer (learn something).
   const ranked = [...base].sort((a, b) => b.richness - a.richness);
   const top = ranked.slice(0, Math.max(12, Math.floor(ranked.length * 0.6)));
   const correct = pickDistinct(top.length >= 1 ? top : ranked, 1)[0];
@@ -413,7 +387,8 @@ export async function createBreedQuizRound(
   }
 
   const picks = [correct, ...distractors].slice(0, 4);
-  const imageUrl = await fetchFreshImage(correct);
+  // Always the breed's official catalog image — never an untagged random photo.
+  const imageUrl = correct.imageUrl;
   const choices = shuffle(picks.map((b) => ({ id: b.id, name: b.name })));
 
   return {
