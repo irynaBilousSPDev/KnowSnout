@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
   FlatList,
+  Image,
   Pressable,
   RefreshControl,
   Text,
@@ -23,14 +24,18 @@ import {
 } from '@/src/constants/analysis';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
+import { isNativeSafeImageUri } from '@/src/lib/image';
 import { setPendingAnalysis } from '@/src/lib/resultStore';
 import {
   listBreedHistory,
   type BreedHistoryItem,
 } from '@/src/services/breedId';
 import { listPets } from '@/src/services/pets';
+import {
+  listPlantHistory,
+  type PlantHistoryItem,
+} from '@/src/services/plants';
 import { deleteScan, listScans } from '@/src/services/scans';
-import { supabase } from '@/src/services/supabase';
 import { brand } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 import type { PetSpecies, ScanRow } from '@/src/types/scan';
@@ -38,18 +43,22 @@ import type { PetSpecies, ScanRow } from '@/src/types/scan';
 type JournalKind = 'food' | 'plant' | 'breed';
 type FoodFilter = 'all' | PetSpecies;
 
-type PlantHistoryItem = {
-  id: string;
-  query_text: string | null;
-  for_species: string;
-  level: string;
-  created_at: string;
-};
-
 function speciesLabel(species?: PetSpecies | null) {
   if (species === 'dog') return t('history.speciesDog');
   if (species === 'cat') return t('history.speciesCat');
   return null;
+}
+
+function JournalThumb({ uri }: { uri?: string | null }) {
+  if (!uri || !isNativeSafeImageUri(uri)) return null;
+  return (
+    <Image
+      source={{ uri }}
+      className="mr-3 h-16 w-16 rounded-xl bg-forest-100"
+      resizeMode="cover"
+      accessibilityIgnoresInvertColors
+    />
+  );
 }
 
 function petsForScan(scan: ScanRow, pets: PetRow[]) {
@@ -70,18 +79,7 @@ function petsForScan(scan: ScanRow, pets: PetRow[]) {
 }
 
 async function listPlantChecks(): Promise<PlantHistoryItem[]> {
-  if (!supabase) return [];
-  try {
-    const { data, error } = await supabase
-      .from('plant_checks')
-      .select('id, query_text, for_species, level, created_at')
-      .order('created_at', { ascending: false })
-      .limit(50);
-    if (error || !data) return [];
-    return data as PlantHistoryItem[];
-  } catch {
-    return [];
-  }
+  return listPlantHistory();
 }
 
 export default function JournalScreen() {
@@ -249,6 +247,7 @@ export default function JournalScreen() {
                   }}
                   className="flex-row items-center justify-between active:opacity-80"
                 >
+                  <JournalThumb uri={item.image_path} />
                   <View className="flex-1 pr-3">
                     <Text className="font-body-bold text-base text-forest-900">
                       {item.product_name}
@@ -313,14 +312,21 @@ export default function JournalScreen() {
             </Section>
           }
           renderItem={({ item }) => (
-            <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
-              <Text className="font-body-bold text-base text-forest-900">
-                {item.query_text ?? t('plants.title')}
-              </Text>
-              <Text className="mt-1 font-body text-xs text-forest-500">
-                {item.for_species} · {item.level} ·{' '}
-                {new Date(item.created_at).toLocaleString('uk-UA')}
-              </Text>
+            <View className="mb-3 flex-row items-center rounded-2xl border border-forest-100 bg-white px-4 py-4">
+              <JournalThumb uri={item.photo_uri} />
+              <View className="flex-1">
+                <Text className="font-body-bold text-base text-forest-900">
+                  {item.name_uk ?? item.query_text ?? t('plants.title')}
+                </Text>
+                <Text className="mt-1 font-body text-xs text-forest-500">
+                  {item.for_species === 'cat'
+                    ? t('plants.speciesCat')
+                    : t('plants.speciesDog')}
+                  {' · '}
+                  {item.level} ·{' '}
+                  {new Date(item.created_at).toLocaleString('uk-UA')}
+                </Text>
+              </View>
             </View>
           )}
         />
@@ -351,14 +357,21 @@ export default function JournalScreen() {
             </Section>
           }
           renderItem={({ item }) => (
-            <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
-              <Text className="font-body-bold text-base text-forest-900">
-                {item.breedNameUk ?? item.breedName}
-              </Text>
-              <Text className="mt-1 font-body text-xs text-forest-500">
-                {item.species} · ~{Math.round(item.confidence * 100)}% ·{' '}
-                {new Date(item.createdAt).toLocaleString('uk-UA')}
-              </Text>
+            <View className="mb-3 flex-row items-center rounded-2xl border border-forest-100 bg-white px-4 py-4">
+              <JournalThumb uri={item.photoUri} />
+              <View className="flex-1">
+                <Text className="font-body-bold text-base text-forest-900">
+                  {item.breedNameUk ?? item.breedName}
+                </Text>
+                <Text className="mt-1 font-body text-xs text-forest-500">
+                  {item.species === 'cat'
+                    ? t('breed.speciesCat')
+                    : t('breed.speciesDog')}
+                  {' · ~'}
+                  {Math.round(item.confidence * 100)}% ·{' '}
+                  {new Date(item.createdAt).toLocaleString('uk-UA')}
+                </Text>
+              </View>
             </View>
           )}
         />

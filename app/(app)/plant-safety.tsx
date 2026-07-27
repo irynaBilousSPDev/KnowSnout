@@ -15,7 +15,6 @@ import { LoadingState } from '@/src/components/LoadingState';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
-import { env } from '@/src/lib/env';
 import { guessMimeType, uriToBase64 } from '@/src/lib/image';
 import { getPet } from '@/src/services/pets';
 import {
@@ -142,10 +141,19 @@ export default function PlantSafetyScreen() {
     setSuggestions(hits);
   };
 
-  const applyResult = async (next: PlantCheckResult, queryText?: string) => {
+  const applyResult = async (
+    next: PlantCheckResult,
+    queryText?: string,
+    photo?: string | null,
+  ) => {
     setResult(next);
     setSuggestions([]);
-    await savePlantCheck({ petId, result: next, queryText });
+    await savePlantCheck({
+      petId,
+      result: next,
+      queryText,
+      photoUri: photo ?? photoUri,
+    });
   };
 
   const onCheckName = async () => {
@@ -188,7 +196,7 @@ export default function PlantSafetyScreen() {
         species,
       });
       setQuery(hit.plant.name_uk);
-      await applyResult(hit, hit.matchedQuery);
+      await applyResult(hit, hit.matchedQuery, photoUri);
     } catch (err) {
       setActionError(
         err instanceof Error ? err.message : t('plants.checkError'),
@@ -296,15 +304,17 @@ export default function PlantSafetyScreen() {
         <Text className="mb-2 mt-6 font-body-bold text-sm text-forest-700">
           {t('plants.photoLabel')}
         </Text>
-        {env.useMockAi ? (
-          <Text className="mb-3 font-body text-sm leading-5 text-forest-500">
-            {t('plants.mockHint')}
-          </Text>
-        ) : null}
+        <Text className="mb-3 font-body text-sm leading-5 text-forest-500">
+          {t('plants.mockHint')}
+        </Text>
         <PhotoAttachField
           label={t('plants.photoAttach')}
           uri={photoUri}
-          onChange={setPhotoUri}
+          onChange={(uri) => {
+            setPhotoUri(uri);
+            setActionError(null);
+            setResult(null);
+          }}
           height={180}
           filePrefix="plant"
           emptyHint={t('plants.photoEmpty')}
@@ -312,9 +322,9 @@ export default function PlantSafetyScreen() {
         <View className="mt-3">
           <PrimaryButton
             label={t('plants.checkPhoto')}
-            variant="secondary"
             onPress={() => void onCheckPhoto()}
-            disabled={busy}
+            disabled={busy || !photoUri}
+            loading={busy}
           />
         </View>
 

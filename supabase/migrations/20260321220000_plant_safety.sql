@@ -48,22 +48,27 @@ alter table public.plants enable row level security;
 alter table public.plant_toxicity enable row level security;
 alter table public.plant_checks enable row level security;
 
+drop policy if exists "Authenticated can read plants" on public.plants;
 create policy "Authenticated can read plants"
   on public.plants for select to authenticated
   using (true);
 
+drop policy if exists "Authenticated can read plant toxicity" on public.plant_toxicity;
 create policy "Authenticated can read plant toxicity"
   on public.plant_toxicity for select to authenticated
   using (true);
 
+drop policy if exists "Users can read own plant checks" on public.plant_checks;
 create policy "Users can read own plant checks"
   on public.plant_checks for select to authenticated
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can insert own plant checks" on public.plant_checks;
 create policy "Users can insert own plant checks"
   on public.plant_checks for insert to authenticated
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can delete own plant checks" on public.plant_checks;
 create policy "Users can delete own plant checks"
   on public.plant_checks for delete to authenticated
   using (auth.uid() = user_id);

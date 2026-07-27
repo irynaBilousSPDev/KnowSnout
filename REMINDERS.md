@@ -14,7 +14,7 @@
 | Статус | Файл | Нотатка |
 |--|--|--|
 | зроблено (користувач) | `140000`…`210000` + stories | |
-| **нагадати** | `20260321220000_plant_safety.sql` | кеш рослин + історія перевірок у Журналі |
+| частково / **прогнати ще раз** | `20260321220000_plant_safety.sql` | була помилка policy already exists — файл уже з `drop policy if exists`; запусти знову в SQL Editor |
 
 ## Архітектура вкладок (зафіксовано)
 
@@ -36,18 +36,19 @@
 | Vision breed ID (реальне фото) | ⏳ наступний крок після mock |
 | Розширити каталог рослин / paid Plant ID | ⏳ пізніше |
 | SnoutStories cloud client | ⏳ SQL є |
-| Домен + веб-хостинг | ⚙️ `knowsnout.com` (поки Hostinger parked) → Vercel + DNS; репо KnowSnout |
+| Домен + веб-хостинг | ✅ knowsnout.com на Vercel; демо-банер зник (Supabase env ок) |
 
 ## Наступні кроки (порядок гнучкий)
 
-1. Прогнати `plant_safety` SQL  
-2. Реальний breed photo ID (AI) → збагачення з TheDogAPI/TheCatAPI  
-3. SnoutStories бекенд  
-4. Домен / веб-прев’ю  
+1. Прогнати `20260321220000_plant_safety.sql` (якщо ще ні) — журнал рослин у хмарі  
+2. Supabase Auth: Site URL + Redirect `https://knowsnout.com/**` (якщо ще ні)  
+3. Реальний breed photo ID (AI) → збагачення з TheDogAPI/TheCatAPI  
+4. SnoutStories: підключити клієнт до хмари (SQL уже є)  
+5. Розширити каталог рослин / paid Plant ID за потреби  
 
 ## Як працюємо з ідеями
 
 - Пиши навіть одним рядком → агент **одразу** пише сюди / у `PRODUCT_VISION.md`.
 - Нічого не «губимо бо пізно».
 
-Останнє оновлення: 2026-07-21 — KnowSnout + Перевір/Журнал + breed v1.
+Останнє оновлення: 2026-07-27 — демо зникло на домені; веб живий.

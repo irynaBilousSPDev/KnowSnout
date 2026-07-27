@@ -10,6 +10,7 @@ const uk: Dict = {
   'common.error': 'Щось пішло не так',
   'common.save': 'Зберегти',
   'common.cancel': 'Скасувати',
+  'common.back': 'Назад',
   'photo.gallery': 'З галереї',
   'photo.camera': 'Зняти фото',
   'photo.remove': 'Прибрати фото',
@@ -65,9 +66,10 @@ const uk: Dict = {
   'journal.goBreed': 'Визначити породу',
   'journal.plantsEmptyTitle': 'Поки немає перевірок рослин',
   'journal.plantsEmptyBody':
-    'Після перевірки вазона запис з’явиться тут (потрібен SQL plant_safety).',
+    'Зроби перевірку вазона — запис з’явиться тут автоматично.',
   'journal.breedsEmptyTitle': 'Поки немає перевірок породи',
-  'journal.breedsEmptyBody': 'Зроби фото або пошук у «Перевір → Порода».',
+  'journal.breedsEmptyBody':
+    'Зроби фото або пошук у «Перевір → Порода» — запис з’явиться тут.',
 
   'breed.title': 'Порода',
   'breed.subtitle':
@@ -86,7 +88,8 @@ const uk: Dict = {
   'breed.checkError': 'Не вдалося визначити породу',
   'breed.confidence': 'Впевненість ~{pct}%',
   'breed.mockHint':
-    'Mock: фото зараз показує демо-породу без витрат на vision API.',
+    'Після фото натисни «Визначити з фото» — збережемо підказку в Журнал.',
+  'breed.photoTapHint': 'Спочатку обери кіт/собака, потім фото.',
   'breed.disclaimer':
     'Суміші й схожі породи часті. Це інформаційна підказка з відкритих баз + AI пізніше — не офіційний родовід.',
 
@@ -377,7 +380,8 @@ const uk: Dict = {
   'plants.forSpecies': 'Вердикт для: {species}',
   'plants.confidence': 'впевненість ~{pct}%',
   'plants.mockHint':
-    'Mock AI: фото зараз демонструє приклад (потос), без витрат OpenAI.',
+    'Після фото натисни «Розпізнати з фото» — вердикт збережеться в Журнал.',
+  'plants.photoTapHint': 'Велика кнопка нижче після фото.',
   'plants.disclaimer':
     'Інформаційно, не діагноз вета. Якщо тварина з’їла рослину — негайно до клініки / гарячої лінії отрут. Каталог неповний.',
 

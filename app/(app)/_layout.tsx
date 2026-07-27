@@ -21,7 +21,8 @@ export default function AppLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: brand.surface },
-        headerBackTitle: '',
+        headerBackTitle: 'Назад',
+        headerBackButtonDisplayMode: 'minimal',
         headerTintColor: brand.ink,
         headerStyle: { backgroundColor: brand.surface },
         headerShadowVisible: false,

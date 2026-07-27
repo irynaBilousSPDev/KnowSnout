@@ -12,7 +12,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
-import { env } from '@/src/lib/env';
 import { uriToBase64 } from '@/src/lib/image';
 import {
   identifyBreedFromPhoto,
@@ -166,15 +165,17 @@ export default function BreedScanScreen() {
         <Text className="mb-2 mt-4 font-body-bold text-sm text-forest-700">
           {t('breed.photoLabel')}
         </Text>
-        {env.useMockAi ? (
-          <Text className="mb-3 font-body text-sm leading-5 text-forest-500">
-            {t('breed.mockHint')}
-          </Text>
-        ) : null}
+        <Text className="mb-3 font-body text-sm leading-5 text-forest-500">
+          {t('breed.photoTapHint')} {t('breed.mockHint')}
+        </Text>
         <PhotoAttachField
           label={t('breed.photoAttach')}
           uri={photoUri}
-          onChange={setPhotoUri}
+          onChange={(uri) => {
+            setPhotoUri(uri);
+            setError(null);
+            setResult(null);
+          }}
           height={180}
           filePrefix="breed"
           emptyHint={t('breed.photoEmpty')}
@@ -183,7 +184,8 @@ export default function BreedScanScreen() {
           <PrimaryButton
             label={t('breed.checkPhoto')}
             onPress={() => void onPhoto()}
-            disabled={busy}
+            disabled={busy || !photoUri}
+            loading={busy}
           />
         </View>
 

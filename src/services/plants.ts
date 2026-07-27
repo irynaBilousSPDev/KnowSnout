@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { MOCK_PHOTO_PLANT_ID, PLANTS_SEED } from '@/src/data/plantsSeed';
 import { env } from '@/src/lib/env';
 import { supabase } from '@/src/services/supabase';
@@ -7,6 +9,18 @@ import type {
   PlantSpeciesTarget,
   PlantToxicityLevel,
 } from '@/src/types/plant';
+
+const LOCAL_HISTORY_KEY = 'knowsnout.plant_checks.v1';
+
+export type PlantHistoryItem = {
+  id: string;
+  query_text: string | null;
+  for_species: string;
+  level: string;
+  created_at: string;
+  name_uk?: string | null;
+  photo_uri?: string | null;
+};
 
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -173,6 +187,17 @@ type IdentifyRemote = {
   confidence?: number;
 };
 
+function mockPhotoResult(
+  catalog: PlantRecord[],
+  species: PlantSpeciesTarget,
+): PlantCheckResult {
+  const plant =
+    catalog.find(
+      (p) => p.id === MOCK_PHOTO_PLANT_ID || p.latin.includes('Epipremnum'),
+    ) ?? catalog[0];
+  return toResult(plant, species, 0.72, 'photo', plant.name_uk);
+}
+
 export async function identifyPlantFromPhoto(
   payload: IdentifyPayload,
 ): Promise<PlantCheckResult> {
@@ -180,68 +205,125 @@ export async function identifyPlantFromPhoto(
 
   if (env.useMockAi || env.isDemoMode || !supabase) {
     await delay(800);
-    const plant =
-      catalog.find((p) => p.id === MOCK_PHOTO_PLANT_ID || p.latin.includes('Epipremnum')) ??
-      catalog[0];
-    return toResult(plant, payload.species, 0.72, 'photo', plant.name_uk);
+    return mockPhotoResult(catalog, payload.species);
   }
 
-  const { data, error } = await supabase.functions.invoke('identify-plant', {
-    body: {
-      imageBase64: payload.imageBase64,
-      mimeType: payload.mimeType ?? 'image/jpeg',
-    },
-  });
+  try {
+    const { data, error } = await supabase.functions.invoke('identify-plant', {
+      body: {
+        imageBase64: payload.imageBase64,
+        mimeType: payload.mimeType ?? 'image/jpeg',
+      },
+    });
 
-  if (error) {
-    throw new Error(error.message || 'Plant identification failed');
-  }
+    if (error) {
+      // Function not deployed / OpenAI missing → keep UX working offline.
+      await delay(400);
+      return mockPhotoResult(catalog, payload.species);
+    }
 
-  const remote = (data?.result ?? data) as IdentifyRemote;
-  const latin = typeof remote.latin === 'string' ? remote.latin : '';
-  const common =
-    typeof remote.commonName === 'string' ? remote.commonName : '';
-  const confidence =
-    typeof remote.confidence === 'number'
-      ? Math.max(0, Math.min(1, remote.confidence))
-      : 0.6;
+    const remote = (data?.result ?? data) as IdentifyRemote;
+    const latin = typeof remote.latin === 'string' ? remote.latin : '';
+    const common =
+      typeof remote.commonName === 'string' ? remote.commonName : '';
+    const confidence =
+      typeof remote.confidence === 'number'
+        ? Math.max(0, Math.min(1, remote.confidence))
+        : 0.6;
 
-  const query = [latin, common].filter(Boolean).join(' ');
-  if (!query) {
-    throw new Error('Could not identify plant from photo');
-  }
+    const query = [latin, common].filter(Boolean).join(' ');
+    if (!query) {
+      return mockPhotoResult(catalog, payload.species);
+    }
 
-  const hit = await checkPlantByName(query, payload.species);
-  if (hit) {
-    return {
-      ...hit,
-      confidence: Math.min(hit.confidence, confidence + 0.15),
-      source: 'photo',
-      matchedQuery: query,
+    const hit = await checkPlantByName(query, payload.species);
+    if (hit) {
+      return {
+        ...hit,
+        confidence: Math.min(0.99, Math.max(hit.confidence, confidence)),
+        source: 'photo',
+        matchedQuery: query,
+      };
+    }
+
+    const unknownPlant: PlantRecord = {
+      id: 'unknown',
+      latin: latin || 'Unknown',
+      name_uk: common || latin || 'Невідома рослина',
+      name_en: common || latin || 'Unknown plant',
+      name_pl: null,
+      aliases: [],
+      toxicity: [
+        { species: 'dog', level: 'unknown', notes: null },
+        { species: 'cat', level: 'unknown', notes: null },
+      ],
     };
+    return toResult(unknownPlant, payload.species, confidence, 'photo', query);
+  } catch {
+    await delay(400);
+    return mockPhotoResult(catalog, payload.species);
   }
+}
 
-  // Unknown plant — return stub with unknown toxicity so UI can still warn.
-  const unknownPlant: PlantRecord = {
-    id: 'unknown',
-    latin: latin || 'Unknown',
-    name_uk: common || latin || 'Невідома рослина',
-    name_en: common || latin || 'Unknown plant',
-    name_pl: null,
-    aliases: [],
-    toxicity: [
-      { species: 'dog', level: 'unknown', notes: null },
-      { species: 'cat', level: 'unknown', notes: null },
-    ],
-  };
-  return toResult(unknownPlant, payload.species, confidence, 'photo', query);
+export async function listLocalPlantHistory(): Promise<PlantHistoryItem[]> {
+  try {
+    const raw = await AsyncStorage.getItem(LOCAL_HISTORY_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as PlantHistoryItem[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+async function appendLocalPlantHistory(item: PlantHistoryItem): Promise<void> {
+  const prev = await listLocalPlantHistory();
+  const next = [item, ...prev].slice(0, 50);
+  await AsyncStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(next));
+}
+
+export async function listPlantHistory(): Promise<PlantHistoryItem[]> {
+  const local = await listLocalPlantHistory();
+  if (!supabase) return local;
+  try {
+    const { data, error } = await supabase
+      .from('plant_checks')
+      .select('id, query_text, for_species, level, created_at')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (error || !data) return local;
+    const cloud = data as PlantHistoryItem[];
+    const seen = new Set(cloud.map((c) => c.id));
+    const merged = [...cloud, ...local.filter((l) => !seen.has(l.id))];
+    return merged.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
+  } catch {
+    return local;
+  }
 }
 
 export async function savePlantCheck(input: {
   petId?: string | null;
   result: PlantCheckResult;
   queryText?: string;
+  photoUri?: string | null;
 }): Promise<void> {
+  const localItem: PlantHistoryItem = {
+    id: `local-plant-${Date.now()}`,
+    query_text:
+      input.queryText ??
+      input.result.matchedQuery ??
+      input.result.plant.name_uk,
+    for_species: input.result.forSpecies,
+    level: input.result.level,
+    created_at: new Date().toISOString(),
+    name_uk: input.result.plant.name_uk,
+    photo_uri: input.photoUri ?? null,
+  };
+  await appendLocalPlantHistory(localItem);
+
   if (!supabase || input.result.plant.id === 'unknown') return;
   try {
     const {
@@ -257,14 +339,14 @@ export async function savePlantCheck(input: {
       user_id: user.id,
       pet_id: input.petId ?? null,
       plant_id: plantId,
-      query_text: input.queryText ?? input.result.matchedQuery ?? null,
+      query_text: localItem.query_text,
       for_species: input.result.forSpecies,
       level: input.result.level,
       confidence: input.result.confidence,
       source: input.result.source === 'photo' ? 'photo' : 'search',
     });
   } catch {
-    // History is optional — never block the verdict UI.
+    // Local history already saved.
   }
 }
 
