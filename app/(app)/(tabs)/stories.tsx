@@ -354,8 +354,14 @@ export default function StoriesScreen() {
         />
         <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
           <Text className="font-body-medium text-sm text-forest-800">
-            {filter === 'mine' ? t('stories.mineHint') : t('stories.feedNote')}
+            {t('stories.feedNote')}
           </Text>
+        </View>
+        <View className="mt-3">
+          <PrimaryButton
+            label={t('stories.addPost')}
+            onPress={openCompose}
+          />
         </View>
         <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
           <Text className="font-body-medium text-sm text-forest-800">
@@ -391,14 +397,6 @@ export default function StoriesScreen() {
             />
           </View>
         </View>
-        {filter === 'mine' ? (
-          <View className="mt-3">
-            <PrimaryButton
-              label={t('stories.addPost')}
-              onPress={openCompose}
-            />
-          </View>
-        ) : null}
       </View>
 
       {loading ? (
@@ -425,12 +423,18 @@ export default function StoriesScreen() {
             />
           }
           ListEmptyComponent={
-            <View className="mt-16 items-center px-8">
+            <View className="mt-10 items-center px-8">
               <Text className="text-center font-body text-forest-600">
                 {filter === 'mine'
                   ? t('stories.emptyMine')
                   : t('stories.emptyFilter')}
               </Text>
+              <View className="mt-4 w-full">
+                <PrimaryButton
+                  label={t('stories.addPost')}
+                  onPress={openCompose}
+                />
+              </View>
             </View>
           }
           renderItem={({ item }) => (
