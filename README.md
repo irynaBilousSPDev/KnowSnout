@@ -5,6 +5,7 @@ Cross-platform pet care app (food scan · plants · breed · care) for **Android
 - **Site:** https://knowsnout.com/
 - **GitHub:** https://github.com/irynaBilousSPDev/KnowSnout.git
 - Brand: [`BRANDBOOK.md`](./BRANDBOOK.md) · vision: [`PRODUCT_VISION.md`](./PRODUCT_VISION.md)
+- Third-party APIs / attribution: [`DATA_SOURCES.md`](./DATA_SOURCES.md) (`src/data/dataSources.ts`)
 
 > **Note:** Targets **Expo SDK 54** for Expo Go compatibility.
 
