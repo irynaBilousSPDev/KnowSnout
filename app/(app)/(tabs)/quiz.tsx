@@ -19,6 +19,7 @@ import {
   playedQuizToday,
   type QuizStreakState,
 } from '@/src/services/quizStreak';
+import { prefetchWikiQuizData } from '@/src/services/wikidataQuiz';
 import { brand } from '@/src/theme/brand';
 
 type QuizCategoryCard = {
@@ -68,6 +69,7 @@ export default function QuizHubScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      prefetchWikiQuizData();
       void getQuizStats()
         .then(setStats)
         .catch(() => setStats(emptyQuizStats()));
@@ -79,10 +81,8 @@ export default function QuizHubScreen() {
 
   return (
     <AppScreen>
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView keyboardShouldPersistTaps="handled">
+        <View style={styles.scroll}>
         <ScreenHeader
           title={t('quizHub.title')}
           subtitle={t('quizHub.subtitle')}
@@ -147,32 +147,32 @@ export default function QuizHubScreen() {
             <Pressable
               key={cat.id}
               onPress={() => router.push(cat.href as never)}
-              style={({ pressed }) => [
-                styles.card,
-                pressed && styles.cardPressed,
-              ]}
+              style={({ pressed }) => pressed && styles.cardPressed}
             >
-              <View style={styles.cardIcon}>
-                <Ionicons name={cat.icon} size={26} color={brand.tealPressed} />
+              <View style={styles.card}>
+                <View style={styles.cardIcon}>
+                  <Ionicons name={cat.icon} size={26} color={brand.tealPressed} />
+                </View>
+                <View style={styles.cardCopy}>
+                  <Text style={styles.cardTitle}>{t(cat.titleKey)}</Text>
+                  <Text style={styles.cardBody}>{t(cat.bodyKey)}</Text>
+                  {c.games > 0 ? (
+                    <Text style={styles.cardStats}>
+                      {t('quiz.categoryStatsShort', {
+                        avg: c.averagePercent,
+                        games: c.games,
+                      })}
+                    </Text>
+                  ) : null}
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#7FD9C9" />
               </View>
-              <View style={styles.cardCopy}>
-                <Text style={styles.cardTitle}>{t(cat.titleKey)}</Text>
-                <Text style={styles.cardBody}>{t(cat.bodyKey)}</Text>
-                {c.games > 0 ? (
-                  <Text style={styles.cardStats}>
-                    {t('quiz.categoryStatsShort', {
-                      avg: c.averagePercent,
-                      games: c.games,
-                    })}
-                  </Text>
-                ) : null}
-              </View>
-              <Ionicons name="chevron-forward" size={20} color="#7FD9C9" />
             </Pressable>
           );
         })}
 
         <Text style={styles.hint}>{t('quizHub.wikidataNote')}</Text>
+        </View>
       </ScrollView>
     </AppScreen>
   );

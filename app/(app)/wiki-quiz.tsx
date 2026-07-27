@@ -5,8 +5,11 @@ import {
   Linking,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   View,
+  type StyleProp,
+  type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -126,133 +129,251 @@ export default function WikiQuizScreen() {
       : t('quizHub.originTitle');
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <ScrollView
-        contentContainerClassName="px-5 pb-12 pt-2"
-        keyboardShouldPersistTaps="handled"
-      >
-        <Text className="font-display text-xl text-forest-800">{title}</Text>
-        <Text className="mt-2 font-body text-sm leading-5 text-forest-600">
-          {t('quiz.wikiSubtitle')}
-        </Text>
+    <SafeAreaView style={styles.safe} edges={['bottom']}>
+      <ScrollView keyboardShouldPersistTaps="handled">
+        <View style={styles.scroll}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>{t('quiz.wikiSubtitle')}</Text>
 
-        <View className="mb-4 mt-4 flex-row items-center justify-between">
-          <Text className="font-body-bold text-sm text-forest-700">
-            {t('quiz.progress', {
-              current: Math.min(roundIndex, SESSION_ROUNDS),
-              total: SESSION_ROUNDS,
-            })}
-          </Text>
-          <Text className="font-body-bold text-sm text-forest-700">
-            {t('quiz.score', { score })}
-          </Text>
-        </View>
-
-        {loading ? (
-          <View className="items-center py-16">
-            <ActivityIndicator color={brand.ink} size="large" />
-            <Text className="mt-3 font-body text-sm text-forest-600">
-              {t('quiz.wikiLoading')}
-            </Text>
-          </View>
-        ) : error ? (
-          <ErrorState message={error} onRetry={onRestart} />
-        ) : sessionDone ? (
-          <View className="rounded-3xl border border-forest-100 bg-white px-5 py-8">
-            <Text className="text-center font-display text-2xl text-forest-800">
-              {t('quiz.sessionTitle')}
-            </Text>
-            <Text className="mt-3 text-center font-body text-base text-forest-600">
-              {t('quiz.sessionBody', { score, total: SESSION_ROUNDS })}
-            </Text>
-            <Text className="mt-2 text-center font-body text-sm text-forest-500">
-              {saving ? t('quiz.saving') : t('quiz.savedToAccount')}
-            </Text>
-            <View className="mt-6 gap-3">
-              <PrimaryButton
-                label={t('quiz.viewResults')}
-                variant="secondary"
-                onPress={() => router.push('/(app)/quiz-results')}
-              />
-              <PrimaryButton label={t('quiz.playAgain')} onPress={onRestart} />
-            </View>
-          </View>
-        ) : round ? (
-          <>
-            <View className="rounded-3xl border border-forest-100 bg-white px-5 py-5">
-              <Text className="font-body-bold text-lg leading-6 text-forest-900">
-                {t(round.promptKey, { name: round.subject })}
-              </Text>
-            </View>
-
-            <View className="mt-4 gap-2">
-              {round.choices.map((choice) => {
-                const selected = pickedId === choice.id;
-                const isAnswer = choice.id === round.correctId;
-                let style = 'border-forest-100 bg-white active:opacity-80';
-                if (answered && isAnswer) {
-                  style = 'border-forest-600 bg-forest-100';
-                } else if (answered && selected && !isAnswer) {
-                  style = 'border-red-300 bg-sand-100';
-                }
-                return (
-                  <Pressable
-                    key={choice.id}
-                    disabled={answered}
-                    onPress={() => onAnswer(choice.id)}
-                    className={`rounded-2xl border px-4 py-3.5 ${style}`}
-                  >
-                    <Text className="font-body-bold text-base text-forest-900">
-                      {choice.label}
-                    </Text>
-                  </Pressable>
-                );
+          <View style={styles.metaRow}>
+            <Text style={styles.meta}>
+              {t('quiz.progress', {
+                current: Math.min(roundIndex, SESSION_ROUNDS),
+                total: SESSION_ROUNDS,
               })}
-            </View>
+            </Text>
+            <Text style={styles.meta}>{t('quiz.score', { score })}</Text>
+          </View>
 
-            {answered ? (
-              <View className="mt-5 rounded-3xl border border-forest-100 bg-white px-5 py-5">
-                <Text
-                  className={`font-body-bold text-lg ${
-                    isCorrect ? 'text-forest-800' : 'text-score-poor'
-                  }`}
-                >
-                  {isCorrect
-                    ? t('quiz.correct')
-                    : t('quiz.wrong', { name: correctLabel })}
-                </Text>
-                <Text className="mt-4 font-body-bold text-base text-forest-900">
-                  {t('quiz.learnTitle', { name: round.learn.title })}
-                </Text>
-                <Text className="mt-2 font-body text-sm leading-5 text-forest-700">
-                  {round.learn.detail}
-                </Text>
-                <Text className="mt-3 font-body text-xs leading-5 text-forest-500">
-                  {t('quiz.wikiTrustNote')}
-                </Text>
-                <Pressable
-                  onPress={() => void Linking.openURL(round.learn.wikidataUrl)}
-                  className="mt-3"
-                >
-                  <Text className="font-body-bold text-sm text-forest-700">
-                    {t('quiz.openWikidata')}
-                  </Text>
-                </Pressable>
-                <View className="mt-4">
-                  <PrimaryButton
-                    label={
-                      roundIndex >= SESSION_ROUNDS
-                        ? t('quiz.seeResult')
-                        : t('quiz.next')
-                    }
-                    onPress={onNext}
-                  />
-                </View>
+          {loading ? (
+            <View style={styles.loading}>
+              <ActivityIndicator color={brand.ink} size="large" />
+              <Text style={styles.loadingText}>{t('quiz.wikiLoading')}</Text>
+            </View>
+          ) : error ? (
+            <ErrorState message={error} onRetry={onRestart} />
+          ) : sessionDone ? (
+            <View style={styles.card}>
+              <Text style={styles.sessionTitle}>{t('quiz.sessionTitle')}</Text>
+              <Text style={styles.sessionBody}>
+                {t('quiz.sessionBody', { score, total: SESSION_ROUNDS })}
+              </Text>
+              <Text style={styles.sessionMeta}>
+                {saving ? t('quiz.saving') : t('quiz.savedToAccount')}
+              </Text>
+              <View style={styles.gap}>
+                <PrimaryButton
+                  label={t('quiz.viewResults')}
+                  variant="secondary"
+                  onPress={() => router.push('/(app)/quiz-results')}
+                />
+                <PrimaryButton label={t('quiz.playAgain')} onPress={onRestart} />
               </View>
-            ) : null}
-          </>
-        ) : null}
+            </View>
+          ) : round ? (
+            <>
+              <View style={styles.card}>
+                <Text style={styles.prompt}>
+                  {t(round.promptKey, { name: round.subject })}
+                </Text>
+              </View>
+
+              <View style={styles.choices}>
+                {round.choices.map((choice) => {
+                  const selected = pickedId === choice.id;
+                  const isAnswer = choice.id === round.correctId;
+                  const choiceStyle: StyleProp<ViewStyle> = [
+                    styles.choice,
+                    answered && isAnswer && styles.choiceCorrect,
+                    answered && selected && !isAnswer && styles.choiceWrong,
+                  ];
+                  return (
+                    <Pressable
+                      key={choice.id}
+                      disabled={answered}
+                      onPress={() => onAnswer(choice.id)}
+                      style={({ pressed }) => [
+                        pressed && !answered && styles.pressed,
+                      ]}
+                    >
+                      <View style={choiceStyle}>
+                        <Text style={styles.choiceLabel}>{choice.label}</Text>
+                      </View>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              {answered ? (
+                <View style={styles.card}>
+                  <Text
+                    style={[
+                      styles.verdict,
+                      isCorrect ? styles.verdictOk : styles.verdictBad,
+                    ]}
+                  >
+                    {isCorrect
+                      ? t('quiz.correct')
+                      : t('quiz.wrong', { name: correctLabel })}
+                  </Text>
+                  <Text style={styles.learnTitle}>
+                    {t('quiz.learnTitle', { name: round.learn.title })}
+                  </Text>
+                  <Text style={styles.learnBody}>{round.learn.detail}</Text>
+                  <Text style={styles.trust}>{t('quiz.wikiTrustNote')}</Text>
+                  <Pressable
+                    onPress={() => void Linking.openURL(round.learn.wikidataUrl)}
+                    style={styles.linkWrap}
+                  >
+                    <Text style={styles.link}>{t('quiz.openWikidata')}</Text>
+                  </Pressable>
+                  <View style={styles.nextWrap}>
+                    <PrimaryButton
+                      label={
+                        roundIndex >= SESSION_ROUNDS
+                          ? t('quiz.seeResult')
+                          : t('quiz.next')
+                      }
+                      onPress={onNext}
+                    />
+                  </View>
+                </View>
+              ) : null}
+            </>
+          ) : null}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: brand.surface },
+  scroll: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 48,
+  },
+  title: {
+    fontFamily: 'Fraunces_700Bold',
+    fontSize: 22,
+    color: brand.ink,
+  },
+  subtitle: {
+    marginTop: 8,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#5A7A72',
+  },
+  metaRow: {
+    marginTop: 16,
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  meta: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 14,
+    color: brand.tealPressed,
+  },
+  loading: { alignItems: 'center', paddingVertical: 64 },
+  loadingText: {
+    marginTop: 12,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 14,
+    color: '#5A7A72',
+  },
+  card: {
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  prompt: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 18,
+    lineHeight: 26,
+    color: brand.ink,
+  },
+  choices: { marginTop: 16, gap: 8 },
+  choice: {
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  choiceCorrect: {
+    borderColor: brand.tealPressed,
+    backgroundColor: brand.mist,
+  },
+  choiceWrong: {
+    borderColor: '#F0B4A4',
+    backgroundColor: '#FFF6F3',
+  },
+  choiceLabel: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 16,
+    color: brand.ink,
+  },
+  pressed: { opacity: 0.85 },
+  verdict: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 18,
+  },
+  verdictOk: { color: brand.ink },
+  verdictBad: { color: brand.score.poor },
+  learnTitle: {
+    marginTop: 16,
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 16,
+    color: brand.ink,
+  },
+  learnBody: {
+    marginTop: 8,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#3A5A54',
+  },
+  trust: {
+    marginTop: 12,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 12,
+    lineHeight: 18,
+    color: '#7A9A92',
+  },
+  linkWrap: { marginTop: 12 },
+  link: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 14,
+    color: brand.tealPressed,
+  },
+  nextWrap: { marginTop: 16 },
+  sessionTitle: {
+    textAlign: 'center',
+    fontFamily: 'Fraunces_700Bold',
+    fontSize: 24,
+    color: brand.ink,
+  },
+  sessionBody: {
+    marginTop: 12,
+    textAlign: 'center',
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 16,
+    color: '#5A7A72',
+  },
+  sessionMeta: {
+    marginTop: 8,
+    textAlign: 'center',
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 14,
+    color: '#7A9A92',
+  },
+  gap: { marginTop: 24, gap: 12 },
+});

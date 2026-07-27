@@ -20,18 +20,17 @@ function CheckCard({
   onPress: () => void;
 }) {
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-    >
-      <View style={styles.cardIcon}>
-        <Ionicons name={icon} size={26} color={brand.tealPressed} />
+    <Pressable onPress={onPress} style={({ pressed }) => pressed && styles.cardPressed}>
+      <View style={styles.card}>
+        <View style={styles.cardIcon}>
+          <Ionicons name={icon} size={26} color={brand.tealPressed} />
+        </View>
+        <View style={styles.cardCopy}>
+          <Text style={styles.cardTitle}>{t(`check.${kind}Title`)}</Text>
+          <Text style={styles.cardBody}>{t(`check.${kind}Body`)}</Text>
+        </View>
+        <Ionicons name="chevron-forward" size={20} color="#7FD9C9" />
       </View>
-      <View style={styles.cardCopy}>
-        <Text style={styles.cardTitle}>{t(`check.${kind}Title`)}</Text>
-        <Text style={styles.cardBody}>{t(`check.${kind}Body`)}</Text>
-      </View>
-      <Ionicons name="chevron-forward" size={20} color="#7FD9C9" />
     </Pressable>
   );
 }
@@ -41,10 +40,8 @@ export default function CheckHubScreen() {
 
   return (
     <AppScreen>
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView keyboardShouldPersistTaps="handled">
+        <View style={styles.scroll}>
         <ScreenHeader
           subtitle={`${t('scan.signedInAs')} ${user?.email ?? ''}`}
         />
@@ -68,6 +65,7 @@ export default function CheckHubScreen() {
         />
 
         <Text style={styles.hint}>{t('check.journalHint')}</Text>
+        </View>
       </ScrollView>
     </AppScreen>
   );

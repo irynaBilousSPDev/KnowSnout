@@ -15,6 +15,8 @@ import type {
 
 const LOCAL_KEY = 'snoutscore.local.pet_vaccines';
 
+let warnedMissingVaccinesTable = false;
+
 async function readLocal(): Promise<PetVaccineRow[]> {
   const raw = await AsyncStorage.getItem(LOCAL_KEY);
   if (!raw) return [];
@@ -86,7 +88,12 @@ export async function listPetVaccines(petId: string): Promise<PetVaccineRow[]> {
 
   if (error) {
     if (isMissingSchemaError(error.message)) {
-      console.warn('pet_vaccines unavailable', error.message);
+      if (!warnedMissingVaccinesTable) {
+        warnedMissingVaccinesTable = true;
+        console.warn(
+          'pet_vaccines table missing — using local storage. Run supabase/migrations/20260321210000_pet_vaccines.sql',
+        );
+      }
       const rows = await readLocal();
       return rows.filter((r) => r.pet_id === petId);
     }

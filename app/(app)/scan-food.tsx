@@ -149,7 +149,7 @@ export default function ScanFoodScreen() {
         species: resolved.species,
       });
       setLookupHint(resolved.reason);
-      // Stay on barcode tab — show next-step hint; user switches to photo when ready.
+      setMode('photo');
       notify(t('scan.alertPhotoTitle'), resolved.reason);
     } catch (err) {
       setPickerError(

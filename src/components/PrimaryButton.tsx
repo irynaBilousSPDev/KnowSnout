@@ -3,6 +3,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  View,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
@@ -23,7 +24,10 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 };
 
-/** Minimal button set — clear hierarchy, no heavy chrome. */
+/**
+ * Styles live on an inner View — NativeWind on iOS sometimes drops
+ * StyleSheet backgroundColor when applied directly to Pressable.
+ */
 export function PrimaryButton({
   label,
   onPress,
@@ -46,35 +50,40 @@ export function PrimaryButton({
       accessibilityLabel={label}
       style={({ pressed }) => [
         block && styles.block,
-        styles.base,
-        sizeStyle,
-        variant === 'primary' && styles.primary,
-        variant === 'secondary' && styles.secondary,
-        variant === 'ghost' && styles.ghost,
-        variant === 'danger' && styles.danger,
         dim && styles.dimmed,
         pressed && !dim && styles.pressed,
         style,
       ]}
     >
-      {loading ? (
-        <ActivityIndicator
-          color={variant === 'primary' ? brand.surface : brand.tealPressed}
-        />
-      ) : (
-        <Text
-          style={[
-            styles.label,
-            size === 'sm' && styles.labelSm,
-            variant === 'primary' && styles.labelPrimary,
-            variant === 'secondary' && styles.labelSecondary,
-            variant === 'ghost' && styles.labelGhost,
-            variant === 'danger' && styles.labelDanger,
-          ]}
-        >
-          {label}
-        </Text>
-      )}
+      <View
+        style={[
+          styles.base,
+          sizeStyle,
+          variant === 'primary' && styles.primary,
+          variant === 'secondary' && styles.secondary,
+          variant === 'ghost' && styles.ghost,
+          variant === 'danger' && styles.danger,
+        ]}
+      >
+        {loading ? (
+          <ActivityIndicator
+            color={variant === 'primary' ? brand.surface : brand.tealPressed}
+          />
+        ) : (
+          <Text
+            style={[
+              styles.label,
+              size === 'sm' && styles.labelSm,
+              variant === 'primary' && styles.labelPrimary,
+              variant === 'secondary' && styles.labelSecondary,
+              variant === 'ghost' && styles.labelGhost,
+              variant === 'danger' && styles.labelDanger,
+            ]}
+          >
+            {label}
+          </Text>
+        )}
+      </View>
     </Pressable>
   );
 }
@@ -85,6 +94,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
+    width: '100%',
   },
   sizeMd: { minHeight: 50, paddingHorizontal: 18, paddingVertical: 13 },
   sizeLg: { minHeight: 54, paddingHorizontal: 20, paddingVertical: 15 },
@@ -95,7 +105,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: brand.mistBorder,
   },
-  ghost: { backgroundColor: 'transparent' },
+  ghost: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+  },
   danger: {
     backgroundColor: 'rgba(196, 92, 62, 0.08)',
     borderWidth: 1,
@@ -107,9 +121,10 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_700Bold',
     fontSize: 15,
     letterSpacing: 0.15,
+    color: brand.ink,
   },
   labelSm: { fontSize: 13 },
-  labelPrimary: { color: brand.surface },
+  labelPrimary: { color: '#FFFFFF' },
   labelSecondary: { color: brand.ink },
   labelGhost: { color: brand.tealPressed },
   labelDanger: { color: brand.score.poor },

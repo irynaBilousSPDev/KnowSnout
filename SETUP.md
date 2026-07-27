@@ -21,7 +21,7 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [x] Run SQL migration `supabase/migrations/20260321170000_pet_avatar_album.sql`
 - [x] Run SQL migration `supabase/migrations/20260321180000_pet_profile_fields.sql`
 - [x] `20260321190000_favorite_food_feeding.sql`
-- [x] `20260321210000_pet_vaccines.sql`
+- [ ] `20260321210000_pet_vaccines.sql` *(у логах: таблиці ще немає — перезапусти SQL)*
 - [x] `20260321200000_snout_stories.sql`
 - [x] **Нове:** `20260321232000_story_posts_feed_fields.sql` (privacy / species / story-images bucket)
 - [x] **Нове:** `20260321233000_plant_catalog_expand.sql` (+27 рослин у кеш Supabase)
@@ -35,34 +35,32 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [x] **Опційно:** `20260321238000_story_moderation.sql` (blocks/reports; UI local)
 - [ ] **Нове:** `20260321239000_dm_threads.sql` (DM threads + messages; UI вже є)
 - [ ] Email auth enabled; confirm-email off for MVP
-- [ ] Set secret `OPENAI_API_KEY`
-- [ ] Deploy `analyze-label` function
-- [ ] (Plant photo ID) Deploy `identify-plant` function
-- [ ] (Breed photo ID) Deploy `identify-breed` function
+- [x] Set secret `OPENAI_API_KEY` (користувач — уже в Dashboard)
+- [x] Deploy `analyze-label` function
+- [ ] (Plant photo ID) Deploy `identify-plant` function *(OPTIONS зараз 404)*
+- [ ] (Breed photo ID) Deploy `identify-breed` function *(OPTIONS зараз 404)*
 - [ ] (Store scores) Deploy `store-rating` function
 - [ ] (Optional) Allegro secrets: `ALLEGRO_CLIENT_ID`, `ALLEGRO_CLIENT_SECRET`
 - [ ] (Optional) `.env`: `EXPO_PUBLIC_USE_MOCK_STORE_SCORES=false` to call Edge instead of client mock
 
-## 2b. Deploy Edge Functions (Dashboard)
+## 2b. Edge Functions (стан)
 
-CLI у цьому середовищі часто ламається на Windows — зручніше через Dashboard:
-
-1. Supabase → **Edge Functions** → Deploy / create з `supabase/functions/analyze-label`, `identify-plant`, `identify-breed` (і опційно `store-rating`).
-2. **Project Settings → Edge Functions → Secrets**: `OPENAI_API_KEY` = твій ключ (не в клієнтський `.env`).
-3. У `.env` клієнта: `EXPO_PUBLIC_USE_MOCK_AI=false` (у тебе вже так) → restart через Cursor task **start** (`npm start` = `expo start --lan`).
-4. Перевір сканом корму / рослини / породи на телефоні.
+- `OPENAI_API_KEY` і **`analyze-label`** — уже працюють (не чіпати зайвий раз).
+- **`identify-plant` / `identify-breed`** — свідомо відкладено (пізніше). Додеплой:
+  `npx supabase functions deploy identify-plant` і `identify-breed`
+  (потрібен `npx supabase login` один раз на цій машині).
 
 ## 3. OpenAI
 
-- [ ] Create API key
+- [x] Create API key
 - [ ] Set monthly spend limit
-- [ ] Store key only in Supabase secrets
+- [x] Store key only in Supabase secrets
 
 ## 4. App switch to production AI
 
 - [x] `.env`: `EXPO_PUBLIC_USE_MOCK_AI=false` (already set locally)
-- [ ] Restart Expo via Cursor task **start** (`npm start`)
-- [ ] Deploy Edge + set `OPENAI_API_KEY` secret (див. §2b)
+- [ ] Restart Expo via Cursor task **start** (`npm start`) when testing on device
+- [x] `OPENAI_API_KEY` + `analyze-label` already live
 - [ ] Sign up a real user and scan a label on device
 
 ## 5. GitHub

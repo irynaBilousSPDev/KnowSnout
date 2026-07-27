@@ -13,7 +13,8 @@
 
 | Статус | Файл | Нотатка |
 |--|--|--|
-| зроблено (користувач) | `140000`…`210000` + stories | |
+| **перезапустити** | `20260321210000_pet_vaccines.sql` | у Expo: `pet_vaccines` відсутня в schema cache |
+| зроблено (користувач) | `140000`… + stories (крім vaccines вище) | |
 | зроблено (користувач, 2026-07-27) | `20260321232000_story_posts_feed_fields.sql` | privacy · species · `story-images` |
 | зроблено (користувач, 2026-07-27) | `20260321233000_plant_catalog_expand.sql` | розширення каталогу рослин |
 | зроблено (користувач, 2026-07-27) | `20260321234000_story_comments_author.sql` | `author_name` на коментарях |
@@ -45,8 +46,8 @@
 | Ідея | Статус |
 |--|--|
 | Профіль: місто + «скільки дітей» + список улюбленців у Мої дані | ✅ місто + список pets |
-| Deploy `identify-breed` (+ `OPENAI_API_KEY`, `USE_MOCK_AI=false`) | ⏳ ops Dashboard · mock уже `false` у `.env` |
-| Deploy `identify-plant` / `analyze-label` | ⏳ ops Dashboard |
+| Deploy `identify-breed` (+ `OPENAI_API_KEY`, `USE_MOCK_AI=false`) | ⏸ пізніше (secret ок · function 404) |
+| Deploy `identify-plant` / `analyze-label` | ✅ `analyze-label` live · ⏸ `identify-plant` пізніше |
 
 ### P1 — глибина догляду / продукт
 | Ідея | Статус |

@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { t } from '@/src/i18n';
@@ -13,11 +14,7 @@ function TabIcon({
   focused: boolean;
 }) {
   return (
-    <View
-      className={`mb-0.5 items-center justify-center rounded-2xl px-2.5 py-1 ${
-        focused ? 'bg-forest-100' : ''
-      }`}
-    >
+    <View style={[styles.iconWrap, focused && styles.iconWrapFocused]}>
       <Ionicons
         name={name}
         size={22}
@@ -29,17 +26,16 @@ function TabIcon({
 
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
   return (
-    <Text
-      className={`font-body-medium text-[10px] ${
-        focused ? 'text-forest-700' : 'text-forest-400'
-      }`}
-    >
+    <Text style={[styles.label, focused && styles.labelFocused]} numberOfLines={1}>
       {label}
     </Text>
   );
 }
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+  const bottom = Math.max(insets.bottom, 8);
+
   return (
     <Tabs
       screenOptions={{
@@ -48,11 +44,14 @@ export default function TabsLayout() {
           backgroundColor: brand.surfaceElevated,
           borderTopColor: brand.mistBorder,
           borderTopWidth: StyleSheet.hairlineWidth,
-          height: 78,
-          paddingBottom: 12,
-          paddingTop: 10,
+          height: 58 + bottom,
+          paddingBottom: bottom,
+          paddingTop: 8,
           elevation: 0,
           shadowOpacity: 0,
+        },
+        tabBarItemStyle: {
+          paddingTop: 2,
         },
         tabBarActiveTintColor: brand.tealPressed,
         tabBarInactiveTintColor: '#7FD9C9',
@@ -136,3 +135,29 @@ export default function TabsLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  iconWrap: {
+    marginBottom: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    minWidth: 44,
+    minHeight: 32,
+  },
+  iconWrapFocused: {
+    backgroundColor: brand.mist,
+  },
+  label: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 10,
+    lineHeight: 12,
+    color: '#7FD9C9',
+    textAlign: 'center',
+  },
+  labelFocused: {
+    color: brand.tealPressed,
+  },
+});

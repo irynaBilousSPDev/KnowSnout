@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
+import * as FileSystem from 'expo-file-system/legacy';
 
 import { env } from '@/src/lib/env';
 import { isNativeSafeImageUri, persistLocalImage } from '@/src/lib/image';
@@ -165,12 +167,98 @@ function publicImageUrl(path: string | null | undefined): string | null {
   return data.publicUrl || null;
 }
 
+function base64ToArrayBuffer(base64: string): ArrayBuffer {
+  const binary = globalThis.atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
+async function uriToUploadBody(
+  uri: string,
+): Promise<{ body: ArrayBuffer | Blob; contentType: string }> {
+  const lower = uri.toLowerCase();
+  const contentType = lower.includes('png') ? 'image/png' : 'image/jpeg';
+
+  if (uri.startsWith('data:')) {
+    const base64 = uri.split(',')[1];
+    if (!base64) throw new Error('INVALID_DATA_URI');
+    return { body: base64ToArrayBuffer(base64), contentType };
+  }
+
+  if (Platform.OS !== 'web') {
+    try {
+      const base64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      return { body: base64ToArrayBuffer(base64), contentType };
+    } catch {
+      /* fall through */
+    }
+  }
+
+  const response = await fetch(uri);
+  if (Platform.OS === 'web') {
+    return { body: await response.blob(), contentType };
+  }
+  return { body: await response.arrayBuffer(), contentType };
+}
+
+async function uploadStoryImage(userId: string, uri: string): Promise<string> {
+  if (!supabase) throw new Error('NO_SUPABASE');
+  const stable = await persistLocalImage(uri, 'stories');
+  const ext = stable.toLowerCase().includes('png') ? 'png' : 'jpg';
+  const path = `${userId}/${Date.now()}.${ext}`;
+  const { body, contentType } = await uriToUploadBody(stable);
+  const { error } = await supabase.storage
+    .from('story-images')
+    .upload(path, body, { contentType, upsert: false });
+  if (error) throw new Error(error.message);
+  return path;
+}
+
+function filterLocalPosts(
+  posts: StoryPost[],
+  filter: StoryFeedFilter,
+  followingIds: string[],
+  blocked: Set<string>,
+): StoryPost[] {
+  const following = new Set(followingIds);
+  return posts
+    .map((p) => ({ ...p, mine: true }))
+    .filter((p) => {
+      if (filter === 'mine') return true;
+      if (blocked.has(p.userId) && !p.mine) return false;
+      if (filter === 'following') return following.has(p.userId);
+      if (p.privacy === 'private') return false;
+      if (filter === 'cat') return p.species === 'cat';
+      if (filter === 'dog') return p.species === 'dog';
+      return true;
+    });
+}
+
+function mergeLocalAndCloud(
+  cloud: StoryPost[],
+  local: StoryPost[],
+): StoryPost[] {
+  const cloudIds = new Set(cloud.map((p) => p.id));
+  const extras = local.filter(
+    (p) => p.id.startsWith('local-') && !cloudIds.has(p.id),
+  );
+  return [...extras, ...cloud].sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt),
+  );
+}
+
 function mapCloudRow(
   row: Record<string, unknown>,
   likeCount: number,
   liked: boolean,
   commentsCount: number,
   myUserId: string | null,
+  localImageFallback?: string | null,
 ): StoryPost {
   const imagePath = row.image_path ? String(row.image_path) : null;
   const speciesRaw = row.species ? String(row.species) : 'cat';
@@ -195,7 +283,7 @@ function mapCloudRow(
         : 'cat-1',
     caption: row.caption ? String(row.caption) : '',
     imagePath,
-    imageUri: publicImageUrl(imagePath),
+    imageUri: publicImageUrl(imagePath) ?? localImageFallback ?? null,
     createdAt: String(row.created_at),
     likes: likeCount,
     liked,
@@ -204,24 +292,6 @@ function mapCloudRow(
     privacy,
     petId: row.pet_id ? String(row.pet_id) : null,
   };
-}
-
-async function uploadStoryImage(
-  userId: string,
-  uri: string,
-): Promise<string | null> {
-  if (!supabase) return null;
-  const stable = await persistLocalImage(uri, 'stories');
-  const ext = stable.toLowerCase().includes('png') ? 'png' : 'jpg';
-  const path = `${userId}/${Date.now()}.${ext}`;
-  const response = await fetch(stable);
-  const blob = await response.blob();
-  const { error } = await supabase.storage.from('story-images').upload(path, blob, {
-    contentType: ext === 'png' ? 'image/png' : 'image/jpeg',
-    upsert: false,
-  });
-  if (error) throw new Error(error.message);
-  return path;
 }
 
 function withLocalCommentCounts(
@@ -314,16 +384,19 @@ export async function listStoryFeed(
       }
     }
 
-    return rows.map((row) => {
-      const id = String((row as { id: string }).id);
-      return mapCloudRow(
-        row as Record<string, unknown>,
-        likeCounts.get(id) ?? 0,
-        likedSet.has(id),
-        commentCounts.get(id) ?? 0,
-        user?.id ?? null,
-      );
-    });
+    return mergeLocalAndCloud(
+      rows.map((row) => {
+        const id = String((row as { id: string }).id);
+        return mapCloudRow(
+          row as Record<string, unknown>,
+          likeCounts.get(id) ?? 0,
+          likedSet.has(id),
+          commentCounts.get(id) ?? 0,
+          user?.id ?? null,
+        );
+      }),
+      filterLocalPosts(await readLocal(), filter, followingIds, blocked),
+    );
   } catch (err) {
     if (err instanceof Error && isMissingSchemaError(err.message)) {
       return listStoryFeedDemo(filter, followingIds, blocked);
@@ -428,8 +501,10 @@ export async function createStoryPost(input: {
   }
 
   let imagePath: string | null = null;
+  let localImage: string | null = null;
   try {
-    imagePath = await uploadStoryImage(user.id, input.imageUri);
+    localImage = await persistLocalImage(input.imageUri, 'stories');
+    imagePath = await uploadStoryImage(user.id, localImage);
   } catch {
     const post = localPost({
       id: `local-${Date.now()}`,
@@ -439,7 +514,7 @@ export async function createStoryPost(input: {
       species: input.species,
       avatarKey,
       caption,
-      imageUri: await persistLocalImage(input.imageUri, 'stories'),
+      imageUri: localImage ?? (await persistLocalImage(input.imageUri, 'stories').catch(() => input.imageUri)),
       imagePath: null,
       privacy: input.privacy,
       petId: input.petId ?? null,
@@ -478,7 +553,7 @@ export async function createStoryPost(input: {
         species: input.species,
         avatarKey,
         caption,
-        imageUri: publicImageUrl(imagePath) ?? input.imageUri,
+        imageUri: publicImageUrl(imagePath) ?? localImage ?? input.imageUri,
         imagePath,
         privacy: input.privacy,
         petId: input.petId ?? null,
@@ -491,7 +566,48 @@ export async function createStoryPost(input: {
     throw new Error(friendlyDbError(error?.message) || 'Failed to publish');
   }
 
-  return mapCloudRow(data as Record<string, unknown>, 0, false, 0, user.id);
+  return mapCloudRow(
+    data as Record<string, unknown>,
+    0,
+    false,
+    0,
+    user.id,
+    localImage,
+  );
+}
+
+export async function deleteStoryPost(post: StoryPost): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user || !post.mine) throw new Error('NOT_OWNED');
+  if (post.id.startsWith('seed-')) throw new Error('SEED_LOCKED');
+
+  // Always drop local copy if present
+  const prev = await readLocal();
+  if (prev.some((p) => p.id === post.id)) {
+    await writeLocal(prev.filter((p) => p.id !== post.id));
+  }
+
+  if (
+    env.isDemoMode ||
+    !supabase ||
+    post.id.startsWith('local-')
+  ) {
+    return;
+  }
+
+  if (post.imagePath) {
+    await supabase.storage.from('story-images').remove([post.imagePath]);
+  }
+
+  const { error } = await supabase
+    .from('story_posts')
+    .delete()
+    .eq('id', post.id)
+    .eq('user_id', user.id);
+
+  if (error) {
+    throw new Error(friendlyDbError(error.message) || 'Failed to delete');
+  }
 }
 
 export async function getStoryPost(postId: string): Promise<StoryPost | null> {

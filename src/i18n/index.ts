@@ -147,7 +147,7 @@ const uk: Dict = {
     'Джерело фактів: {source} (каталог порід). Це довідка для цікавості, не ветвисновок і не родовід.',
   'quiz.wikiSubtitle':
     'Питання з Wikidata. Після відповіді — короткий факт і посилання на запис.',
-  'quiz.wikiLoading': 'Запит до Wikidata…',
+  'quiz.wikiLoading': 'Готуємо питання…',
   'quiz.wikiOriginPrompt': 'З якої країни походить порода «{name}»?',
   'quiz.wikiGroupPrompt': 'До якої групи належить «{name}»?',
   'quiz.wikiTrustNote':
@@ -298,6 +298,11 @@ const uk: Dict = {
   'stories.pickPet': 'Улюбленець',
   'stories.publish': 'Опублікувати',
   'stories.publishError': 'Не вдалося опублікувати',
+  'stories.delete': 'Видалити пост',
+  'stories.deleteTitle': 'Видалити пост?',
+  'stories.deleteMessage': 'Пост зникне зі стрічки. Це не можна скасувати.',
+  'stories.deleteDone': 'Пост видалено',
+  'stories.deleteError': 'Не вдалося видалити пост',
   'stories.emptyMine': 'Тут з’являться твої пости',
   'stories.emptyFilter': 'Поки немає постів у цій категорії',
   'stories.loading': 'Завантаження стрічки…',
@@ -758,7 +763,7 @@ const uk: Dict = {
   'barcode.lookup': 'Знайти за штрихкодом',
   'barcode.again': 'Сканувати ще',
   'barcode.webHint':
-    'Скан камерою найкраще працює в Expo Go. У вебі введи код вручну.',
+    'У браузері камера для штрихкоду недоступна — введи цифри з упаковки й натисни «Знайти». Повний скан камерою — у Expo Go на телефоні.',
   'barcode.label': 'Штрихкод',
   'barcode.lookupFailed': 'Не вдалося знайти штрихкод',
   'barcode.needPhotoKnown':

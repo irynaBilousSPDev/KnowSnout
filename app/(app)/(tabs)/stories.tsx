@@ -11,6 +11,7 @@ import { buildStoryDeepLink, buildStoryShareMessage } from '@/src/lib/share';
 import { brand } from '@/src/theme/brand';
 import {
   createStoryPost,
+  deleteStoryPost,
   formatLikedBy,
   formatStoryTimeAgo,
   listStoryFeed,
@@ -74,6 +75,7 @@ function StoryPostCard({
   onShare,
   onOpenComments,
   onOpenAuthor,
+  onDelete,
 }: {
   post: StoryPost;
   compact?: boolean;
@@ -81,6 +83,7 @@ function StoryPostCard({
   onShare: (post: StoryPost) => void;
   onOpenComments: (post: StoryPost) => void;
   onOpenAuthor: (post: StoryPost) => void;
+  onDelete?: (post: StoryPost) => void;
 }) {
   const timeAgo = formatStoryTimeAgo(post.createdAt);
   const likedBy = formatLikedBy(post.likes, post.liked);
@@ -142,6 +145,19 @@ function StoryPostCard({
                 {post.commentsCount}
               </Text>
             </Pressable>
+            {post.mine && onDelete ? (
+              <Pressable
+                onPress={() => onDelete(post)}
+                accessibilityRole="button"
+                accessibilityLabel={t('stories.delete')}
+              >
+                <Ionicons
+                  name="trash-outline"
+                  size={15}
+                  color={brand.score.poor}
+                />
+              </Pressable>
+            ) : null}
           </View>
         </View>
       </View>
@@ -231,6 +247,20 @@ function StoryPostCard({
               color={brand.tealPressed}
             />
           </Pressable>
+          {post.mine && onDelete ? (
+            <Pressable
+              onPress={() => onDelete(post)}
+              className="active:opacity-70"
+              accessibilityRole="button"
+              accessibilityLabel={t('stories.delete')}
+            >
+              <Ionicons
+                name="trash-outline"
+                size={24}
+                color={brand.score.poor}
+              />
+            </Pressable>
+          ) : null}
         </View>
         <View className="mt-3 flex-row items-center">
           <Ionicons name="heart" size={14} color={brand.ink} />
@@ -385,6 +415,29 @@ export default function StoriesScreen() {
       notify(t('common.error'), message);
     } finally {
       setPublishing(false);
+    }
+  };
+
+  const onDeletePost = async (post: StoryPost) => {
+    if (!post.mine) return;
+    const ok = await confirmAction({
+      title: t('stories.deleteTitle'),
+      message: t('stories.deleteMessage'),
+      confirmLabel: t('stories.delete'),
+      cancelLabel: t('common.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await deleteStoryPost(post);
+      setPosts((prev) => prev.filter((p) => p.id !== post.id));
+      if (authorCard?.postId === post.id) setAuthorCard(null);
+      notify(t('stories.deleteDone'));
+    } catch (err) {
+      notify(
+        t('common.error'),
+        err instanceof Error ? err.message : t('stories.deleteError'),
+      );
     }
   };
 
@@ -614,6 +667,7 @@ export default function StoriesScreen() {
                 onShare={setSharePost}
                 onOpenComments={openComments}
                 onOpenAuthor={(p) => void openAuthor(p)}
+                onDelete={(p) => void onDeletePost(p)}
               />
             </View>
           )}
@@ -850,9 +904,23 @@ export default function StoriesScreen() {
                 ) : null}
                 <View className="mt-5 gap-3">
                   {authorCard.mine ? (
-                    <Text className="text-center font-body text-sm text-forest-600">
-                      {t('stories.authorSelf')}
-                    </Text>
+                    <>
+                      <Text className="text-center font-body text-sm text-forest-600">
+                        {t('stories.authorSelf')}
+                      </Text>
+                      {authorCard.postId ? (
+                        <PrimaryButton
+                          label={t('stories.delete')}
+                          variant="danger"
+                          onPress={() => {
+                            const post = posts.find(
+                              (p) => p.id === authorCard.postId,
+                            );
+                            if (post) void onDeletePost(post);
+                          }}
+                        />
+                      ) : null}
+                    </>
                   ) : (
                     <>
                       <PrimaryButton

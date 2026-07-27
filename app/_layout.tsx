@@ -17,6 +17,7 @@ import 'react-native-reanimated';
 import { LoadingState } from '@/src/components/LoadingState';
 import { WebPhoneFrame } from '@/src/components/WebPhoneFrame';
 import { AuthProvider } from '@/src/hooks/useAuth';
+import { migrateLegacyAuthStorage } from '@/src/services/supabase';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -39,6 +40,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync().catch(() => undefined);
+      void migrateLegacyAuthStorage();
     }
   }, [loaded, error]);
 
