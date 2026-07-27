@@ -230,23 +230,70 @@ export default function BreedQuizScreen() {
                     ? t('quiz.correct')
                     : t('quiz.wrong', { name: correctName })}
                 </Text>
-                {round.fact.temperament ? (
-                  <Text className="mt-3 font-body text-sm leading-5 text-forest-700">
-                    {t('quiz.factTemperament', {
-                      value: round.fact.temperament,
-                    })}
+
+                <Text className="mt-4 font-body-bold text-base text-forest-900">
+                  {t('quiz.learnTitle', { name: round.fact.name })}
+                </Text>
+
+                {round.fact.description ? (
+                  <Text className="mt-2 font-body text-sm leading-5 text-forest-700">
+                    {round.fact.description}
                   </Text>
                 ) : null}
-                {round.fact.origin ? (
-                  <Text className="mt-2 font-body text-sm text-forest-600">
-                    {t('quiz.factOrigin', { value: round.fact.origin })}
-                  </Text>
-                ) : null}
-                {round.fact.bredFor ? (
-                  <Text className="mt-1 font-body text-sm text-forest-600">
-                    {t('quiz.factBredFor', { value: round.fact.bredFor })}
-                  </Text>
-                ) : null}
+
+                <View className="mt-3 gap-1.5">
+                  {round.fact.breedGroup ? (
+                    <Text className="font-body text-sm text-forest-700">
+                      {t('quiz.factGroup', { value: round.fact.breedGroup })}
+                    </Text>
+                  ) : null}
+                  {round.fact.temperament ? (
+                    <Text className="font-body text-sm leading-5 text-forest-700">
+                      {t('quiz.factTemperament', {
+                        value: round.fact.temperament,
+                      })}
+                    </Text>
+                  ) : null}
+                  {round.fact.origin ? (
+                    <Text className="font-body text-sm text-forest-700">
+                      {t('quiz.factOrigin', { value: round.fact.origin })}
+                    </Text>
+                  ) : null}
+                  {round.fact.bredFor ? (
+                    <Text className="font-body text-sm text-forest-700">
+                      {t('quiz.factBredFor', { value: round.fact.bredFor })}
+                    </Text>
+                  ) : null}
+                  {round.fact.lifeSpan ? (
+                    <Text className="font-body text-sm text-forest-700">
+                      {t('quiz.factLifeSpan', { value: round.fact.lifeSpan })}
+                    </Text>
+                  ) : null}
+                  {round.fact.weightMetric ? (
+                    <Text className="font-body text-sm text-forest-700">
+                      {t('quiz.factWeight', {
+                        value: round.fact.weightMetric,
+                      })}
+                    </Text>
+                  ) : null}
+                  {round.fact.heightMetric ? (
+                    <Text className="font-body text-sm text-forest-700">
+                      {t('quiz.factHeight', {
+                        value: round.fact.heightMetric,
+                      })}
+                    </Text>
+                  ) : null}
+                </View>
+
+                <Text className="mt-4 font-body text-xs leading-5 text-forest-500">
+                  {t('quiz.trustNote', {
+                    source:
+                      round.fact.sourceLabel === 'thedogapi'
+                        ? 'TheDogAPI'
+                        : 'TheCatAPI',
+                  })}
+                </Text>
+
                 <View className="mt-4">
                   <PrimaryButton
                     label={

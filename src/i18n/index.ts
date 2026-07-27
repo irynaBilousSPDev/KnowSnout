@@ -61,7 +61,7 @@ const uk: Dict = {
   'check.journalHint': 'Усі результати збираються у вкладці «Журнал».',
 
   'quiz.subtitle':
-    'Фото з відкритих баз TheDogAPI / TheCatAPI. Не родовід — просто весела гра.',
+    'Вгадай породу з фото, а після відповіді — короткі факти з каталогів TheDogAPI / TheCatAPI.',
   'quiz.speciesLabel': 'Собаки чи коти',
   'quiz.speciesDog': 'Собаки',
   'quiz.speciesCat': 'Коти',
@@ -72,9 +72,16 @@ const uk: Dict = {
   'quiz.prompt': 'Яка це порода?',
   'quiz.correct': 'Вірно!',
   'quiz.wrong': 'Ні — це {name}',
+  'quiz.learnTitle': 'Коротко про {name}',
   'quiz.factTemperament': 'Темперамент: {value}',
   'quiz.factOrigin': 'Походження: {value}',
   'quiz.factBredFor': 'Виведена для: {value}',
+  'quiz.factGroup': 'Група: {value}',
+  'quiz.factLifeSpan': 'Тривалість життя: {value}',
+  'quiz.factWeight': 'Вага (кг): {value}',
+  'quiz.factHeight': 'Зріст (см): {value}',
+  'quiz.trustNote':
+    'Джерело фактів: {source} (кураторський каталог порід). Це довідка для цікавості, не ветвисновок і не родовід.',
   'quiz.next': 'Наступне питання',
   'quiz.seeResult': 'Підсумок',
   'quiz.sessionTitle': 'Раунд завершено',

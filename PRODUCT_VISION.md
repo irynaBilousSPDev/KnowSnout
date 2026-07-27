@@ -228,7 +228,8 @@ Rules: confidence never = pedigree; UA UI; streak / “quiz of the day” later;
 **Do not start with:** Wikipedia article scrape or plain Open Trivia as the hero experience.
 
 **Status:** direction set — visual breed quiz first; Wikidata as spice later, not the core.  
-**v1 shipped (2026-07-27):** `breed-quiz` — 5 rounds, dog/cat, photo + 4 choices, temperament/origin fact after answer; entry from Перевір hub.
+**v1 shipped (2026-07-27):** `breed-quiz` — 5 rounds, dog/cat, photo + 4 choices; entry from Перевір hub.  
+**v1.1:** after each answer show curated fact card (group, temperament, origin, life span, weight/height, cat description) from TheDogAPI/TheCatAPI; prefer breeds with richer profiles; clear trust/disclaimer note (not vet advice / not pedigree).
 
 ---
 

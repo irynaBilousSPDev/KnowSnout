@@ -8,6 +8,26 @@ export type QuizBreed = {
   temperament: string | null;
   origin: string | null;
   bredFor: string | null;
+  breedGroup: string | null;
+  lifeSpan: string | null;
+  weightMetric: string | null;
+  heightMetric: string | null;
+  description: string | null;
+  /** Completeness 0–1 for picking informative rounds */
+  richness: number;
+};
+
+export type BreedQuizFact = {
+  name: string;
+  temperament: string | null;
+  origin: string | null;
+  bredFor: string | null;
+  breedGroup: string | null;
+  lifeSpan: string | null;
+  weightMetric: string | null;
+  heightMetric: string | null;
+  description: string | null;
+  sourceLabel: 'thedogapi' | 'thecatapi';
 };
 
 export type BreedQuizRound = {
@@ -16,19 +36,21 @@ export type BreedQuizRound = {
   imageUrl: string;
   correctId: string;
   choices: { id: string; name: string }[];
-  fact: {
-    temperament: string | null;
-    origin: string | null;
-    bredFor: string | null;
-  };
+  fact: BreedQuizFact;
 };
+
+type MetricRange = { imperial?: string; metric?: string };
 
 type DogApiBreed = {
   id: number;
   name: string;
   temperament?: string;
   bred_for?: string;
+  breed_group?: string;
+  life_span?: string;
   origin?: string;
+  weight?: MetricRange;
+  height?: MetricRange;
   reference_image_id?: string;
   image?: { url?: string };
 };
@@ -38,9 +60,37 @@ type CatApiBreed = {
   name: string;
   temperament?: string;
   origin?: string;
+  description?: string;
+  life_span?: string;
+  weight?: MetricRange;
   reference_image_id?: string;
   image?: { url?: string };
 };
+
+function clean(value?: string | null): string | null {
+  const v = value?.trim();
+  return v ? v : null;
+}
+
+function richnessScore(fields: Array<string | null | undefined>): number {
+  const filled = fields.filter((f) => Boolean(clean(f ?? null))).length;
+  return filled / Math.max(fields.length, 1);
+}
+
+function toFact(breed: QuizBreed): BreedQuizFact {
+  return {
+    name: breed.name,
+    temperament: breed.temperament,
+    origin: breed.origin,
+    bredFor: breed.bredFor,
+    breedGroup: breed.breedGroup,
+    lifeSpan: breed.lifeSpan,
+    weightMetric: breed.weightMetric,
+    heightMetric: breed.heightMetric,
+    description: breed.description,
+    sourceLabel: breed.species === 'dog' ? 'thedogapi' : 'thecatapi',
+  };
+}
 
 const FALLBACK_DOG: QuizBreed[] = [
   {
@@ -51,6 +101,12 @@ const FALLBACK_DOG: QuizBreed[] = [
     temperament: 'Friendly, Active, Outgoing',
     origin: 'Canada / UK',
     bredFor: 'Water retrieving',
+    breedGroup: 'Sporting',
+    lifeSpan: '10 - 13 years',
+    weightMetric: '25 - 36',
+    heightMetric: '55 - 62',
+    description: null,
+    richness: 0.9,
   },
   {
     id: 'dog-fallback-husky',
@@ -60,6 +116,12 @@ const FALLBACK_DOG: QuizBreed[] = [
     temperament: 'Outgoing, Friendly, Alert',
     origin: 'Russia',
     bredFor: 'Sled pulling',
+    breedGroup: 'Working',
+    lifeSpan: '12 - 14 years',
+    weightMetric: '16 - 27',
+    heightMetric: '51 - 60',
+    description: null,
+    richness: 0.9,
   },
   {
     id: 'dog-fallback-corgi',
@@ -69,6 +131,12 @@ const FALLBACK_DOG: QuizBreed[] = [
     temperament: 'Playful, Outgoing, Friendly',
     origin: 'United Kingdom',
     bredFor: 'Cattle herding',
+    breedGroup: 'Herding',
+    lifeSpan: '12 - 14 years',
+    weightMetric: '11 - 14',
+    heightMetric: '25 - 30',
+    description: null,
+    richness: 0.9,
   },
   {
     id: 'dog-fallback-beagle',
@@ -78,6 +146,12 @@ const FALLBACK_DOG: QuizBreed[] = [
     temperament: 'Amiable, Even Tempered, Excitable',
     origin: 'United Kingdom',
     bredFor: 'Rabbit hunting',
+    breedGroup: 'Hound',
+    lifeSpan: '13 - 16 years',
+    weightMetric: '9 - 11',
+    heightMetric: '33 - 41',
+    description: null,
+    richness: 0.9,
   },
 ];
 
@@ -87,27 +161,47 @@ const FALLBACK_CAT: QuizBreed[] = [
     name: 'Siamese',
     species: 'cat',
     imageUrl: 'https://cdn2.thecatapi.com/images/ai6Jps4sx.jpg',
-    temperament: 'Active, Agile, Clever',
+    temperament: 'Active, Agile, Clever, Sociable',
     origin: 'Thailand',
     bredFor: null,
+    breedGroup: null,
+    lifeSpan: '12 - 15',
+    weightMetric: '3 - 5',
+    heightMetric: null,
+    description:
+      'Talkative, people-oriented cats with a sleek body and striking blue eyes.',
+    richness: 0.95,
   },
   {
     id: 'cat-fallback-persian',
     name: 'Persian',
     species: 'cat',
     imageUrl: 'https://cdn2.thecatapi.com/images/0XYvRd7oD.jpg',
-    temperament: 'Affectionate, Loyal, Quiet',
+    temperament: 'Affectionate, Loyal, Quiet, Sweet',
     origin: 'Iran',
     bredFor: null,
+    breedGroup: null,
+    lifeSpan: '14 - 15',
+    weightMetric: '3 - 6',
+    heightMetric: null,
+    description: 'Calm longhair breed known for a gentle, companionable nature.',
+    richness: 0.95,
   },
   {
     id: 'cat-fallback-bengal',
     name: 'Bengal',
     species: 'cat',
     imageUrl: 'https://cdn2.thecatapi.com/images/O3btzLlsO.jpg',
-    temperament: 'Alert, Agile, Energetic',
+    temperament: 'Alert, Agile, Energetic, Curious',
     origin: 'United States',
     bredFor: null,
+    breedGroup: null,
+    lifeSpan: '12 - 16',
+    weightMetric: '4 - 7',
+    heightMetric: null,
+    description:
+      'Athletic spotted cats that enjoy play and climbing; high energy.',
+    richness: 0.95,
   },
   {
     id: 'cat-fallback-maine',
@@ -117,6 +211,12 @@ const FALLBACK_CAT: QuizBreed[] = [
     temperament: 'Gentle, Independent, Intelligent',
     origin: 'United States',
     bredFor: null,
+    breedGroup: null,
+    lifeSpan: '12 - 15',
+    weightMetric: '5 - 8',
+    heightMetric: null,
+    description: 'Large friendly breed with a dog-like, social personality.',
+    richness: 0.95,
   },
 ];
 
@@ -136,6 +236,12 @@ function pickDistinct<T>(items: T[], count: number): T[] {
   return shuffle(items).slice(0, count);
 }
 
+/** Prefer breeds with enough curated fields so the round teaches something. */
+function informativePool(catalog: QuizBreed[]): QuizBreed[] {
+  const rich = catalog.filter((b) => b.richness >= 0.45 && b.temperament);
+  return rich.length >= 8 ? rich : catalog.filter((b) => b.temperament);
+}
+
 async function loadDogCatalog(): Promise<QuizBreed[]> {
   if (dogCache && dogCache.length >= 4) return dogCache;
   try {
@@ -152,14 +258,35 @@ async function loadDogCatalog(): Promise<QuizBreed[]> {
           ? `https://cdn2.thedogapi.com/images/${b.reference_image_id}.jpg`
           : null);
       if (!imageUrl) continue;
+      const temperament = clean(b.temperament);
+      const origin = clean(b.origin);
+      const bredFor = clean(b.bred_for);
+      const breedGroup = clean(b.breed_group);
+      const lifeSpan = clean(b.life_span);
+      const weightMetric = clean(b.weight?.metric);
+      const heightMetric = clean(b.height?.metric);
       mapped.push({
         id: `dog-${b.id}`,
         name: b.name,
         species: 'dog',
         imageUrl,
-        temperament: b.temperament ?? null,
-        origin: b.origin ?? null,
-        bredFor: b.bred_for ?? null,
+        temperament,
+        origin,
+        bredFor,
+        breedGroup,
+        lifeSpan,
+        weightMetric,
+        heightMetric,
+        description: null,
+        richness: richnessScore([
+          temperament,
+          origin,
+          bredFor,
+          breedGroup,
+          lifeSpan,
+          weightMetric,
+          heightMetric,
+        ]),
       });
     }
     dogCache = mapped.length >= 4 ? mapped : FALLBACK_DOG;
@@ -185,14 +312,31 @@ async function loadCatCatalog(): Promise<QuizBreed[]> {
           ? `https://cdn2.thecatapi.com/images/${b.reference_image_id}.jpg`
           : null);
       if (!imageUrl) continue;
+      const temperament = clean(b.temperament);
+      const origin = clean(b.origin);
+      const description = clean(b.description);
+      const lifeSpan = clean(b.life_span);
+      const weightMetric = clean(b.weight?.metric);
       mapped.push({
         id: `cat-${b.id}`,
         name: b.name,
         species: 'cat',
         imageUrl,
-        temperament: b.temperament ?? null,
-        origin: b.origin ?? null,
+        temperament,
+        origin,
         bredFor: null,
+        breedGroup: null,
+        lifeSpan,
+        weightMetric,
+        heightMetric: null,
+        description,
+        richness: richnessScore([
+          temperament,
+          origin,
+          description,
+          lifeSpan,
+          weightMetric,
+        ]),
       });
     }
     catCache = mapped.length >= 4 ? mapped : FALLBACK_CAT;
@@ -208,9 +352,7 @@ export async function loadQuizCatalog(
   return species === 'dog' ? loadDogCatalog() : loadCatCatalog();
 }
 
-async function fetchFreshImage(
-  breed: QuizBreed,
-): Promise<string> {
+async function fetchFreshImage(breed: QuizBreed): Promise<string> {
   try {
     if (breed.species === 'dog') {
       const numericId = breed.id.replace(/^dog-/, '');
@@ -244,17 +386,35 @@ export async function createBreedQuizRound(
   avoidCorrectIds: string[] = [],
 ): Promise<BreedQuizRound> {
   const catalog = await loadQuizCatalog(species);
-  const pool =
-    catalog.filter((b) => !avoidCorrectIds.includes(b.id)).length >= 4
-      ? catalog.filter((b) => !avoidCorrectIds.includes(b.id))
-      : catalog;
+  const informative = informativePool(catalog);
+  const base =
+    informative.filter((b) => !avoidCorrectIds.includes(b.id)).length >= 4
+      ? informative.filter((b) => !avoidCorrectIds.includes(b.id))
+      : informative.length >= 4
+        ? informative
+        : catalog;
 
-  const picks = pickDistinct(pool, 4);
-  const correct = picks[0];
-  const imageUrl = await fetchFreshImage(correct);
-  const choices = shuffle(
-    picks.map((b) => ({ id: b.id, name: b.name })),
+  // Bias toward richer profiles for the correct answer (learn something).
+  const ranked = [...base].sort((a, b) => b.richness - a.richness);
+  const top = ranked.slice(0, Math.max(12, Math.floor(ranked.length * 0.6)));
+  const correct = pickDistinct(top.length >= 1 ? top : ranked, 1)[0];
+
+  const distractors = pickDistinct(
+    base.filter((b) => b.id !== correct.id),
+    3,
   );
+  while (distractors.length < 3) {
+    const extra = catalog.find(
+      (b) =>
+        b.id !== correct.id && !distractors.some((d) => d.id === b.id),
+    );
+    if (!extra) break;
+    distractors.push(extra);
+  }
+
+  const picks = [correct, ...distractors].slice(0, 4);
+  const imageUrl = await fetchFreshImage(correct);
+  const choices = shuffle(picks.map((b) => ({ id: b.id, name: b.name })));
 
   return {
     id: `round-${Date.now()}-${correct.id}`,
@@ -262,10 +422,6 @@ export async function createBreedQuizRound(
     imageUrl,
     correctId: correct.id,
     choices,
-    fact: {
-      temperament: correct.temperament,
-      origin: correct.origin,
-      bredFor: correct.bredFor,
-    },
+    fact: toFact(correct),
   };
 }
