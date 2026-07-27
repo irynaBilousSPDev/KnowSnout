@@ -34,7 +34,15 @@
 |--|--|
 | Сканер корму | ✅ працює (`scan-food`) |
 | Plant safety | ✅ v1 екран + SQL |
-| Квіз про тварин (Wikidata / Open Trivia DB / breed APIs) | ✅ вкладка + рейтинг; SQL sessions ✅ |
+| Сканер породи + відкриті API | ✅ v1: пошук TheDogAPI/TheCatAPI; фото = mock → далі vision |
+| Хаб «Перевір» + «Журнал» | ✅ UI зроблено |
+| Vision breed ID (реальне фото) | ⏳ наступний крок після mock |
+| Розширити каталог рослин / paid Plant ID | ⏳ пізніше |
+| SnoutStories cloud client | ⏳ SQL є |
+| Домен + веб-хостинг | ✅ knowsnout.com на Vercel |
+| Меню «Догляд»: годування · гра · вода | ⏳ ідея (див. PRODUCT_VISION) |
+| Квіз про тварин (Wikidata / Open Trivia / breed APIs) | ✅ вкладка + рейтинг; SQL sessions ✅ |
+| Реєстр джерел даних | ✅ `DATA_SOURCES.md` + екран у Мої дані |
 
 ## Наступні кроки (порядок гнучкий)
 
