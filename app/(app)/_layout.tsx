@@ -128,6 +128,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="play-guides"
+        options={{
+          headerShown: true,
+          title: t('play.title'),
+        }}
+      />
+      <Stack.Screen
         name="contests"
         options={{
           headerShown: true,

@@ -1,4 +1,4 @@
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
   Alert,
@@ -384,6 +384,16 @@ export default function PetCareScreen() {
         </View>
 
         <View className="mt-2 gap-3">
+          <PrimaryButton
+            label={t('play.open')}
+            variant="secondary"
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/play-guides',
+                params: { petId: pet.id },
+              })
+            }
+          />
           <PrimaryButton
             label={t('care.saveNotes')}
             variant="secondary"

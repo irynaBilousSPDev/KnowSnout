@@ -57,8 +57,8 @@ See also **`PRODUCT_VISION.md`** for social, charity, adoption, sponsorship back
 ### D. Play & enrichment
 | Feature | Status | Open data |
 |--|--|--|
-| Toy ideas by species/size/age | Phase D | Curated content (+ optional community) |
-| How to play / enrichment tips | Phase D | Editorial + vet-reviewed later |
+| Toy ideas by species/size/age | **v1 shipped** (species packs) | Curated content (+ optional community) |
+| How to play / enrichment tips | **v1 shipped** | Editorial + vet-reviewed later |
 
 ### D2. Plant safety (houseplants & more)
 | Feature | Status | Notes |

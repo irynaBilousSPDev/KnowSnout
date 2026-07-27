@@ -47,8 +47,8 @@ Status: **shipped** — search + photo vision Edge (`identify-breed`); enrich fr
 ### P1 — Care depth
 - Food ↔ pet allergies / life stage match — **shipped** (informational hints on result + pet profile; `pets.life_stage` column)
 - Meds & vet visit log — **shipped** (thin log: meds / visit / note; `pet_vet_logs`)
+- Toys & how-to-play guides — **shipped** (editorial packs dog/cat/other; `play-guides`)
 - Passport / docs checklist
-- Toys & how-to-play guides
 - External store **scores only** (Allegro etc.)
 - Breed-from-photo (beta, with confidence)
 - **Plant safety for pets** (houseplants & outdoor) — see module below

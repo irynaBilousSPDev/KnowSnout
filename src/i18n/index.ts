@@ -758,6 +758,15 @@ const uk: Dict = {
   'vetLog.deleteTitle': 'Видалити запис',
   'vetLog.deleteMessage': 'Прибрати “{name}” з журналу?',
 
+  'play.title': 'Ігри та іграшки',
+  'play.subtitle': 'як пограти ~5 хвилин і що обрати',
+  'play.open': 'Ігри та іграшки',
+  'play.disclaimer':
+    'Редакційні поради для збагачення. Не заміна тренеру чи ветеринару; стеж за безпекою іграшок.',
+  'play.toysLabel': 'Ідеї іграшок',
+  'play.loading': 'Завантаження порад…',
+  'play.loadError': 'Не вдалося відкрити гайди',
+
   'travel.title': 'Подорожі',
   'travel.subtitle': 'чекліст перед виїздом',
   'travel.open': 'Чекліст подорожі',

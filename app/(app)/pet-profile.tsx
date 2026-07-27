@@ -599,6 +599,18 @@ export default function PetProfileScreen() {
               }
             />
           </View>
+          <View className="mt-3">
+            <PrimaryButton
+              label={t('play.open')}
+              variant="secondary"
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/play-guides',
+                  params: { petId: pet.id },
+                })
+              }
+            />
+          </View>
         </View>
 
         <Section title={t('pets.sectionDocs')}>
