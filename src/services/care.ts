@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { recordCareDayComplete } from '@/src/services/careStreak';
 import type {
   CareDayInput,
   CareDayLog,
@@ -142,6 +143,9 @@ export async function updateCareToday(
 
   all[key] = next;
   await writeAll(all);
+  if (careProgress(next).done === 3) {
+    void recordCareDayComplete();
+  }
   return next;
 }
 

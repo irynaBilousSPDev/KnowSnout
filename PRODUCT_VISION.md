@@ -7,7 +7,9 @@ Everything below is captured for stepwise delivery.
 ---
 
 ## North star
-Trust + care for pets at home and on the road — then a gentle social layer for pet lovers, shelters, and charity. Start with **dogs & cats**.
+Trust + care for pets at home and on the road — then a gentle social layer for pet lovers, shelters, and charity.  
+**Start with dogs & cats**; long-term = **all companion animals** (classic home pets and “not-quite-domestic” companions people keep).  
+**Must-have community knowledge:** forum (ask + share experience) + editorial blog by categories — distinct from photo Stories.
 
 ---
 
@@ -108,10 +110,10 @@ In-app paw reviews on **products** stay separate from SnoutStories.
 
 **Do not** launch full Instagram clone before food + vaccines are sticky — ship Stories tab UI early, backend next.
 
-**Human reminder:** UI + cloud client shipped (posts, likes, comments). **Follows + author card** (local). **Report / block scaffold** (local; optional SQL `story_moderation`). Care streak later.
+**Human reminder:** UI + cloud client shipped (posts, likes, comments). **Follows + report/block** sync to Supabase when logged in (UUID peers). **Care streak** on own author card (local). **DM inbox** + thread UI; run `20260321239000_dm_threads.sql` for cloud DMs. Share: Telegram + copy deep link.
 **Also critical:** `20260321190000_favorite_food_feeding.sql` for pet create + profile feeding.
 
-**Status 2026-07-27:** feed list + publish + likes + **comments** via Supabase; demo seed when offline / missing schema. Run `20260321234000_story_comments_author.sql` for `author_name` on comments.
+**Status 2026-07-27:** feed list + publish + likes + **comments** via Supabase; social P2 scaffold above. P0: `EXPO_PUBLIC_USE_MOCK_AI=false` — deploy Edge + `OPENAI_API_KEY` secret in Dashboard.
 
 ### P2b — Contests & share (**SnoutSpotlight** working title)
 **UA:** «Зіркові мордочки» / конкурси у SnoutStories  
@@ -130,6 +132,25 @@ In-app paw reviews on **products** stay separate from SnoutStories.
 
 Ship order: ~~share buttons~~ → ~~contest entry UI v1~~ → ~~contest public detail (pet + owner + gallery)~~ → ~~editorial themes + enter from Stories~~ → ~~auth marketing polish~~ → app-wide UI cohesion (AppScreen) → winners board cloud → prizes/partners.
 
+### P2c — Forum (**обов’язково** / must-have) — «Форум»
+**UA working title:** Форум · **Goal:** ділитися досвідом і питати — не плутати з SnoutStories (фото-стрічка) і не з DM.
+
+| Need | Notes |
+|--|--|
+| Ask | Питання по темах (корм, здоров’я *інформаційно*, поведінка, подорожі, рослини, вид тварини…) |
+| Share experience | Відповіді / треди від власників |
+| Categories | За видом тварини + темою; пізніше — притулки / усиновлення |
+| Trust | Модерація, без меддіагнозів; дисклеймер «не заміна вета» |
+| Identity | Author card з Мої дані / pets count; optional link to Stories profile |
+
+**Ship after:** Stories sticky + light moderation. **Do not** replace Stories with forum — both stay.
+
+### P2d — Blog (editorial) — «Блог»
+**Idea:** редакційний / curated блог **по категоріях** (догляд, корм, подорожі, безпека рослин, види тварин, притулки…).  
+Complements forum (UGC Q&A) and Stories (photos).  
+Tone: same brand voice — calm, no fear marketing.  
+Can live in-app first; knowsnout.com later as SEO surface.
+
 ### P3 — Charity & shelters
 - Charity hub: curated **links**, posts, campaigns
 - Shelter directory: name, city, **address**, contacts, website
@@ -146,8 +167,17 @@ Ship order: ~~share buttons~~ → ~~contest entry UI v1~~ → ~~contest public d
 - Clear status: sponsored / needs help
 - Transparency notes (shelter-reported); KnowSnout is facilitator, not bank on day one (links / partners first)
 
-### P6 — Species expansion
-- Rabbits, birds, and other popular pets after dog/cat flows are stable
+### P6 — Species expansion (велика перспектива)
+**MVP:** dogs & cats only.  
+**Target:** усі домашні улюбленці **і «не зовсім домашні»** companion animals, яких люди тримають (кролики, птахи, гризуни, рептилії, екзотика тощо — поетапно).
+
+| Wave | Examples | Notes |
+|--|--|--|
+| 1 (now) | Dog, cat | Food · plant · breed · care · travel |
+| 2 | Rabbit, bird, small mammal | Profiles + care packs; food/plant where data exists |
+| 3 | Reptile / exotic / other | Honest “limited data” UX; never fake completeness |
+
+Architecture: keep `species` extensible; UI copy «Собака / Кіт / Інше» → richer species picker later. Brand & IA must not lock to “only dogs & cats forever”.
 
 ---
 

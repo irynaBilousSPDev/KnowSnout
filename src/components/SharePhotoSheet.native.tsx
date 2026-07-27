@@ -11,7 +11,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { WatermarkCapture } from '@/src/components/WatermarkCapture.native';
 import { t } from '@/src/i18n';
-import { shareText } from '@/src/lib/share';
+import { copyText, shareText, shareToTelegram } from '@/src/lib/share';
 import { saveImageToLibrary, shareImageFile } from '@/src/lib/shareMedia';
 import { brand } from '@/src/theme/brand';
 
@@ -21,9 +21,11 @@ type Props = {
   imageUri?: string | null;
   message: string;
   title?: string;
+  /** Optional deep link for copy / Telegram */
+  linkUrl?: string | null;
 };
 
-type Action = 'social' | 'link' | 'download';
+type Action = 'social' | 'link' | 'download' | 'copy' | 'telegram';
 
 export function SharePhotoSheet({
   visible,
@@ -31,6 +33,7 @@ export function SharePhotoSheet({
   imageUri,
   message,
   title,
+  linkUrl,
 }: Props) {
   const shotRef = useRef<ViewShot>(null);
   const [captureReady, setCaptureReady] = useState(false);
@@ -62,6 +65,16 @@ export function SharePhotoSheet({
     if (busy) return;
     setBusy(action);
     try {
+      if (action === 'copy') {
+        await copyText(linkUrl?.trim() || message);
+        onClose();
+        return;
+      }
+      if (action === 'telegram') {
+        await shareToTelegram(message);
+        onClose();
+        return;
+      }
       if (action === 'link' || !imageUri) {
         await shareText({ title: title ?? t('share.dialogTitle'), message });
         onClose();
@@ -155,6 +168,24 @@ function SheetBody({
               onPress={() => onAction('social')}
             />
           ) : null}
+
+          <ActionRow
+            icon="paper-plane-outline"
+            label={t('share.telegram')}
+            hint={t('share.telegramHint')}
+            busy={busy === 'telegram'}
+            disabled={Boolean(busy)}
+            onPress={() => onAction('telegram')}
+          />
+
+          <ActionRow
+            icon="copy-outline"
+            label={t('share.copyLink')}
+            hint={t('share.copyLinkHint')}
+            busy={busy === 'copy'}
+            disabled={Boolean(busy)}
+            onPress={() => onAction('copy')}
+          />
 
           <ActionRow
             icon="link-outline"

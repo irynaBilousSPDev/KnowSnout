@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { env } from '@/src/lib/env';
+import { isUuid } from '@/src/lib/uuid';
+import { getCurrentUser } from '@/src/services/auth';
+import { supabase } from '@/src/services/supabase';
+
 const BLOCKED_KEY = 'knowsnout.story_blocks.v1';
 const REPORTS_KEY = 'knowsnout.story_reports.v1';
 
@@ -46,30 +51,73 @@ async function readReports(): Promise<StoryReport[]> {
   }
 }
 
+async function cloudUser() {
+  if (env.isDemoMode || !supabase) return null;
+  const user = await getCurrentUser();
+  if (!user || !isUuid(user.id)) return null;
+  return user;
+}
+
 export async function listBlockedUserIds(): Promise<string[]> {
-  return readBlocked();
+  const local = await readBlocked();
+  const user = await cloudUser();
+  if (!user || !supabase) return local;
+
+  try {
+    const { data, error } = await supabase
+      .from('story_blocks')
+      .select('blocked_id')
+      .eq('blocker_id', user.id);
+    if (error || !data) return local;
+    const cloud = data.map((row) => String(row.blocked_id)).filter(Boolean);
+    if (!cloud.length) return local;
+    return writeBlocked([...local, ...cloud]);
+  } catch {
+    return local;
+  }
 }
 
 export async function isUserBlocked(userId: string): Promise<boolean> {
   if (!userId) return false;
-  const ids = await readBlocked();
+  const ids = await listBlockedUserIds();
   return ids.includes(userId);
 }
 
 export async function blockUser(userId: string): Promise<string[]> {
   if (!userId) return readBlocked();
   const ids = await readBlocked();
-  if (ids.includes(userId)) return ids;
-  return writeBlocked([...ids, userId]);
+  const next = ids.includes(userId)
+    ? ids
+    : await writeBlocked([...ids, userId]);
+
+  const user = await cloudUser();
+  if (user && isUuid(userId) && supabase) {
+    await supabase.from('story_blocks').upsert(
+      { blocker_id: user.id, blocked_id: userId },
+      { onConflict: 'blocker_id,blocked_id', ignoreDuplicates: true },
+    );
+  }
+  return next;
 }
 
 export async function unblockUser(userId: string): Promise<string[]> {
-  const ids = await readBlocked();
-  return writeBlocked(ids.filter((id) => id !== userId));
+  const next = await writeBlocked(
+    (await readBlocked()).filter((id) => id !== userId),
+  );
+
+  const user = await cloudUser();
+  if (user && isUuid(userId) && supabase) {
+    await supabase
+      .from('story_blocks')
+      .delete()
+      .eq('blocker_id', user.id)
+      .eq('blocked_id', userId);
+  }
+  return next;
 }
 
 /**
- * Local report log only (scaffold). No server review queue yet.
+ * Local cache + optional Supabase insert when both IDs are real UUIDs.
  */
 export async function reportStoryTarget(input: {
   targetUserId: string;
@@ -93,5 +141,27 @@ export async function reportStoryTarget(input: {
     REPORTS_KEY,
     JSON.stringify([report, ...prev].slice(0, 100)),
   );
+
+  const user = await cloudUser();
+  if (user && isUuid(input.targetUserId) && supabase) {
+    const row: Record<string, unknown> = {
+      reporter_id: user.id,
+      target_user_id: input.targetUserId,
+      reason: input.reason,
+      note: report.note,
+    };
+    if (input.postId && isUuid(input.postId)) {
+      row.post_id = input.postId;
+    }
+    const { data } = await supabase
+      .from('story_reports')
+      .insert(row)
+      .select('id')
+      .maybeSingle();
+    if (data?.id) {
+      report.id = String(data.id);
+    }
+  }
+
   return report;
 }

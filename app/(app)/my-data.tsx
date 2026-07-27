@@ -381,7 +381,12 @@ export default function MyDataScreen() {
             </Text>
           </View>
 
-          <View className="mt-4">
+          <View className="mt-4 gap-3">
+            <PrimaryButton
+              label={t('me.openMessages')}
+              variant="secondary"
+              onPress={() => router.push('/(app)/messages')}
+            />
             <PrimaryButton
               label={t('sources.open')}
               variant="secondary"

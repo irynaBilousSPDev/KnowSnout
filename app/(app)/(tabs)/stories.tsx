@@ -1,6 +1,5 @@
 import { AppScreen } from '@/src/components/AppScreen';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
-import { SegmentedControl } from '@/src/components/SegmentedControl';
 import { SharePhotoSheet } from '@/src/components/SharePhotoSheet';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
@@ -8,7 +7,7 @@ import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { LoadingState } from '@/src/components/LoadingState';
 import { ErrorState } from '@/src/components/ErrorState';
 import { t } from '@/src/i18n';
-import { buildStoryShareMessage } from '@/src/lib/share';
+import { buildStoryDeepLink, buildStoryShareMessage } from '@/src/lib/share';
 import { brand } from '@/src/theme/brand';
 import {
   createStoryPost,
@@ -19,6 +18,7 @@ import {
 } from '@/src/services/stories';
 import {
   isFollowing,
+  syncLocalFollowsToCloud,
   toggleFollow,
   unfollowUser,
 } from '@/src/services/storyFollows';
@@ -27,6 +27,7 @@ import {
   reportStoryTarget,
   type StoryReportReason,
 } from '@/src/services/storyModeration';
+import { getCareStreak, type CareStreakState } from '@/src/services/careStreak';
 import { listPets } from '@/src/services/pets';
 import { getCurrentUser } from '@/src/services/auth';
 import { confirmAction } from '@/src/lib/confirm';
@@ -275,6 +276,7 @@ export default function StoriesScreen() {
   const [modBusy, setModBusy] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [composeError, setComposeError] = useState<string | null>(null);
+  const [careStreak, setCareStreak] = useState<CareStreakState | null>(null);
 
   const closeCompose = () => {
     setComposeOpen(false);
@@ -287,6 +289,7 @@ export default function StoriesScreen() {
       else setLoading(true);
       setError(null);
       try {
+        void syncLocalFollowsToCloud();
         const [feed, nextPets] = await Promise.all([
           listStoryFeed(filter),
           listPets().catch(() => [] as PetRow[]),
@@ -396,10 +399,13 @@ export default function StoriesScreen() {
       mine: post.mine,
     });
     setReportOpen(false);
+    setCareStreak(null);
     try {
       const user = await getCurrentUser();
-      if (post.mine || (user && post.userId === user.id)) {
+      const mine = Boolean(post.mine || (user && post.userId === user.id));
+      if (mine) {
         setAuthorFollowing(false);
+        setCareStreak(await getCareStreak());
         return;
       }
       setAuthorFollowing(await isFollowing(post.userId));
@@ -482,76 +488,95 @@ export default function StoriesScreen() {
     { id: 'mine', label: t('stories.filterMine') },
   ];
 
-  return (
-    <AppScreen>
-      <View className="px-5 pb-2 pt-4">
-        <ScreenHeader
-          title={t('stories.brand')}
-          subtitle={t('stories.tagline')}
-        />
-        <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
-          <Text className="font-body-medium text-sm text-forest-800">
-            {t('stories.feedNote')}
-          </Text>
-        </View>
-        <View className="mt-3">
+  const feedHeader = (
+    <View style={styles.feedHeader}>
+      <ScreenHeader logo="icon" showProfile />
+      <View style={styles.actionsRow}>
+        <View style={styles.actionsPrimary}>
           <PrimaryButton
             label={t('stories.addPost')}
+            size="sm"
             onPress={openCompose}
           />
         </View>
-        <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
-          <Text className="font-body-medium text-sm text-forest-800">
-            {t('contests.teaserTitle')}: {t('contests.teaserBody')}
-          </Text>
-          <View className="mt-3">
-            <PrimaryButton
-              label={t('contests.open')}
-              size="sm"
-              variant="secondary"
-              onPress={() => router.push('/(app)/contests')}
-            />
-          </View>
-        </View>
-
-        <View className="mt-3">
-          <SegmentedControl
-            value={filter}
-            onChange={setFilter}
-            options={filters}
+        <Pressable
+          onPress={() => router.push('/(app)/contests')}
+          style={styles.contestsBtn}
+          accessibilityRole="button"
+          accessibilityLabel={t('contests.open')}
+        >
+          <Ionicons name="trophy-outline" size={18} color={brand.tealPressed} />
+        </Pressable>
+        <Pressable
+          onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
+          style={styles.contestsBtn}
+          accessibilityRole="button"
+          accessibilityLabel={
+            viewMode === 'list' ? t('stories.viewGrid') : t('stories.viewList')
+          }
+        >
+          <Ionicons
+            name={viewMode === 'list' ? 'grid-outline' : 'list'}
+            size={18}
+            color={brand.tealPressed}
           />
-        </View>
-
-        <View className="mt-3 flex-row items-center justify-between gap-3">
-          <View className="flex-1">
-            <SegmentedControl
-              value={viewMode}
-              onChange={setViewMode}
-              options={[
-                { id: 'list', label: t('stories.viewList') },
-                { id: 'grid', label: t('stories.viewGrid') },
-              ]}
-            />
-          </View>
-        </View>
+        </Pressable>
       </View>
 
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filterRow}
+      >
+        {filters.map((f) => {
+          const active = filter === f.id;
+          return (
+            <Pressable
+              key={f.id}
+              onPress={() => setFilter(f.id)}
+              style={[styles.filterChip, active && styles.filterChipActive]}
+            >
+              <Text
+                style={[
+                  styles.filterChipText,
+                  active && styles.filterChipTextActive,
+                ]}
+              >
+                {f.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+
+  return (
+    <AppScreen>
       {loading ? (
-        <LoadingState message={t('stories.loading')} />
+        <View style={styles.flex}>
+          {feedHeader}
+          <LoadingState message={t('stories.loading')} />
+        </View>
       ) : error ? (
-        <ErrorState message={error} onRetry={() => void load()} />
+        <View style={styles.flex}>
+          {feedHeader}
+          <ErrorState message={error} onRetry={() => void load()} />
+        </View>
       ) : (
         <FlatList
           key={viewMode}
+          style={styles.flex}
           data={posts}
           keyExtractor={(item) => item.id}
           numColumns={viewMode === 'grid' ? 2 : 1}
           columnWrapperStyle={
-            viewMode === 'grid' ? { gap: 10, paddingHorizontal: 20 } : undefined
+            viewMode === 'grid' ? styles.gridRow : undefined
           }
-          contentContainerClassName={
-            viewMode === 'grid' ? 'pb-10 pt-2' : 'px-5 pb-10 pt-2'
+          contentContainerStyle={
+            viewMode === 'grid' ? styles.gridContent : styles.listContent
           }
+          ListHeaderComponent={feedHeader}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -560,15 +585,15 @@ export default function StoriesScreen() {
             />
           }
           ListEmptyComponent={
-            <View className="mt-10 items-center px-8">
-              <Text className="text-center font-body text-forest-600">
+            <View style={styles.emptyWrap}>
+              <Text style={styles.emptyText}>
                 {filter === 'mine'
                   ? t('stories.emptyMine')
                   : filter === 'following'
                     ? t('stories.emptyFollowing')
                     : t('stories.emptyFilter')}
               </Text>
-              <View className="mt-4 w-full">
+              <View style={styles.emptyBtn}>
                 <PrimaryButton
                   label={t('stories.addPost')}
                   onPress={openCompose}
@@ -577,7 +602,11 @@ export default function StoriesScreen() {
             </View>
           }
           renderItem={({ item }) => (
-            <View className={viewMode === 'grid' ? 'flex-1' : undefined}>
+            <View
+              style={
+                viewMode === 'grid' ? styles.gridItem : styles.listItem
+              }
+            >
               <StoryPostCard
                 post={item}
                 compact={viewMode === 'grid'}
@@ -805,6 +834,20 @@ export default function StoriesScreen() {
                 <Text className="mt-4 font-body text-xs leading-5 text-forest-500">
                   {t('stories.authorHint')}
                 </Text>
+                {authorCard.mine && careStreak ? (
+                  <View className="mt-3 rounded-2xl bg-mist px-4 py-3">
+                    <Text className="font-body-bold text-sm text-forest-900">
+                      {t('stories.careStreakTitle', {
+                        count: careStreak.currentStreak,
+                      })}
+                    </Text>
+                    <Text className="mt-1 font-body text-xs text-forest-600">
+                      {t('stories.careStreakBest', {
+                        count: careStreak.bestStreak,
+                      })}
+                    </Text>
+                  </View>
+                ) : null}
                 <View className="mt-5 gap-3">
                   {authorCard.mine ? (
                     <Text className="text-center font-body text-sm text-forest-600">
@@ -821,6 +864,22 @@ export default function StoriesScreen() {
                         variant={authorFollowing ? 'secondary' : 'primary'}
                         loading={followBusy}
                         onPress={() => void onToggleAuthorFollow()}
+                      />
+                      <PrimaryButton
+                        label={t('dm.message')}
+                        variant="secondary"
+                        onPress={() => {
+                          const card = authorCard;
+                          setAuthorCard(null);
+                          router.push({
+                            pathname: '/(app)/dm/[userId]',
+                            params: {
+                              userId: card.userId,
+                              name: card.author,
+                              avatarKey: card.avatarKey,
+                            },
+                          });
+                        }}
                       />
                       {reportOpen ? (
                         <View className="gap-2">
@@ -886,11 +945,13 @@ export default function StoriesScreen() {
         onClose={() => setSharePost(null)}
         imageUri={sharePost?.imageUri}
         title={t('share.dialogTitle')}
+        linkUrl={sharePost ? buildStoryDeepLink(sharePost.id) : null}
         message={
           sharePost
             ? buildStoryShareMessage({
                 petName: sharePost.petName,
                 caption: sharePost.caption,
+                postId: sharePost.id,
               })
             : ''
         }
@@ -900,6 +961,90 @@ export default function StoriesScreen() {
 }
 
 const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  feedHeader: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 4,
+  },
+  actionsPrimary: { flex: 1 },
+  contestsBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: brand.surfaceElevated,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+  },
+  filterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingTop: 12,
+    paddingBottom: 4,
+  },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: brand.surfaceElevated,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+  },
+  filterChipActive: {
+    backgroundColor: brand.tealPressed,
+    borderColor: brand.tealPressed,
+  },
+  filterChipText: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 13,
+    color: brand.tealPressed,
+  },
+  filterChipTextActive: {
+    fontFamily: 'DMSans_700Bold',
+    color: brand.surface,
+  },
+  listContent: {
+    paddingBottom: 24,
+  },
+  listItem: {
+    paddingHorizontal: 20,
+  },
+  gridContent: {
+    paddingBottom: 24,
+  },
+  gridRow: {
+    gap: 10,
+    paddingHorizontal: 20,
+  },
+  gridItem: {
+    flex: 1,
+  },
+  emptyWrap: {
+    marginTop: 32,
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  emptyText: {
+    textAlign: 'center',
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#5A7A72',
+  },
+  emptyBtn: {
+    marginTop: 16,
+    width: '100%',
+    paddingHorizontal: 20,
+  },
   compactMedia: {
     width: '100%',
     aspectRatio: 1,

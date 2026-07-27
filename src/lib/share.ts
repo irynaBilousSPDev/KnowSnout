@@ -1,6 +1,9 @@
-import { Alert, Platform, Share } from 'react-native';
+import { Alert, Linking, Platform, Share } from 'react-native';
 
 import { t } from '@/src/i18n';
+import { notify } from '@/src/lib/notify';
+
+const WEB_ORIGIN = 'https://knowsnout.com';
 
 type SharePayload = {
   title?: string;
@@ -26,6 +29,49 @@ export async function shareText(payload: SharePayload): Promise<boolean> {
   }
 }
 
+export async function copyText(text: string): Promise<boolean> {
+  try {
+    if (
+      Platform.OS === 'web' &&
+      typeof navigator !== 'undefined' &&
+      navigator.clipboard?.writeText
+    ) {
+      await navigator.clipboard.writeText(text);
+      notify(t('share.copied'));
+      return true;
+    }
+    return shareText({ title: t('share.copyLink'), message: text });
+  } catch {
+    return shareText({ title: t('share.copyLink'), message: text });
+  }
+}
+
+export function buildStoryDeepLink(postId: string): string {
+  return `${WEB_ORIGIN}/story/${encodeURIComponent(postId)}`;
+}
+
+export function buildContestDeepLink(entryId?: string | null): string {
+  if (entryId) {
+    return `${WEB_ORIGIN}/contest/${encodeURIComponent(entryId)}`;
+  }
+  return `${WEB_ORIGIN}/contests`;
+}
+
+/** Prefer Telegram share URL; falls back to system sheet. */
+export async function shareToTelegram(message: string): Promise<boolean> {
+  const url = `https://t.me/share/url?url=${encodeURIComponent(WEB_ORIGIN)}&text=${encodeURIComponent(message)}`;
+  try {
+    const can = await Linking.canOpenURL(url);
+    if (can) {
+      await Linking.openURL(url);
+      return true;
+    }
+  } catch {
+    /* fall through */
+  }
+  return shareText({ title: t('share.telegram'), message });
+}
+
 export function buildScanShareMessage(input: {
   productName: string;
   score: number;
@@ -39,19 +85,25 @@ export function buildScanShareMessage(input: {
 export function buildStoryShareMessage(input: {
   petName: string;
   caption: string;
+  postId?: string | null;
 }): string {
-  return t('share.storyMessage', {
+  const base = t('share.storyMessage', {
     pet: input.petName,
     caption: input.caption,
   });
+  if (!input.postId) return base;
+  return `${base}\n${buildStoryDeepLink(input.postId)}`;
 }
 
 export function buildContestShareMessage(input: {
   petName: string;
   caption: string;
+  entryId?: string | null;
 }): string {
-  return t('share.contestMessage', {
+  const base = t('share.contestMessage', {
     pet: input.petName,
     caption: input.caption,
   });
+  if (!input.entryId) return base;
+  return `${base}\n${buildContestDeepLink(input.entryId)}`;
 }

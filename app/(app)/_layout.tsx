@@ -163,6 +163,20 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="messages"
+        options={{
+          headerShown: true,
+          title: t('dm.title'),
+        }}
+      />
+      <Stack.Screen
+        name="dm/[userId]"
+        options={{
+          headerShown: true,
+          title: t('dm.title'),
+        }}
+      />
+      <Stack.Screen
         name="care-hub"
         options={{
           headerShown: true,

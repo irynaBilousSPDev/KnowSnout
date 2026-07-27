@@ -33,6 +33,7 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [x] **Нове:** `20260321236000_pet_vet_logs.sql` (журнал ліків / візитів до вета)
 - [x] **Опційно:** `20260321237000_story_follows.sql` (хмарні підписки Stories; UI вже на local)
 - [x] **Опційно:** `20260321238000_story_moderation.sql` (blocks/reports; UI local)
+- [ ] **Нове:** `20260321239000_dm_threads.sql` (DM threads + messages; UI вже є)
 - [ ] Email auth enabled; confirm-email off for MVP
 - [ ] Set secret `OPENAI_API_KEY`
 - [ ] Deploy `analyze-label` function
@@ -42,6 +43,15 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [ ] (Optional) Allegro secrets: `ALLEGRO_CLIENT_ID`, `ALLEGRO_CLIENT_SECRET`
 - [ ] (Optional) `.env`: `EXPO_PUBLIC_USE_MOCK_STORE_SCORES=false` to call Edge instead of client mock
 
+## 2b. Deploy Edge Functions (Dashboard)
+
+CLI у цьому середовищі часто ламається на Windows — зручніше через Dashboard:
+
+1. Supabase → **Edge Functions** → Deploy / create з `supabase/functions/analyze-label`, `identify-plant`, `identify-breed` (і опційно `store-rating`).
+2. **Project Settings → Edge Functions → Secrets**: `OPENAI_API_KEY` = твій ключ (не в клієнтський `.env`).
+3. У `.env` клієнта: `EXPO_PUBLIC_USE_MOCK_AI=false` (у тебе вже так) → restart через Cursor task **start** (`npm start` = `expo start --lan`).
+4. Перевір сканом корму / рослини / породи на телефоні.
+
 ## 3. OpenAI
 
 - [ ] Create API key
@@ -50,8 +60,9 @@ Use this while connecting real backends. Demo mode works without any of this.
 
 ## 4. App switch to production AI
 
-- [ ] `.env`: `EXPO_PUBLIC_USE_MOCK_AI=false`
-- [ ] Restart Expo (`npx expo start -c`)
+- [x] `.env`: `EXPO_PUBLIC_USE_MOCK_AI=false` (already set locally)
+- [ ] Restart Expo via Cursor task **start** (`npm start`)
+- [ ] Deploy Edge + set `OPENAI_API_KEY` secret (див. §2b)
 - [ ] Sign up a real user and scan a label on device
 
 ## 5. GitHub

@@ -23,6 +23,7 @@
 | зроблено (користувач, 2026-07-27) | `20260321235000_pet_life_stage.sql` | `pets.life_stage` для матчу корму |
 | зроблено (користувач, 2026-07-27) | `20260321237000_story_follows.sql` | хмарні підписки Stories (UI поки local) |
 | зроблено (користувач, 2026-07-27) | `20260321238000_story_moderation.sql` | blocks/reports (UI local) |
+| **запустити** | `20260321239000_dm_threads.sql` | DM threads + messages |
 
 ## Архітектура вкладок (зафіксовано)
 
@@ -44,8 +45,8 @@
 | Ідея | Статус |
 |--|--|
 | Профіль: місто + «скільки дітей» + список улюбленців у Мої дані | ✅ місто + список pets |
-| Deploy `identify-breed` (+ `OPENAI_API_KEY`, `USE_MOCK_AI=false`) | ⏳ ops |
-| Deploy `identify-plant` / `analyze-label` | ⏳ ops |
+| Deploy `identify-breed` (+ `OPENAI_API_KEY`, `USE_MOCK_AI=false`) | ⏳ ops Dashboard · mock уже `false` у `.env` |
+| Deploy `identify-plant` / `analyze-label` | ⏳ ops Dashboard |
 
 ### P1 — глибина догляду / продукт
 | Ідея | Статус |
@@ -62,11 +63,17 @@
 ### P2 — соцшар
 | Ідея | Статус |
 |--|--|
-| SnoutStories follows / автор-картка / care streak | ✅ follows + автор (local) · care streak пізніше |
-| Модерація (report / block) | ✅ local · SQL опційно |
-| Chat / DM (легкий) | ⏳ |
+| SnoutStories follows / автор-картка / care streak | ✅ cloud follows + care streak (self) |
+| Модерація (report / block) | ✅ cloud + local cache |
+| Chat / DM (легкий) | ✅ UI + local · SQL `20260321239000_dm_threads.sql` |
 | Конкурси: день / тиждень / місяць / рік (глибше) | ✅ теми + вхід зі Stories (local) |
-| Share у соцмережі (розширити) | ⏳ v1 sheet є |
+| Share у соцмережі (розширити) | ✅ Telegram + copy deep link |
+
+### P2 — знання спільноти (зафіксовано в бріфі)
+| Ідея | Статус |
+|--|--|
+| **Форум** (питати + ділитися досвідом) — **обов’язково** | ⏳ окремо від Stories / DM |
+| **Блог** по категоріях (editorial) | ⏳ |
 
 ### P3–P6 — далі
 | Ідея | Статус |
@@ -74,7 +81,7 @@
 | Charity hub + каталог притулків | ⏳ |
 | Adoption «хто шукає родину» (staff-led) | ⏳ |
 | Віртуальне утримання тварини | ⏳ |
-| Інші види (кролики, птахи…) | ⏳ |
+| Розширення видів: усі улюбленці + «не зовсім домашні» | ⏳ після dog/cat (див. P6 vision) |
 | Журнал порід у хмарі | ⏳ local зараз |
 | PL локалізація UI | ⏳ |
 
@@ -84,4 +91,4 @@
 - Нічого не «губимо бо пізно».
 - **Каркас спочатку:** UI + mock / Edge stubs; реальні API (OpenAI, Allegro, Plant ID…) підключаємо пізніше, коли знадобиться.
 
-Останнє оновлення: 2026-07-27 — Allegro store-score badge (mock каркас).
+Останнє оновлення: 2026-07-27 — зафіксовано must-have **Форум** + **Блог** + P6 усі companion animals; раніше: P2 DM / follows / moderation / share.
