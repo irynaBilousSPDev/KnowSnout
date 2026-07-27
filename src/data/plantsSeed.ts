@@ -425,6 +425,485 @@ export const PLANTS_SEED: PlantRecord[] = [
       },
     ],
   },
+  {
+    id: 'seed-ficus-elastica',
+    latin: 'Ficus elastica',
+    name_uk: 'Фікус каучуконосний',
+    name_en: 'Rubber plant',
+    name_pl: 'Fikus sprężysty',
+    aliases: ['rubber plant', 'фікус', 'каучукове дерево'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'mild',
+        notes: 'Сік може дратувати шкіру/ШКТ при поїданні.',
+      },
+      {
+        species: 'dog',
+        level: 'mild',
+        notes: 'Сік може дратувати шкіру/ШКТ при поїданні.',
+      },
+    ],
+  },
+  {
+    id: 'seed-ficus-benjamina',
+    latin: 'Ficus benjamina',
+    name_uk: 'Фікус Бенджаміна',
+    name_en: 'Weeping fig',
+    name_pl: 'Fikus benjamina',
+    aliases: ['weeping fig', 'benjamin fig', 'бенджамін'],
+    toxicity: [
+      { species: 'cat', level: 'mild', notes: 'Може викликати подразнення ШКТ.' },
+      { species: 'dog', level: 'mild', notes: 'Може викликати подразнення ШКТ.' },
+    ],
+  },
+  {
+    id: 'seed-ivy',
+    latin: 'Hedera helix',
+    name_uk: 'Плющ звичайний',
+    name_en: 'English ivy',
+    name_pl: 'Bluszcz pospolity',
+    aliases: ['english ivy', 'ivy', 'плющ'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Сапоніни — блювота, діарея, можлива млявість.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Сапоніни — блювота, діарея, можлива млявість.',
+      },
+    ],
+  },
+  {
+    id: 'seed-schefflera',
+    latin: 'Schefflera spp.',
+    name_uk: 'Шефлера',
+    name_en: 'Umbrella plant / schefflera',
+    name_pl: 'Szeflera',
+    aliases: ['umbrella plant', 'шефлера', 'шеффлера'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Оксалати — подразнення рота, слина, блювання.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Оксалати — подразнення рота, слина, блювання.',
+      },
+    ],
+  },
+  {
+    id: 'seed-jade',
+    latin: 'Crassula ovata',
+    name_uk: 'Товстянка / нефритове дерево',
+    name_en: 'Jade plant',
+    name_pl: 'Grubosz jajowaty',
+    aliases: ['jade', 'money plant', 'товстянка', 'красула'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Може викликати блювання й млявість.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Може викликати блювання й млявість.',
+      },
+    ],
+  },
+  {
+    id: 'seed-kalanchoe',
+    latin: 'Kalanchoe spp.',
+    name_uk: 'Каланхое',
+    name_en: 'Kalanchoe',
+    name_pl: 'Kalanchoe',
+    aliases: ['kalanchoe', 'каланхое'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Кардіоглікозиди — ШКТ і ризик для серця.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Кардіоглікозиди — ШКТ і ризик для серця.',
+      },
+    ],
+  },
+  {
+    id: 'seed-poinsettia',
+    latin: 'Euphorbia pulcherrima',
+    name_uk: 'Пуансетія',
+    name_en: 'Poinsettia',
+    name_pl: 'Wilczomlecz piękny',
+    aliases: ['poinsettia', 'різдвяна зірка', 'пуансетія'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'mild',
+        notes: 'Зазвичай легке подразнення рота/ШКТ, не «смертельна» міф-токсичність.',
+      },
+      {
+        species: 'dog',
+        level: 'mild',
+        notes: 'Зазвичай легке подразнення рота/ШКТ.',
+      },
+    ],
+  },
+  {
+    id: 'seed-lily-valley',
+    latin: 'Convallaria majalis',
+    name_uk: 'Конвалія',
+    name_en: 'Lily of the valley',
+    name_pl: 'Konwalia majowa',
+    aliases: ['lily of the valley', 'конвалія'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Кардіотоксична — усі частини; терміново до вета.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Кардіотоксична — усі частини; терміново до вета.',
+      },
+    ],
+  },
+  {
+    id: 'seed-yew',
+    latin: 'Taxus baccata',
+    name_uk: 'Тис',
+    name_en: 'Yew',
+    name_pl: 'Cis pospolity',
+    aliases: ['yew', 'тис ягідний'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Дуже небезпечна — серце; терміново до вета.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Дуже небезпечна — серце; терміново до вета.',
+      },
+    ],
+  },
+  {
+    id: 'seed-begonia',
+    latin: 'Begonia spp.',
+    name_uk: 'Бегонія',
+    name_en: 'Begonia',
+    name_pl: 'Begonia',
+    aliases: ['begonia', 'бегонія'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Оксалати (особливо бульби/корені) — подразнення.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Оксалати (особливо бульби/корені) — подразнення.',
+      },
+    ],
+  },
+  {
+    id: 'seed-chrysanthemum',
+    latin: 'Chrysanthemum spp.',
+    name_uk: 'Хризантема',
+    name_en: 'Chrysanthemum',
+    name_pl: 'Chryzantema',
+    aliases: ['mum', 'хризантема', 'chrysanthemum'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Може викликати блювання, діарею, дерматит.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Може викликати блювання, діарею, дерматит.',
+      },
+    ],
+  },
+  {
+    id: 'seed-hydrangea',
+    latin: 'Hydrangea spp.',
+    name_uk: 'Гортензія',
+    name_en: 'Hydrangea',
+    name_pl: 'Hortensja',
+    aliases: ['hydrangea', 'гортензія'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Ціаногенні глікозиди — блювота, діарея.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Ціаногенні глікозиди — блювота, діарея.',
+      },
+    ],
+  },
+  {
+    id: 'seed-syngonium',
+    latin: 'Syngonium podophyllum',
+    name_uk: 'Сингоніум',
+    name_en: 'Arrowhead plant',
+    name_pl: 'Syngonium',
+    aliases: ['arrowhead', 'сингоніум', 'nephthytis'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Оксалати — подразнення рота й блювання.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Оксалати — подразнення рота й блювання.',
+      },
+    ],
+  },
+  {
+    id: 'seed-anthurium',
+    latin: 'Anthurium spp.',
+    name_uk: 'Антуріум',
+    name_en: 'Anthurium / flamingo flower',
+    name_pl: 'Anturium',
+    aliases: ['anthurium', 'антуріум', 'flamingo flower'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Оксалати — біль у роті, слина, блювання.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Оксалати — біль у роті, слина, блювання.',
+      },
+    ],
+  },
+  {
+    id: 'seed-alocasia',
+    latin: 'Alocasia spp.',
+    name_uk: 'Алоказія',
+    name_en: 'Alocasia / elephant ear',
+    name_pl: 'Alokazja',
+    aliases: ['alocasia', 'elephant ear', 'алоказія'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Оксалати — сильне подразнення слизових.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Оксалати — сильне подразнення слизових.',
+      },
+    ],
+  },
+  {
+    id: 'seed-tomato-plant',
+    latin: 'Solanum lycopersicum',
+    name_uk: 'Томат (рослина)',
+    name_en: 'Tomato plant',
+    name_pl: 'Pomidor',
+    aliases: ['tomato', 'томат', 'помідор', 'tomato vine'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Зелені частини / незрілі плоди — соланін; стиглі плоди зазвичай менш ризикові.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Зелені частини / незрілі плоди — соланін.',
+      },
+    ],
+  },
+  {
+    id: 'seed-grape',
+    latin: 'Vitis vinifera',
+    name_uk: 'Виноград',
+    name_en: 'Grape / vine',
+    name_pl: 'Winorośl',
+    aliases: ['grape', 'raisin', 'виноград', 'родзинки'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Ризик для нирок; уникати навіть малих кількостей.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Добре відома токсичність для собак — нирки; терміново до вета.',
+      },
+    ],
+  },
+  {
+    id: 'seed-onion',
+    latin: 'Allium cepa',
+    name_uk: 'Цибуля',
+    name_en: 'Onion',
+    name_pl: 'Cebula',
+    aliases: ['onion', 'цибуля', 'allium'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Ушкоджує еритроцити — навіть у їжі/юшці.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Ушкоджує еритроцити — навіть у їжі/юшці.',
+      },
+    ],
+  },
+  {
+    id: 'seed-garlic',
+    latin: 'Allium sativum',
+    name_uk: 'Часник',
+    name_en: 'Garlic',
+    name_pl: 'Czosnek',
+    aliases: ['garlic', 'часник'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'toxic',
+        notes: 'Як і цибуля — ризик гемолізу.',
+      },
+      {
+        species: 'dog',
+        level: 'toxic',
+        notes: 'Як і цибуля — ризик гемолізу.',
+      },
+    ],
+  },
+  {
+    id: 'seed-hoya',
+    latin: 'Hoya spp.',
+    name_uk: 'Хойя',
+    name_en: 'Hoya / wax plant',
+    name_pl: 'Hoya',
+    aliases: ['hoya', 'wax plant', 'хойя', 'восковик'],
+    toxicity: [
+      { species: 'cat', level: 'safe', notes: 'Зазвичай вважається безпечною.' },
+      { species: 'dog', level: 'safe', notes: 'Зазвичай вважається безпечною.' },
+    ],
+  },
+  {
+    id: 'seed-pilea',
+    latin: 'Pilea peperomioides',
+    name_uk: 'Пілея',
+    name_en: 'Chinese money plant',
+    name_pl: 'Pilea',
+    aliases: ['pilea', 'chinese money plant', 'пілея'],
+    toxicity: [
+      { species: 'cat', level: 'safe', notes: 'Зазвичай безпечна.' },
+      { species: 'dog', level: 'safe', notes: 'Зазвичай безпечна.' },
+    ],
+  },
+  {
+    id: 'seed-parlor-palm',
+    latin: 'Chamaedorea elegans',
+    name_uk: 'Хамедорея (парлова пальма)',
+    name_en: 'Parlor palm',
+    name_pl: 'Chamedora wytworna',
+    aliases: ['parlor palm', 'neanthe bella', 'хамедорея'],
+    toxicity: [
+      { species: 'cat', level: 'safe', notes: 'Зазвичай безпечна.' },
+      { species: 'dog', level: 'safe', notes: 'Зазвичай безпечна.' },
+    ],
+  },
+  {
+    id: 'seed-aspidistra',
+    latin: 'Aspidistra elatior',
+    name_uk: 'Аспідістра',
+    name_en: 'Cast iron plant',
+    name_pl: 'Aspidistra',
+    aliases: ['cast iron plant', 'аспідістра'],
+    toxicity: [
+      { species: 'cat', level: 'safe', notes: 'Зазвичай безпечна.' },
+      { species: 'dog', level: 'safe', notes: 'Зазвичай безпечна.' },
+    ],
+  },
+  {
+    id: 'seed-haworthia',
+    latin: 'Haworthia spp.',
+    name_uk: 'Гавортія',
+    name_en: 'Haworthia',
+    name_pl: 'Haworthia',
+    aliases: ['haworthia', 'гавортія', 'zebra plant'],
+    toxicity: [
+      { species: 'cat', level: 'safe', notes: 'Зазвичай безпечна.' },
+      { species: 'dog', level: 'safe', notes: 'Зазвичай безпечна.' },
+    ],
+  },
+  {
+    id: 'seed-echeveria',
+    latin: 'Echeveria spp.',
+    name_uk: 'Ечеверія',
+    name_en: 'Echeveria',
+    name_pl: 'Echeveria',
+    aliases: ['echeveria', 'ечеверія', 'сукулент'],
+    toxicity: [
+      { species: 'cat', level: 'safe', notes: 'Зазвичай безпечна.' },
+      { species: 'dog', level: 'safe', notes: 'Зазвичай безпечна.' },
+    ],
+  },
+  {
+    id: 'seed-basil',
+    latin: 'Ocimum basilicum',
+    name_uk: 'Базилік',
+    name_en: 'Basil',
+    name_pl: 'Bazylia',
+    aliases: ['basil', 'базилік'],
+    toxicity: [
+      {
+        species: 'cat',
+        level: 'safe',
+        notes: 'Кулинарні кількості зазвичай ок; великі дози можуть дратувати ШКТ.',
+      },
+      {
+        species: 'dog',
+        level: 'safe',
+        notes: 'Кулинарні кількості зазвичай ок.',
+      },
+    ],
+  },
+  {
+    id: 'seed-ponytail',
+    latin: 'Beaucarnea recurvata',
+    name_uk: 'Бокарнея (кінський хвіст)',
+    name_en: 'Ponytail palm',
+    name_pl: 'Nolina',
+    aliases: ['ponytail palm', 'elephant foot', 'бокарнея', 'ноліна'],
+    toxicity: [
+      { species: 'cat', level: 'safe', notes: 'Зазвичай безпечна.' },
+      { species: 'dog', level: 'safe', notes: 'Зазвичай безпечна.' },
+    ],
+  },
 ];
+
+/** Informational count for UI / docs. */
+export const PLANTS_SEED_COUNT = PLANTS_SEED.length;
 
 export const MOCK_PHOTO_PLANT_ID = 'seed-epipremnum';

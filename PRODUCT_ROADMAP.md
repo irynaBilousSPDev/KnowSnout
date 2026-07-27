@@ -19,9 +19,9 @@ Code/DB: **English**. UI: **Ukrainian** first, Polish later (same i18n keys — 
 ## Near-term (next steps)
 0. ~~Finish pending SQL~~ (user confirmed) — new: `plant_safety` migration
 1. ~~Share~~ · ~~Мої дані~~ · ~~Vaccines~~ · ~~Travel~~ · ~~SnoutSpotlight v1~~ · ~~Water/play v1~~ · ~~Plant safety v1~~
-2. SnoutStories cloud backend (SQL ready)
-3. Expand plant catalog / optional paid Plant ID API
-4. User profile extras (pets count / “діти”)
+2. SnoutStories cloud backend ✅ (+ comments)
+3. Expand plant catalog ✅ / optional paid Plant ID later
+4. User profile extras (city / “діти”)
 
 ## Later (captured in PRODUCT_VISION.md)
 - **SnoutStories** — feed; remind SQL `20260321200000_snout_stories.sql` before real backend

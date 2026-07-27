@@ -52,15 +52,18 @@ export const DATA_SOURCES: DataSourceEntry[] = [
     id: 'openai',
     name: 'OpenAI (GPT Vision)',
     kind: 'ai',
-    usedForUk: 'Розбір фото етикетки корму; розпізнавання рослин (Edge)',
+    usedForUk:
+      'Розбір фото етикетки корму; рослин; порід собак/котів (Edge)',
     codePaths: [
       'supabase/functions/analyze-label',
       'supabase/functions/identify-plant',
+      'supabase/functions/identify-breed',
+      'src/services/breedId.ts',
     ],
     homepage: 'https://platform.openai.com',
     licenseOrTerms: 'OpenAI API Terms — key only on server',
     attributionUk:
-      'AI-оцінка складу / рослин через захищений сервер. Результат інформаційний.',
+      'AI-оцінка складу / рослин / порід через захищений сервер. Результат інформаційний.',
   },
   {
     id: 'thedogapi',
@@ -120,6 +123,7 @@ export const DATA_SOURCES: DataSourceEntry[] = [
       'src/data/plantsSeed.ts',
       'src/services/plants.ts',
       'supabase/migrations/20260321220000_plant_safety.sql',
+      'supabase/migrations/20260321233000_plant_catalog_expand.sql',
     ],
     homepage: 'https://knowsnout.com/',
     licenseOrTerms:

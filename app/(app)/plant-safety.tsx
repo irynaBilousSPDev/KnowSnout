@@ -20,10 +20,12 @@ import { getPet } from '@/src/services/pets';
 import {
   checkPlantByName,
   identifyPlantFromPhoto,
+  listPlantsCatalog,
   plantLevelTone,
   savePlantCheck,
   searchPlants,
 } from '@/src/services/plants';
+import { PLANTS_SEED_COUNT } from '@/src/data/plantsSeed';
 import { brand } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 import type {
@@ -99,11 +101,14 @@ export default function PlantSafetyScreen() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [catalogCount, setCatalogCount] = useState(PLANTS_SEED_COUNT);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
+      const catalog = await listPlantsCatalog();
+      setCatalogCount(catalog.length);
       if (!petId) {
         setPet(null);
         setSpecies('dog');
@@ -230,6 +235,9 @@ export default function PlantSafetyScreen() {
       >
         <Text className="font-body text-base leading-6 text-forest-600">
           {t('plants.subtitle')}
+        </Text>
+        <Text className="mt-1 font-body text-xs text-forest-500">
+          {t('plants.catalogHint', { count: String(catalogCount) })}
         </Text>
         {pet ? (
           <Text className="mt-2 font-body-bold text-base text-forest-800">

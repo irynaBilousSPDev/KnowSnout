@@ -137,7 +137,7 @@ async function fetchCachePlants(): Promise<PlantRecord[]> {
       .select(
         'id, latin, name_uk, name_en, name_pl, aliases, plant_toxicity(species, level, notes)',
       )
-      .limit(200);
+      .limit(500);
     if (error || !data) return [];
     return (data as DbPlant[]).map(mapDbPlant);
   } catch {
@@ -145,10 +145,22 @@ async function fetchCachePlants(): Promise<PlantRecord[]> {
   }
 }
 
+function mergeCatalog(cached: PlantRecord[], seed: PlantRecord[]): PlantRecord[] {
+  if (cached.length === 0) return seed;
+  const byLatin = new Map<string, PlantRecord>();
+  for (const plant of cached) {
+    byLatin.set(normalize(plant.latin), plant);
+  }
+  for (const plant of seed) {
+    const key = normalize(plant.latin);
+    if (!byLatin.has(key)) byLatin.set(key, plant);
+  }
+  return Array.from(byLatin.values());
+}
+
 export async function listPlantsCatalog(): Promise<PlantRecord[]> {
   const cached = await fetchCachePlants();
-  if (cached.length > 0) return cached;
-  return PLANTS_SEED;
+  return mergeCatalog(cached, PLANTS_SEED);
 }
 
 export async function searchPlants(

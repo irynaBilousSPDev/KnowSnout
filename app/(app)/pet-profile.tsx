@@ -307,6 +307,19 @@ export default function PetProfileScreen() {
     );
   }
 
+  const fedToday = feeds.some((f) => {
+    const d = new Date(f.fed_at);
+    const now = new Date();
+    return (
+      d.getFullYear() === now.getFullYear() &&
+      d.getMonth() === now.getMonth() &&
+      d.getDate() === now.getDate()
+    );
+  });
+  const todayCare = care
+    ? careProgress(care, { fedFromLogs: fedToday })
+    : null;
+
   return (
     <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
       <ScrollView contentContainerClassName="px-5 pb-12 pt-2">
@@ -476,14 +489,15 @@ export default function PetProfileScreen() {
           <Text className="mb-2 font-body-bold text-lg text-forest-800">
             {t('care.waterTitle')}
           </Text>
-          {care ? (
+          {todayCare ? (
             <Text className="mb-4 font-body text-base leading-6 text-forest-700">
               {t('care.progress', {
-                done: careProgress(care).done,
-                total: careProgress(care).total,
+                done: todayCare.done,
+                total: todayCare.total,
               })}
-              {care.water_done ? ` · ${t('care.waterDoneShort')}` : ''}
-              {care.play_done ? ` · ${t('care.playDoneShort')}` : ''}
+              {todayCare.water ? ` · ${t('care.waterDoneShort')}` : ''}
+              {todayCare.play ? ` · ${t('care.playDoneShort')}` : ''}
+              {todayCare.feed ? ` · ${t('care.feedDoneShort')}` : ''}
             </Text>
           ) : (
             <Text className="mb-4 font-body text-base leading-6 text-forest-700">

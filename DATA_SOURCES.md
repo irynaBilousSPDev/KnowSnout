@@ -15,11 +15,11 @@
 | Source | Used for |
 |--|--|
 | Open Pet Food Facts / Open Food Facts | Food barcode / ingredients |
-| OpenAI (server Edge only) | Label / plant vision |
-| TheDogAPI / TheCatAPI | Breed search + photo quiz |
+| OpenAI (server Edge only) | Label / plant / **breed** vision |
+| TheDogAPI / TheCatAPI | Breed search + enrich after vision + photo quiz |
 | Wikidata (CC0) | Quiz origin / animal group + enrich |
 | Open Trivia DB (CC BY-SA) | Animals trivia quiz |
 | KnowSnout plants seed + Supabase | Plant safety cache |
 | Supabase | Auth, journal, quiz scores, storage |
 
-Last process note: **2026-07-27** — living registry introduced.
+Last process note: **2026-07-27** — `identify-breed` Edge + client enrich from Dog/Cat APIs.

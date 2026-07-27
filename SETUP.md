@@ -1,4 +1,4 @@
-# SnoutScore setup checklist
+# KnowSnout setup checklist
 
 Use this while connecting real backends. Demo mode works without any of this.
 
@@ -23,6 +23,9 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [x] `20260321190000_favorite_food_feeding.sql`
 - [x] `20260321210000_pet_vaccines.sql`
 - [x] `20260321200000_snout_stories.sql`
+- [x] **Нове:** `20260321232000_story_posts_feed_fields.sql` (privacy / species / story-images bucket)
+- [x] **Нове:** `20260321233000_plant_catalog_expand.sql` (+27 рослин у кеш Supabase)
+- [x] **Нове:** `20260321234000_story_comments_author.sql` (ім’я автора в коментарях)
 - [x] **Нове:** `20260321220000_plant_safety.sql` (кеш рослин + токсичність + історія перевірок)
 - [x] **Нове:** `20260321230000_quiz_sessions.sql` (результати квізу + рейтинг в акаунті)
 - [x] **Нове:** `20260321231000_quiz_sessions_trivia.sql` (категорія Open Trivia Animals)
@@ -30,6 +33,7 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [ ] Set secret `OPENAI_API_KEY`
 - [ ] Deploy `analyze-label` function
 - [ ] (Plant photo ID) Deploy `identify-plant` function
+- [ ] (Breed photo ID) Deploy `identify-breed` function
 
 ## 3. OpenAI
 

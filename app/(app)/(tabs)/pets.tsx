@@ -105,6 +105,14 @@ export default function PetsScreen() {
         />
         <View style={styles.cta}>
           <PrimaryButton
+            label={t('care.hubOpen')}
+            size="lg"
+            variant="secondary"
+            onPress={() => router.push('/(app)/care-hub')}
+          />
+        </View>
+        <View style={styles.cta}>
+          <PrimaryButton
             label={t('pets.add')}
             size="lg"
             onPress={() => router.push('/(app)/pet-form')}
@@ -192,7 +200,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   cta: {
-    marginTop: 16,
+    marginTop: 12,
   },
   list: {
     paddingHorizontal: 20,

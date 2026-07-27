@@ -24,6 +24,7 @@ import {
   getCareToday,
   updateCareToday,
 } from '@/src/services/care';
+import { addFeedingLog, hasFedToday } from '@/src/services/feeding';
 import { getPet } from '@/src/services/pets';
 import { brand } from '@/src/theme/brand';
 import type { CareDayLog } from '@/src/types/care';
@@ -61,7 +62,8 @@ async function addPlayReminderToCalendar(petName: string) {
       .toLowerCase()
       .includes('google'),
   );
-  const calendarId = google?.id ?? writable.find((c) => c.isPrimary)?.id ?? writable[0]?.id;
+  const calendarId =
+    google?.id ?? writable.find((c) => c.isPrimary)?.id ?? writable[0]?.id;
   if (!calendarId) {
     await Linking.openURL(
       googleCalendarUrl({ title, dateIso, details }),
@@ -125,8 +127,11 @@ export default function PetCareScreen() {
 
   const [pet, setPet] = useState<PetRow | null>(null);
   const [log, setLog] = useState<CareDayLog | null>(null);
+  const [fedFromLogs, setFedFromLogs] = useState(false);
   const [waterNote, setWaterNote] = useState('');
   const [playNote, setPlayNote] = useState('');
+  const [feedNote, setFeedNote] = useState('');
+  const [savingFeed, setSavingFeed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -146,10 +151,13 @@ export default function PetCareScreen() {
         return;
       }
       const care = await getCareToday(petId);
+      const fed = await hasFedToday(petId);
       setPet(nextPet);
       setLog(care);
+      setFedFromLogs(fed);
       setWaterNote(care.water_note ?? '');
       setPlayNote(care.play_note ?? '');
+      setFeedNote(care.feed_note ?? '');
     } catch (err) {
       setError(err instanceof Error ? err.message : t('care.loadError'));
     } finally {
@@ -182,15 +190,68 @@ export default function PetCareScreen() {
     setLog(next);
   };
 
+  const toggleFeed = async () => {
+    if (!petId || !log) return;
+    if (fedFromLogs) {
+      if (!log.feed_done) {
+        const next = await updateCareToday(petId, {
+          feed_done: true,
+          feed_note: feedNote || null,
+        });
+        setLog(next);
+      }
+      return;
+    }
+    const next = await updateCareToday(petId, {
+      feed_done: !log.feed_done,
+      feed_note: !log.feed_done ? feedNote : null,
+    });
+    setLog(next);
+  };
+
   const saveNotes = async () => {
     if (!petId || !log) return;
     const next = await updateCareToday(petId, {
       water_note: log.water_done ? waterNote : log.water_note,
       play_note: log.play_done ? playNote : log.play_note,
       play_minutes: log.play_done ? log.play_minutes ?? 5 : log.play_minutes,
+      feed_note:
+        log.feed_done || fedFromLogs ? feedNote : log.feed_note,
     });
     setLog(next);
     Alert.alert(t('care.saved'));
+  };
+
+  const onLogFavoriteFeed = async () => {
+    if (!petId || !pet) return;
+    const productName = pet.favorite_food?.trim();
+    if (!productName) {
+      Alert.alert(t('common.error'), t('pets.noScansForFavorite'));
+      return;
+    }
+    setSavingFeed(true);
+    try {
+      await addFeedingLog({
+        petId,
+        productName,
+        productId: pet.favorite_product_id,
+        note: feedNote,
+      });
+      const next = await updateCareToday(petId, {
+        feed_done: true,
+        feed_note: feedNote || null,
+      });
+      setLog(next);
+      setFedFromLogs(true);
+      Alert.alert(t('pets.feedingSaved'));
+    } catch (err) {
+      Alert.alert(
+        t('common.error'),
+        err instanceof Error ? err.message : t('common.error'),
+      );
+    } finally {
+      setSavingFeed(false);
+    }
   };
 
   const onCalendar = async () => {
@@ -226,8 +287,9 @@ export default function PetCareScreen() {
     );
   }
 
-  const progress = careProgress(log);
+  const progress = careProgress(log, { fedFromLogs });
   const isCat = pet.species === 'cat';
+  const feedDone = progress.feed;
 
   return (
     <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
@@ -285,6 +347,39 @@ export default function PetCareScreen() {
               className="mb-3 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-sm text-forest-900"
               placeholderTextColor="#7FD9C9"
             />
+          ) : null}
+
+          <CheckRow
+            done={feedDone}
+            title={t('care.feedAction')}
+            subtitle={
+              pet.favorite_food
+                ? t('care.feedHint')
+                : t('care.feedHintNoFavorite')
+            }
+            onToggle={() => void toggleFeed()}
+          />
+          {feedDone ? (
+            <TextInput
+              value={feedNote}
+              onChangeText={setFeedNote}
+              placeholder={t('care.feedNotePlaceholder')}
+              className="mb-3 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-sm text-forest-900"
+              placeholderTextColor="#7FD9C9"
+            />
+          ) : null}
+          {pet.favorite_food ? (
+            <View className="mb-3">
+              <PrimaryButton
+                label={t('care.feedLogFavorite')}
+                variant="secondary"
+                loading={savingFeed}
+                onPress={() => void onLogFavoriteFeed()}
+              />
+              <Text className="mt-2 font-body text-xs text-forest-500">
+                {pet.favorite_food}
+              </Text>
+            </View>
           ) : null}
         </View>
 

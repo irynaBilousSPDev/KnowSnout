@@ -1,7 +1,8 @@
-# SnoutScore — product vision backlog (do not lose ideas)
+# KnowSnout — product vision backlog (do not lose ideas)
 
 Everything below is captured for stepwise delivery.  
-**Code/DB:** English · **UI:** Ukrainian first (PL later).
+**Code/DB:** English · **UI:** Ukrainian first (PL later).  
+**Brand:** KnowSnout (formerly SnoutScore).
 
 ---
 
@@ -36,11 +37,11 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 |--|--|
 | Species | Dog or cat (user picks) |
 | Name search | **Open APIs:** [TheDogAPI](https://thedogapi.com/) / [TheCatAPI](https://thecatapi.com/) breed catalogs |
-| Photo ID | Vision model (mock now) → breed name → **enrich** from same open APIs (temperament, origin, image) |
+| Photo ID | Vision (`identify-breed` Edge) → breed name → **enrich** from TheDogAPI/TheCatAPI (temperament, origin, image); mock if no key / `USE_MOCK_AI` |
 | UX | Confidence % · never claim pedigree / medical diagnosis |
 | History | Журнал → Породи (local v1; cloud later) |
 
-Status: **v1 shipped** (search live + photo mock). Next: real vision identify + optional API keys for higher rate limits.
+Status: **shipped** — search + photo vision Edge (`identify-breed`); enrich from Dog/Cat APIs; mock when no key.
 
 
 ### P1 — Care depth
@@ -76,11 +77,7 @@ Ship after vaccines v1 or in parallel as a thin “Care today” card on pet pro
 - Open references (e.g. ASPCA-class lists, PlantNet) remain useful for research / fallback / attribution, but we won’t block the feature on “must be free-only” if a paid provider is safer and licensed for commercial use.
 - Always show disclaimer + “contact vet / poison hotline if ingestion suspected”.
 
-**Product rules:**
-- Show confidence + never claim veterinary diagnosis
-- Prefer Latin name as DB key; UI labels in Ukrainian (+ Polish later)
-- Start after food + vaccines are sticky; dogs & cats first
-- Rate-limit + cache aggressively to control cost
+**Status 2026-07-27:** curated catalog expanded (~50 species in seed + SQL upsert); client merges seed∪Supabase cache. Paid Plant ID / PlantNet still deferred until accuracy budget justifies it.
 
 ### P2 — Social: **SnoutStories** (маркетингова назва)
 **EN:** SnoutStories · **UA tab:** «Стрічка» · **Tagline:** *Ділися улюбленцями. Збирай сердечка.*
@@ -96,7 +93,7 @@ Inspiration: feed like photo social apps (avatar + name, photo, time ago, heart,
 | Feature | Notes |
 |--|--|
 | Post | Photo (+ optional short caption), linked to a pet profile when possible |
-| Heart / like | SnoutScore teal hearts |
+| Heart / like | KnowSnout teal hearts |
 | Comments | Thread under post |
 | Filters | Усі · Коти · Собаки · Мої |
 | Views | Список / сітка |
@@ -110,8 +107,10 @@ In-app paw reviews on **products** stay separate from SnoutStories.
 
 **Do not** launch full Instagram clone before food + vaccines are sticky — ship Stories tab UI early, backend next.
 
-**Human reminder:** UI tab exists with local/demo posts. Before wiring real posts/likes/comments → run `20260321200000_snout_stories.sql` and tell the user (tracked in `REMINDERS.md`).
+**Human reminder:** UI + cloud client shipped (posts, likes, comments). Comments need `20260321234000_story_comments_author.sql`. Follows / moderation later.
 **Also critical:** `20260321190000_favorite_food_feeding.sql` for pet create + profile feeding.
+
+**Status 2026-07-27:** feed list + publish + likes + **comments** via Supabase; demo seed when offline / missing schema. Run `20260321234000_story_comments_author.sql` for `author_name` on comments.
 
 ### P2b — Contests & share (**SnoutSpotlight** working title)
 **UA:** «Зіркові мордочки» / конкурси у SnoutStories  
@@ -138,13 +137,13 @@ Ship order: ~~share buttons~~ → ~~contest entry UI v1~~ → ~~contest public d
 ### P4 — Adoption (“хто шукає родину”)
 - Listings filled by **responsible shelter staff** (not random users)
 - Shelter workflows / procedures before matching owner
-- If adopter already has SnoutScore history (pets, care) → easier trust for next pet
+- If adopter already has KnowSnout history (pets, care) → easier trust for next pet
 - On adopted pet profile: **“from shelter X”** + optional shelter badge
 
 ### P5 — Virtual sponsorship (“віртуальне утримання”)
 - Support a **specific** shelter animal financially (not only generic shelter donate)
 - Clear status: sponsored / needs help
-- Transparency notes (shelter-reported); SnoutScore is facilitator, not bank on day one (links / partners first)
+- Transparency notes (shelter-reported); KnowSnout is facilitator, not bank on day one (links / partners first)
 
 ### P6 — Species expansion
 - Rabbits, birds, and other popular pets after dog/cat flows are stable
@@ -205,7 +204,7 @@ Ship order: ~~share buttons~~ → ~~contest entry UI v1~~ → ~~contest public d
 2. If it becomes the daily open habit, **promote to bottom tab** and demote Стрічка or merge journal (decide with usage).
 Rationale: 5 tabs now crowded; care must feel daily, but tab only earns a slot once the checklist is sticky.
 
-**Status:** recommended path above; user leaned C, open to better.
+**Status:** v1 shipped 2026-07-27 — hub `care-hub` (pick pet → progress 0–3) + `pet-care` tiles water / play / feed; entry from Улюбленці + profile. Tab promotion still deferred.
 
 ### P1 — Animal quiz — make it *fun*, not generic trivia
 **Idea:** in-app quiz about animals (dogs/cats first).

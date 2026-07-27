@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
-import { uriToBase64 } from '@/src/lib/image';
+import { guessMimeType, uriToBase64 } from '@/src/lib/image';
 import {
   identifyBreedFromPhoto,
   saveBreedHistoryItem,
@@ -80,7 +80,11 @@ export default function BreedScanScreen() {
     setError(null);
     try {
       const imageBase64 = await uriToBase64(photoUri);
-      const next = await identifyBreedFromPhoto({ species, imageBase64 });
+      const next = await identifyBreedFromPhoto({
+        species,
+        imageBase64,
+        mimeType: guessMimeType(photoUri),
+      });
       setResult(next);
       const saved = await saveBreedHistoryItem({
         species,

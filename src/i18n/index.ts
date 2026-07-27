@@ -198,10 +198,10 @@ const uk: Dict = {
   'breed.checkError': 'Не вдалося визначити породу',
   'breed.confidence': 'Впевненість ~{pct}%',
   'breed.mockHint':
-    'Після фото натисни «Визначити з фото» — збережемо підказку в Журнал.',
+    'Після фото натисни «Визначити з фото» — AI підкаже породу, деталі з TheDogAPI/TheCatAPI; збережемо в Журнал.',
   'breed.photoTapHint': 'Спочатку обери кіт/собака, потім фото.',
   'breed.disclaimer':
-    'Суміші й схожі породи часті. Це інформаційна підказка з відкритих баз + AI пізніше — не офіційний родовід.',
+    'Суміші й схожі породи часті. Це інформаційна підказка (AI + відкриті бази) — не офіційний родовід і не ДНК-тест.',
 
   'scan.foodLead': 'Штрихкод спочатку; якщо складу немає в каталозі — фото етикетки.',
 
@@ -209,7 +209,22 @@ const uk: Dict = {
   'stories.tagline': 'Ділися улюбленцями. Збирай сердечка.',
   'stories.previewNote':
     'Стрічка про мордочок: лайки й коментарі. Публікація поки на пристрої — бекенд згодом.',
+  'stories.feedNote':
+    'Стрічка про мордочок: пости, сердечка й коментарі з акаунту.',
   'stories.likes': 'вподобань',
+  'stories.commentsTitle': 'Коментарі',
+  'stories.commentsOpen': 'Коментувати',
+  'stories.commentsCount': '{count} коментарів',
+  'stories.commentsEmpty': 'Поки тихо — напиши першим',
+  'stories.commentsLoadError': 'Не вдалося завантажити коментарі',
+  'stories.commentPlaceholder': 'Напиши коментар…',
+  'stories.commentSend': 'Надіслати',
+  'stories.commentRequired': 'Напиши текст коментаря',
+  'stories.commentTooLong': 'Занадто довгий коментар (макс. 500)',
+  'stories.commentSendError': 'Не вдалося надіслати коментар',
+  'stories.commentDeleteTitle': 'Видалити коментар?',
+  'stories.commentDeleteBody': 'Це прибере твій коментар зі стрічки.',
+  'stories.postNotFound': 'Пост не знайдено',
   'stories.filterAll': 'Усі',
   'stories.filterCats': 'Коти',
   'stories.filterDogs': 'Собаки',
@@ -231,10 +246,14 @@ const uk: Dict = {
   'stories.privacyPublic': 'Усі у стрічці',
   'stories.privacyPrivate': 'Лише я',
   'stories.species': 'Про кого',
+  'stories.pickPet': 'Улюбленець',
   'stories.publish': 'Опублікувати',
+  'stories.publishError': 'Не вдалося опублікувати',
   'stories.emptyMine': 'Тут з’являться твої пости',
   'stories.emptyFilter': 'Поки немає постів у цій категорії',
   'stories.mineHint': 'У «Мої» можна додати пост і обрати приватність.',
+  'stories.loading': 'Завантаження стрічки…',
+  'stories.loadError': 'Не вдалося завантажити стрічку',
 
   'me.title': 'Мої дані',
   'me.subtitle': 'Аватар, ім’я та приватність',
@@ -429,13 +448,20 @@ const uk: Dict = {
   'pets.feedingNotePlaceholder': 'Наприклад, добре з’їла / мало пила…',
   'pets.feedingEmpty': 'Поки немає записів про годування',
   'pets.feedingSaved': 'Запис збережено',
-  'care.waterTitle': 'Вода і гра',
+  'care.waterTitle': 'Догляд сьогодні',
   'care.waterSoon':
     'Скоро: водний баланс, нагадування змінити водичку та 5 хв погратися.',
+  'care.hubTitle': 'Догляд',
+  'care.hubSubtitle': 'Сьогодні: вода · гра · годування',
+  'care.hubOpen': 'Догляд сьогодні',
+  'care.hubEmptyTitle': 'Спочатку додай улюбленця',
+  'care.hubEmptyBody':
+    'Після цього тут з’явиться чекліст на день: вода, гра і годування.',
+  'care.hubPickPet': 'Обери улюбленця',
   'care.title': 'Сьогодні з улюбленцем',
-  'care.subtitle': 'вода · гра · без медпретензій',
+  'care.subtitle': 'вода · гра · годування',
   'care.open': 'Відкрити догляд на сьогодні',
-  'care.cardHint': 'Познач свіжу воду та ~5 хв гри.',
+  'care.cardHint': 'Познач воду, гру і годування на сьогодні.',
   'care.disclaimer':
     'Це нагадування для турботи, не ветеринарна порада. Якщо тварина млява або не п’є — звернись до вета.',
   'care.progress': 'Сьогодні зроблено {done} з {total}',
@@ -448,8 +474,15 @@ const uk: Dict = {
   'care.playHintCat':
     'Особливо корисно для котів: полювання / вудочка / лазер обережно',
   'care.playNotePlaceholder': 'Що робили: вудочка, м’ячик…',
+  'care.feedAction': 'Погодувати',
+  'care.feedHint': 'Познач прийом їжі або запиши улюблений корм',
+  'care.feedHintNoFavorite':
+    'Можна просто позначити галочкою; для журналу спочатку обери улюблений корм у профілі',
+  'care.feedNotePlaceholder': 'Нотатка: з’їла все / мало…',
+  'care.feedLogFavorite': 'Записати улюблений корм',
   'care.waterDoneShort': 'вода ✓',
   'care.playDoneShort': 'гра ✓',
+  'care.feedDoneShort': 'їжа ✓',
   'care.saveNotes': 'Зберегти нотатки',
   'care.saved': 'Збережено',
   'care.addPlayReminder': 'Нагадування про гру в календар',
@@ -464,6 +497,8 @@ const uk: Dict = {
   'plants.open': 'Чи безпечна рослина?',
   'plants.subtitle':
     'Перевір вазон або сад за назвою чи фото — для собаки чи кота.',
+  'plants.catalogHint':
+    'У довіднику ~{count} рослин (seed + кеш). Paid Plant ID — пізніше за потреби.',
   'plants.forPet': 'Для {name}',
   'plants.speciesLabel': 'Для кого перевіряємо',
   'plants.speciesDog': 'Собака',

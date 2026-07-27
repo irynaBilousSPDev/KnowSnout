@@ -29,7 +29,7 @@ export const WatermarkCapture = forwardRef<ViewShot, Props>(
             format: 'jpg',
             quality: 0.92,
             result: 'tmpfile',
-            fileName: 'snoutscore-share',
+            fileName: 'knowsnout-share',
           }}
           style={styles.frame}
         >

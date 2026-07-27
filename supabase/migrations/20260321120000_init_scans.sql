@@ -1,4 +1,4 @@
--- SnoutScore initial schema: scans table, RLS, storage bucket
+-- KnowSnout initial schema: scans table, RLS, storage bucket
 
 create extension if not exists "pgcrypto";
 

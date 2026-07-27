@@ -135,6 +135,20 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="story-comments"
+        options={{
+          headerShown: true,
+          title: t('stories.commentsTitle'),
+        }}
+      />
+      <Stack.Screen
+        name="care-hub"
+        options={{
+          headerShown: true,
+          title: t('care.hubTitle'),
+        }}
+      />
+      <Stack.Screen
         name="pet-care"
         options={{
           headerShown: true,

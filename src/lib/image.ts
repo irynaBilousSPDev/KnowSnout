@@ -49,7 +49,7 @@ function guessExtension(uri: string): string {
 }
 
 async function ensureMediaDir(docs: string): Promise<string> {
-  const dir = `${docs}snoutscore-media/`;
+  const dir = `${docs}knowsnout-media/`;
   try {
     const info = await FileSystem.getInfoAsync(dir);
     if (!info.exists) {

@@ -5,19 +5,36 @@ import { SharePhotoSheet } from '@/src/components/SharePhotoSheet';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { LoadingState } from '@/src/components/LoadingState';
+import { ErrorState } from '@/src/components/ErrorState';
 import { t } from '@/src/i18n';
 import { buildStoryShareMessage } from '@/src/lib/share';
 import { brand } from '@/src/theme/brand';
+import {
+  createStoryPost,
+  formatLikedBy,
+  formatStoryTimeAgo,
+  listStoryFeed,
+  toggleStoryLike,
+} from '@/src/services/stories';
+import { listPets } from '@/src/services/pets';
+import type {
+  StoryFeedFilter,
+  StoryPost,
+  StoryPrivacy,
+  StorySpecies,
+} from '@/src/types/story';
+import type { PetRow } from '@/src/types/pet';
 import { useFocusEffect, router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Alert,
   FlatList,
   Image,
   Modal,
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -25,132 +42,77 @@ import {
   View,
 } from 'react-native';
 
-type StorySpecies = 'dog' | 'cat';
-type StoryPrivacy = 'public' | 'private';
-type FeedFilter = 'all' | 'cat' | 'dog' | 'mine';
 type ViewMode = 'list' | 'grid';
-
-type StoryPost = {
-  id: string;
-  author: string;
-  petName: string;
-  species: StorySpecies;
-  avatarKey: string;
-  caption: string;
-  imageUri?: string | null;
-  timeAgo: string;
-  likes: number;
-  likedBy: string;
-  liked: boolean;
-  mine?: boolean;
-  privacy: StoryPrivacy;
-};
-
-const SEED_POSTS: StoryPost[] = [
-  {
-    id: '1',
-    author: 'Iryna',
-    petName: 'Ада',
-    species: 'cat',
-    avatarKey: 'cat-1',
-    caption: 'Сонячний ранок на підвіконні ☀️',
-    timeAgo: '3 дні тому',
-    likes: 12,
-    likedBy: 'Оля, Марко та ще 10',
-    liked: false,
-    privacy: 'public',
-  },
-  {
-    id: '2',
-    author: 'Andrii',
-    petName: 'Белла',
-    species: 'cat',
-    avatarKey: 'cat-2',
-    caption: 'Нова іграшка — і нуль спокою вдома',
-    timeAgo: '5 год тому',
-    likes: 8,
-    likedBy: 'Катя та ще 7',
-    liked: true,
-    privacy: 'public',
-  },
-  {
-    id: '3',
-    author: 'Marta',
-    petName: 'Рекс',
-    species: 'dog',
-    avatarKey: 'dog-1',
-    caption: 'Перша прогулянка після дощу',
-    timeAgo: 'Вчора',
-    likes: 21,
-    likedBy: 'Ігор, Аня та ще 19',
-    liked: false,
-    privacy: 'public',
-  },
-];
-
-const MY_POSTS_KEY = 'snoutscore.local.my_story_posts';
-
-async function readMyPosts(): Promise<StoryPost[]> {
-  const raw = await AsyncStorage.getItem(MY_POSTS_KEY);
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw) as StoryPost[];
-  } catch {
-    return [];
-  }
-}
-
-async function writeMyPosts(posts: StoryPost[]) {
-  await AsyncStorage.setItem(MY_POSTS_KEY, JSON.stringify(posts));
-}
 
 function StoryPostCard({
   post,
   compact,
   onToggleLike,
   onShare,
+  onOpenComments,
 }: {
   post: StoryPost;
   compact?: boolean;
-  onToggleLike: (id: string) => void;
+  onToggleLike: (post: StoryPost) => void;
   onShare: (post: StoryPost) => void;
+  onOpenComments: (post: StoryPost) => void;
 }) {
+  const timeAgo = formatStoryTimeAgo(post.createdAt);
+  const likedBy = formatLikedBy(post.likes, post.liked);
+
   if (compact) {
     return (
       <View className="mb-3 overflow-hidden rounded-2xl border border-forest-100 bg-white">
-        <View style={styles.compactMedia}>
-          {post.imageUri ? (
-            <Image
-              source={{ uri: post.imageUri }}
-              style={styles.fillImage}
-              resizeMode="cover"
-            />
-          ) : (
-            <PetAvatar
-              avatarKey={post.avatarKey}
-              species={post.species}
-              size={56}
-              name={post.petName}
-            />
-          )}
-        </View>
+        <Pressable onPress={() => onOpenComments(post)}>
+          <View style={styles.compactMedia}>
+            {post.imageUri ? (
+              <Image
+                source={{ uri: post.imageUri }}
+                style={styles.fillImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <PetAvatar
+                avatarKey={post.avatarKey}
+                species={post.species}
+                size={56}
+                name={post.petName}
+              />
+            )}
+          </View>
+        </Pressable>
         <View className="px-2.5 py-2">
           <Text numberOfLines={2} className="font-body text-xs text-forest-800">
             {post.caption}
           </Text>
-          <Pressable
-            onPress={() => onToggleLike(post.id)}
-            className="mt-1.5 flex-row items-center gap-1"
-          >
-            <Ionicons
-              name={post.liked ? 'heart' : 'heart-outline'}
-              size={16}
-              color={post.liked ? brand.score.poor : brand.tealPressed}
-            />
-            <Text className="font-body text-[11px] text-forest-500">
-              {post.likes}
-            </Text>
-          </Pressable>
+          <View className="mt-1.5 flex-row items-center gap-3">
+            <Pressable
+              onPress={() => onToggleLike(post)}
+              className="flex-row items-center gap-1"
+            >
+              <Ionicons
+                name={post.liked ? 'heart' : 'heart-outline'}
+                size={16}
+                color={post.liked ? brand.score.poor : brand.tealPressed}
+              />
+              <Text className="font-body text-[11px] text-forest-500">
+                {post.likes}
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => onOpenComments(post)}
+              className="flex-row items-center gap-1"
+            >
+              <Ionicons
+                name="chatbubble-outline"
+                size={15}
+                color={brand.tealPressed}
+              />
+              <Text className="font-body text-[11px] text-forest-500">
+                {post.commentsCount}
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     );
@@ -171,10 +133,11 @@ function StoryPostCard({
           </Text>
           <Text className="font-body text-xs text-forest-500">
             {post.petName}
-            {post.privacy === 'private' ? ` · ${t('stories.privacyPrivate')}` : ''}
+            {post.privacy === 'private'
+              ? ` · ${t('stories.privacyPrivate')}`
+              : ''}
           </Text>
         </View>
-        <Ionicons name="ellipsis-horizontal" size={18} color={brand.ink} />
       </View>
 
       <View style={styles.listMedia}>
@@ -201,11 +164,11 @@ function StoryPostCard({
 
       <View className="px-4 py-3">
         <Text className="font-body text-xs uppercase tracking-wide text-forest-500">
-          {post.timeAgo}
+          {timeAgo}
         </Text>
         <View className="mt-3 flex-row items-center gap-5">
           <Pressable
-            onPress={() => onToggleLike(post.id)}
+            onPress={() => onToggleLike(post)}
             className="active:opacity-70"
           >
             <Ionicons
@@ -214,11 +177,16 @@ function StoryPostCard({
               color={post.liked ? brand.score.poor : brand.tealPressed}
             />
           </Pressable>
-          <Ionicons
-            name="chatbubble-outline"
-            size={24}
-            color={brand.tealPressed}
-          />
+          <Pressable
+            onPress={() => onOpenComments(post)}
+            className="active:opacity-70"
+          >
+            <Ionicons
+              name="chatbubble-outline"
+              size={24}
+              color={brand.tealPressed}
+            />
+          </Pressable>
           <Pressable
             onPress={() => onShare(post)}
             className="active:opacity-70"
@@ -233,72 +201,99 @@ function StoryPostCard({
         <View className="mt-3 flex-row items-center">
           <Ionicons name="heart" size={14} color={brand.ink} />
           <Text className="ml-2 flex-1 font-body text-sm text-forest-800">
-            {post.likedBy}
+            {likedBy}
           </Text>
         </View>
         <Text className="mt-2 font-body text-sm text-forest-700">
           <Text className="font-body-bold">{post.author}</Text> {post.caption}
         </Text>
-        <Text className="mt-1 font-body text-xs text-forest-500">
-          {post.likes} {t('stories.likes')}
-        </Text>
+        <Pressable onPress={() => onOpenComments(post)}>
+          <Text className="mt-1 font-body text-xs text-forest-500">
+            {post.likes} {t('stories.likes')}
+            {post.commentsCount > 0
+              ? ` · ${t('stories.commentsCount', { count: String(post.commentsCount) })}`
+              : ` · ${t('stories.commentsOpen')}`}
+          </Text>
+        </Pressable>
       </View>
     </View>
   );
 }
 
 export default function StoriesScreen() {
-  const [seed, setSeed] = useState(SEED_POSTS);
-  const [mine, setMine] = useState<StoryPost[]>([]);
-  const [filter, setFilter] = useState<FeedFilter>('all');
+  const [posts, setPosts] = useState<StoryPost[]>([]);
+  const [pets, setPets] = useState<PetRow[]>([]);
+  const [filter, setFilter] = useState<StoryFeedFilter>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [composeOpen, setComposeOpen] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [caption, setCaption] = useState('');
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [privacy, setPrivacy] = useState<StoryPrivacy>('public');
   const [species, setSpecies] = useState<StorySpecies>('cat');
+  const [petId, setPetId] = useState<string | null>(null);
   const [sharePost, setSharePost] = useState<StoryPost | null>(null);
 
-  const loadMine = useCallback(async () => {
-    setMine(await readMyPosts());
-  }, []);
+  const load = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) setRefreshing(true);
+      else setLoading(true);
+      setError(null);
+      try {
+        const [feed, nextPets] = await Promise.all([
+          listStoryFeed(filter),
+          listPets().catch(() => [] as PetRow[]),
+        ]);
+        setPosts(feed);
+        setPets(nextPets);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : t('stories.loadError'));
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [filter],
+  );
 
   useFocusEffect(
     useCallback(() => {
-      void loadMine();
-    }, [loadMine]),
+      void load();
+    }, [load]),
   );
 
-  const allPosts = useMemo(() => [...mine, ...seed], [mine, seed]);
-
-  const visible = useMemo(() => {
-    return allPosts.filter((p) => {
-      if (filter === 'mine') return Boolean(p.mine);
-      // Private posts stay only under «Мої»
-      if (p.mine && p.privacy === 'private') return false;
-      if (filter === 'cat') return p.species === 'cat';
-      if (filter === 'dog') return p.species === 'dog';
-      return true;
-    });
-  }, [allPosts, filter]);
-
-  const toggleLike = (id: string) => {
-    const bump = (list: StoryPost[]) =>
-      list.map((p) =>
-        p.id === id
-          ? {
-              ...p,
-              liked: !p.liked,
-              likes: p.liked ? p.likes - 1 : p.likes + 1,
-            }
-          : p,
+  const onToggleLike = async (post: StoryPost) => {
+    try {
+      const next = await toggleStoryLike(post);
+      setPosts((prev) => prev.map((p) => (p.id === post.id ? next : p)));
+    } catch (err) {
+      Alert.alert(
+        t('common.error'),
+        err instanceof Error ? err.message : t('common.error'),
       );
-    setSeed((prev) => bump(prev));
-    setMine((prev) => {
-      const next = bump(prev);
-      void writeMyPosts(next);
-      return next;
+    }
+  };
+
+  const openComments = (post: StoryPost) => {
+    router.push({
+      pathname: '/(app)/story-comments',
+      params: { postId: post.id },
     });
+  };
+
+  const openCompose = () => {
+    const first = pets[0];
+    if (first && (first.species === 'dog' || first.species === 'cat')) {
+      setPetId(first.id);
+      setSpecies(first.species);
+    } else {
+      setPetId(null);
+      setSpecies('cat');
+    }
+    setComposeOpen(true);
   };
 
   const publish = async () => {
@@ -311,31 +306,39 @@ export default function StoriesScreen() {
       Alert.alert(t('common.error'), t('stories.captionRequired'));
       return;
     }
-    const post: StoryPost = {
-      id: `mine-${Date.now()}`,
-      author: 'Ти',
-      petName: species === 'cat' ? 'Мій кіт' : 'Мій пес',
-      species,
-      avatarKey: species === 'cat' ? 'cat-1' : 'dog-1',
-      caption: text,
-      imageUri,
-      timeAgo: 'Щойно',
-      likes: 0,
-      likedBy: t('stories.privacyPrivate'),
-      liked: false,
-      mine: true,
-      privacy,
-    };
-    const next = [post, ...mine];
-    setMine(next);
-    await writeMyPosts(next);
-    setCaption('');
-    setImageUri(null);
-    setComposeOpen(false);
-    setFilter('mine');
+    setPublishing(true);
+    try {
+      const pet = pets.find((p) => p.id === petId) ?? null;
+      await createStoryPost({
+        caption: text,
+        imageUri,
+        species: pet?.species === 'dog' || pet?.species === 'cat' ? pet.species : species,
+        privacy,
+        petId: pet?.id ?? null,
+        petName: pet?.name ?? null,
+        avatarKey: pet?.avatar_key ?? null,
+      });
+      setCaption('');
+      setImageUri(null);
+      setComposeOpen(false);
+      setFilter('mine');
+      await load(true);
+    } catch (err) {
+      const message =
+        err instanceof Error && err.message === 'PHOTO_REQUIRED'
+          ? t('stories.photoRequired')
+          : err instanceof Error && err.message === 'CAPTION_REQUIRED'
+            ? t('stories.captionRequired')
+            : err instanceof Error
+              ? err.message
+              : t('stories.publishError');
+      Alert.alert(t('common.error'), message);
+    } finally {
+      setPublishing(false);
+    }
   };
 
-  const filters: { id: FeedFilter; label: string }[] = [
+  const filters: { id: StoryFeedFilter; label: string }[] = [
     { id: 'all', label: t('stories.filterAll') },
     { id: 'cat', label: t('stories.filterCats') },
     { id: 'dog', label: t('stories.filterDogs') },
@@ -351,7 +354,7 @@ export default function StoriesScreen() {
         />
         <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
           <Text className="font-body-medium text-sm text-forest-800">
-            {filter === 'mine' ? t('stories.mineHint') : t('stories.previewNote')}
+            {filter === 'mine' ? t('stories.mineHint') : t('stories.feedNote')}
           </Text>
         </View>
         <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
@@ -392,43 +395,57 @@ export default function StoriesScreen() {
           <View className="mt-3">
             <PrimaryButton
               label={t('stories.addPost')}
-              onPress={() => setComposeOpen(true)}
+              onPress={openCompose}
             />
           </View>
         ) : null}
       </View>
 
-      <FlatList
-        key={viewMode}
-        data={visible}
-        keyExtractor={(item) => item.id}
-        numColumns={viewMode === 'grid' ? 2 : 1}
-        columnWrapperStyle={
-          viewMode === 'grid' ? { gap: 10, paddingHorizontal: 20 } : undefined
-        }
-        contentContainerClassName={
-          viewMode === 'grid' ? 'pb-10 pt-2' : 'px-5 pb-10 pt-2'
-        }
-        ListEmptyComponent={
-          <View className="mt-16 items-center px-8">
-            <Text className="text-center font-body text-forest-600">
-              {filter === 'mine'
-                ? t('stories.emptyMine')
-                : t('stories.emptyFilter')}
-            </Text>
-          </View>
-        }
-        renderItem={({ item }) => (
-          <View className={viewMode === 'grid' ? 'flex-1' : undefined}>
-            <StoryPostCard
-              post={item}
-              compact={viewMode === 'grid'}
-              onToggleLike={toggleLike}
-              onShare={setSharePost}
+      {loading ? (
+        <LoadingState message={t('stories.loading')} />
+      ) : error ? (
+        <ErrorState message={error} onRetry={() => void load()} />
+      ) : (
+        <FlatList
+          key={viewMode}
+          data={posts}
+          keyExtractor={(item) => item.id}
+          numColumns={viewMode === 'grid' ? 2 : 1}
+          columnWrapperStyle={
+            viewMode === 'grid' ? { gap: 10, paddingHorizontal: 20 } : undefined
+          }
+          contentContainerClassName={
+            viewMode === 'grid' ? 'pb-10 pt-2' : 'px-5 pb-10 pt-2'
+          }
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => void load(true)}
+              tintColor={brand.tealDeep}
             />
-          </View>
-        )}
-      />
+          }
+          ListEmptyComponent={
+            <View className="mt-16 items-center px-8">
+              <Text className="text-center font-body text-forest-600">
+                {filter === 'mine'
+                  ? t('stories.emptyMine')
+                  : t('stories.emptyFilter')}
+              </Text>
+            </View>
+          }
+          renderItem={({ item }) => (
+            <View className={viewMode === 'grid' ? 'flex-1' : undefined}>
+              <StoryPostCard
+                post={item}
+                compact={viewMode === 'grid'}
+                onToggleLike={(p) => void onToggleLike(p)}
+                onShare={setSharePost}
+                onOpenComments={openComments}
+              />
+            </View>
+          )}
+        />
+      )}
 
       <Modal visible={composeOpen} animationType="slide" transparent>
         <View className="flex-1 justify-end bg-black/40">
@@ -450,30 +467,71 @@ export default function StoriesScreen() {
                 />
               </View>
 
-              <Text className="mt-4 font-body-medium text-sm text-forest-700">
-                {t('stories.species')}
-              </Text>
-              <View className="mt-2 flex-row gap-2">
-                {(['cat', 'dog'] as StorySpecies[]).map((s) => (
-                  <Pressable
-                    key={s}
-                    onPress={() => setSpecies(s)}
-                    className={`flex-1 items-center rounded-2xl py-3 ${
-                      species === s ? 'bg-forest-700' : 'bg-forest-100'
-                    }`}
-                  >
-                    <Text
-                      className={`font-body-bold text-sm ${
-                        species === s ? 'text-sand-50' : 'text-forest-800'
-                      }`}
-                    >
-                      {s === 'cat'
-                        ? t('stories.filterCats')
-                        : t('stories.filterDogs')}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
+              {pets.length > 0 ? (
+                <>
+                  <Text className="mt-4 font-body-medium text-sm text-forest-700">
+                    {t('stories.pickPet')}
+                  </Text>
+                  <View className="mt-2 flex-row flex-wrap gap-2">
+                    {pets
+                      .filter(
+                        (p) => p.species === 'dog' || p.species === 'cat',
+                      )
+                      .map((p) => {
+                        const active = petId === p.id;
+                        return (
+                          <Pressable
+                            key={p.id}
+                            onPress={() => {
+                              setPetId(p.id);
+                              if (p.species === 'dog' || p.species === 'cat') {
+                                setSpecies(p.species);
+                              }
+                            }}
+                            className={`rounded-2xl px-4 py-2.5 ${
+                              active ? 'bg-forest-700' : 'bg-forest-100'
+                            }`}
+                          >
+                            <Text
+                              className={`font-body-bold text-sm ${
+                                active ? 'text-sand-50' : 'text-forest-800'
+                              }`}
+                            >
+                              {p.name}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                  </View>
+                </>
+              ) : (
+                <>
+                  <Text className="mt-4 font-body-medium text-sm text-forest-700">
+                    {t('stories.species')}
+                  </Text>
+                  <View className="mt-2 flex-row gap-2">
+                    {(['cat', 'dog'] as StorySpecies[]).map((s) => (
+                      <Pressable
+                        key={s}
+                        onPress={() => setSpecies(s)}
+                        className={`flex-1 items-center rounded-2xl py-3 ${
+                          species === s ? 'bg-forest-700' : 'bg-forest-100'
+                        }`}
+                      >
+                        <Text
+                          className={`font-body-bold text-sm ${
+                            species === s ? 'text-sand-50' : 'text-forest-800'
+                          }`}
+                        >
+                          {s === 'cat'
+                            ? t('stories.filterCats')
+                            : t('stories.filterDogs')}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </>
+              )}
 
               <Text className="mt-4 font-body-medium text-sm text-forest-700">
                 {t('stories.privacy')}
@@ -521,6 +579,7 @@ export default function StoriesScreen() {
               <View className="mt-5 gap-3">
                 <PrimaryButton
                   label={t('stories.publish')}
+                  loading={publishing}
                   onPress={() => void publish()}
                 />
                 <PrimaryButton

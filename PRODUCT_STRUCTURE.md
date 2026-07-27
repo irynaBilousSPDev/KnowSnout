@@ -1,4 +1,4 @@
-# SnoutScore — product structure (UA/PL markets)
+# KnowSnout — product structure (UA/PL markets)
 
 Code & DB field names: **English**.  
 User interface: **Ukrainian** first (Polish later via the same i18n keys).  

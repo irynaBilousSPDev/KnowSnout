@@ -30,7 +30,7 @@ Do these once — the agent cannot create accounts for you:
 
 1. **Node.js** ≥ 20.19.4 (or current LTS) — you currently may see engine warnings on 20.17.
 2. Install **Expo Go** on Android/iOS.
-3. Create a [Supabase](https://supabase.com) project named `SnoutScore`.
+3. Create a [Supabase](https://supabase.com) project named `KnowSnout`.
 4. Create an [OpenAI](https://platform.openai.com) API key and set a **hard spending limit**.
 5. Copy Project URL + `anon` key into local `.env` (see `.env.example`).
 6. In Supabase SQL Editor, run [`supabase/migrations/20260321120000_init_scans.sql`](supabase/migrations/20260321120000_init_scans.sql).

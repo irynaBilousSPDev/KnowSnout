@@ -45,6 +45,20 @@ function mapRow(row: Record<string, unknown>): FeedingLogRow {
   };
 }
 
+function localDayKey(date = new Date()): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+/** True if this pet already has a feeding_logs row for the local calendar day. */
+export async function hasFedToday(petId: string): Promise<boolean> {
+  const day = localDayKey();
+  const rows = await listFeedingLogs(petId);
+  return rows.some((row) => localDayKey(new Date(row.fed_at)) === day);
+}
+
 export async function listFeedingLogs(petId: string): Promise<FeedingLogRow[]> {
   if (env.isDemoMode || !supabase) {
     const rows = await readLocal();

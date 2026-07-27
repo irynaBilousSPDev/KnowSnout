@@ -37,40 +37,50 @@ alter table public.story_likes enable row level security;
 alter table public.story_comments enable row level security;
 
 -- Open read for authenticated feed; write own rows only (tighten later with follows)
+drop policy if exists "Auth can read story posts" on public.story_posts;
 create policy "Auth can read story posts"
   on public.story_posts for select to authenticated using (true);
 
+drop policy if exists "Users insert own story posts" on public.story_posts;
 create policy "Users insert own story posts"
   on public.story_posts for insert to authenticated
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users update own story posts" on public.story_posts;
 create policy "Users update own story posts"
   on public.story_posts for update to authenticated
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users delete own story posts" on public.story_posts;
 create policy "Users delete own story posts"
   on public.story_posts for delete to authenticated
   using (auth.uid() = user_id);
 
+drop policy if exists "Auth can read story likes" on public.story_likes;
 create policy "Auth can read story likes"
   on public.story_likes for select to authenticated using (true);
 
+drop policy if exists "Users insert own likes" on public.story_likes;
 create policy "Users insert own likes"
   on public.story_likes for insert to authenticated
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users delete own likes" on public.story_likes;
 create policy "Users delete own likes"
   on public.story_likes for delete to authenticated
   using (auth.uid() = user_id);
 
+drop policy if exists "Auth can read story comments" on public.story_comments;
 create policy "Auth can read story comments"
   on public.story_comments for select to authenticated using (true);
 
+drop policy if exists "Users insert own comments" on public.story_comments;
 create policy "Users insert own comments"
   on public.story_comments for insert to authenticated
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users delete own comments" on public.story_comments;
 create policy "Users delete own comments"
   on public.story_comments for delete to authenticated
   using (auth.uid() = user_id);
