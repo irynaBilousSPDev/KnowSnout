@@ -72,6 +72,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="data-sources"
+        options={{
+          headerShown: true,
+          title: t('sources.title'),
+        }}
+      />
+      <Stack.Screen
         name="result"
         options={{
           headerShown: true,

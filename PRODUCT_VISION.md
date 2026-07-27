@@ -233,6 +233,11 @@ Rules: confidence never = pedigree; UA UI; streak / “quiz of the day” later;
 **v2 (2026-07-27):** dedicated **Квіз** tab with categories — (1) Вгадай породу + Wikidata enrich, (2) Звідки порода? Wikidata P495, (3) Група тварин Wikidata labels; SPARQL required.  
 **v2.1:** multi-source confirmed — also **Open Trivia DB Animals** category (+ Dog/Cat API photo). Not Wikidata-only.
 
+### P2 — Living data-sources registry (order without clutter)
+- Canonical: `src/data/dataSources.ts` + `DATA_SOURCES.md`
+- In-app: Мої дані → Джерела даних
+- Update registry whenever APIs change; don’t plaster every screen with logos
+
 ---
 
 ## Implementation rule

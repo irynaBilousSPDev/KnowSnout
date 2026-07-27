@@ -76,7 +76,21 @@ const uk: Dict = {
   'quizHub.triviaBody':
     'Класична вікторина Animals з Open Trivia DB (CC BY-SA)',
   'quizHub.wikidataNote':
-    'Джерела: Wikidata (CC0) · Open Trivia DB (CC BY-SA) · TheDogAPI / TheCatAPI. Не ветвисновок.',
+    'Повний список джерел і ліцензій — у «Мої дані» → «Джерела даних».',
+
+  'sources.title': 'Джерела даних',
+  'sources.open': 'Джерела даних',
+  'sources.lead':
+    'Тут зібрано зовнішні API й бази, які KnowSnout використовує. Основні екрани не засмічуємо атрибуцією — деталі завжди можна відкрити тут.',
+  'sources.updated': 'Оновлено в реєстрі: {date}',
+  'sources.openLink': 'Відкрити сайт джерела →',
+  'sources.kindApi': 'API',
+  'sources.kindDatabase': 'База знань',
+  'sources.kindAi': 'AI',
+  'sources.kindCatalog': 'Каталог',
+  'sources.kindInfra': 'Інфра',
+  'sources.footer':
+    'Інформаційно: не ветвисновок і не офіційний родовід. Реєстр у коді: src/data/dataSources.ts',
 
   'quiz.triviaSubtitle':
     'Питання категорії Animals з Open Trivia DB. Після раунду результат у акаунті.',

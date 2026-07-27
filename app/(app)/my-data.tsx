@@ -1,5 +1,5 @@
 import * as ImagePicker from 'expo-image-picker';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
   Alert,
@@ -290,6 +290,14 @@ export default function MyDataScreen() {
             <Text className="mt-2 font-body text-sm leading-5 text-forest-600">
               {t('me.privacyBody')}
             </Text>
+          </View>
+
+          <View className="mt-4">
+            <PrimaryButton
+              label={t('sources.open')}
+              variant="secondary"
+              onPress={() => router.push('/(app)/data-sources')}
+            />
           </View>
 
           <View className="mt-6">
