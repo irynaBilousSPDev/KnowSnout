@@ -58,6 +58,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="trivia-quiz"
+        options={{
+          headerShown: true,
+          title: t('quizHub.triviaTitle'),
+        }}
+      />
+      <Stack.Screen
         name="quiz-results"
         options={{
           headerShown: true,

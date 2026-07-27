@@ -6,7 +6,11 @@ import { supabase } from '@/src/services/supabase';
 
 const LOCAL_KEY = 'knowsnout.quiz_sessions.v1';
 
-export type QuizCategory = 'breed' | 'breed_origin' | 'animal_group';
+export type QuizCategory =
+  | 'breed'
+  | 'breed_origin'
+  | 'animal_group'
+  | 'animals_trivia';
 
 export type QuizSessionRow = {
   id: string;
@@ -42,20 +46,24 @@ export function emptyQuizStats(): QuizStats {
       breed: emptyCategoryStats(),
       breed_origin: emptyCategoryStats(),
       animal_group: emptyCategoryStats(),
+      animals_trivia: emptyCategoryStats(),
     },
   };
 }
 
 function mapRow(row: Record<string, unknown>): QuizSessionRow {
-  const category = String(row.category) as QuizCategory;
+  const category = String(row.category);
   const speciesRaw = row.species ? String(row.species) : null;
+  const normalized: QuizCategory =
+    category === 'breed_origin' ||
+    category === 'animal_group' ||
+    category === 'animals_trivia'
+      ? category
+      : 'breed';
   return {
     id: String(row.id),
     user_id: String(row.user_id),
-    category:
-      category === 'breed_origin' || category === 'animal_group'
-        ? category
-        : 'breed',
+    category: normalized,
     species: speciesRaw === 'dog' || speciesRaw === 'cat' ? speciesRaw : null,
     score: Number(row.score),
     total: Number(row.total),
@@ -89,11 +97,13 @@ export function computeQuizStats(sessions: QuizSessionRow[]): QuizStats {
     breed: 0,
     breed_origin: 0,
     animal_group: 0,
+    animals_trivia: 0,
   };
   const catBest: Record<QuizCategory, number> = {
     breed: 0,
     breed_origin: 0,
     animal_group: 0,
+    animals_trivia: 0,
   };
 
   for (const s of sessions) {

@@ -60,9 +60,9 @@ const uk: Dict = {
   'check.journalHint': 'Усі результати збираються у вкладці «Журнал».',
 
   'quizHub.title': 'Квіз',
-  'quizHub.subtitle': 'Категорії · Wikidata · відкриті API',
+  'quizHub.subtitle': 'Категорії · кілька відкритих джерел',
   'quizHub.lead':
-    'Обери категорію: фото порід, країна походження або група тварин. Факти з Wikidata — обов’язково.',
+    'Кілька джерел разом: TheDogAPI / TheCatAPI, Wikidata і Open Trivia DB (Animals).',
   'quizHub.breedTitle': 'Вгадай породу',
   'quizHub.breedBody':
     'Фото + 4 варіанти (TheDogAPI / TheCatAPI), факти також з Wikidata',
@@ -72,8 +72,18 @@ const uk: Dict = {
   'quizHub.groupTitle': 'Група тварин',
   'quizHub.groupBody':
     'Ссавець, птах, плазун чи риба? Підписи з Wikidata',
+  'quizHub.triviaTitle': 'Факти про тварин',
+  'quizHub.triviaBody':
+    'Класична вікторина Animals з Open Trivia DB (CC BY-SA)',
   'quizHub.wikidataNote':
-    'Wikidata — відкрита база знань (сестринський проєкт Вікіпедії). CC0 · не ветвисновок.',
+    'Джерела: Wikidata (CC0) · Open Trivia DB (CC BY-SA) · TheDogAPI / TheCatAPI. Не ветвисновок.',
+
+  'quiz.triviaSubtitle':
+    'Питання категорії Animals з Open Trivia DB. Після раунду результат у акаунті.',
+  'quiz.triviaLoading': 'Завантаження Open Trivia DB…',
+  'quiz.triviaTrustNote':
+    'Джерело: Open Trivia DB (відкрита база вікторин, CC BY-SA). Інформаційно.',
+  'quiz.openTrivia': 'Open Trivia DB →',
 
   'quiz.subtitle':
     'Вгадай породу з фото. Після відповіді — факти з каталогів API та Wikidata.',

@@ -15,7 +15,7 @@ import {
 import { brand } from '@/src/theme/brand';
 
 type QuizCategoryCard = {
-  id: 'breed' | 'breed_origin' | 'animal_group';
+  id: 'breed' | 'breed_origin' | 'animal_group' | 'animals_trivia';
   icon: keyof typeof Ionicons.glyphMap;
   titleKey: string;
   bodyKey: string;
@@ -43,6 +43,13 @@ const CATEGORIES: QuizCategoryCard[] = [
     titleKey: 'quizHub.groupTitle',
     bodyKey: 'quizHub.groupBody',
     href: '/(app)/wiki-quiz?category=animal_group',
+  },
+  {
+    id: 'animals_trivia',
+    icon: 'bulb-outline',
+    titleKey: 'quizHub.triviaTitle',
+    bodyKey: 'quizHub.triviaBody',
+    href: '/(app)/trivia-quiz',
   },
 ];
 

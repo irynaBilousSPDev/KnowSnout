@@ -35,6 +35,8 @@ function categoryLabel(category: QuizCategory) {
       return t('quizHub.originTitle');
     case 'animal_group':
       return t('quizHub.groupTitle');
+    case 'animals_trivia':
+      return t('quizHub.triviaTitle');
     default:
       return t('quizHub.breedTitle');
   }
@@ -145,6 +147,7 @@ export default function QuizResultsScreen() {
                     'breed',
                     'breed_origin',
                     'animal_group',
+                    'animals_trivia',
                   ] as QuizCategory[]
                 ).map((cat) => {
                   const c = stats.byCategory[cat];

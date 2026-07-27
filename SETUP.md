@@ -25,6 +25,7 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [x] `20260321200000_snout_stories.sql`
 - [ ] **Нове:** `20260321220000_plant_safety.sql` (кеш рослин + токсичність + історія перевірок)
 - [ ] **Нове:** `20260321230000_quiz_sessions.sql` (результати квізу + рейтинг в акаунті)
+- [ ] **Нове:** `20260321231000_quiz_sessions_trivia.sql` (категорія Open Trivia Animals)
 - [ ] Email auth enabled; confirm-email off for MVP
 - [ ] Set secret `OPENAI_API_KEY`
 - [ ] Deploy `analyze-label` function
