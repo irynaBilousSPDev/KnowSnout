@@ -191,11 +191,13 @@ export default function MyDataScreen() {
             </Text>
           </View>
 
-          <View className="mb-4 rounded-2xl bg-forest-100 px-4 py-3">
-            <Text className="font-body text-xs leading-5 text-forest-700">
-              {t('me.localOnlyHint')}
-            </Text>
-          </View>
+          {__DEV__ ? (
+            <View className="mb-4 rounded-2xl bg-forest-100 px-4 py-3">
+              <Text className="font-body text-xs leading-5 text-forest-700">
+                {t('me.localOnlyHint')}
+              </Text>
+            </View>
+          ) : null}
 
           <View className="rounded-3xl border border-forest-100 bg-white px-5 py-5">
             <Text className="font-body-medium text-xs uppercase tracking-wide text-forest-500">

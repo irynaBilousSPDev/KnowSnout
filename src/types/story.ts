@@ -1,6 +1,6 @@
 export type StorySpecies = 'dog' | 'cat';
 export type StoryPrivacy = 'public' | 'private';
-export type StoryFeedFilter = 'all' | 'cat' | 'dog' | 'mine';
+export type StoryFeedFilter = 'all' | 'following' | 'cat' | 'dog' | 'mine';
 
 export type StoryPost = {
   id: string;

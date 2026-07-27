@@ -12,6 +12,13 @@ import {
   getQuizStats,
   type QuizStats,
 } from '@/src/services/quizResults';
+import {
+  emptyQuizStreak,
+  getDailyQuizChallenge,
+  getQuizStreak,
+  playedQuizToday,
+  type QuizStreakState,
+} from '@/src/services/quizStreak';
 import { brand } from '@/src/theme/brand';
 
 type QuizCategoryCard = {
@@ -55,12 +62,18 @@ const CATEGORIES: QuizCategoryCard[] = [
 
 export default function QuizHubScreen() {
   const [stats, setStats] = useState<QuizStats>(emptyQuizStats());
+  const [streak, setStreak] = useState<QuizStreakState>(emptyQuizStreak());
+  const daily = getDailyQuizChallenge();
+  const doneToday = playedQuizToday(streak);
 
   useFocusEffect(
     useCallback(() => {
       void getQuizStats()
         .then(setStats)
         .catch(() => setStats(emptyQuizStats()));
+      void getQuizStreak()
+        .then(setStreak)
+        .catch(() => setStreak(emptyQuizStreak()));
     }, []),
   );
 
@@ -74,6 +87,33 @@ export default function QuizHubScreen() {
           title={t('quizHub.title')}
           subtitle={t('quizHub.subtitle')}
         />
+
+        <View style={styles.dailyCard}>
+          <Text style={styles.dailyEyebrow}>{t('quizStreak.dailyTitle')}</Text>
+          <Text style={styles.dailyTitle}>{t(daily.titleKey)}</Text>
+          <Text style={styles.dailyBody}>{t(daily.bodyKey)}</Text>
+          <View style={styles.streakRow}>
+            <Text style={styles.streakValue}>
+              {t('quizStreak.current', { count: streak.currentStreak })}
+            </Text>
+            <Text style={styles.streakBest}>
+              {t('quizStreak.best', { count: streak.bestStreak })}
+            </Text>
+          </View>
+          {doneToday ? (
+            <Text style={styles.doneToday}>{t('quizStreak.doneToday')}</Text>
+          ) : null}
+          <View style={styles.ratingBtn}>
+            <PrimaryButton
+              label={
+                doneToday
+                  ? t('quizStreak.playAgain')
+                  : t('quizStreak.playDaily')
+              }
+              onPress={() => router.push(daily.href as never)}
+            />
+          </View>
+        </View>
 
         <View style={styles.ratingCard}>
           <Text style={styles.ratingLabel}>{t('quiz.avgLabel')}</Text>
@@ -143,6 +183,57 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 40,
+  },
+  dailyCard: {
+    marginBottom: 16,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.mist,
+    paddingHorizontal: 18,
+    paddingVertical: 18,
+  },
+  dailyEyebrow: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 12,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+    color: brand.tealPressed,
+  },
+  dailyTitle: {
+    marginTop: 6,
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 22,
+    color: brand.ink,
+  },
+  dailyBody: {
+    marginTop: 6,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#3A5A54',
+  },
+  streakRow: {
+    marginTop: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  streakValue: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 15,
+    color: brand.ink,
+  },
+  streakBest: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 14,
+    color: '#3A5A54',
+  },
+  doneToday: {
+    marginTop: 8,
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 13,
+    color: brand.tealPressed,
   },
   ratingCard: {
     marginBottom: 16,

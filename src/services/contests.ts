@@ -50,6 +50,7 @@ function seedEntries(): ContestEntry[] {
     {
       id: 'seed-day-1',
       period: 'day',
+      contestId: 'day-sunny-snout',
       petName: 'Ада',
       caption: 'Сонячний ранок',
       species: 'cat',
@@ -77,6 +78,7 @@ function seedEntries(): ContestEntry[] {
     {
       id: 'seed-day-2',
       period: 'day',
+      contestId: 'day-sunny-snout',
       petName: 'Мурка',
       caption: 'Очі як два ліхтарі',
       species: 'cat',
@@ -103,6 +105,7 @@ function seedEntries(): ContestEntry[] {
     {
       id: 'seed-week-1',
       period: 'week',
+      contestId: 'week-play-time',
       petName: 'Рекс',
       caption: 'Переможець прогулянок',
       species: 'dog',
@@ -129,6 +132,7 @@ function seedEntries(): ContestEntry[] {
     {
       id: 'seed-month-1',
       period: 'month',
+      contestId: 'month-cozy',
       petName: 'Белла',
       caption: 'Мордочка місяця',
       species: 'cat',
@@ -156,6 +160,7 @@ function seedEntries(): ContestEntry[] {
     {
       id: 'seed-year-1',
       period: 'year',
+      contestId: 'year-star',
       petName: 'Бім',
       caption: 'Зірка року (демо)',
       species: 'dog',
@@ -269,6 +274,8 @@ export async function getContestWinner(
 
 export async function addContestEntry(input: {
   period: ContestPeriod;
+  contestId?: string | null;
+  storyPostId?: string | null;
   petName: string;
   caption: string;
   species: 'dog' | 'cat';
@@ -282,6 +289,8 @@ export async function addContestEntry(input: {
   const entry: ContestEntry = {
     id: `mine-contest-${Date.now()}`,
     period: input.period,
+    contestId: input.contestId ?? null,
+    storyPostId: input.storyPostId ?? null,
     petName: input.petName.trim() || 'Мій улюбленець',
     caption: input.caption.trim() || 'Учасник конкурсу',
     species: input.species,

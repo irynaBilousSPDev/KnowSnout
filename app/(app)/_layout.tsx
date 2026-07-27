@@ -128,6 +128,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="pet-passport"
+        options={{
+          headerShown: true,
+          title: t('passport.title'),
+        }}
+      />
+      <Stack.Screen
         name="play-guides"
         options={{
           headerShown: true,

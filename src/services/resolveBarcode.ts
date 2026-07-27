@@ -5,6 +5,7 @@ import {
   productToAnalysis,
   upsertProduct,
 } from '@/src/services/products';
+import { t } from '@/src/i18n';
 import { resolveSpecies } from '@/src/lib/species';
 import type { AnalysisResult, PetSpecies } from '@/src/types/scan';
 
@@ -44,7 +45,7 @@ export async function resolveBarcode(barcode: string): Promise<ResolveBarcodeRes
       barcode: cleaned,
       preferredName: own.product_name,
       species: own.species,
-      reason: `We found “${own.product_name}”. Snap the ingredients list to unlock a full KnowSnout score — takes a few seconds.`,
+      reason: t('barcode.needPhotoKnown', { name: own.product_name }),
     };
   }
 
@@ -75,15 +76,16 @@ export async function resolveBarcode(barcode: string): Promise<ResolveBarcodeRes
       barcode: cleaned,
       preferredName: pub.analysis.productName,
       species: pub.species,
-      reason: `“${pub.analysis.productName}” is recognized, but the recipe isn’t complete yet. Photograph the ingredients panel for a clear score.`,
+      reason: t('barcode.needPhotoPartial', {
+        name: pub.analysis.productName,
+      }),
     };
   }
 
   return {
     status: 'need-photo',
     barcode: cleaned,
-    reason:
-      'New to KnowSnout — photograph the ingredients panel and we’ll save a trusted score for the next scan.',
+    reason: t('barcode.needPhotoNew'),
   };
 }
 

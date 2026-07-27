@@ -17,7 +17,19 @@ import {
   listStoryFeed,
   toggleStoryLike,
 } from '@/src/services/stories';
+import {
+  isFollowing,
+  toggleFollow,
+  unfollowUser,
+} from '@/src/services/storyFollows';
+import {
+  blockUser,
+  reportStoryTarget,
+  type StoryReportReason,
+} from '@/src/services/storyModeration';
 import { listPets } from '@/src/services/pets';
+import { getCurrentUser } from '@/src/services/auth';
+import { confirmAction } from '@/src/lib/confirm';
 import type {
   StoryFeedFilter,
   StoryPost,
@@ -29,7 +41,6 @@ import { useFocusEffect, router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useCallback, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Image,
   Modal,
@@ -41,6 +52,17 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { notify } from '@/src/lib/notify';
+
+type AuthorCard = {
+  userId: string;
+  author: string;
+  petName: string;
+  species: StorySpecies;
+  avatarKey: string;
+  postId?: string;
+  mine?: boolean;
+};
 
 type ViewMode = 'list' | 'grid';
 
@@ -50,12 +72,14 @@ function StoryPostCard({
   onToggleLike,
   onShare,
   onOpenComments,
+  onOpenAuthor,
 }: {
   post: StoryPost;
   compact?: boolean;
   onToggleLike: (post: StoryPost) => void;
   onShare: (post: StoryPost) => void;
   onOpenComments: (post: StoryPost) => void;
+  onOpenAuthor: (post: StoryPost) => void;
 }) {
   const timeAgo = formatStoryTimeAgo(post.createdAt);
   const likedBy = formatLikedBy(post.likes, post.liked);
@@ -82,7 +106,12 @@ function StoryPostCard({
           </View>
         </Pressable>
         <View className="px-2.5 py-2">
-          <Text numberOfLines={2} className="font-body text-xs text-forest-800">
+          <Pressable onPress={() => onOpenAuthor(post)}>
+            <Text numberOfLines={1} className="font-body-bold text-[11px] text-forest-900">
+              {post.author}
+            </Text>
+          </Pressable>
+          <Text numberOfLines={2} className="mt-0.5 font-body text-xs text-forest-800">
             {post.caption}
           </Text>
           <View className="mt-1.5 flex-row items-center gap-3">
@@ -120,7 +149,10 @@ function StoryPostCard({
 
   return (
     <View className="mb-5 overflow-hidden rounded-3xl border border-forest-100 bg-white">
-      <View className="flex-row items-center px-4 py-3">
+      <Pressable
+        onPress={() => onOpenAuthor(post)}
+        className="flex-row items-center px-4 py-3 active:opacity-80"
+      >
         <PetAvatar
           avatarKey={post.avatarKey}
           species={post.species}
@@ -138,7 +170,8 @@ function StoryPostCard({
               : ''}
           </Text>
         </View>
-      </View>
+        <Ionicons name="chevron-forward" size={16} color="#7A9A92" />
+      </Pressable>
 
       <View style={styles.listMedia}>
         {post.imageUri ? (
@@ -236,6 +269,17 @@ export default function StoriesScreen() {
   const [species, setSpecies] = useState<StorySpecies>('cat');
   const [petId, setPetId] = useState<string | null>(null);
   const [sharePost, setSharePost] = useState<StoryPost | null>(null);
+  const [authorCard, setAuthorCard] = useState<AuthorCard | null>(null);
+  const [authorFollowing, setAuthorFollowing] = useState(false);
+  const [followBusy, setFollowBusy] = useState(false);
+  const [modBusy, setModBusy] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [composeError, setComposeError] = useState<string | null>(null);
+
+  const closeCompose = () => {
+    setComposeOpen(false);
+    setComposeError(null);
+  };
 
   const load = useCallback(
     async (isRefresh = false) => {
@@ -270,7 +314,7 @@ export default function StoriesScreen() {
       const next = await toggleStoryLike(post);
       setPosts((prev) => prev.map((p) => (p.id === post.id ? next : p)));
     } catch (err) {
-      Alert.alert(
+      notify(
         t('common.error'),
         err instanceof Error ? err.message : t('common.error'),
       );
@@ -293,19 +337,21 @@ export default function StoriesScreen() {
       setPetId(null);
       setSpecies('cat');
     }
+    setComposeError(null);
     setComposeOpen(true);
   };
 
   const publish = async () => {
     const text = caption.trim();
     if (!imageUri) {
-      Alert.alert(t('common.error'), t('stories.photoRequired'));
+      setComposeError(t('stories.photoRequired'));
       return;
     }
     if (!text) {
-      Alert.alert(t('common.error'), t('stories.captionRequired'));
+      setComposeError(t('stories.captionRequired'));
       return;
     }
+    setComposeError(null);
     setPublishing(true);
     try {
       const pet = pets.find((p) => p.id === petId) ?? null;
@@ -320,7 +366,7 @@ export default function StoriesScreen() {
       });
       setCaption('');
       setImageUri(null);
-      setComposeOpen(false);
+      closeCompose();
       setFilter('mine');
       await load(true);
     } catch (err) {
@@ -332,14 +378,105 @@ export default function StoriesScreen() {
             : err instanceof Error
               ? err.message
               : t('stories.publishError');
-      Alert.alert(t('common.error'), message);
+      setComposeError(message);
+      notify(t('common.error'), message);
     } finally {
       setPublishing(false);
     }
   };
 
+  const openAuthor = async (post: StoryPost) => {
+    setAuthorCard({
+      userId: post.userId,
+      author: post.author,
+      petName: post.petName,
+      species: post.species,
+      avatarKey: post.avatarKey,
+      postId: post.id,
+      mine: post.mine,
+    });
+    setReportOpen(false);
+    try {
+      const user = await getCurrentUser();
+      if (post.mine || (user && post.userId === user.id)) {
+        setAuthorFollowing(false);
+        return;
+      }
+      setAuthorFollowing(await isFollowing(post.userId));
+    } catch {
+      setAuthorFollowing(false);
+    }
+  };
+
+  const onToggleAuthorFollow = async () => {
+    if (!authorCard || authorCard.mine) return;
+    setFollowBusy(true);
+    try {
+      const result = await toggleFollow(authorCard.userId);
+      setAuthorFollowing(result.following);
+      if (filter === 'following') void load(true);
+    } catch (err) {
+      notify(
+        t('common.error'),
+        err instanceof Error ? err.message : t('common.error'),
+      );
+    } finally {
+      setFollowBusy(false);
+    }
+  };
+
+  const onBlockAuthor = async () => {
+    if (!authorCard || authorCard.mine) return;
+    const ok = await confirmAction({
+      title: t('stories.blockTitle'),
+      message: t('stories.blockMessage', { name: authorCard.author }),
+      confirmLabel: t('stories.block'),
+      cancelLabel: t('common.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    setModBusy(true);
+    try {
+      await blockUser(authorCard.userId);
+      await unfollowUser(authorCard.userId);
+      setAuthorFollowing(false);
+      setAuthorCard(null);
+      notify(t('stories.blockDone'));
+      await load(true);
+    } catch (err) {
+      notify(
+        t('common.error'),
+        err instanceof Error ? err.message : t('common.error'),
+      );
+    } finally {
+      setModBusy(false);
+    }
+  };
+
+  const onReportAuthor = async (reason: StoryReportReason) => {
+    if (!authorCard || authorCard.mine) return;
+    setModBusy(true);
+    try {
+      await reportStoryTarget({
+        targetUserId: authorCard.userId,
+        postId: authorCard.postId,
+        reason,
+      });
+      setReportOpen(false);
+      notify(t('stories.reportDone'));
+    } catch (err) {
+      notify(
+        t('common.error'),
+        err instanceof Error ? err.message : t('common.error'),
+      );
+    } finally {
+      setModBusy(false);
+    }
+  };
+
   const filters: { id: StoryFeedFilter; label: string }[] = [
     { id: 'all', label: t('stories.filterAll') },
+    { id: 'following', label: t('stories.filterFollowing') },
     { id: 'cat', label: t('stories.filterCats') },
     { id: 'dog', label: t('stories.filterDogs') },
     { id: 'mine', label: t('stories.filterMine') },
@@ -427,7 +564,9 @@ export default function StoriesScreen() {
               <Text className="text-center font-body text-forest-600">
                 {filter === 'mine'
                   ? t('stories.emptyMine')
-                  : t('stories.emptyFilter')}
+                  : filter === 'following'
+                    ? t('stories.emptyFollowing')
+                    : t('stories.emptyFilter')}
               </Text>
               <View className="mt-4 w-full">
                 <PrimaryButton
@@ -445,25 +584,50 @@ export default function StoriesScreen() {
                 onToggleLike={(p) => void onToggleLike(p)}
                 onShare={setSharePost}
                 onOpenComments={openComments}
+                onOpenAuthor={(p) => void openAuthor(p)}
               />
             </View>
           )}
         />
       )}
 
-      <Modal visible={composeOpen} animationType="slide" transparent>
-        <View className="flex-1 justify-end bg-black/40">
+      <Modal
+        visible={composeOpen}
+        animationType="slide"
+        transparent
+        onRequestClose={closeCompose}
+      >
+        <View className="flex-1 justify-end">
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('common.close')}
+            onPress={closeCompose}
+            className="absolute inset-0 bg-black/40"
+          />
           <View className="max-h-[90%] rounded-t-3xl bg-sand-50 px-5 pb-10 pt-5">
-            <ScrollView keyboardShouldPersistTaps="handled">
+            <View className="mb-2 flex-row items-center justify-between">
               <Text className="font-display text-2xl text-forest-900">
                 {t('stories.composeTitle')}
               </Text>
+              <Pressable
+                onPress={closeCompose}
+                accessibilityRole="button"
+                accessibilityLabel={t('common.close')}
+                className="h-10 w-10 items-center justify-center rounded-full bg-forest-100"
+              >
+                <Ionicons name="close" size={22} color={brand.ink} />
+              </Pressable>
+            </View>
 
-              <View className="mt-4">
+            <ScrollView keyboardShouldPersistTaps="handled">
+              <View className="mt-2">
                 <PhotoAttachField
                   label={t('stories.photo')}
                   uri={imageUri}
-                  onChange={setImageUri}
+                  onChange={(uri) => {
+                    setImageUri(uri);
+                    if (uri) setComposeError(null);
+                  }}
                   emptyHint={t('stories.photoHint')}
                   filePrefix="story"
                   aspect={[4, 3]}
@@ -573,12 +737,21 @@ export default function StoriesScreen() {
               </Text>
               <TextInput
                 value={caption}
-                onChangeText={setCaption}
+                onChangeText={(text) => {
+                  setCaption(text);
+                  if (text.trim()) setComposeError(null);
+                }}
                 placeholder={t('stories.captionPlaceholder')}
                 multiline
                 className="mt-2 min-h-[96px] rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-base text-forest-900"
                 placeholderTextColor="#7FD9C9"
               />
+
+              {composeError ? (
+                <Text className="mt-3 font-body text-sm leading-5 text-score-poor">
+                  {composeError}
+                </Text>
+              ) : null}
 
               <View className="mt-5 gap-3">
                 <PrimaryButton
@@ -590,12 +763,120 @@ export default function StoriesScreen() {
                   label={t('common.cancel')}
                   variant="ghost"
                   onPress={() => {
-                    setComposeOpen(false);
+                    closeCompose();
                     setImageUri(null);
                   }}
                 />
               </View>
             </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={Boolean(authorCard)}
+        animationType="slide"
+        transparent
+        onRequestClose={() => {
+          setReportOpen(false);
+          setAuthorCard(null);
+        }}
+      >
+        <View className="flex-1 justify-end bg-black/40">
+          <View className="rounded-t-3xl bg-sand-50 px-5 pb-10 pt-5">
+            {authorCard ? (
+              <>
+                <View className="flex-row items-center">
+                  <PetAvatar
+                    avatarKey={authorCard.avatarKey}
+                    species={authorCard.species}
+                    size={56}
+                    name={authorCard.petName}
+                  />
+                  <View className="ml-3 flex-1">
+                    <Text className="font-display text-2xl text-forest-900">
+                      {authorCard.author}
+                    </Text>
+                    <Text className="mt-1 font-body text-sm text-forest-600">
+                      {t('stories.authorPet', { name: authorCard.petName })}
+                    </Text>
+                  </View>
+                </View>
+                <Text className="mt-4 font-body text-xs leading-5 text-forest-500">
+                  {t('stories.authorHint')}
+                </Text>
+                <View className="mt-5 gap-3">
+                  {authorCard.mine ? (
+                    <Text className="text-center font-body text-sm text-forest-600">
+                      {t('stories.authorSelf')}
+                    </Text>
+                  ) : (
+                    <>
+                      <PrimaryButton
+                        label={
+                          authorFollowing
+                            ? t('stories.unfollow')
+                            : t('stories.follow')
+                        }
+                        variant={authorFollowing ? 'secondary' : 'primary'}
+                        loading={followBusy}
+                        onPress={() => void onToggleAuthorFollow()}
+                      />
+                      {reportOpen ? (
+                        <View className="gap-2">
+                          <Text className="font-body-medium text-sm text-forest-700">
+                            {t('stories.reportPick')}
+                          </Text>
+                          {(
+                            [
+                              ['spam', 'stories.reportSpam'],
+                              ['abuse', 'stories.reportAbuse'],
+                              ['inappropriate', 'stories.reportInappropriate'],
+                              ['other', 'stories.reportOther'],
+                            ] as const
+                          ).map(([reason, key]) => (
+                            <PrimaryButton
+                              key={reason}
+                              label={t(key)}
+                              variant="secondary"
+                              loading={modBusy}
+                              onPress={() => void onReportAuthor(reason)}
+                            />
+                          ))}
+                          <PrimaryButton
+                            label={t('common.cancel')}
+                            variant="ghost"
+                            onPress={() => setReportOpen(false)}
+                          />
+                        </View>
+                      ) : (
+                        <>
+                          <PrimaryButton
+                            label={t('stories.report')}
+                            variant="secondary"
+                            onPress={() => setReportOpen(true)}
+                          />
+                          <PrimaryButton
+                            label={t('stories.block')}
+                            variant="ghost"
+                            loading={modBusy}
+                            onPress={() => void onBlockAuthor()}
+                          />
+                        </>
+                      )}
+                    </>
+                  )}
+                  <PrimaryButton
+                    label={t('common.close')}
+                    variant="ghost"
+                    onPress={() => {
+                      setReportOpen(false);
+                      setAuthorCard(null);
+                    }}
+                  />
+                </View>
+              </>
+            ) : null}
           </View>
         </View>
       </Modal>

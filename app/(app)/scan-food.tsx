@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { BarcodeScanner } from '@/src/components/BarcodeScanner';
@@ -16,6 +16,7 @@ import { useAnalyzeLabel } from '@/src/hooks/useAnalyzeLabel';
 import { t } from '@/src/i18n';
 import { env } from '@/src/lib/env';
 import { persistLocalImage, persistPickerAsset } from '@/src/lib/image';
+import { notify } from '@/src/lib/notify';
 import {
   clearPendingBarcodeContext,
   getPendingBarcodeContext,
@@ -32,9 +33,11 @@ export default function ScanFoodScreen() {
   const [pickerError, setPickerError] = useState<string | null>(null);
   const [lookupLoading, setLookupLoading] = useState(false);
   const [lookupHint, setLookupHint] = useState<string | null>(null);
+  const [manualBarcode, setManualBarcode] = useState('');
 
   const busy = loading || lookupLoading;
   const barcodeContext = getPendingBarcodeContext();
+  const showDevBanners = __DEV__ && (env.useMockAi || env.isDemoMode);
 
   const goToResult = async (imageUri?: string | null) => {
     setPickerError(null);
@@ -145,9 +148,9 @@ export default function ScanFoodScreen() {
         preferredName: resolved.preferredName,
         species: resolved.species,
       });
-      setMode('photo');
       setLookupHint(resolved.reason);
-      Alert.alert(t('scan.alertPhotoTitle'), resolved.reason);
+      // Stay on barcode tab — show next-step hint; user switches to photo when ready.
+      notify(t('scan.alertPhotoTitle'), resolved.reason);
     } catch (err) {
       setPickerError(
         err instanceof Error ? err.message : t('barcode.lookupFailed'),
@@ -165,11 +168,11 @@ export default function ScanFoodScreen() {
       >
         <Text style={styles.lead}>{t('scan.foodLead')}</Text>
 
-        {(env.useMockAi || env.isDemoMode) && (
+        {showDevBanners ? (
           <View style={styles.banner}>
             <Text style={styles.bannerText}>{t('scan.mockBanner')}</Text>
           </View>
-        )}
+        ) : null}
 
         <ScanModeToggle mode={mode} onChange={setMode} />
 
@@ -177,7 +180,25 @@ export default function ScanFoodScreen() {
           <>
             <Text style={styles.sectionTitle}>{t('scan.barcodeTitle')}</Text>
             <Text style={styles.sectionHelp}>{t('scan.barcodeHelp')}</Text>
-            <BarcodeScanner onScan={onBarcode} disabled={busy} />
+            {lookupHint ? (
+              <View style={styles.hint}>
+                <Text style={styles.hintText}>{lookupHint}</Text>
+                <View style={styles.hintAction}>
+                  <PrimaryButton
+                    label={t('scan.switchToPhoto')}
+                    size="sm"
+                    variant="secondary"
+                    onPress={() => setMode('photo')}
+                  />
+                </View>
+              </View>
+            ) : null}
+            <BarcodeScanner
+              onScan={onBarcode}
+              disabled={busy}
+              manualCode={manualBarcode}
+              onManualCodeChange={setManualBarcode}
+            />
           </>
         ) : (
           <>
@@ -283,6 +304,9 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_500Medium',
     fontSize: 13,
     color: brand.ink,
+  },
+  hintAction: {
+    marginTop: 10,
   },
   galleryBtn: {
     marginTop: 16,

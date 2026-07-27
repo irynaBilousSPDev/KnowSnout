@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { SourceLangNote } from '@/src/components/SourceLangNote';
 import { t } from '@/src/i18n';
 import { isNativeSafeImageUri } from '@/src/lib/image';
 import {
@@ -105,23 +106,21 @@ export default function BreedResultScreen() {
             {t('result.verdict')}
           </Text>
           {item.temperament ? (
-            <Text className="mb-3 font-body text-base leading-6 text-forest-700">
-              {item.temperament}
-            </Text>
+            <SourceLangNote value={item.temperament} className="mb-3" />
           ) : null}
           {item.bredFor ? (
-            <Text className="mb-3 font-body text-sm leading-5 text-forest-600">
-              {item.bredFor}
-            </Text>
+            <SourceLangNote value={item.bredFor} className="mb-3" />
           ) : null}
           <Text className="font-body text-xs leading-5 text-forest-500">
             {item.species === 'cat'
               ? t('breed.speciesCat')
               : t('breed.speciesDog')}
-            {item.origin ? ` · ${item.origin}` : ''}
             {' · '}
             {new Date(item.createdAt).toLocaleString('uk-UA')}
           </Text>
+          {item.origin ? (
+            <SourceLangNote value={item.origin} className="mt-2" />
+          ) : null}
           <Text className="mt-4 font-body text-xs leading-5 text-forest-500">
             {t('breed.disclaimer')}
           </Text>

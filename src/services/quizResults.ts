@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { env } from '@/src/lib/env';
 import { getCurrentUser } from '@/src/services/auth';
+import { recordQuizDayPlayed } from '@/src/services/quizStreak';
 import { supabase } from '@/src/services/supabase';
 
 const LOCAL_KEY = 'knowsnout.quiz_sessions.v1';
@@ -195,6 +196,12 @@ export async function saveQuizSession(input: {
 
   const prev = await readLocal();
   await writeLocal([localRow, ...prev]);
+
+  try {
+    await recordQuizDayPlayed();
+  } catch {
+    // Streak is best-effort; session already saved.
+  }
 
   if (env.isDemoMode || !supabase || !user) {
     return localRow;

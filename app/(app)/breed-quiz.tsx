@@ -5,6 +5,7 @@ import {
   Linking,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
@@ -13,8 +14,10 @@ import { router, useFocusEffect } from 'expo-router';
 
 import { ErrorState } from '@/src/components/ErrorState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { SourceLangNote } from '@/src/components/SourceLangNote';
 import { t } from '@/src/i18n';
 import {
+  clearBreedQuizCatalogCache,
   createBreedQuizRound,
   type BreedQuizRound,
 } from '@/src/services/breedQuiz';
@@ -33,6 +36,7 @@ export default function BreedQuizScreen() {
   const [round, setRound] = useState<BreedQuizRound | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [imageFailed, setImageFailed] = useState(false);
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [roundIndex, setRoundIndex] = useState(0);
@@ -51,15 +55,21 @@ export default function BreedQuizScreen() {
     ) => {
       setLoading(true);
       setError(null);
+      setImageFailed(false);
       setPickedId(null);
       setWiki(null);
       try {
         const next = await createBreedQuizRound(nextSpecies, avoid);
+        if (!next.imageUrl) {
+          throw new Error(t('quiz.catalogUnavailable'));
+        }
         setRound(next);
         setRoundIndex(index);
         setSessionDone(false);
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('quiz.loadError'));
+        setError(
+          err instanceof Error ? err.message : t('quiz.catalogUnavailable'),
+        );
         setRound(null);
       } finally {
         setLoading(false);
@@ -129,6 +139,7 @@ export default function BreedQuizScreen() {
   };
 
   const onRestart = () => {
+    clearBreedQuizCatalogCache();
     setScore(0);
     setRecentCorrectIds([]);
     setSessionDone(false);
@@ -226,12 +237,32 @@ export default function BreedQuizScreen() {
         ) : round ? (
           <>
             <View className="overflow-hidden rounded-3xl border border-forest-100 bg-white">
-              <Image
-                source={{ uri: round.imageUrl }}
-                className="h-64 w-full bg-forest-100"
-                resizeMode="cover"
-                accessibilityIgnoresInvertColors
-              />
+              {imageFailed ? (
+                <View
+                  style={styles.quizImage}
+                  className="items-center justify-center bg-forest-50 px-6"
+                >
+                  <Text className="text-center font-body text-sm text-forest-600">
+                    {t('quiz.imageFailed')}
+                  </Text>
+                  <View className="mt-3 w-full max-w-xs">
+                    <PrimaryButton
+                      label={t('common.tryAgain')}
+                      size="sm"
+                      variant="secondary"
+                      onPress={onRestart}
+                    />
+                  </View>
+                </View>
+              ) : (
+                <Image
+                  source={{ uri: round.imageUrl }}
+                  style={styles.quizImage}
+                  resizeMode="cover"
+                  accessibilityIgnoresInvertColors
+                  onError={() => setImageFailed(true)}
+                />
+              )}
               <Text className="px-4 py-3 font-body-bold text-base text-forest-900">
                 {t('quiz.prompt')}
               </Text>
@@ -282,33 +313,44 @@ export default function BreedQuizScreen() {
                 </Text>
 
                 {round.fact.description ? (
-                  <Text className="mt-2 font-body text-sm leading-5 text-forest-700">
-                    {round.fact.description}
-                  </Text>
+                  <SourceLangNote
+                    value={round.fact.description}
+                    className="mt-2"
+                  />
                 ) : null}
 
-                <View className="mt-3 gap-1.5">
+                <View className="mt-3 gap-2">
                   {round.fact.breedGroup ? (
-                    <Text className="font-body text-sm text-forest-700">
-                      {t('quiz.factGroup', { value: round.fact.breedGroup })}
-                    </Text>
+                    <View>
+                      <Text className="font-body text-sm text-forest-700">
+                        {t('quiz.factGroupLabel')}
+                      </Text>
+                      <SourceLangNote value={round.fact.breedGroup} />
+                    </View>
                   ) : null}
                   {round.fact.temperament ? (
-                    <Text className="font-body text-sm leading-5 text-forest-700">
-                      {t('quiz.factTemperament', {
-                        value: round.fact.temperament,
-                      })}
-                    </Text>
+                    <View>
+                      <Text className="font-body text-sm text-forest-700">
+                        {t('quiz.factTemperamentLabel')}
+                      </Text>
+                      <SourceLangNote value={round.fact.temperament} />
+                    </View>
                   ) : null}
                   {round.fact.origin ? (
-                    <Text className="font-body text-sm text-forest-700">
-                      {t('quiz.factOrigin', { value: round.fact.origin })}
-                    </Text>
+                    <View>
+                      <Text className="font-body text-sm text-forest-700">
+                        {t('quiz.factOriginLabel')}
+                      </Text>
+                      <SourceLangNote value={round.fact.origin} />
+                    </View>
                   ) : null}
                   {round.fact.bredFor ? (
-                    <Text className="font-body text-sm text-forest-700">
-                      {t('quiz.factBredFor', { value: round.fact.bredFor })}
-                    </Text>
+                    <View>
+                      <Text className="font-body text-sm text-forest-700">
+                        {t('quiz.factBredForLabel')}
+                      </Text>
+                      <SourceLangNote value={round.fact.bredFor} />
+                    </View>
                   ) : null}
                   {round.fact.lifeSpan ? (
                     <Text className="font-body text-sm text-forest-700">
@@ -346,14 +388,13 @@ export default function BreedQuizScreen() {
                   </Text>
                 ) : null}
                 {wiki?.description ? (
-                  <Text className="mt-3 font-body text-sm leading-5 text-forest-700">
-                    {t('quiz.wikidataEnrich', { value: wiki.description })}
-                  </Text>
+                  <SourceLangNote
+                    value={wiki.description}
+                    className="mt-3"
+                  />
                 ) : null}
                 {wiki?.origin ? (
-                  <Text className="mt-1 font-body text-sm text-forest-700">
-                    {t('quiz.factOrigin', { value: wiki.origin })}
-                  </Text>
+                  <SourceLangNote value={wiki.origin} className="mt-1" />
                 ) : null}
                 {wiki?.wikidataUrl ? (
                   <Pressable
@@ -388,3 +429,11 @@ export default function BreedQuizScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  quizImage: {
+    width: '100%',
+    height: 256,
+    backgroundColor: brand.mist,
+  },
+});

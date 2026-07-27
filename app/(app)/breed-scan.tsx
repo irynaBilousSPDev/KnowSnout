@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { SourceLangNote } from '@/src/components/SourceLangNote';
 import { t } from '@/src/i18n';
 import { guessMimeType, uriToBase64 } from '@/src/lib/image';
 import {
@@ -237,14 +238,16 @@ export default function BreedScanScreen() {
               })}
             </Text>
             {result.primary.temperament ? (
-              <Text className="mt-2 font-body text-sm leading-5 text-forest-700">
-                {result.primary.temperament}
-              </Text>
+              <SourceLangNote
+                value={result.primary.temperament}
+                className="mt-2"
+              />
             ) : null}
             {result.primary.origin ? (
-              <Text className="mt-1 font-body text-xs text-forest-500">
-                {result.primary.origin}
-              </Text>
+              <SourceLangNote
+                value={result.primary.origin}
+                className="mt-1"
+              />
             ) : null}
           </View>
         ) : null}

@@ -1,3 +1,4 @@
+import { env } from '@/src/lib/env';
 import type { CompanionBreedSpecies } from '@/src/types/breed';
 
 export type QuizBreed = {
@@ -223,6 +224,19 @@ const FALLBACK_CAT: QuizBreed[] = [
 let dogCache: QuizBreed[] | null = null;
 let catCache: QuizBreed[] | null = null;
 
+export function clearBreedQuizCatalogCache() {
+  dogCache = null;
+  catCache = null;
+}
+
+function apiHeaders(apiKey: string): HeadersInit {
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+  };
+  if (apiKey) headers['x-api-key'] = apiKey;
+  return headers;
+}
+
 function shuffle<T>(items: T[]): T[] {
   const next = [...items];
   for (let i = next.length - 1; i > 0; i -= 1) {
@@ -246,9 +260,9 @@ async function loadDogCatalog(): Promise<QuizBreed[]> {
   if (dogCache && dogCache.length >= 4) return dogCache;
   try {
     const res = await fetch('https://api.thedogapi.com/v1/breeds', {
-      headers: { 'User-Agent': 'KnowSnout/1.0 (breed quiz)' },
+      headers: apiHeaders(env.dogApiKey),
     });
-    if (!res.ok) throw new Error('dog api');
+    if (!res.ok) throw new Error(`dog api ${res.status}`);
     const data = (await res.json()) as DogApiBreed[];
     const mapped: QuizBreed[] = [];
     for (const b of data) {
@@ -257,8 +271,8 @@ async function loadDogCatalog(): Promise<QuizBreed[]> {
         (b.reference_image_id
           ? `https://cdn2.thedogapi.com/images/${b.reference_image_id}.jpg`
           : null);
-      // Prefer rows that include official image object (higher trust).
-      if (!imageUrl || !b.image?.url) continue;
+      // Catalog often omits nested image.url; reference_image_id is enough.
+      if (!imageUrl) continue;
       const temperament = clean(b.temperament);
       const origin = clean(b.origin);
       const bredFor = clean(b.bred_for);
@@ -301,9 +315,9 @@ async function loadCatCatalog(): Promise<QuizBreed[]> {
   if (catCache && catCache.length >= 4) return catCache;
   try {
     const res = await fetch('https://api.thecatapi.com/v1/breeds', {
-      headers: { 'User-Agent': 'KnowSnout/1.0 (breed quiz)' },
+      headers: apiHeaders(env.catApiKey),
     });
-    if (!res.ok) throw new Error('cat api');
+    if (!res.ok) throw new Error(`cat api ${res.status}`);
     const data = (await res.json()) as CatApiBreed[];
     const mapped: QuizBreed[] = [];
     for (const b of data) {
@@ -312,7 +326,7 @@ async function loadCatCatalog(): Promise<QuizBreed[]> {
         (b.reference_image_id
           ? `https://cdn2.thecatapi.com/images/${b.reference_image_id}.jpg`
           : null);
-      if (!imageUrl || !b.image?.url) continue;
+      if (!imageUrl) continue;
       const temperament = clean(b.temperament);
       const origin = clean(b.origin);
       const description = clean(b.description);

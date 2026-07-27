@@ -33,6 +33,10 @@ export type ContestPublicOwner = {
 export type ContestEntry = {
   id: string;
   period: ContestPeriod;
+  /** Editorial spotlight theme id (scaffold) */
+  contestId?: string | null;
+  /** Optional Stories post this entry was copied from */
+  storyPostId?: string | null;
   petName: string;
   caption: string;
   species: 'dog' | 'cat';

@@ -16,7 +16,7 @@
 |--|--|
 | Open Pet Food Facts / Open Food Facts | Food barcode / ingredients |
 | OpenAI (server Edge only) | Label / plant / **breed** vision |
-| TheDogAPI / TheCatAPI | Breed search + enrich after vision + photo quiz |
+| TheDogAPI / TheCatAPI | Breed search + enrich after vision + photo quiz (dog list often needs free `x-api-key`) |
 | Wikidata (CC0) | Quiz origin / animal group + enrich |
 | Open Trivia DB (CC BY-SA) | Animals trivia quiz |
 | KnowSnout plants seed + Supabase | Plant safety cache |

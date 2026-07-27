@@ -62,9 +62,9 @@ type VisionRemote = {
 };
 
 async function fetchDogBreeds(): Promise<BreedGuess[]> {
-  const res = await fetch('https://api.thedogapi.com/v1/breeds', {
-    headers: { 'User-Agent': 'KnowSnout/1.0 (breed lookup)' },
-  });
+  const headers: Record<string, string> = { Accept: 'application/json' };
+  if (env.dogApiKey) headers['x-api-key'] = env.dogApiKey;
+  const res = await fetch('https://api.thedogapi.com/v1/breeds', { headers });
   if (!res.ok) throw new Error('TheDogAPI request failed');
   const data = (await res.json()) as DogApiBreed[];
   return data.slice(0, 120).map((b) => ({
@@ -83,9 +83,9 @@ async function fetchDogBreeds(): Promise<BreedGuess[]> {
 }
 
 async function fetchCatBreeds(): Promise<BreedGuess[]> {
-  const res = await fetch('https://api.thecatapi.com/v1/breeds', {
-    headers: { 'User-Agent': 'KnowSnout/1.0 (breed lookup)' },
-  });
+  const headers: Record<string, string> = { Accept: 'application/json' };
+  if (env.catApiKey) headers['x-api-key'] = env.catApiKey;
+  const res = await fetch('https://api.thecatapi.com/v1/breeds', { headers });
   if (!res.ok) throw new Error('TheCatAPI request failed');
   const data = (await res.json()) as CatApiBreed[];
   return data.slice(0, 120).map((b) => ({

@@ -618,7 +618,17 @@ export default function PetProfileScreen() {
           <Fact label={t('pets.passport')} value={pet.passport_number} />
           <Fact label={t('pets.vetName')} value={pet.vet_name} />
           <Fact label={t('pets.vetPhone')} value={pet.vet_phone} />
-          <View className="mt-2">
+          <View className="mt-2 gap-2">
+            <PrimaryButton
+              label={t('passport.open')}
+              variant="secondary"
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/pet-passport',
+                  params: { petId: pet.id },
+                })
+              }
+            />
             <PrimaryButton
               label={t('travel.open')}
               variant="secondary"

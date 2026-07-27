@@ -48,7 +48,7 @@ See also **`PRODUCT_VISION.md`** for social, charity, adoption, sponsorship back
 | Feature | Status | Open data |
 |--|--|--|
 | Vaccine calendar + reminders | **v1 shipped** (log + due status; push later) | Content tables we maintain (UA/PL rules) |
-| Pet passport checklist | Phase C | Gov sources (UA / PL / EU) — curated, versioned |
+| Pet passport checklist | **v1 shipped** (local progress) | Gov sources (UA / PL / EU) — curated, versioned |
 | Schengen vs non-Schengen travel checklist | **v1 shipped** (local progress) | EU pet travel rules + UA specifics — **informational**, not legal advice |
 | Meds / vet visit log | Later | Private to user |
 

@@ -1,7 +1,6 @@
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Image,
   Modal,
@@ -20,10 +19,13 @@ import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { SharePhotoSheet } from '@/src/components/SharePhotoSheet';
+import { getActiveSpotlight } from '@/src/constants/spotlightContests';
 import { CONTEST_PERIODS } from '@/src/types/contest';
 import type { ContestEntry, ContestPeriod } from '@/src/types/contest';
 import type { PetRow } from '@/src/types/pet';
+import type { StoryPost } from '@/src/types/story';
 import { t } from '@/src/i18n';
+import { notify } from '@/src/lib/notify';
 import { buildContestShareMessage } from '@/src/lib/share';
 import {
   addContestEntry,
@@ -34,6 +36,7 @@ import {
   toggleContestHeart,
 } from '@/src/services/contests';
 import { listPetPhotos, listPets } from '@/src/services/pets';
+import { listStoryFeed } from '@/src/services/stories';
 import { getUserProfile } from '@/src/services/userProfile';
 import { brand } from '@/src/theme/brand';
 
@@ -43,12 +46,16 @@ export default function ContestsScreen() {
   const [hearted, setHearted] = useState<Set<string>>(new Set());
   const [composeOpen, setComposeOpen] = useState(false);
   const [pets, setPets] = useState<PetRow[]>([]);
+  const [myStories, setMyStories] = useState<StoryPost[]>([]);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+  const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
   const [petName, setPetName] = useState('');
   const [caption, setCaption] = useState('');
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [species, setSpecies] = useState<'dog' | 'cat'>('cat');
   const [shareEntry, setShareEntry] = useState<ContestEntry | null>(null);
+
+  const spotlight = useMemo(() => getActiveSpotlight(period), [period]);
 
   const load = useCallback(async () => {
     const [list, hearts] = await Promise.all([
@@ -66,8 +73,13 @@ export default function ContestsScreen() {
   );
 
   const openCompose = async () => {
-    const myPets = await listPets();
+    const [myPets, stories] = await Promise.all([
+      listPets(),
+      listStoryFeed('mine').catch(() => [] as StoryPost[]),
+    ]);
     setPets(myPets);
+    setMyStories(stories.filter((s) => Boolean(s.imageUri)));
+    setSelectedStoryId(null);
     const first = myPets[0] ?? null;
     if (first && (first.species === 'cat' || first.species === 'dog')) {
       setSelectedPetId(first.id);
@@ -85,12 +97,21 @@ export default function ContestsScreen() {
       return;
     }
     if (pet.species !== 'cat' && pet.species !== 'dog') {
-      Alert.alert(t('common.error'), t('contests.pickPetDogsCats'));
+      notify(t('common.error'), t('contests.pickPetDogsCats'));
       return;
     }
     setSelectedPetId(pet.id);
     setPetName(pet.name);
     setSpecies(pet.species);
+  };
+
+  const selectStory = (story: StoryPost) => {
+    setSelectedStoryId(story.id);
+    setImageUri(story.imageUri ?? null);
+    if (story.caption.trim()) setCaption(story.caption);
+    if (story.petName.trim()) setPetName(story.petName);
+    setSpecies(story.species);
+    if (story.petId) setSelectedPetId(story.petId);
   };
 
   const winner = entries[0] ?? null;
@@ -116,11 +137,11 @@ export default function ContestsScreen() {
 
   const onSubmit = async () => {
     if (!imageUri) {
-      Alert.alert(t('common.error'), t('contests.photoRequired'));
+      notify(t('common.error'), t('contests.photoRequired'));
       return;
     }
     if (!petName.trim()) {
-      Alert.alert(t('common.error'), t('contests.petNameRequired'));
+      notify(t('common.error'), t('contests.petNameRequired'));
       return;
     }
 
@@ -142,6 +163,8 @@ export default function ContestsScreen() {
 
     await addContestEntry({
       period,
+      contestId: spotlight?.id ?? null,
+      storyPostId: selectedStoryId,
       petName,
       caption,
       species,
@@ -156,6 +179,7 @@ export default function ContestsScreen() {
     setCaption('');
     setImageUri(null);
     setSelectedPetId(null);
+    setSelectedStoryId(null);
     await load();
   };
 
@@ -168,11 +192,13 @@ export default function ContestsScreen() {
           title={t('contests.title')}
           subtitle={t('contests.subtitle')}
         />
-        <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
-          <Text className="font-body text-xs leading-5 text-forest-700">
-            {t('contests.disclaimer')}
-          </Text>
-        </View>
+        {__DEV__ ? (
+          <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
+            <Text className="font-body text-xs leading-5 text-forest-700">
+              {t('contests.disclaimer')}
+            </Text>
+          </View>
+        ) : null}
 
         <View className="mt-4 flex-row flex-wrap gap-2">
           {CONTEST_PERIODS.map((p) => {
@@ -199,6 +225,20 @@ export default function ContestsScreen() {
         <Text className="mt-2 font-body text-xs text-forest-500">
           {t(CONTEST_PERIODS.find((p) => p.id === period)?.hintKey ?? '')}
         </Text>
+
+        {spotlight ? (
+          <View className="mt-3 rounded-3xl border border-forest-100 bg-white px-4 py-4">
+            <Text className="font-body-medium text-xs uppercase tracking-wide text-forest-500">
+              {t('contests.themeLabel')}
+            </Text>
+            <Text className="mt-1 font-body-bold text-lg text-forest-900">
+              {spotlight.titleUk}
+            </Text>
+            <Text className="mt-1 font-body text-sm leading-5 text-forest-600">
+              {spotlight.briefUk}
+            </Text>
+          </View>
+        ) : null}
       </View>
 
       <FlatList
@@ -379,6 +419,66 @@ export default function ContestsScreen() {
               <Text className="font-display text-2xl text-forest-900">
                 {t('contests.join')}
               </Text>
+              {spotlight ? (
+                <Text className="mt-2 font-body text-sm text-forest-600">
+                  {t('contests.joinTheme', { title: spotlight.titleUk })}
+                </Text>
+              ) : null}
+
+              {myStories.length > 0 ? (
+                <>
+                  <Text className="mt-4 font-body-medium text-sm text-forest-700">
+                    {t('contests.fromStory')}
+                  </Text>
+                  <Text className="mt-1 font-body text-xs text-forest-500">
+                    {t('contests.fromStoryHint')}
+                  </Text>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className="mt-3"
+                    contentContainerStyle={{ gap: 10 }}
+                  >
+                    {myStories.slice(0, 12).map((story) => {
+                      const active = selectedStoryId === story.id;
+                      return (
+                        <Pressable
+                          key={story.id}
+                          onPress={() => selectStory(story)}
+                          className={`w-28 overflow-hidden rounded-2xl border ${
+                            active
+                              ? 'border-forest-700'
+                              : 'border-forest-100'
+                          }`}
+                        >
+                          {story.imageUri ? (
+                            <Image
+                              source={{ uri: story.imageUri }}
+                              style={{ width: '100%', height: 72 }}
+                              resizeMode="cover"
+                            />
+                          ) : (
+                            <View className="h-[72px] items-center justify-center bg-forest-100">
+                              <PetAvatar
+                                avatarKey={story.avatarKey}
+                                species={story.species}
+                                size={36}
+                                name={story.petName}
+                              />
+                            </View>
+                          )}
+                          <Text
+                            numberOfLines={2}
+                            className="px-2 py-1.5 font-body text-[11px] text-forest-800"
+                          >
+                            {story.caption || story.petName}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </ScrollView>
+                </>
+              ) : null}
 
               <Text className="mt-4 font-body-medium text-sm text-forest-700">
                 {t('contests.pickPet')}

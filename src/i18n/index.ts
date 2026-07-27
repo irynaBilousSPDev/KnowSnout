@@ -10,6 +10,8 @@ const uk: Dict = {
   'common.error': 'Щось пішло не так',
   'common.save': 'Зберегти',
   'common.cancel': 'Скасувати',
+  'common.close': 'Закрити',
+  'common.sourceEn': 'Оригінал англійською',
   'common.back': 'Назад',
   'photo.gallery': 'З галереї',
   'photo.camera': 'Зняти фото',
@@ -78,6 +80,21 @@ const uk: Dict = {
   'quizHub.wikidataNote':
     'Повний список джерел і ліцензій — у «Мої дані» → «Джерела даних».',
 
+  'quizStreak.dailyTitle': 'Квіз дня',
+  'quizStreak.dailyBreedBody':
+    'Сьогодні — вгадай породу за фото. Будь-який завершений квіз рахує серію днів.',
+  'quizStreak.dailyOriginBody':
+    'Сьогодні — звідки порода (Wikidata). Будь-який завершений квіз рахує серію днів.',
+  'quizStreak.dailyGroupBody':
+    'Сьогодні — група тварин. Будь-який завершений квіз рахує серію днів.',
+  'quizStreak.dailyTriviaBody':
+    'Сьогодні — факти про тварин. Будь-який завершений квіз рахує серію днів.',
+  'quizStreak.playDaily': 'Грати квіз дня',
+  'quizStreak.playAgain': 'Ще раз сьогодні',
+  'quizStreak.doneToday': 'Сьогодні вже зараховано в серію',
+  'quizStreak.current': 'Серія: {count} дн.',
+  'quizStreak.best': 'Рекорд: {count}',
+
   'sources.title': 'Джерела даних',
   'sources.open': 'Джерела даних',
   'sources.lead':
@@ -108,14 +125,21 @@ const uk: Dict = {
   'quiz.score': 'Очки: {score}',
   'quiz.loading': 'Готуємо питання…',
   'quiz.loadError': 'Не вдалося завантажити квіз',
+  'quiz.catalogUnavailable':
+    'Каталог порід тимчасово недоступний. Спробуй ще раз — або додай ключ TheDogAPI у .env.',
+  'quiz.imageFailed': 'Не вдалося показати фото. Спробуй ще раз.',
   'quiz.prompt': 'Яка це порода?',
   'quiz.correct': 'Вірно!',
   'quiz.wrong': 'Ні — це {name}',
   'quiz.learnTitle': 'Коротко про {name}',
   'quiz.factTemperament': 'Темперамент: {value}',
+  'quiz.factTemperamentLabel': 'Темперамент',
   'quiz.factOrigin': 'Походження: {value}',
+  'quiz.factOriginLabel': 'Походження',
   'quiz.factBredFor': 'Виведена для: {value}',
+  'quiz.factBredForLabel': 'Виведена для',
   'quiz.factGroup': 'Група: {value}',
+  'quiz.factGroupLabel': 'Група',
   'quiz.factLifeSpan': 'Тривалість життя: {value}',
   'quiz.factWeight': 'Вага (кг): {value}',
   'quiz.factHeight': 'Зріст (см): {value}',
@@ -228,9 +252,30 @@ const uk: Dict = {
   'stories.commentDeleteBody': 'Це прибере твій коментар зі стрічки.',
   'stories.postNotFound': 'Пост не знайдено',
   'stories.filterAll': 'Усі',
+  'stories.filterFollowing': 'Підписки',
   'stories.filterCats': 'Коти',
   'stories.filterDogs': 'Собаки',
   'stories.filterMine': 'Мої',
+  'stories.follow': 'Підписатися',
+  'stories.unfollow': 'Відписатися',
+  'stories.authorPet': 'Пост про: {name}',
+  'stories.authorHint':
+    'Підписка зберігається на цьому пристрої (каркас). Хмарний синк — пізніше.',
+  'stories.authorSelf': 'Це ти',
+  'stories.block': 'Заблокувати',
+  'stories.blockTitle': 'Заблокувати автора?',
+  'stories.blockMessage':
+    'Пости від “{name}” зникнуть зі стрічки на цьому пристрої.',
+  'stories.blockDone': 'Автора заблоковано',
+  'stories.report': 'Поскаржитися',
+  'stories.reportPick': 'Причина скарги',
+  'stories.reportSpam': 'Спам',
+  'stories.reportAbuse': 'Образа / токсичність',
+  'stories.reportInappropriate': 'Недоречний контент',
+  'stories.reportOther': 'Інше',
+  'stories.reportDone': 'Скаргу збережено локально (каркас)',
+  'stories.emptyFollowing':
+    'Поки немає підписок. Відкрий автора в пості й натисни «Підписатися».',
   'stories.viewList': 'Список',
   'stories.viewGrid': 'Сітка',
   'stories.addPost': 'Додати пост',
@@ -241,7 +286,7 @@ const uk: Dict = {
   'stories.photoHint': 'Обов’язково додай фото мордочки',
   'stories.addPhoto': 'Додати фото',
   'stories.changePhoto': 'Змінити фото',
-  'stories.photoRequired': 'Без фото пост не опублікуємо',
+  'stories.photoRequired': 'Додай фото, щоб опублікувати',
   'stories.captionRequired': 'Додай короткий підпис',
   'stories.galleryPermission': 'Потрібен доступ до галереї для фото поста',
   'stories.privacy': 'Хто бачить',
@@ -338,6 +383,10 @@ const uk: Dict = {
   'contests.hintWeek': 'Переможець тижня за найбільшою кількістю сердечок',
   'contests.hintMonth': 'Мордочка місяця',
   'contests.hintYear': 'Зірка року (демо-рейтинг)',
+  'contests.themeLabel': 'Тема зараз',
+  'contests.joinTheme': 'Тема: {title}',
+  'contests.fromStory': 'Або з мого поста в Stories',
+  'contests.fromStoryHint': 'Підтягнемо фото й підпис — можна змінити перед відправкою',
   'contests.winnerBadge': 'Зараз лідирує',
   'contests.hearts': 'сердечок',
   'contests.empty': 'Поки немає учасників у цій категорії',
@@ -688,11 +737,19 @@ const uk: Dict = {
     'Скан камерою найкраще працює в Expo Go. У вебі введи код вручну.',
   'barcode.label': 'Штрихкод',
   'barcode.lookupFailed': 'Не вдалося знайти штрихкод',
+  'barcode.needPhotoKnown':
+    'Знайшли «{name}». Сфотографуй склад на етикетці — і буде повна оцінка KnowSnout.',
+  'barcode.needPhotoPartial':
+    '«{name}» розпізнано, але склад у відкритих базах неповний. Сфотографуй блок інгредієнтів.',
+  'barcode.needPhotoNew':
+    'Новий для KnowSnout — сфотографуй склад на етикетці, і ми збережемо оцінку для наступного скану.',
+
+  'scan.switchToPhoto': 'Перейти до фото етикетки',
   'history.loadError': 'Не вдалося завантажити скани',
   'history.deleteFailed': 'Не вдалося видалити',
   'history.loading': 'Завантаження сканів…',
   'result.saveError': 'Не вдалося зберегти скан',
-  'scan.linkedBarcode': 'Прив’язано штрихкод {code}',
+  'scan.linkedBarcode': 'Прив’язано штрихкод: {code}',
 
   'vaccines.title': 'Щеплення',
   'vaccines.subtitle': 'календар і наступні дози',
@@ -766,6 +823,15 @@ const uk: Dict = {
   'vetLog.saveError': 'Не вдалося зберегти запис',
   'vetLog.deleteTitle': 'Видалити запис',
   'vetLog.deleteMessage': 'Прибрати “{name}” з журналу?',
+
+  'passport.title': 'Документи',
+  'passport.subtitle': 'чекліст паспорта й паперів',
+  'passport.open': 'Чекліст документів',
+  'passport.disclaimer':
+    'Інформаційно, не юридична й не ветеринарна консультація. Звіряй офіційні правила країни та свого вета.',
+  'passport.progress': 'Готово {done} з {total}',
+  'passport.loading': 'Завантаження чекліста…',
+  'passport.loadError': 'Не вдалося завантажити чекліст',
 
   'play.title': 'Ігри та іграшки',
   'play.subtitle': 'як пограти ~5 хвилин і що обрати',

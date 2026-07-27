@@ -49,8 +49,8 @@ Status: **shipped** — search + photo vision Edge (`identify-breed`); enrich fr
 - Meds & vet visit log — **shipped** (thin log: meds / visit / note; `pet_vet_logs`)
 - Toys & how-to-play guides — **shipped** (editorial packs dog/cat/other; `play-guides`)
 - External store **scores only** (Allegro) — **shipped** (badge on result; mock default; Edge `store-rating`)
-- Passport / docs checklist
-- External store **scores only** (Allegro etc.)
+- Quiz of the day + streak — **shipped** (local AsyncStorage; rotates category by day)
+- Passport / docs checklist — **shipped** (local packs home + EU; `pet-passport`)
 - Breed-from-photo (beta, with confidence)
 - **Plant safety for pets** (houseplants & outdoor) — see module below
 
@@ -108,7 +108,7 @@ In-app paw reviews on **products** stay separate from SnoutStories.
 
 **Do not** launch full Instagram clone before food + vaccines are sticky — ship Stories tab UI early, backend next.
 
-**Human reminder:** UI + cloud client shipped (posts, likes, comments). Comments need `20260321234000_story_comments_author.sql`. Follows / moderation later.
+**Human reminder:** UI + cloud client shipped (posts, likes, comments). **Follows + author card** (local). **Report / block scaffold** (local; optional SQL `story_moderation`). Care streak later.
 **Also critical:** `20260321190000_favorite_food_feeding.sql` for pet create + profile feeding.
 
 **Status 2026-07-27:** feed list + publish + likes + **comments** via Supabase; demo seed when offline / missing schema. Run `20260321234000_story_comments_author.sql` for `author_name` on comments.
@@ -128,7 +128,7 @@ In-app paw reviews on **products** stay separate from SnoutStories.
 
 **Share to socials:** system share sheet on **scan result**, **Stories post**, later contest winner card (Instagram / Telegram / etc. via OS share — no hard-coded Instagram SDK for MVP).
 
-Ship order: ~~share buttons~~ → ~~contest entry UI v1~~ → ~~contest public detail (pet + owner + gallery)~~ → ~~auth marketing polish~~ → app-wide UI cohesion (AppScreen) → winners board cloud → prizes/partners.
+Ship order: ~~share buttons~~ → ~~contest entry UI v1~~ → ~~contest public detail (pet + owner + gallery)~~ → ~~editorial themes + enter from Stories~~ → ~~auth marketing polish~~ → app-wide UI cohesion (AppScreen) → winners board cloud → prizes/partners.
 
 ### P3 — Charity & shelters
 - Charity hub: curated **links**, posts, campaigns
@@ -223,7 +223,7 @@ Rationale: 5 tabs now crowded; care must feel daily, but tab only earns a slot o
 | 2 · Темперамент | “Яка риса пасує?” | API temperament strings |
 | 3 · Fun fact (optional later) | Short fact after answer | Wikidata enrichment by breed name |
 
-Rules: confidence never = pedigree; UA UI; streak / “quiz of the day” later; attribute APIs (+ Wikidata if used).
+Rules: confidence never = pedigree; UA UI; **quiz of the day + streak shipped** (local); attribute APIs (+ Wikidata if used).
 
 **Do not start with:** Wikipedia article scrape or plain Open Trivia as the hero experience.
 

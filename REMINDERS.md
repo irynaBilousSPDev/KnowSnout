@@ -21,7 +21,8 @@
 | зроблено (користувач, 2026-07-27) | `20260321230000_quiz_sessions.sql` | рейтинг квізу в акаунті |
 | зроблено (користувач, 2026-07-27) | `20260321231000_quiz_sessions_trivia.sql` | категорія Open Trivia |
 | зроблено (користувач, 2026-07-27) | `20260321235000_pet_life_stage.sql` | `pets.life_stage` для матчу корму |
-| зроблено (користувач, 2026-07-27) | `20260321236000_pet_vet_logs.sql` | журнал ліків / візитів до вета |
+| зроблено (користувач, 2026-07-27) | `20260321237000_story_follows.sql` | хмарні підписки Stories (UI поки local) |
+| зроблено (користувач, 2026-07-27) | `20260321238000_story_moderation.sql` | blocks/reports (UI local) |
 
 ## Архітектура вкладок (зафіксовано)
 
@@ -35,7 +36,7 @@
 
 ## Зроблено (коротко)
 
-Сканер корму · рослини · породи · Журнал · Догляд · квіз · Stories · матч корму · вет-лог · ігри · Allegro score badge
+Сканер корму · рослини · породи · Журнал · Догляд · квіз (+день/серія) · Stories · матч корму · вет-лог · ігри · Allegro badge
 
 ## Відкриті ідеї (нічого не викидаємо)
 
@@ -55,15 +56,16 @@
 | Магазинні **scores only** (Allegro тощо) | ✅ mock + Edge `store-rating` |
 | Paid Plant ID API (якщо точність важливіша за бюджет) | ⏳ |
 | Care tab у bottom bar (якщо чекліст «прилипне») | ⏳ пізніше |
-| Quiz of the day / streak | ⏳ |
+| Quiz of the day / streak | ✅ local AsyncStorage |
+| Passport / docs checklist | ✅ local |
 
 ### P2 — соцшар
 | Ідея | Статус |
 |--|--|
-| SnoutStories follows / автор-картка / care streak | ⏳ |
-| Модерація (report / block) | ⏳ |
+| SnoutStories follows / автор-картка / care streak | ✅ follows + автор (local) · care streak пізніше |
+| Модерація (report / block) | ✅ local · SQL опційно |
 | Chat / DM (легкий) | ⏳ |
-| Конкурси: день / тиждень / місяць / рік (глибше) | ⏳ частково є teaser |
+| Конкурси: день / тиждень / місяць / рік (глибше) | ✅ теми + вхід зі Stories (local) |
 | Share у соцмережі (розширити) | ⏳ v1 sheet є |
 
 ### P3–P6 — далі

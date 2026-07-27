@@ -7,15 +7,30 @@ import { TextField } from '@/src/components/TextField';
 import { t } from '@/src/i18n';
 
 type Props = {
-  onScan: (barcode: string) => void;
+  onScan: (barcode: string) => void | Promise<void>;
   disabled?: boolean;
+  /** Controlled manual input — keeps value across parent tab switches. */
+  manualCode?: string;
+  onManualCodeChange?: (value: string) => void;
 };
 
-export function BarcodeScanner({ onScan, disabled }: Props) {
+export function BarcodeScanner({
+  onScan,
+  disabled,
+  manualCode: controlledCode,
+  onManualCodeChange,
+}: Props) {
   const [permission, requestPermission] = useCameraPermissions();
-  const [manualCode, setManualCode] = useState('');
+  const [internalCode, setInternalCode] = useState('');
   const [locked, setLocked] = useState(false);
   const [scannedValue, setScannedValue] = useState<string | null>(null);
+
+  const isControlled = controlledCode !== undefined;
+  const manualCode = isControlled ? controlledCode : internalCode;
+  const setManualCode = (value: string) => {
+    if (isControlled) onManualCodeChange?.(value);
+    else setInternalCode(value);
+  };
 
   useEffect(() => {
     setLocked(false);
@@ -27,7 +42,9 @@ export function BarcodeScanner({ onScan, disabled }: Props) {
     if (!cleaned || disabled || locked) return;
     setLocked(true);
     setScannedValue(cleaned);
-    onScan(cleaned);
+    void Promise.resolve(onScan(cleaned)).finally(() => {
+      setLocked(false);
+    });
   };
 
   if (Platform.OS === 'web') {

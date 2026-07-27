@@ -76,7 +76,7 @@ export const DATA_SOURCES: DataSourceEntry[] = [
     ],
     homepage: 'https://thedogapi.com/',
     licenseOrTerms: 'TheDogAPI terms of use',
-    attributionUk: 'Каталог і фото порід собак: TheDogAPI.',
+    attributionUk: 'Каталог і фото порід собак: TheDogAPI. Без API-ключа /v1/breeds часто 403 — квіз має offline fallback.',
   },
   {
     id: 'thecatapi',

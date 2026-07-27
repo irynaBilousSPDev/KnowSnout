@@ -7,6 +7,8 @@ import {
   isMissingSchemaError,
 } from '@/src/lib/schemaErrors';
 import { getCurrentUser } from '@/src/services/auth';
+import { listFollowingIds } from '@/src/services/storyFollows';
+import { listBlockedUserIds } from '@/src/services/storyModeration';
 import { supabase } from '@/src/services/supabase';
 import { getUserProfile } from '@/src/services/userProfile';
 import type {
@@ -23,7 +25,7 @@ const LOCAL_COMMENTS_KEY = 'knowsnout.story_comments.v1';
 const SEED_POSTS: StoryPost[] = [
   {
     id: 'seed-1',
-    userId: 'seed',
+    userId: 'seed-iryna',
     author: 'Iryna',
     petName: 'Ада',
     species: 'cat',
@@ -41,7 +43,7 @@ const SEED_POSTS: StoryPost[] = [
   },
   {
     id: 'seed-2',
-    userId: 'seed',
+    userId: 'seed-andrii',
     author: 'Andrii',
     petName: 'Белла',
     species: 'cat',
@@ -59,7 +61,7 @@ const SEED_POSTS: StoryPost[] = [
   },
   {
     id: 'seed-3',
-    userId: 'seed',
+    userId: 'seed-marta',
     author: 'Marta',
     petName: 'Рекс',
     species: 'dog',
@@ -81,7 +83,7 @@ const SEED_COMMENTS: StoryComment[] = [
   {
     id: 'seed-c1',
     postId: 'seed-1',
-    userId: 'seed',
+    userId: 'seed-olya',
     author: 'Оля',
     body: 'Яка красуня 💛',
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
@@ -89,7 +91,7 @@ const SEED_COMMENTS: StoryComment[] = [
   {
     id: 'seed-c2',
     postId: 'seed-3',
-    userId: 'seed',
+    userId: 'seed-igor',
     author: 'Ігор',
     body: 'Гарна прогулянка!',
     createdAt: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
@@ -97,7 +99,7 @@ const SEED_COMMENTS: StoryComment[] = [
   {
     id: 'seed-c3',
     postId: 'seed-3',
-    userId: 'seed',
+    userId: 'seed-anya',
     author: 'Аня',
     body: 'Рекс зірка 🐶',
     createdAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
@@ -243,9 +245,13 @@ export async function listStoryFeed(
   filter: StoryFeedFilter = 'all',
 ): Promise<StoryPost[]> {
   const user = await getCurrentUser();
+  const followingIds =
+    filter === 'following' ? await listFollowingIds() : [];
+  const blockedIds = await listBlockedUserIds();
+  const blocked = new Set(blockedIds);
 
   if (env.isDemoMode || !supabase) {
-    return listStoryFeedDemo(filter);
+    return listStoryFeedDemo(filter, followingIds, blocked);
   }
 
   try {
@@ -258,6 +264,9 @@ export async function listStoryFeed(
     if (filter === 'mine') {
       if (!user) return [];
       query = query.eq('user_id', user.id);
+    } else if (filter === 'following') {
+      if (followingIds.length === 0) return [];
+      query = query.in('user_id', followingIds).eq('privacy', 'public');
     } else if (filter === 'cat') {
       query = query.eq('species', 'cat').eq('privacy', 'public');
     } else if (filter === 'dog') {
@@ -269,12 +278,16 @@ export async function listStoryFeed(
     const { data, error } = await query;
     if (error) {
       if (isMissingSchemaError(error.message)) {
-        return listStoryFeedDemo(filter);
+        return listStoryFeedDemo(filter, followingIds, blocked);
       }
       throw new Error(friendlyDbError(error.message));
     }
 
-    const rows = data ?? [];
+    const rows = (data ?? []).filter((row) => {
+      const uid = String((row as { user_id: string }).user_id);
+      if (filter === 'mine') return true;
+      return !blocked.has(uid);
+    });
     const ids = rows.map((r) => String((r as { id: string }).id));
     const likeCounts = new Map<string, number>();
     const likedSet = new Set<string>();
@@ -313,13 +326,17 @@ export async function listStoryFeed(
     });
   } catch (err) {
     if (err instanceof Error && isMissingSchemaError(err.message)) {
-      return listStoryFeedDemo(filter);
+      return listStoryFeedDemo(filter, followingIds, blocked);
     }
     throw err;
   }
 }
 
-async function listStoryFeedDemo(filter: StoryFeedFilter) {
+async function listStoryFeedDemo(
+  filter: StoryFeedFilter,
+  followingIds: string[] = [],
+  blocked: Set<string> = new Set(),
+) {
   const local = await readLocal();
   const localComments = await readLocalComments();
   const mine = local.map((p) => ({ ...p, mine: true }));
@@ -327,8 +344,11 @@ async function listStoryFeedDemo(filter: StoryFeedFilter) {
     ...SEED_COMMENTS,
     ...localComments,
   ]);
+  const following = new Set(followingIds);
   return all.filter((p) => {
     if (filter === 'mine') return p.mine;
+    if (blocked.has(p.userId) && !p.mine) return false;
+    if (filter === 'following') return following.has(p.userId);
     if (p.mine && p.privacy === 'private') return false;
     if (filter === 'cat') return p.species === 'cat';
     if (filter === 'dog') return p.species === 'dog';

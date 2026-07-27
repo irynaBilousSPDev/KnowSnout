@@ -31,6 +31,8 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [x] **Нове:** `20260321231000_quiz_sessions_trivia.sql` (категорія Open Trivia Animals)
 - [x] **Нове:** `20260321235000_pet_life_stage.sql` (`pets.life_stage` для матчу корму ↔ профіль)
 - [x] **Нове:** `20260321236000_pet_vet_logs.sql` (журнал ліків / візитів до вета)
+- [x] **Опційно:** `20260321237000_story_follows.sql` (хмарні підписки Stories; UI вже на local)
+- [x] **Опційно:** `20260321238000_story_moderation.sql` (blocks/reports; UI local)
 - [ ] Email auth enabled; confirm-email off for MVP
 - [ ] Set secret `OPENAI_API_KEY`
 - [ ] Deploy `analyze-label` function
@@ -73,7 +75,8 @@ git push -u origin main
 4. **Environment Variables** (Production), ті самі що в `.env`:
    - `EXPO_PUBLIC_SUPABASE_URL`
    - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
-   - `EXPO_PUBLIC_USE_MOCK_AI` (`true` спочатку ок)
+   - `EXPO_PUBLIC_USE_MOCK_AI` (`false` на проді, коли Edge Functions готові)
+   - (Optional) `EXPO_PUBLIC_DOG_API_KEY` / `EXPO_PUBLIC_CAT_API_KEY` — без dog key TheDogAPI `/v1/breeds` часто дає 403; квіз тоді бере curated fallback
 5. Deploy → отримаєш `*.vercel.app`.
 6. **Settings → Domains** → додай `knowsnout.com` і `www.knowsnout.com`.
 7. У **Hostinger** DNS постав записи як каже Vercel (зазвичай `A` / `CNAME`) — після цього parked page зникне.
