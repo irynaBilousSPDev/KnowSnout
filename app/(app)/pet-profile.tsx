@@ -40,6 +40,7 @@ import {
   listPetVaccines,
   vaccineDueStatus,
 } from '@/src/services/vaccines';
+import { listPetVetLogs } from '@/src/services/vetLogs';
 import {
   careProgress,
   getCareToday,
@@ -60,6 +61,7 @@ import type {
 import type { CareDayLog } from '@/src/types/care';
 import type { FeedingLogRow, ScanRow } from '@/src/types/scan';
 import type { PetVaccineRow } from '@/src/types/vaccine';
+import type { PetVetLogRow } from '@/src/types/vetLog';
 
 function speciesLabel(species: CompanionSpecies) {
   if (species === 'dog') return t('pets.speciesDog');
@@ -163,6 +165,7 @@ export default function PetProfileScreen() {
   const [feeds, setFeeds] = useState<FeedingLogRow[]>([]);
   const [scans, setScans] = useState<ScanRow[]>([]);
   const [vaccines, setVaccines] = useState<PetVaccineRow[]>([]);
+  const [vetLogs, setVetLogs] = useState<PetVetLogRow[]>([]);
   const [care, setCare] = useState<CareDayLog | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -182,15 +185,23 @@ export default function PetProfileScreen() {
     setLoading(true);
     setError(null);
     try {
-      const [nextPet, nextPhotos, nextFeeds, nextScans, nextVaccines, nextCare] =
-        await Promise.all([
-          getPet(petId),
-          listPetPhotos(petId),
-          listFeedingLogs(petId),
-          listScans(),
-          listPetVaccines(petId),
-          getCareToday(petId),
-        ]);
+      const [
+        nextPet,
+        nextPhotos,
+        nextFeeds,
+        nextScans,
+        nextVaccines,
+        nextVetLogs,
+        nextCare,
+      ] = await Promise.all([
+        getPet(petId),
+        listPetPhotos(petId),
+        listFeedingLogs(petId),
+        listScans(),
+        listPetVaccines(petId),
+        listPetVetLogs(petId),
+        getCareToday(petId),
+      ]);
       if (!nextPet) {
         setError(t('pets.notFound'));
         setPet(null);
@@ -201,6 +212,7 @@ export default function PetProfileScreen() {
       setFeeds(nextFeeds);
       setScans(nextScans);
       setVaccines(nextVaccines);
+      setVetLogs(nextVetLogs);
       setCare(nextCare);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('pets.loadError'));
@@ -650,6 +662,41 @@ export default function PetProfileScreen() {
             onPress={() =>
               router.push({
                 pathname: '/(app)/pet-vaccines',
+                params: { petId: pet.id },
+              })
+            }
+          />
+        </View>
+
+        <View className="mt-4 rounded-3xl bg-white px-5 py-5">
+          <Text className="mb-2 font-body-bold text-lg text-forest-800">
+            {t('pets.vetLog')}
+          </Text>
+          {vetLogs.length === 0 ? (
+            <Text className="mb-4 font-body text-base leading-6 text-forest-600">
+              {t('pets.vetLogEmpty')}
+            </Text>
+          ) : (
+            <View className="mb-4">
+              {vetLogs.slice(0, 3).map((row) => (
+                <Text
+                  key={row.id}
+                  className="mb-1 font-body text-sm text-forest-700"
+                >
+                  {row.logged_on} · {row.title}
+                  {row.next_due_on
+                    ? ` · ${t('vetLog.nextDue')}: ${row.next_due_on}`
+                    : ''}
+                </Text>
+              ))}
+            </View>
+          )}
+          <PrimaryButton
+            label={t('pets.vetLogOpen')}
+            variant="secondary"
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/pet-vet-log',
                 params: { petId: pet.id },
               })
             }

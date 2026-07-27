@@ -114,6 +114,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="pet-vet-log"
+        options={{
+          headerShown: true,
+          title: t('vetLog.title'),
+        }}
+      />
+      <Stack.Screen
         name="pet-travel"
         options={{
           headerShown: true,
