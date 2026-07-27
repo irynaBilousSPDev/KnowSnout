@@ -132,6 +132,21 @@ export const DATA_SOURCES: DataSourceEntry[] = [
       'Довідник рослин у KnowSnout. Інформаційно, не заміна ветеринару.',
   },
   {
+    id: 'allegro',
+    name: 'Allegro',
+    kind: 'api',
+    usedForUk: 'Магазинна оцінка корму (score + посилання, без текстів відгуків)',
+    codePaths: [
+      'src/services/storeScores.ts',
+      'src/components/StoreScoreBadge.tsx',
+      'supabase/functions/store-rating',
+    ],
+    homepage: 'https://developer.allegro.pl/',
+    licenseOrTerms: 'Allegro REST API terms — client id/secret only on server',
+    attributionUk:
+      'Оцінки з Allegro (коли підключено API). Демо-режим показує зразок. Не оцінка складу KnowSnout.',
+  },
+  {
     id: 'supabase',
     name: 'Supabase',
     kind: 'infra',

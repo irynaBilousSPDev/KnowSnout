@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,6 +8,7 @@ import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ProsConsList } from '@/src/components/ProsConsList';
 import { ScoreGauge } from '@/src/components/ScoreGauge';
+import { StoreScoreBadge } from '@/src/components/StoreScoreBadge';
 import { t } from '@/src/i18n';
 import { getPendingAnalysis, setPendingAnalysis } from '@/src/lib/resultStore';
 import { buildScanShareMessage, shareText } from '@/src/lib/share';
@@ -20,8 +21,10 @@ import {
 } from '@/src/services/foodMatch';
 import { listPets, setPetFavoriteFood } from '@/src/services/pets';
 import { saveScan } from '@/src/services/scans';
+import { fetchStoreScore } from '@/src/services/storeScores';
 import type { LifeStage, PetRow } from '@/src/types/pet';
 import type { PetSpecies } from '@/src/types/scan';
+import type { StoreScore } from '@/src/types/storeScore';
 
 const SPECIES_OPTIONS: { id: PetSpecies; labelKey: string }[] = [
   { id: 'dog', labelKey: 'history.speciesDog' },
@@ -44,6 +47,8 @@ export default function ResultScreen() {
   const [pets, setPets] = useState<PetRow[]>([]);
   const [assigningId, setAssigningId] = useState<string | null>(null);
   const [assignedPetId, setAssignedPetId] = useState<string | null>(null);
+  const [storeScore, setStoreScore] = useState<StoreScore | null>(null);
+  const [storeLoading, setStoreLoading] = useState(false);
   const [species, setSpecies] = useState<PetSpecies>(() =>
     resolveSpecies(
       pending?.species,
@@ -59,6 +64,37 @@ export default function ResultScreen() {
         .catch(() => setPets([]));
     }, []),
   );
+
+  useEffect(() => {
+    const name = pending?.result?.productName;
+    if (!name) {
+      setStoreScore(null);
+      return;
+    }
+    let cancelled = false;
+    setStoreLoading(true);
+    void fetchStoreScore({
+      productName: name,
+      barcode: pending?.barcode,
+      productId: pending?.productId,
+    })
+      .then((next) => {
+        if (!cancelled) setStoreScore(next);
+      })
+      .catch(() => {
+        if (!cancelled) setStoreScore(null);
+      })
+      .finally(() => {
+        if (!cancelled) setStoreLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    pending?.result?.productName,
+    pending?.barcode,
+    pending?.productId,
+  ]);
 
   if (!pending?.result) {
     return (
@@ -125,6 +161,8 @@ export default function ResultScreen() {
         </Text>
 
         <ScoreGauge score={result.score} />
+
+        <StoreScoreBadge score={storeScore} loading={storeLoading} />
 
         <View className="mt-6">
           <Text className="mb-2 font-body-medium text-sm text-forest-700">

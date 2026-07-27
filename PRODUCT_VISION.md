@@ -48,6 +48,7 @@ Status: **shipped** — search + photo vision Edge (`identify-breed`); enrich fr
 - Food ↔ pet allergies / life stage match — **shipped** (informational hints on result + pet profile; `pets.life_stage` column)
 - Meds & vet visit log — **shipped** (thin log: meds / visit / note; `pet_vet_logs`)
 - Toys & how-to-play guides — **shipped** (editorial packs dog/cat/other; `play-guides`)
+- External store **scores only** (Allegro) — **shipped** (badge on result; mock default; Edge `store-rating`)
 - Passport / docs checklist
 - External store **scores only** (Allegro etc.)
 - Breed-from-photo (beta, with confidence)

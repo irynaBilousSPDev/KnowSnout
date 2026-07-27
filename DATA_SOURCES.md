@@ -20,6 +20,7 @@
 | Wikidata (CC0) | Quiz origin / animal group + enrich |
 | Open Trivia DB (CC BY-SA) | Animals trivia quiz |
 | KnowSnout plants seed + Supabase | Plant safety cache |
+| Allegro (optional API) | Store score + link on food result (mock by default) |
 | Supabase | Auth, journal, quiz scores, storage |
 
-Last process note: **2026-07-27** — `identify-breed` Edge + client enrich from Dog/Cat APIs.
+Last process note: **2026-07-27** — Allegro store-score badge (mock + Edge `store-rating`).

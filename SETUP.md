@@ -36,6 +36,9 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [ ] Deploy `analyze-label` function
 - [ ] (Plant photo ID) Deploy `identify-plant` function
 - [ ] (Breed photo ID) Deploy `identify-breed` function
+- [ ] (Store scores) Deploy `store-rating` function
+- [ ] (Optional) Allegro secrets: `ALLEGRO_CLIENT_ID`, `ALLEGRO_CLIENT_SECRET`
+- [ ] (Optional) `.env`: `EXPO_PUBLIC_USE_MOCK_STORE_SCORES=false` to call Edge instead of client mock
 
 ## 3. OpenAI
 

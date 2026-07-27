@@ -22,7 +22,7 @@ Markets v1: **Ukraine + Poland**.
 | Photo ingredients + AI | Done | OpenAI (paid, cached in our DB) |
 | Own `products` catalog | Done | — |
 | History Dog/Cat filters | Done | — |
-| External **ratings only** (Allegro etc.) | Later | Official APIs, not review-text scrape |
+| External **ratings only** (Allegro etc.) | **v1 shipped** (score + link; mock / Edge) | Official APIs, not review-text scrape |
 | Compare 2 foods | Later | Our catalog |
 | Prices / shop links | Later | Affiliate / Allegro API |
 
@@ -74,7 +74,7 @@ Entry: `/(app)/plant-safety`. SQL: `20260321220000_plant_safety.sql`. Details in
 | Feature | Status |
 |--|--|
 | In-app paw reviews on products | After food catalog is sticky |
-| External store rating badges | PL Allegro API first; UA case-by-case |
+| External store rating badges | **v1** Allegro score + link on result |
 
 ---
 

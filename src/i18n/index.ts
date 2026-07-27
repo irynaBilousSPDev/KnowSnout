@@ -432,6 +432,15 @@ const uk: Dict = {
     'Тексти з відкритих баз інколи англійською — після повного AI-скана етикетки вердикт буде українською.',
   'result.share': 'Поділитися оцінкою',
 
+  'storeScore.title': 'Оцінка на Allegro',
+  'storeScore.demo': 'демо',
+  'storeScore.loading': 'Шукаємо оцінку в магазині…',
+  'storeScore.noRating': 'Рейтинг у магазині поки не знайдено',
+  'storeScore.reviews': '{count} оцінок',
+  'storeScore.openAllegro': 'Відкрити на Allegro',
+  'storeScore.disclaimer':
+    'Лише оцінка й посилання з магазину — не наша оцінка складу. Перевіряй актуальність на сайті.',
+
   'foodMatch.title': 'Сумісність з улюбленцем',
   'foodMatch.disclaimer':
     'Підказка за профілем, не ветеринарна рекомендація.',
