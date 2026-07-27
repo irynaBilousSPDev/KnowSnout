@@ -46,6 +46,7 @@ const uk: Dict = {
 
   'tabs.scan': 'Перевір',
   'tabs.history': 'Журнал',
+  'tabs.quiz': 'Квіз',
   'tabs.pets': 'Улюбленці',
   'tabs.stories': 'Стрічка',
 
@@ -56,12 +57,26 @@ const uk: Dict = {
   'check.plantBody': 'Чи безпечна для собаки або кота',
   'check.breedTitle': 'Порода',
   'check.breedBody': 'Фото або назва → підказка породи (з відкритих баз)',
-  'check.quizTitle': 'Квіз порід',
-  'check.quizBody': 'Вгадай породу з фото — 5 раундів, факти з відкритих API',
   'check.journalHint': 'Усі результати збираються у вкладці «Журнал».',
 
+  'quizHub.title': 'Квіз',
+  'quizHub.subtitle': 'Категорії · Wikidata · відкриті API',
+  'quizHub.lead':
+    'Обери категорію: фото порід, країна походження або група тварин. Факти з Wikidata — обов’язково.',
+  'quizHub.breedTitle': 'Вгадай породу',
+  'quizHub.breedBody':
+    'Фото + 4 варіанти (TheDogAPI / TheCatAPI), факти також з Wikidata',
+  'quizHub.originTitle': 'Звідки порода?',
+  'quizHub.originBody':
+    'Країна походження собак і котів — дані Wikidata (P495)',
+  'quizHub.groupTitle': 'Група тварин',
+  'quizHub.groupBody':
+    'Ссавець, птах, плазун чи риба? Підписи з Wikidata',
+  'quizHub.wikidataNote':
+    'Wikidata — відкрита база знань (сестринський проєкт Вікіпедії). CC0 · не ветвисновок.',
+
   'quiz.subtitle':
-    'Вгадай породу з фото, а після відповіді — короткі факти з каталогів TheDogAPI / TheCatAPI.',
+    'Вгадай породу з фото. Після відповіді — факти з каталогів API та Wikidata.',
   'quiz.speciesLabel': 'Собаки чи коти',
   'quiz.speciesDog': 'Собаки',
   'quiz.speciesCat': 'Коти',
@@ -81,14 +96,23 @@ const uk: Dict = {
   'quiz.factWeight': 'Вага (кг): {value}',
   'quiz.factHeight': 'Зріст (см): {value}',
   'quiz.trustNote':
-    'Джерело фактів: {source} (кураторський каталог порід). Це довідка для цікавості, не ветвисновок і не родовід.',
+    'Джерело фактів: {source} (каталог порід). Це довідка для цікавості, не ветвисновок і не родовід.',
+  'quiz.wikiSubtitle':
+    'Питання з Wikidata. Після відповіді — короткий факт і посилання на запис.',
+  'quiz.wikiLoading': 'Запит до Wikidata…',
+  'quiz.wikiOriginPrompt': 'З якої країни походить порода «{name}»?',
+  'quiz.wikiGroupPrompt': 'До якої групи належить «{name}»?',
+  'quiz.wikiTrustNote':
+    'Джерело: Wikidata (відкрита база знань). Інформаційно, не ветвисновок.',
+  'quiz.openWikidata': 'Відкрити у Wikidata →',
+  'quiz.wikidataEnrich': 'З Wikidata: {value}',
   'quiz.next': 'Наступне питання',
   'quiz.seeResult': 'Підсумок',
   'quiz.sessionTitle': 'Раунд завершено',
   'quiz.sessionBody': 'Ти вгадав(ла) {score} з {total}',
   'quiz.playAgain': 'Ще раз',
   'quiz.attribution':
-    'Фото й дані порід: TheDogAPI / TheCatAPI. Інформаційно, не ветвисновок.',
+    'Фото: TheDogAPI / TheCatAPI · факти також з Wikidata. Інформаційно, не ветвисновок.',
 
   'journal.kindFood': 'Корм',
   'journal.kindPlant': 'Рослини',

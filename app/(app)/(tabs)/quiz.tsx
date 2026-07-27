@@ -4,41 +4,42 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
-import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { brand } from '@/src/theme/brand';
 
-type CheckKind = 'food' | 'plant' | 'breed';
-
-function CheckCard({
-  kind,
-  icon,
-  onPress,
-}: {
-  kind: CheckKind;
+type QuizCategoryCard = {
+  id: 'breed' | 'breed_origin' | 'animal_group';
   icon: keyof typeof Ionicons.glyphMap;
-  onPress: () => void;
-}) {
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-    >
-      <View style={styles.cardIcon}>
-        <Ionicons name={icon} size={26} color={brand.tealPressed} />
-      </View>
-      <View style={styles.cardCopy}>
-        <Text style={styles.cardTitle}>{t(`check.${kind}Title`)}</Text>
-        <Text style={styles.cardBody}>{t(`check.${kind}Body`)}</Text>
-      </View>
-      <Ionicons name="chevron-forward" size={20} color="#7FD9C9" />
-    </Pressable>
-  );
-}
+  titleKey: string;
+  bodyKey: string;
+  href: string;
+};
 
-export default function CheckHubScreen() {
-  const { user } = useAuth();
+const CATEGORIES: QuizCategoryCard[] = [
+  {
+    id: 'breed',
+    icon: 'camera-outline',
+    titleKey: 'quizHub.breedTitle',
+    bodyKey: 'quizHub.breedBody',
+    href: '/(app)/breed-quiz',
+  },
+  {
+    id: 'breed_origin',
+    icon: 'globe-outline',
+    titleKey: 'quizHub.originTitle',
+    bodyKey: 'quizHub.originBody',
+    href: '/(app)/wiki-quiz?category=breed_origin',
+  },
+  {
+    id: 'animal_group',
+    icon: 'leaf-outline',
+    titleKey: 'quizHub.groupTitle',
+    bodyKey: 'quizHub.groupBody',
+    href: '/(app)/wiki-quiz?category=animal_group',
+  },
+];
 
+export default function QuizHubScreen() {
   return (
     <AppScreen>
       <ScrollView
@@ -46,28 +47,33 @@ export default function CheckHubScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <ScreenHeader
-          subtitle={`${t('scan.signedInAs')} ${user?.email ?? ''}`}
+          title={t('quizHub.title')}
+          subtitle={t('quizHub.subtitle')}
         />
 
-        <Text style={styles.lead}>{t('check.lead')}</Text>
+        <Text style={styles.lead}>{t('quizHub.lead')}</Text>
 
-        <CheckCard
-          kind="food"
-          icon="nutrition-outline"
-          onPress={() => router.push('/(app)/scan-food')}
-        />
-        <CheckCard
-          kind="plant"
-          icon="leaf-outline"
-          onPress={() => router.push('/(app)/plant-safety')}
-        />
-        <CheckCard
-          kind="breed"
-          icon="paw-outline"
-          onPress={() => router.push('/(app)/breed-scan')}
-        />
+        {CATEGORIES.map((cat) => (
+          <Pressable
+            key={cat.id}
+            onPress={() => router.push(cat.href as never)}
+            style={({ pressed }) => [
+              styles.card,
+              pressed && styles.cardPressed,
+            ]}
+          >
+            <View style={styles.cardIcon}>
+              <Ionicons name={cat.icon} size={26} color={brand.tealPressed} />
+            </View>
+            <View style={styles.cardCopy}>
+              <Text style={styles.cardTitle}>{t(cat.titleKey)}</Text>
+              <Text style={styles.cardBody}>{t(cat.bodyKey)}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#7FD9C9" />
+          </Pressable>
+        ))}
 
-        <Text style={styles.hint}>{t('check.journalHint')}</Text>
+        <Text style={styles.hint}>{t('quizHub.wikidataNote')}</Text>
       </ScrollView>
     </AppScreen>
   );

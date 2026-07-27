@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
+  Linking,
   Pressable,
   ScrollView,
   Text,
@@ -17,6 +18,10 @@ import {
   createBreedQuizRound,
   type BreedQuizRound,
 } from '@/src/services/breedQuiz';
+import {
+  enrichBreedFromWikidata,
+  type BreedEnrichment,
+} from '@/src/services/wikidataQuiz';
 import { brand } from '@/src/theme/brand';
 import type { CompanionBreedSpecies } from '@/src/types/breed';
 
@@ -32,6 +37,8 @@ export default function BreedQuizScreen() {
   const [roundIndex, setRoundIndex] = useState(0);
   const [recentCorrectIds, setRecentCorrectIds] = useState<string[]>([]);
   const [sessionDone, setSessionDone] = useState(false);
+  const [wiki, setWiki] = useState<BreedEnrichment | null>(null);
+  const [wikiLoading, setWikiLoading] = useState(false);
 
   const loadRound = useCallback(
     async (
@@ -42,6 +49,7 @@ export default function BreedQuizScreen() {
       setLoading(true);
       setError(null);
       setPickedId(null);
+      setWiki(null);
       try {
         const next = await createBreedQuizRound(nextSpecies, avoid);
         setRound(next);
@@ -81,6 +89,11 @@ export default function BreedQuizScreen() {
     setRecentCorrectIds((prev) =>
       [...prev, round.correctId].slice(-12),
     );
+    const name = round.fact.name;
+    setWikiLoading(true);
+    void enrichBreedFromWikidata(name)
+      .then((hit) => setWiki(hit))
+      .finally(() => setWikiLoading(false));
   };
 
   const onNext = () => {
@@ -293,6 +306,32 @@ export default function BreedQuizScreen() {
                         : 'TheCatAPI',
                   })}
                 </Text>
+
+                {wikiLoading ? (
+                  <Text className="mt-3 font-body text-xs text-forest-500">
+                    {t('quiz.wikiLoading')}
+                  </Text>
+                ) : null}
+                {wiki?.description ? (
+                  <Text className="mt-3 font-body text-sm leading-5 text-forest-700">
+                    {t('quiz.wikidataEnrich', { value: wiki.description })}
+                  </Text>
+                ) : null}
+                {wiki?.origin ? (
+                  <Text className="mt-1 font-body text-sm text-forest-700">
+                    {t('quiz.factOrigin', { value: wiki.origin })}
+                  </Text>
+                ) : null}
+                {wiki?.wikidataUrl ? (
+                  <Pressable
+                    onPress={() => void Linking.openURL(wiki.wikidataUrl)}
+                    className="mt-2"
+                  >
+                    <Text className="font-body-bold text-sm text-forest-700">
+                      {t('quiz.openWikidata')}
+                    </Text>
+                  </Pressable>
+                ) : null}
 
                 <View className="mt-4">
                   <PrimaryButton

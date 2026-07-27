@@ -47,7 +47,14 @@ export default function AppLayout() {
         name="breed-quiz"
         options={{
           headerShown: true,
-          title: t('check.quizTitle'),
+          title: t('quizHub.breedTitle'),
+        }}
+      />
+      <Stack.Screen
+        name="wiki-quiz"
+        options={{
+          headerShown: true,
+          title: t('tabs.quiz'),
         }}
       />
       <Stack.Screen

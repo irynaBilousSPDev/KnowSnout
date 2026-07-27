@@ -86,6 +86,21 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="quiz"
+        options={{
+          title: t('tabs.quiz'),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              name={focused ? 'help-circle' : 'help-circle-outline'}
+              focused={focused}
+            />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <TabLabel label={t('tabs.quiz')} focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="stories"
         options={{
           title: t('tabs.stories'),

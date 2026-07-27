@@ -229,7 +229,8 @@ Rules: confidence never = pedigree; UA UI; streak / “quiz of the day” later;
 
 **Status:** direction set — visual breed quiz first; Wikidata as spice later, not the core.  
 **v1 shipped (2026-07-27):** `breed-quiz` — 5 rounds, dog/cat, photo + 4 choices; entry from Перевір hub.  
-**v1.1:** after each answer show curated fact card (group, temperament, origin, life span, weight/height, cat description) from TheDogAPI/TheCatAPI; prefer breeds with richer profiles; clear trust/disclaimer note (not vet advice / not pedigree).
+**v1.1:** after each answer show curated fact card (group, temperament, origin, life span, weight/height, cat description) from TheDogAPI/TheCatAPI; prefer breeds with richer profiles; clear trust/disclaimer note (not vet advice / not pedigree).  
+**v2 (2026-07-27):** dedicated **Квіз** tab with categories — (1) Вгадай породу + Wikidata enrich, (2) Звідки порода? Wikidata P495, (3) Група тварин Wikidata labels; SPARQL required.
 
 ---
 
