@@ -2,9 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { AppScreen } from '@/src/components/AppScreen';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
@@ -21,7 +22,7 @@ async function markSeen() {
   await AsyncStorage.setItem(SEEN_KEY, 'true');
 }
 
-/** HTML onboarding 1–3: skip, 220 circle, Manrope H2, teal page dots. */
+/** HTML phones 3 / 3b / 3c — app-hd, skip, 220 circle, pill dots, CTA. */
 export default function OnboardingScreen() {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
@@ -50,24 +51,24 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <AppScreen edges={['top', 'bottom']}>
-      <View style={styles.pad}>
-        <View style={styles.topRow}>
-          <View />
+    <View style={styles.root}>
+      <SafeAreaView style={styles.safe} edges={['bottom']}>
+        <AppChromeHeader showAvatar={false} />
+        <View style={styles.skipRow}>
           <Pressable onPress={() => void finish()} disabled={saving}>
             <Text style={styles.skip}>{t('onboarding.skip')}</Text>
           </Pressable>
         </View>
 
-        <View style={styles.illustration}>
-          <Ionicons name="image-outline" size={36} color={brand.mutedSoft} />
-          <Text style={styles.illustrationLabel}>{t('check.illustration')}</Text>
+        <View style={styles.center}>
+          <View style={styles.illustration}>
+            <Ionicons name="image-outline" size={36} color={brand.mutedSoft} />
+            <Text style={styles.illustrationLabel}>{t('check.illustration')}</Text>
+          </View>
+          <Text style={styles.title}>{t(current.titleKey)}</Text>
+          <Text style={styles.body}>{t(current.bodyKey)}</Text>
+          <View style={styles.dots}>{dots}</View>
         </View>
-
-        <Text style={styles.title}>{t(current.titleKey)}</Text>
-        <Text style={styles.body}>{t(current.bodyKey)}</Text>
-
-        <View style={styles.dots}>{dots}</View>
 
         <View style={styles.footer}>
           {last ? (
@@ -75,38 +76,42 @@ export default function OnboardingScreen() {
               label={t('onboarding.done')}
               onPress={() => void finish()}
               loading={saving}
+              size="lg"
             />
           ) : (
             <PrimaryButton
               label={t('onboarding.next')}
               onPress={() => setStep((s) => Math.min(s + 1, STEPS.length - 1))}
+              size="lg"
             />
           )}
         </View>
-      </View>
-    </AppScreen>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  pad: {
-    flex: 1,
+  root: { flex: 1, backgroundColor: brand.canvas },
+  safe: { flex: 1 },
+  skipRow: {
     paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 24,
-  },
-  topRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: 24,
+    paddingTop: 14,
+    alignItems: 'flex-end',
   },
   skip: {
     fontFamily: fonts.bodySemi,
     fontSize: 13,
     color: brand.mutedSoft,
   },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    gap: 20,
+  },
   illustration: {
-    alignSelf: 'center',
     height: 220,
     width: 220,
     borderRadius: 110,
@@ -116,7 +121,6 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 24,
   },
   illustrationLabel: {
     marginTop: 8,
@@ -130,35 +134,34 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     color: brand.ink,
     textAlign: 'center',
-    marginBottom: 10,
+    margin: 0,
   },
   body: {
     fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
     color: brand.muted,
     textAlign: 'center',
-    paddingHorizontal: 8,
+    maxWidth: 280,
   },
   dots: {
-    marginTop: 28,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     gap: 6,
+    marginTop: 8,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: brand.mistBorder,
   },
   dotActive: {
-    width: 28,
+    width: 22,
     backgroundColor: brand.accent,
   },
   footer: {
-    marginTop: 'auto',
-    paddingTop: 24,
+    paddingHorizontal: 20,
+    paddingBottom: 24,
   },
 });

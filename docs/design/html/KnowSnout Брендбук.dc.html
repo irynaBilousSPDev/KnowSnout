@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#F4F3F1;font-family:'Inter',system-ui,sans-serif;color:#152233}
+    h1,h2,h3{font-family:'Manrope',system-ui,sans-serif}
+    a{color:#0E6E5D}
+    a:hover{color:#0A5346}
+    .wrap{max-width:1080px;margin:0 auto;padding:64px 48px 100px}
+    .kicker{font:700 11px/1.4 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#0E6E5D}
+    .sec{margin-top:56px}
+    .sec h2{font-size:22px;margin:0 0 6px;color:#152233}
+    .sec p.desc{color:#5B6B75;font-size:13.5px;margin:0 0 20px;max-width:620px;line-height:1.6}
+    .swatch-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+    .swatch{border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .swatch-color{height:70px}
+    .swatch-label{background:#fff;padding:10px 12px;font-size:11.5px;font-weight:600}
+    .swatch-hex{font-size:10.5px;color:#8b96a0;font-weight:500;margin-top:2px}
+    .type-row{display:flex;align-items:baseline;gap:18px;padding:14px 0;border-bottom:1px solid #E3E1DD}
+    .type-row .lbl{width:110px;font-size:11px;color:#8b96a0;font-weight:600;flex-shrink:0}
+    .btn-demo{display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 24px;border-radius:14px;font:700 14px 'Inter',sans-serif;cursor:pointer}
+    .card-demo{background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    .input-demo{border:1.5px solid #9FD8CB;border-radius:14px;padding:12px 14px;font-size:13.5px;color:#8b96a0;background:#fff}
+  </style>
+</helmet>
+<div class="wrap">
+  <div class="kicker">KnowSnout · Брендбук v1 — ЗАТВЕРДЖЕНО</div>
+  <h1 style="font-size:38px;margin:10px 0 8px">Візуальна ідентичність</h1>
+  <p style="max-width:640px;color:#5B6B75;font-size:15px;line-height:1.6">
+    Ця система затверджена як єдине джерело правди — логотип, повні тональні рампи кольорів,
+    чіткі ролі типографіки і видо-нейтральні іконки — взяті з пропозиції дизайнера.
+    Усі 5 файлів екранів KnowSnout вже перефарбовані відповідно до цих токенів.
+    включно з обов&apos;язковою темною темою.
+  </p>
+
+  <div class="sec">
+    <h2>Логотип</h2>
+    <p class="desc">Знак — стилізований собачий ніс: трикутна морда з крапкою-переніссям, вусики-дужки знизу і два сигнальні "промені нюху" зверху, у зеленому градієнті. Текстовий логотип — «KnowSnout» темно-синім напівжирним поруч зі знаком.</p>
+    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+      <img src="assets/logo_KnowSnout_icon.png" alt="KnowSnout logo" style="width:80px;height:auto">
+      <div style="display:flex;align-items:center;gap:12px">
+        <img src="assets/logo_KnowSnout_icon.png" alt="KnowSnout logo" style="width:34px;height:auto">
+        <span style="font:800 26px 'Manrope',sans-serif;color:#152233">KnowSnout</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Стани логотипу</h2>
+    <p class="desc">Растрове зображення (з градієнтом) — кольорові варіанти нижче через фільтри поверх нього. Для друку в 1 колір чи вкрай малих розмірів — беріть чорний/білий варіант, не градієнтний.</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <div style="width:104px;height:104px;background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center"><img src="assets/logo_KnowSnout_icon.png" style="width:56px;height:auto;display:block"></div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">Кольоровий · на світлому</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:104px;height:104px;background:#1C1A17;border-radius:16px;display:flex;align-items:center;justify-content:center"><img src="assets/logo_KnowSnout_icon.png" style="width:56px;height:auto;display:block"></div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">Кольоровий · на темному</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:104px;height:104px;background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center"><img src="assets/logo_KnowSnout_icon.png" style="width:56px;height:auto;display:block;filter:grayscale(1) brightness(0)"></div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">Чорний (монохром)</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:104px;height:104px;background:#152233;border-radius:16px;display:flex;align-items:center;justify-content:center"><img src="assets/logo_KnowSnout_icon.png" style="width:56px;height:auto;display:block;filter:grayscale(1) brightness(0) invert(1)"></div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">Білий (монохром)</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:104px;height:104px;background:#E3F5F0;border-radius:16px;display:flex;align-items:center;justify-content:center"><img src="assets/logo_KnowSnout_icon.png" style="width:56px;height:auto;display:block;filter:grayscale(1) brightness(0) invert(1) sepia(1) saturate(4) hue-rotate(120deg) brightness(.75)"></div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">Однотонний primary teal</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#8b96a0;margin-top:14px;max-width:600px;line-height:1.6">SVG: наступний крок — отримати оригінальний векторний файл лого з дизайн-інструменту (Figma/Illustrator), щоб замінити тут PNG на справжній &lt;path&gt;. Поки прозорий PNG — єдине джерело правди для знаку.</div>
+  </div>
+
+  <div class="sec">
+    <h2>Видо-нейтральні іконки тварин</h2>
+    <p class="desc">Один стиль малювання (коло-«обличчя», прості вуха/плавники, 2.2px обводка зі скругленими кінцями) на будь-яку кількість видів — без кольорового кодування за видом.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10c0-2 1.2-3.5 2.5-3.5S9 8 9 10"></path><path d="M15 10c0-2 1.2-3.5 2.5-3.5S20 8 20 10"></path><path d="M6.5 10c-1 0-2 1.3-2 3s1.5 4 3.5 5c1.3.7 2 .7 2 2.5v.5"></path><path d="M17.5 10c1 0 2 1.3 2 3s-1.5 4-3.5 5c-1.3.7-2 .7-2 2.5v.5"></path><ellipse cx="12" cy="14.5" rx="5" ry="4.5"></ellipse><circle cx="12" cy="14" r=".6" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Пес</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9L4.5 4.5 9 7"></path><path d="M18 9l1.5-4.5L15 7"></path><path d="M6 9c0-1.5 2.5-2.5 6-2.5s6 1 6 2.5v5c0 3-2.5 5.5-6 5.5s-6-2.5-6-5.5z"></path><path d="M9 12h.01M15 12h.01"></path><path d="M10.5 15h3"></path></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Кіт</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 0 5 2.2 5 5.2 0 1.6-.7 2.6-1.4 3.4l3.4 1.9-2.3 1-2.3-1.2c-.6 3.7-2.4 7.7-2.4 7.7s-1.8-4-2.4-7.7L9.3 14l-2.3-1 3.4-1.9C9.7 10.3 9 9.3 9 7.7 9 4.7 9.5 3 12 3z"></path><circle cx="14.3" cy="7.5" r=".6" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Птах</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 8.5C8 6 8 3.5 9.3 3c1.2-.5 2.2 1.5 2.4 4M15 8.5c1-2.5 1-5 -.3-5.5-1.2-.5-2.2 1.5-2.4 4"></path><ellipse cx="12" cy="14" rx="6" ry="5.5"></ellipse><circle cx="10" cy="13" r=".5" fill="#0E6E5D"></circle><circle cx="14" cy="13" r=".5" fill="#0E6E5D"></circle><path d="M10.5 16h3"></path></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Кріль</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="10" r="2"></circle><circle cx="16" cy="10" r="2"></circle><ellipse cx="12" cy="14" rx="7" ry="5.5"></ellipse><circle cx="9.5" cy="13" r=".5" fill="#0E6E5D"></circle><circle cx="14.5" cy="13" r=".5" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Гризун</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0-4.5 3.5-7 8-7s8 2.5 8 7-3.5 7-8 7-8-2.5-8-7z"></path><path d="M8 8.5C7 7.5 5.5 7.5 5 8.5M9 5.5C8.3 4 7 3.8 6 4.5"></path><circle cx="9" cy="10.5" r=".6" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Черепаха</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-4 6-5 9-5 4 0 7 2.2 9 5-2 2.8-5 5-9 5-3 0-6-1-9-5z"></path><path d="M21 12l2-3M21 12l2 3"></path><circle cx="8.5" cy="11" r=".6" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Риба</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Лого + текст (лок-ап)</h2>
+    <p class="desc">Дворівневий вордмарк: «Know» у чорнильно-синьому, «Snout» — тим самим зеленим градієнтом, що й знак, так текст і мітка читаються як одна система. Знак вирівняний по оптичному центру, а не по геометричній висоті букв.</p>
+
+    <div style="background:#fff;border-radius:20px;padding:40px 36px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px">
+      <img src="assets/logo_KnowSnout_icon.png" style="width:52px;height:auto;transform:translateY(1px)">
+      <span style="font:800 40px/1 'Manrope',sans-serif;letter-spacing:-0.02em">
+        <span style="color:#152233">Know</span><span style="background:linear-gradient(100deg,#3FCB6E,#12B876);-webkit-background-clip:text;background-clip:text;color:transparent">Snout</span>
+      </span>
+    </div>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end">
+      <div style="text-align:center">
+        <div style="background:#fff;border-radius:16px;padding:18px 24px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;gap:10px">
+          <img src="assets/logo_KnowSnout_icon.png" style="width:26px;height:auto">
+          <span style="font:800 19px/1 'Manrope',sans-serif;letter-spacing:-0.01em"><span style="color:#152233">Know</span><span style="background:linear-gradient(100deg,#3FCB6E,#12B876);-webkit-background-clip:text;background-clip:text;color:transparent">Snout</span></span>
+        </div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">Горизонтальний · дворівневий колір</div>
+      </div>
+      <div style="text-align:center">
+        <div style="background:#fff;border-radius:16px;padding:18px 24px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;gap:8px">
+          <img src="assets/logo_KnowSnout_icon.png" style="width:36px;height:auto">
+          <span style="font:800 16px/1 'Manrope',sans-serif;letter-spacing:-0.01em"><span style="color:#152233">Know</span><span style="background:linear-gradient(100deg,#3FCB6E,#12B876);-webkit-background-clip:text;background-clip:text;color:transparent">Snout</span></span>
+        </div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">Вертикальний</div>
+      </div>
+      <div style="text-align:center">
+        <div style="background:#1C1A17;border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:10px">
+          <img src="assets/logo_KnowSnout_icon.png" style="width:26px;height:auto">
+          <span style="font:800 19px/1 'Manrope',sans-serif;letter-spacing:-0.01em"><span style="color:#F0E9DF">Know</span><span style="background:linear-gradient(100deg,#3FCB6E,#12B876);-webkit-background-clip:text;background-clip:text;color:transparent">Snout</span></span>
+        </div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">На темному</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:76px;height:76px;background:#fff;border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center">
+          <img src="assets/logo_KnowSnout_icon.png" style="width:44px;height:auto">
+        </div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">App-іконка</div>
+      </div>
+      <div style="text-align:center">
+        <div style="background:#111;border-radius:999px;padding:9px 18px;display:flex;align-items:center">
+          <img src="assets/logo_KnowSnout_icon.png" style="width:22px;height:auto;filter:brightness(1.15)">
+        </div>
+        <div style="font-size:11px;color:#8b96a0;margin-top:6px">Статус-бар</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Колірна палітра</h2>
+    <p class="desc">Глибокий смарагдово-тіловий як основний акцент (кнопки, активні стани), м&apos;ятний як тло тегів/іконок, яскраво-зелений — тільки для логотипу/акцентних крапок. Текст — темно-синій вугільний, тло — теплий світло-сірий.</p>
+    <div class="swatch-row">
+      <div class="swatch"><div class="swatch-color" style="background:#0E6E5D"></div><div class="swatch-label">Primary Teal<div class="swatch-hex">#0E6E5D</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#0A5346"></div><div class="swatch-label">Teal Pressed<div class="swatch-hex">#0A5346</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#39E07A"></div><div class="swatch-label">Logo Green<div class="swatch-hex">#39E07A</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#E3F5F0"></div><div class="swatch-label">Mint Tint<div class="swatch-hex">#E3F5F0</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#9FD8CB"></div><div class="swatch-label">Teal Border<div class="swatch-hex">#9FD8CB</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#152233"></div><div class="swatch-label">Ink Navy (text)<div class="swatch-hex">#152233</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#5B6B75"></div><div class="swatch-label">Slate (muted text)<div class="swatch-hex">#5B6B75</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#F4F3F1"></div><div class="swatch-label">Warm Bg<div class="swatch-hex">#F4F3F1</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#1C1A17"></div><div class="swatch-label">Dark Bg<div class="swatch-hex">#1C1A17</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#2A2622"></div><div class="swatch-label">Dark Surface<div class="swatch-hex">#2A2622</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#D9534F"></div><div class="swatch-label">Error/Delete<div class="swatch-hex">#D9534F</div></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#F0A93A"></div><div class="swatch-label">Warning/Amber<div class="swatch-hex">#F0A93A</div></div></div>
+    </div>
+    <div style="margin-top:22px;font:700 12px 'Manrope',sans-serif;color:#152233">Тональні рампи (для hover/pressed/disabled станів)</div>
+    <div style="display:flex;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-top:8px">
+      <div style="flex:1;height:44px;background:#EAF7F3"></div><div style="flex:1;height:44px;background:#CBEBE1"></div><div style="flex:1;height:44px;background:#9FD8CB"></div><div style="flex:1;height:44px;background:#5FBBA6"></div><div style="flex:1;height:44px;background:#0E6E5D"></div><div style="flex:1;height:44px;background:#0A5346"></div><div style="flex:1;height:44px;background:#083F35"></div><div style="flex:1;height:44px;background:#062B24"></div><div style="flex:1;height:44px;background:#041A16"></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Типографіка</h2>
+    <p class="desc">Manrope (напівжирний/екстражирний) для заголовків, Inter для тексту інтерфейсу.</p>
+    <div class="type-row"><div class="lbl">H1 / 32px</div><div style="font:800 32px 'Manrope',sans-serif">Профіль улюбленця</div></div>
+    <div class="type-row"><div class="lbl">H2 / 20px</div><div style="font:700 20px 'Manrope',sans-serif">Спосіб життя і харчування</div></div>
+    <div class="type-row"><div class="lbl">Body / 14px</div><div style="font:400 14px 'Inter',sans-serif;color:#152233">Записати прийом їжі — коротка нотатка про те, як пройшло годування.</div></div>
+    <div class="type-row"><div class="lbl">Label / 12px</div><div style="font:600 12px 'Inter',sans-serif;color:#0E6E5D;letter-spacing:.03em;text-transform:uppercase">Улюблена їжа</div></div>
+    <div class="type-row"><div class="lbl">Muted / 12px</div><div style="font:400 12px 'Inter',sans-serif;color:#8b96a0">Зберігається лише в твоєму акаунті. Без публічного пошуку.</div></div>
+  </div>
+
+  <div class="sec">
+    <h2>Форма і радіуси</h2>
+    <p class="desc">Заокруглені прямокутники (не пігулки) — 14px для кнопок і карток, 999px лише для тегів/аватарів. Інпути — тонка м&apos;ятна обводка, без заливки.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+      <div class="btn-demo" style="background:#0E6E5D;color:#fff">Зберегти</div>
+      <div class="btn-demo" style="background:#fff;color:#0E6E5D;border:1.5px solid #9FD8CB">Скасувати</div>
+      <div class="input-demo" style="width:220px">Наприклад, 4.5</div>
+      <div style="background:#E3F5F0;color:#0E6E5D;border-radius:999px;padding:8px 16px;font:700 12.5px 'Inter',sans-serif">Невідомо</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Компонент — картка вибору (тег/чіп-вибір)</h2>
+    <p class="desc">Невибраний стан: м&apos;ятна обводка на білому. Вибраний: суцільна заливка primary teal, білий текст.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div style="border:1.5px solid #9FD8CB;border-radius:999px;padding:10px 18px;font:600 13px 'Inter',sans-serif;color:#0E6E5D">Коротка</div>
+      <div style="border:1.5px solid #9FD8CB;border-radius:999px;padding:10px 18px;font:600 13px 'Inter',sans-serif;color:#0E6E5D">Довга</div>
+      <div style="background:#0E6E5D;border-radius:999px;padding:10px 18px;font:600 13px 'Inter',sans-serif;color:#fff">Невідомо</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Іконки-категорії (хаб «Перевір»)</h2>
+    <p class="desc">М&apos;ятне коло-підложка, іконка-аутлайн у primary teal, товщина штриха ~2.2px.</p>
+    <div style="display:flex;gap:16px">
+      <div class="card-demo" style="display:flex;align-items:center;gap:12px;flex:1">
+        <div style="width:44px;height:44px;border-radius:12px;background:#E3F5F0;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3a5 5 0 015 5c0 5-5 5-5 5s5 0 5 5a5 5 0 01-5 5"></path></svg></div>
+        <div><div style="font:700 14px 'Manrope',sans-serif">Корм</div><div style="font-size:11.5px;color:#8b96a0">Штрихкод або фото</div></div>
+      </div>
+      <div class="card-demo" style="display:flex;align-items:center;gap:12px;flex:1">
+        <div style="width:44px;height:44px;border-radius:12px;background:#E3F5F0;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 019.8 6.1C15.5 5 17 4.5 19 4c0 2-.6 3.6-1.5 4.8A7 7 0 0111 20z"></path></svg></div>
+        <div><div style="font:700 14px 'Manrope',sans-serif">Рослина</div><div style="font-size:11.5px;color:#8b96a0">Безпечна для тварин?</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Темна тема (обов&apos;язкова)</h2>
+    <p class="desc">Теплий чорно-коричневий фон, ті самі текстові картки трохи світліші, primary teal лишається акцентом (добре читається на темному).</p>
+    <div style="background:#1C1A17;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px">
+      <div style="color:#F0E9DF;font:700 15px 'Manrope',sans-serif">Профіль улюбленця</div>
+      <div style="background:#2A2622;border-radius:14px;padding:14px;color:#F0E9DF;font-size:13px">Покриття шерсті: <span style="color:#39E07A;font-weight:700">Довга</span></div>
+      <div class="btn-demo" style="background:#0E6E5D;color:#fff;width:fit-content">Зберегти</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Тон голосу</h2>
+    <p class="desc">Прямий, теплий, без зайвого пафосу. Приватні поля позначені прямо: «Лише для тебе, приватно», «Без публічного пошуку». Дисклеймери короткі й спокійні.</p>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

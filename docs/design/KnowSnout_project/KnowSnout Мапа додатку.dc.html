@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="stylesheet" href="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/styles.css">
+  <script src="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/_ds_bundle.js"></script>
+  <style>
+    body{margin:0;background:var(--color-bg)}
+    .kicker{font:600 11px/1.4 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)}
+    .mod{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:26px 28px;margin-bottom:22px}
+    .mod-hd{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+    .mod-letter{font:800 22px var(--font-heading);color:var(--color-accent-700)}
+    .mod-title{font-size:20px;margin:0}
+    .mod-file{font:600 11.5px var(--font-body);color:var(--color-neutral-600);text-decoration:none;padding:4px 10px;background:var(--color-neutral-200);border-radius:999px}
+    .scr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin-top:14px}
+    .scr-chip{display:flex;align-items:center;gap:6px;font:500 12px var(--font-body);color:var(--color-text);background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:10px;padding:8px 10px;line-height:1.35}
+    .flow{font-size:13px;color:var(--color-neutral-700);line-height:1.6;margin-top:10px}
+    .flow b{color:var(--color-text)}
+  </style>
+</helmet>
+<div style="max-width:1100px;margin:0 auto;padding:56px 48px 90px">
+  <div class="kicker">KnowSnout · Мапа додатку</div>
+  <h1 style="font-size:36px;margin:8px 0 12px">Повна карта екранів</h1>
+  <p style="max-width:700px;color:var(--color-neutral-700);font-size:15px;line-height:1.6">
+    Усі екрани застосунку, згруповані за модулями продуктової структури (A–F). Кожен модуль лінкує на файл із детальними макетами; нижче — потік навігації між ключовими розділами.
+  </p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 36px">
+    <a href="KnowSnout UI Kit.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-600);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">← Огляд</a>
+    <a href="KnowSnout Product Structure.md" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Документ структури продукту</a>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd"><span class="mod-letter">01</span><h2 class="mod-title">Вхід і Перевір</h2><a class="mod-file" href="KnowSnout - Вхід і Перевір.dc.html">Вхід і Перевір.dc.html</a></div>
+    <div style="font-size:13px;color:var(--color-neutral-600)">Модулі A (харчова аналітика) + D2 (безпека рослин) + вхід/онбординг</div>
+    <div class="scr-grid">
+      <div class="scr-chip">Реєстрація</div><div class="scr-chip">Онбординг 1–3</div>
+      <div class="scr-chip">Хаб «Перевір»</div><div class="scr-chip">Історія перевірок</div>
+      <div class="scr-chip">Сканувати штрихкод</div><div class="scr-chip">Сфотографувати етикетку</div>
+      <div class="scr-chip">Порівняти 2 корми</div><div class="scr-chip">Результат: рослина</div>
+      <div class="scr-chip">Порода: форма завантаження</div><div class="scr-chip">Порода: результат</div>
+      <div class="scr-chip">Профіль тварини, форма (акордеон)</div>
+    </div>
+    <div class="flow"><b>Потік:</b> Онбординг → Реєстрація → Хаб «Перевір» → (скан корму / фото рослини / фото породи) → Результат → зберегти в Історію або в Профіль тварини.</div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd"><span class="mod-letter">02</span><h2 class="mod-title">Улюбленці</h2><a class="mod-file" href="KnowSnout - Улюбленці.dc.html">Улюбленці.dc.html</a></div>
+    <div style="font-size:13px;color:var(--color-neutral-600)">Модулі B (профілі тварин) + C (здоров'я та документи) + D (гра)</div>
+    <div class="scr-grid">
+      <div class="scr-chip">Список тварин</div><div class="scr-chip">Хаб тварини</div>
+      <div class="scr-chip">Догляд сьогодні</div><div class="scr-chip">Профіль, перегляд (собака)</div>
+      <div class="scr-chip">Профіль, перегляд (папуга)</div><div class="scr-chip">Щеплення</div>
+      <div class="scr-chip">Ліки та візити</div><div class="scr-chip">Ігри й активності</div>
+      <div class="scr-chip">Звички</div><div class="scr-chip">Календар + Google-синк</div>
+      <div class="scr-chip">Документи + Подорожі (чек-лист)</div><div class="scr-chip">Форма: щеплення</div>
+      <div class="scr-chip">Форма: ліки</div>
+    </div>
+    <div class="flow"><b>Потік:</b> Список тварин → Хаб тварини → (Щеплення / Ліки / Ігри / Документи-подорожі) → форма додавання запису. Хаб тварини перемикається між кількома тваринами вгорі екрана.</div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd"><span class="mod-letter">03</span><h2 class="mod-title">Стрічка</h2><a class="mod-file" href="KnowSnout - Стрічка.dc.html">Стрічка.dc.html</a></div>
+    <div style="font-size:13px;color:var(--color-neutral-600)">Модуль E (довіра спільноти) — соціальна стрічка, конкурси, друзі, чат</div>
+    <div class="scr-grid">
+      <div class="scr-chip">SnoutSpotlight, хаб конкурсів</div><div class="scr-chip">Картка учасника</div>
+      <div class="scr-chip">Гостьове голосування (веб)</div><div class="scr-chip">Умови конкурсу</div>
+      <div class="scr-chip">Форма заявки</div><div class="scr-chip">Повний рейтинг</div>
+      <div class="scr-chip">Історія переможців</div><div class="scr-chip">Повідомлення про перемогу</div>
+      <div class="scr-chip">Пост із реакціями</div><div class="scr-chip">Профіль іншого користувача</div>
+      <div class="scr-chip">Активність (лайки/коментарі)</div><div class="scr-chip">Чат — список розмов</div>
+      <div class="scr-chip">Чат — розмова</div><div class="scr-chip">Коментарі під постом</div>
+      <div class="scr-chip">Друзі</div><div class="scr-chip">Запланувати прогулянку</div>
+      <div class="scr-chip">Запрошення на прогулянку (чат)</div><div class="scr-chip">Позначити улюбленців/друзів на фото</div>
+      <div class="scr-chip">Пошук людей</div><div class="scr-chip">Вхідні запити в друзі</div>
+      <div class="scr-chip">Запросити за посиланням / QR</div><div class="scr-chip">Глобальний пошук</div>
+    </div>
+    <div class="flow"><b>Потік:</b> Стрічка → пост → коментарі/реакції. Друзі: пошук людей → запит → чат → запланувати прогулянку. SnoutSpotlight — окремий вхід із хабу конкурсів.</div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd"><span class="mod-letter">04</span><h2 class="mod-title">Спільнота</h2><a class="mod-file" href="KnowSnout - Спільнота.dc.html">Спільнота.dc.html</a></div>
+    <div style="font-size:13px;color:var(--color-neutral-600)">Квізи (Wikidata), форум, блог</div>
+    <div class="scr-grid">
+      <div class="scr-chip">Квіз-хаб</div><div class="scr-chip">Квіз «Звідки порода?»</div>
+      <div class="scr-chip">Квіз «Яка це група тварин?»</div><div class="scr-chip">Квіз «Вгадай породу за фото»</div>
+      <div class="scr-chip">Результати квізу</div><div class="scr-chip">Зум-загадка</div>
+      <div class="scr-chip">Хто важчий? (Wikidata)</div><div class="scr-chip">Правда чи міф</div>
+      <div class="scr-chip">Рейтинг гравців</div><div class="scr-chip">Форум: категорії</div>
+      <div class="scr-chip">Форум: нове питання</div><div class="scr-chip">Форум: тред</div>
+      <div class="scr-chip">Форум: профіль автора</div><div class="scr-chip">Форум: пошук і теги</div>
+      <div class="scr-chip">Форум: стрічка категорії</div><div class="scr-chip">Форум: сповіщення</div>
+      <div class="scr-chip">Правила спільноти</div><div class="scr-chip">Блог: категорії</div>
+      <div class="scr-chip">Блог: стаття</div><div class="scr-chip">Блог: стаття з коментарями</div>
+      <div class="scr-chip">Блог: закладки</div><div class="scr-chip">Досягнення й бейджі</div>
+    </div>
+    <div class="flow"><b>Потік:</b> Квіз-хаб → квіз → результати з XP → рейтинг гравців. Форум: категорії → тред → відповідь/голос. Блог: категорії → стаття → коментарі/закладки.</div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd"><span class="mod-letter">05</span><h2 class="mod-title">Профіль і службові</h2><a class="mod-file" href="KnowSnout - Профіль і Службові.dc.html">Профіль і Службові.dc.html</a></div>
+    <div style="font-size:13px;color:var(--color-neutral-600)">Акаунт, налаштування, стани системи</div>
+    <div class="scr-grid">
+      <div class="scr-chip">Сповіщення</div><div class="scr-chip">Мова та підписка</div>
+      <div class="scr-chip">Довідка і підтримка</div><div class="scr-chip">Сторінка 404</div>
+      <div class="scr-chip">Порожній стан фото</div><div class="scr-chip">Камера / галерея</div>
+      <div class="scr-chip">Share sheet</div><div class="scr-chip">Report / block</div>
+      <div class="scr-chip">Приватність і джерела даних</div><div class="scr-chip">Редагування акаунта</div>
+      <div class="scr-chip">Заблоковані користувачі</div><div class="scr-chip">Підписка і платежі</div>
+      <div class="scr-chip">Довідка: детальна стаття</div><div class="scr-chip">Звернення в підтримку</div>
+      <div class="scr-chip">Завантаження — AI аналізує</div><div class="scr-chip">Помилка мережі</div>
+      <div class="scr-chip">Дозвіл на камеру</div><div class="scr-chip">Дозвіл на сповіщення</div>
+      <div class="scr-chip">Порожній список улюбленців</div><div class="scr-chip">Успішне збереження (toast)</div>
+      <div class="scr-chip">Стрічка — темна тема</div><div class="scr-chip">Перемикач теми</div>
+      <div class="scr-chip">Підтвердження видалення акаунта</div>
+    </div>
+    <div class="flow"><b>Потік:</b> Профіль → Налаштування → (Мова / Приватність / Підписка / Довідка). Стани помилок і дозволів зʼявляються поверх будь-якого екрана застосунку.</div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd"><span class="mod-letter">06</span><h2 class="mod-title">Довідники та довіра</h2><a class="mod-file" href="KnowSnout - Довідники.dc.html">Довідники.dc.html</a></div>
+    <div style="font-size:13px;color:var(--color-neutral-600)">Модуль F — новий, на основі дослідження community-запитів</div>
+    <div class="scr-grid">
+      <div class="scr-chip">Хаб довідників</div><div class="scr-chip">Ветеринари — список і фільтри</div>
+      <div class="scr-chip">Картка закладу</div><div class="scr-chip">Заводчики — верифікація FCI</div>
+      <div class="scr-chip">Залишити відгук</div><div class="scr-chip">Повідомити про шахрайство</div>
+    </div>
+    <div class="flow"><b>Потік:</b> Хаб довідників → категорія (Ветеринари/Заводчики/…) → фільтр за містом/мовою/спеціалізацією → картка закладу → чат / відгук / скарга.</div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd"><span class="mod-letter">07</span><h2 class="mod-title">Адмінка</h2><a class="mod-file" href="KnowSnout - Адмінка.dc.html">Адмінка.dc.html</a></div>
+    <div style="font-size:13px;color:var(--color-neutral-600)">Веб-панель для Content-менеджера й Адміністратора — модерація по всьому застосунку</div>
+    <div class="scr-grid">
+      <div class="scr-chip">Дашборд</div><div class="scr-chip">Єдина черга модерації</div>
+      <div class="scr-chip">Картка заявки — рішення</div><div class="scr-chip">Контент-CMS (версії правил)</div>
+      <div class="scr-chip">Конкурси Spotlight — список</div><div class="scr-chip">Конкурс — заявки та переможець</div>
+      <div class="scr-chip">Блог — статті та категорії</div>
+      <div class="scr-chip">Каталог продуктів</div><div class="scr-chip">Банк питань квізів</div>
+      <div class="scr-chip">Монетизація — підписки й affiliate</div>
+      <div class="scr-chip">Внутрішня команда та ролі</div>
+    </div>
+    <div class="flow"><b>Потік:</b> Дашборд → Черга модерації (фільтр за типом: заклад F / пост E / контент C-D2 / скарга) → картка заявки → підтвердити/відхилити. Контент-CMS — окремо для періодичного ревʼю правил (вакцинація, токсичність, подорожі).</div>
+  </div>
+
+  <div style="text-align:center;margin-top:30px;font-size:12.5px;color:var(--color-neutral-500)">Загалом ≈ 100 екранів у 7 модулях (6 користувацьких + адмінка)</div>
+</div>
+
+</x-dc>
+</body>
+</html>

@@ -10,9 +10,11 @@ import {
   View,
 } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { guessMimeType, uriToBase64 } from '@/src/lib/image';
 import {
@@ -100,12 +102,12 @@ export default function BreedScanScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('breed.askTitle')} />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.title}>{t('breed.askTitle')}</Text>
-
         <View style={styles.speciesRow}>
           {(['dog', 'cat'] as CompanionBreedSpecies[]).map((s) => {
             const active = species === s;

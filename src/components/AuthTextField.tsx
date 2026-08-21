@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   label: string;
@@ -19,7 +19,7 @@ type Props = {
   onSubmitEditing?: () => void;
 };
 
-/** HTML kit auth field — Inter label, pill input. */
+/** HTML `.field-lbl` + `.input` — radius-md 14, not pill. */
 export function AuthTextField({
   label,
   value,
@@ -52,24 +52,23 @@ export function AuthTextField({
 }
 
 const styles = StyleSheet.create({
-  wrap: { marginBottom: 12 },
+  wrap: {},
   label: {
-    marginBottom: 8,
-    fontFamily: 'Inter_600SemiBold',
+    marginBottom: 6,
+    fontFamily: fonts.bodySemi,
     fontSize: 12,
     color: brand.label,
-    letterSpacing: 0.2,
   },
   input: {
     borderWidth: 1,
-    borderColor: 'rgba(21,34,51,0.12)',
+    borderColor: brand.divider,
     backgroundColor: brand.surfaceElevated,
-    borderRadius: brand.radius.pill,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 15,
+    borderRadius: brand.radius.md,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontFamily: fonts.body,
+    fontSize: 14,
     color: brand.ink,
-    minHeight: 48,
+    minHeight: 42,
   },
 });

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="stylesheet" href="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/styles.css">
+  <script src="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/_ds_bundle.js"></script>
+  <script src="./image-slot.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap');
+    :root{
+      --color-bg:#F4F3F1; --color-surface:#FFFFFF; --color-text:#152233;
+      --color-accent:#0E6E5D; --color-accent-2:#1EAE5C; --color-divider:rgba(21,34,51,.12);
+      --color-neutral-100:#F4F3F1; --color-neutral-200:#EAE7E2; --color-neutral-300:#D8D5D0;
+      --color-neutral-400:#B0A99D; --color-neutral-500:#8b96a0; --color-neutral-600:#5B6B75;
+      --color-neutral-700:#455460; --color-neutral-800:#2E3A44; --color-neutral-900:#152233;
+      --color-accent-100:#EAF7F3; --color-accent-200:#CBEBE1; --color-accent-300:#9FD8CB;
+      --color-accent-400:#5FBBA6; --color-accent-500:#0E6E5D; --color-accent-600:#0A5346;
+      --color-accent-700:#083F35; --color-accent-800:#062B24; --color-accent-900:#041A16;
+      --color-accent-2-100:#EEFBF0; --color-accent-2-200:#DFF6E3; --color-accent-2-300:#C8F2CE;
+      --color-accent-2-400:#39E07A; --color-accent-2-500:#1EAE5C; --color-accent-2-600:#1A9A50;
+      --color-accent-2-700:#0F6D38; --color-accent-2-800:#0B5029; --color-accent-2-900:#07341A;
+      --color-warn-bg:#FDF3E3; --color-warn-text:#9A6A15;
+      --font-heading:'Manrope', system-ui, sans-serif; --font-heading-weight:700;
+      --font-body:'Inter', system-ui, sans-serif;
+      --radius-sm:8px; --radius-md:14px; --radius-lg:20px;
+      --shadow-sm:0 1px 3px rgba(21,34,51,.08); --shadow-md:0 3px 10px rgba(21,34,51,.10); --shadow-lg:0 12px 32px rgba(21,34,51,.16);
+    }
+    body{margin:0}
+    .kicker{font:600 11px/1.4 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)}
+    .scr-col{display:flex;flex-direction:column;gap:14px;align-items:flex-start;margin-bottom:44px}
+    .scr-label{font-family:var(--font-heading);font-size:15px;color:var(--color-text)}
+    .adm{display:flex;height:100%;font-family:var(--font-body);background:var(--color-bg);color:var(--color-text)}
+    .adm-side{width:200px;flex-shrink:0;background:#fff;border-right:1px solid var(--color-neutral-200);padding:18px 14px;display:flex;flex-direction:column;gap:2px}
+    .adm-brand{display:flex;align-items:center;gap:8px;padding:4px 8px 18px;font:800 14px var(--font-heading);color:var(--color-text)}
+    .adm-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;font:600 12.5px var(--font-body);color:var(--color-neutral-700)}
+    .adm-item.active{background:var(--color-accent-100);color:var(--color-accent-700)}
+    .adm-main{flex:1;overflow:auto;padding:26px 30px}
+    .adm-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .adm-title{font:800 22px var(--font-heading);margin:0}
+    .card{background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:16px}
+    .stat{display:flex;flex-direction:column;gap:4px}
+    .stat-num{font:800 24px var(--font-heading)}
+    .stat-lbl{font-size:11.5px;color:var(--color-neutral-600)}
+    .row{display:flex;align-items:center;gap:12px}
+    .badge{display:inline-flex;align-items:center;gap:4px;font:700 10.5px var(--font-body);padding:3px 9px;border-radius:999px}
+    .badge-good{background:var(--color-accent-2-100);color:var(--color-accent-2-700)}
+    .badge-warn{background:var(--color-warn-bg);color:var(--color-warn-text)}
+    .badge-neutral{background:var(--color-neutral-200);color:var(--color-neutral-700)}
+    .badge-accent{background:var(--color-accent-100);color:var(--color-accent-700)}
+    .tabs{display:flex;gap:6px;margin-bottom:14px}
+    .tab{font:600 12px var(--font-body);padding:7px 14px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-neutral-700)}
+    .tab.active{background:var(--color-accent);color:#fff}
+    .btn-sm{font:700 11.5px var(--font-body);padding:7px 13px;border-radius:8px;background:var(--color-accent);color:#fff;display:inline-flex}
+    .btn-sm.ghost{background:var(--color-neutral-200);color:var(--color-text)}
+    .btn-sm.danger{background:#FBEAE6;color:#B3492F}
+    table{width:100%;border-collapse:collapse}
+    th{text-align:left;font:700 10.5px var(--font-body);color:var(--color-neutral-500);text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;border-bottom:1px solid var(--color-neutral-200)}
+    td{padding:10px 10px;border-bottom:1px solid var(--color-neutral-100);font-size:12.5px;vertical-align:middle}
+  </style>
+</helmet>
+<div style="max-width:1400px;margin:0 auto;padding:56px 48px 24px">
+  <div class="kicker">KnowSnout · UI Kit v2 · Дизайн-аудит</div>
+  <h1 style="font-size:34px;margin:8px 0 12px">Адмінка</h1>
+  <p style="max-width:700px;color:var(--color-neutral-700);font-size:15.5px;line-height:1.6">
+    Веб-панель для двох ролей — Content-менеджер (щоденна модерація) і Адміністратор (доступи, аналітика, партнерства). Єдина черга обʼєднує заявки з довідників (F), скарги на пости/форум (E) і версії контент-правил (C/D2).
+  </p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><a href="KnowSnout UI Kit.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-600);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">← Огляд</a><a href="KnowSnout Product Structure.md" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Документ структури, розділ 9</a></div>
+</div>
+
+<div style="padding:0 48px 90px;display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start">
+
+  <div class="scr-col">
+    <div class="scr-label">1 · Дашборд</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/dashboard" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item active">📊 Дашборд</div>
+          <div class="adm-item">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="adm-hd"><h1 class="adm-title">Дашборд</h1><span class="badge badge-accent">Content-менеджер: Марта К.</span></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+            <div class="card stat"><div class="stat-num">17</div><div class="stat-lbl">У черзі модерації</div></div>
+            <div class="card stat" style="background:var(--color-warn-bg)"><div class="stat-num" style="color:var(--color-warn-text)">4</div><div class="stat-lbl" style="color:var(--color-warn-text)">Скарги на розгляді</div></div>
+            <div class="card stat"><div class="stat-num">62</div><div class="stat-lbl">Заклади «Перевірено»</div></div>
+            <div class="card stat"><div class="stat-num">3</div><div class="stat-lbl">Правила потребують ревʼю</div></div>
+          </div>
+          <div class="card" style="margin-top:16px">
+            <div style="font:700 13px var(--font-heading);margin-bottom:10px">Останні дії модерації</div>
+            <table>
+              <tr><th>Тип</th><th>Об'єкт</th><th>Дія</th><th>Хто</th><th>Коли</th></tr>
+              <tr><td><span class="badge badge-good">Заклад F</span></td><td>SaskaVet</td><td>Підтверджено ✓</td><td>Марта К.</td><td>2 год тому</td></tr>
+              <tr><td><span class="badge badge-warn">Скарга E</span></td><td>Тред «Стоматолог для кота»</td><td>Приховано</td><td>Олег Т.</td><td>5 год тому</td></tr>
+              <tr><td><span class="badge badge-neutral">Контент C</span></td><td>Чек-лист Шенген (v3)</td><td>Опубліковано</td><td>Марта К.</td><td>Вчора</td></tr>
+              <tr><td><span class="badge badge-good">Заклад F</span></td><td>PetTrans UA-PL</td><td>Підтверджено ✓</td><td>Марта К.</td><td>Вчора</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">2 · Єдина черга модерації</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/queue" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item active">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="adm-hd"><h1 class="adm-title">Черга модерації</h1><span style="font-size:12px;color:var(--color-neutral-500)">17 записів</span></div>
+          <div class="tabs"><span class="tab active">Усі (17)</span><span class="tab">Заклади F (9)</span><span class="tab">Пости/форум E (4)</span><span class="tab">Контент C/D2 (3)</span><span class="tab">Скарги на користувачів (1)</span></div>
+          <div class="card" style="padding:0">
+            <table>
+              <tr><th>Тип</th><th>Заявка</th><th>Джерело</th><th>Подано</th><th></th></tr>
+              <tr><td><span class="badge badge-accent">Новий заклад</span></td><td>«ВетКлінік Плюс», Краків</td><td>Форма користувача</td><td>10 хв тому</td><td><span class="btn-sm">Розглянути</span></td></tr>
+              <tr><td><span class="badge badge-warn">Скарга</span></td><td>Перевізник «Приватний водій (Устилуг)»</td><td>2 користувачі</td><td>1 год тому</td><td><span class="btn-sm">Розглянути</span></td></tr>
+              <tr><td><span class="badge badge-neutral">Заводчик FCI</span></td><td>«Toy Poodle Варшава» — скан родоводу</td><td>Форма заводчика</td><td>3 год тому</td><td><span class="btn-sm">Розглянути</span></td></tr>
+              <tr><td><span class="badge badge-warn">Скарга</span></td><td>Пост у форумі — сумнівна порада про ліки</td><td>1 користувач</td><td>4 год тому</td><td><span class="btn-sm">Розглянути</span></td></tr>
+              <tr><td><span class="badge badge-neutral">Контент ревʼю</span></td><td>Чек-лист паспорта ЄС — оновились вимоги</td><td>Авто-нагадування (12 міс)</td><td>Учора</td><td><span class="btn-sm">Розглянути</span></td></tr>
+              <tr><td><span class="badge badge-accent">Новий заклад</span></td><td>«Груммінг U-Style», Варшава</td><td>Форма користувача</td><td>Учора</td><td><span class="btn-sm">Розглянути</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">3 · Картка заявки — рішення</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/queue/482" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item active">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main" style="max-width:760px">
+          <div class="row" style="margin-bottom:14px;color:var(--color-neutral-500);font-size:12px">🗂 Черга / <b style="color:var(--color-text)">«ВетКлінік Плюс», Краків</b></div>
+          <div class="card" style="display:flex;flex-direction:column;gap:14px">
+            <div class="row" style="justify-content:space-between"><h2 style="margin:0;font-family:var(--font-heading)">ВетКлінік Плюс</h2><span class="badge badge-accent">Новий заклад · Ветеринари</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12.5px">
+              <div><div style="color:var(--color-neutral-500);margin-bottom:2px">Місто</div>Краків</div>
+              <div><div style="color:var(--color-neutral-500);margin-bottom:2px">Мова лікаря</div>Польська, англійська</div>
+              <div><div style="color:var(--color-neutral-500);margin-bottom:2px">Спеціалізація</div>Загальна практика, хірургія</div>
+              <div><div style="color:var(--color-neutral-500);margin-bottom:2px">Подано</div>Форма, користувач anna_k</div>
+              <div style="grid-column:1/3"><div style="color:var(--color-neutral-500);margin-bottom:2px">Сайт / джерело</div>vetklinikplus.pl</div>
+            </div>
+            <div style="background:var(--color-neutral-100);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--color-neutral-700)">Чек-лист перед підтвердженням: ☑ сайт активний · ☑ телефон відповідає · ☐ підтверджено дзвінком</div>
+            <div class="row" style="gap:8px">
+              <span class="btn-sm">✓ Підтвердити («Перевірено»)</span>
+              <span class="btn-sm ghost">Опублікувати без бейджа</span>
+              <span class="btn-sm danger">Відхилити</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">4 · Контент-CMS — версії правил</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/content/travel-checklist" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item">🗂 Черга модерації</div>
+          <div class="adm-item active">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="adm-hd"><h1 class="adm-title">Контент-CMS</h1><span class="btn-sm">+ Нове правило</span></div>
+          <div class="tabs"><span class="tab active">Подорожі (C)</span><span class="tab">Вакцинація (C)</span><span class="tab">Токсичність рослин (D2)</span></div>
+          <div class="card" style="padding:0">
+            <table>
+              <tr><th>Правило</th><th>Версія</th><th>Статус</th><th>Останнє ревʼю</th><th></th></tr>
+              <tr><td>Чек-лист Шенген (собаки/коти)</td><td>v4</td><td><span class="badge badge-good">Опубліковано</span></td><td>07.2026</td><td><span class="btn-sm ghost">Історія</span></td></tr>
+              <tr><td>Чек-лист паспорта ЄС</td><td>v3</td><td><span class="badge badge-warn">Потребує ревʼю</span></td><td>01.2026 (6 міс тому)</td><td><span class="btn-sm">Оновити</span></td></tr>
+              <tr><td>Ветсертифікат Ф1 (UA виїзд)</td><td>v2</td><td><span class="badge badge-good">Опубліковано</span></td><td>05.2026</td><td><span class="btn-sm ghost">Історія</span></td></tr>
+              <tr><td>Вимоги перетину — Угринів/Рава-Руська</td><td>v1</td><td><span class="badge badge-neutral">Чернетка</span></td><td>—</td><td><span class="btn-sm">Опублікувати</span></td></tr>
+            </table>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <div style="font:700 13px var(--font-heading);margin-bottom:8px">Історія версій — «Чек-лист паспорта ЄС»</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+              <div class="row" style="justify-content:space-between"><span>v3 — уточнено вікно 21 день</span><span style="color:var(--color-neutral-500)">01.2026 · Марта К.</span></div>
+              <div class="row" style="justify-content:space-between"><span>v2 — додано вимогу тесту титрів</span><span style="color:var(--color-neutral-500)">08.2025 · Олег Т.</span></div>
+              <div class="row" style="justify-content:space-between"><span>v1 — початкова версія</span><span style="color:var(--color-neutral-500)">03.2025 · Марта К.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">5а · Конкурси Spotlight — список і керування</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/spotlight" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item active">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="adm-hd"><h1 class="adm-title">Конкурси Spotlight</h1><span class="btn-sm">+ Створити конкурс</span></div>
+          <div class="tabs"><span class="tab active">Активні (1)</span><span class="tab">На модерації заявок</span><span class="tab">Завершені</span><span class="tab">Чернетки</span></div>
+          <div class="card" style="padding:0">
+            <table>
+              <tr><th>Конкурс</th><th>Період</th><th>Заявок</th><th>Статус</th><th></th></tr>
+              <tr><td>«Найкумедніша поза», серпень</td><td>01.08 – 31.08.2026</td><td>128 (14 на розгляді)</td><td><span class="badge badge-good">Активний</span></td><td><span class="btn-sm">Керувати</span></td></tr>
+              <tr><td>«Літні пригоди», липень</td><td>01.07 – 31.07.2026</td><td>203</td><td><span class="badge badge-neutral">Завершено</span></td><td><span class="btn-sm ghost">Переможці</span></td></tr>
+              <tr><td>«Осінній портрет»</td><td>план на 09.2026</td><td>—</td><td><span class="badge badge-warn">Чернетка</span></td><td><span class="btn-sm ghost">Редагувати</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">5б · Конкурс — заявки та вибір переможця</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/spotlight/august" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item active">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="row" style="margin-bottom:14px;color:var(--color-neutral-500);font-size:12px">🏆 Конкурси / <b style="color:var(--color-text)">«Найкумедніша поза», серпень</b></div>
+          <div class="adm-hd"><h1 class="adm-title" style="font-size:18px">Заявки — 128 (14 на розгляді)</h1><span class="btn-sm ghost">Редагувати умови конкурсу</span></div>
+          <div class="tabs"><span class="tab active">На розгляді (14)</span><span class="tab">Схвалено (114)</span><span class="tab">Відхилено (0)</span></div>
+          <div class="card" style="padding:0">
+            <table>
+              <tr><th></th><th>Учасник</th><th>Улюбленець</th><th>Голосів</th><th></th></tr>
+              <tr><td><image-slot id="sp-1" style="width:36px;height:36px" shape="rounded" radius="8" placeholder="Фото"></image-slot></td><td>anna_k</td><td>Тукан, корги</td><td>—</td><td><span class="row" style="gap:6px"><span class="btn-sm">Схвалити</span><span class="btn-sm danger">Відхилити</span></span></td></tr>
+              <tr><td><image-slot id="sp-2" style="width:36px;height:36px" shape="rounded" radius="8" placeholder="Фото"></image-slot></td><td>maryna.p</td><td>Кеша, папуга</td><td>—</td><td><span class="row" style="gap:6px"><span class="btn-sm">Схвалити</span><span class="btn-sm danger">Відхилити</span></span></td></tr>
+            </table>
+          </div>
+          <div class="card" style="margin-top:14px;background:var(--color-accent-100)">
+            <div style="font:700 13px var(--font-heading);color:var(--color-accent-700);margin-bottom:6px">Оголошення переможця</div>
+            <div style="font-size:12px;color:var(--color-accent-700);margin-bottom:10px">Конкурс завершується 31.08.2026. Переможець визначається за голосами користувачів, підтверджується вручну перед оголошенням.</div>
+            <span class="btn-sm">Переглянути топ-3 за голосами</span>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">5в · Блог — статті та категорії</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/blog" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item active">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="adm-hd"><h1 class="adm-title">Блог</h1><span class="btn-sm">+ Нова стаття</span></div>
+          <div class="tabs"><span class="tab active">Усі статті (24)</span><span class="tab">Опубліковано (19)</span><span class="tab">Чернетки (5)</span><span class="tab">Категорії</span></div>
+          <div class="card" style="padding:0">
+            <table>
+              <tr><th>Стаття</th><th>Категорія</th><th>Автор</th><th>Статус</th><th></th></tr>
+              <tr><td>Як читати склад корму: 5 інгредієнтів, на які варто звернути увагу</td><td>Харчування</td><td>Марта К.</td><td><span class="badge badge-good">Опубліковано</span></td><td><span class="btn-sm ghost">Редагувати</span></td></tr>
+              <tr><td>Що робити, якщо кіт зʼїв листок монстери</td><td>Безпека рослин</td><td>Олег Т.</td><td><span class="badge badge-good">Опубліковано</span></td><td><span class="btn-sm ghost">Редагувати</span></td></tr>
+              <tr><td>Подорож із твариною через Угринів: покроково</td><td>Подорожі</td><td>Марта К.</td><td><span class="badge badge-neutral">Чернетка</span></td><td><span class="btn-sm">Опублікувати</span></td></tr>
+              <tr><td>Вакцинація цуценя: перший рік</td><td>Здоровʼя</td><td>Олег Т.</td><td><span class="badge badge-good">Опубліковано</span></td><td><span class="btn-sm ghost">Редагувати</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">6 · Каталог продуктів (модуль A)</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/catalog" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item active">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="adm-hd"><h1 class="adm-title">Каталог продуктів</h1><span class="btn-sm">+ Додати вручну</span></div>
+          <div class="tabs"><span class="tab active">Усі (4 812)</span><span class="tab">Можливі дублікати (23)</span><span class="tab">AI-розпізнавання на перевірці (9)</span></div>
+          <div class="card" style="padding:0">
+            <table>
+              <tr><th>Продукт</th><th>Вид</th><th>Джерело</th><th>Статус</th><th></th></tr>
+              <tr><td>Brit Care Adult Lamb &amp; Rice</td><td>Собаки</td><td>Open Pet Food Facts</td><td><span class="badge badge-good">Опубліковано</span></td><td><span class="btn-sm ghost">Редагувати</span></td></tr>
+              <tr><td>Royal Canin Adult (2 записи, схожа назва)</td><td>Коти</td><td>Фото + AI</td><td><span class="badge badge-warn">Можливий дублікат</span></td><td><span class="btn-sm">Обʼєднати</span></td></tr>
+              <tr><td>Фото складу — розпізнано частково (60%)</td><td>Собаки</td><td>AI, кеш</td><td><span class="badge badge-neutral">Потребує перевірки</span></td><td><span class="btn-sm">Перевірити склад</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">7 · Банк питань квізів</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/quiz-bank" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item active">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="adm-hd"><h1 class="adm-title">Банк питань квізів</h1><span class="btn-sm">+ Нове питання</span></div>
+          <div class="tabs"><span class="tab active">Усі формати</span><span class="tab">Звідки порода?</span><span class="tab">Хто важчий? (Wikidata)</span><span class="tab">Правда чи міф</span><span class="tab">На перевірці даних (5)</span></div>
+          <div class="card" style="padding:0">
+            <table>
+              <tr><th>Питання</th><th>Формат</th><th>Джерело даних</th><th>Статус</th><th></th></tr>
+              <tr><td>Хто важчий: сенбернар чи вівчарка?</td><td>Хто важчий?</td><td>Wikidata (авто)</td><td><span class="badge badge-warn">Перевірити цифри</span></td><td><span class="btn-sm">Перевірити</span></td></tr>
+              <tr><td>Звідки родом басенджі?</td><td>Звідки порода?</td><td>Wikidata (авто)</td><td><span class="badge badge-good">Опубліковано</span></td><td><span class="btn-sm ghost">Редагувати</span></td></tr>
+              <tr><td>Коти бачать у темряві повністю без світла</td><td>Правда чи міф</td><td>Редакційно</td><td><span class="badge badge-good">Опубліковано</span></td><td><span class="btn-sm ghost">Редагувати</span></td></tr>
+            </table>
+          </div>
+          <div style="font-size:11.5px;color:var(--color-neutral-500);margin-top:10px">Питання з Wikidata автоматично тягнуть актуальні дані, але позначаються "Перевірити цифри" при розбіжності з попереднім значенням — модератор підтверджує вручну перед публікацією.</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">8 · Монетизація — підписки й affiliate</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/billing" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item active">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="adm-hd"><h1 class="adm-title">Монетизація</h1></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px">
+            <div class="card stat"><div class="stat-num">1 240</div><div class="stat-lbl">Активних Plus-підписок</div></div>
+            <div class="card stat"><div class="stat-num">3</div><div class="stat-lbl">Спірні платежі</div></div>
+            <div class="card stat"><div class="stat-num">18</div><div class="stat-lbl">Affiliate-посилань</div></div>
+            <div class="card stat" style="background:var(--color-warn-bg)"><div class="stat-num" style="color:var(--color-warn-text)">2</div><div class="stat-lbl" style="color:var(--color-warn-text)">Неактивні affiliate-лінки</div></div>
+          </div>
+          <div class="tabs"><span class="tab active">Підписки</span><span class="tab">Спірні платежі</span><span class="tab">Affiliate-посилання</span></div>
+          <div class="card" style="padding:0">
+            <table>
+              <tr><th>Користувач</th><th>План</th><th>Статус</th><th>Наступне списання</th><th></th></tr>
+              <tr><td>anna_k</td><td>Plus, річна</td><td><span class="badge badge-good">Активна</span></td><td>14.03.2027</td><td><span class="btn-sm ghost">Деталі</span></td></tr>
+              <tr><td>maryna.p</td><td>Plus, місячна</td><td><span class="badge badge-warn">Платіж не пройшов</span></td><td>—</td><td><span class="btn-sm">Розглянути</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="scr-col">
+    <div class="scr-label">5 · Користувачі та ролі</div>
+    <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" url="admin.knowsnout.app/team" hint-size="1280px,800px" width="1280" height="800">
+      <div class="adm">
+        <div class="adm-side">
+          <div class="adm-brand">🐾 KnowSnout Admin</div>
+          <div class="adm-item">📊 Дашборд</div>
+          <div class="adm-item">🗂 Черга модерації</div>
+          <div class="adm-item">📖 Контент-CMS</div>
+          <div class="adm-item">🏥 Довідники (F)</div>
+          <div class="adm-item">🏆 Конкурси (Spotlight)</div>
+          <div class="adm-item">📝 Блог</div>
+          <div class="adm-item">🍖 Каталог продуктів</div>
+          <div class="adm-item">❓ Банк питань квізів</div>
+          <div class="adm-item">💳 Монетизація</div>
+          <div class="adm-item">👥 Користувачі</div>
+          <div class="adm-item active">🔑 Ролі й доступи</div>
+        </div>
+        <div class="adm-main">
+          <div class="row" style="margin-bottom:14px;color:var(--color-neutral-500);font-size:12px">🔑 Внутрішня команда (не плутати з «Користувачі» — власниками тварин)</div>
+          <div class="adm-hd"><h1 class="adm-title">Ролі й доступи команди</h1><span class="btn-sm">+ Запросити людину</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+            <div class="card"><div class="row" style="justify-content:space-between;margin-bottom:6px"><span style="font:700 13px var(--font-heading)">Content-менеджер</span><span class="badge badge-accent">2 людини</span></div><div style="font-size:12px;color:var(--color-neutral-600);line-height:1.5">Черга модерації, бейджі закладів, контент-CMS, приховування постів. Без доступу до платежів і ролей.</div></div>
+            <div class="card"><div class="row" style="justify-content:space-between;margin-bottom:6px"><span style="font:700 13px var(--font-heading)">Адміністратор</span><span class="badge badge-good">1 людина</span></div><div style="font-size:12px;color:var(--color-neutral-600);line-height:1.5">Все з Content-менеджера + керування ролями, аналітика, партнерські API, підписки/рефанди.</div></div>
+          </div>
+          <div class="card" style="padding:0">
+            <table>
+              <tr><th>Людина</th><th>Роль</th><th>Останній вхід</th><th></th></tr>
+              <tr><td class="row" style="gap:8px"><image-slot id="team-1" style="width:26px;height:26px" shape="circle" placeholder="М"></image-slot>Марта К.</td><td><span class="badge badge-accent">Content-менеджер</span></td><td>Сьогодні</td><td><span class="btn-sm ghost">Змінити</span></td></tr>
+              <tr><td class="row" style="gap:8px"><image-slot id="team-2" style="width:26px;height:26px" shape="circle" placeholder="О"></image-slot>Олег Т.</td><td><span class="badge badge-accent">Content-менеджер</span></td><td>Вчора</td><td><span class="btn-sm ghost">Змінити</span></td></tr>
+              <tr><td class="row" style="gap:8px"><image-slot id="team-3" style="width:26px;height:26px" shape="circle" placeholder="Ю"></image-slot>Юрій П. (засновник)</td><td><span class="badge badge-good">Адміністратор</span></td><td>Сьогодні</td><td><span class="btn-sm ghost">Змінити</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+</x-dc>
+</body>
+</html>

@@ -8,8 +8,9 @@ import { GradientButton } from '@/src/components/GradientButton';
 import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { env } from '@/src/lib/env';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** Login — same chrome as HTML registration phone. */
 export default function LoginScreen() {
   const { user, loading: authLoading, signIn } = useAuth();
   const [email, setEmail] = useState('');
@@ -44,11 +45,11 @@ export default function LoginScreen() {
 
   return (
     <AuthShell
-      headline={t('auth.loginHeadline')}
-      subtitle={t('auth.loginSubtitle')}
+      headline={t('auth.signIn')}
+      showBack={false}
       badge={env.isDemoMode ? t('auth.demoModeShort') : null}
       footer={
-        <View>
+        <View style={styles.footer}>
           <GradientButton
             label={t('auth.signIn')}
             onPress={() => void onSubmit()}
@@ -62,6 +63,9 @@ export default function LoginScreen() {
               </Text>
             </Pressable>
           </Link>
+          {env.isDemoMode ? (
+            <Text style={styles.demoHint}>{t('auth.demoMode')}</Text>
+          ) : null}
         </View>
       }
     >
@@ -69,7 +73,7 @@ export default function LoginScreen() {
         label={t('auth.email')}
         value={email}
         onChangeText={setEmail}
-        placeholder="you@email.com"
+        placeholder="marta@пошта.ua"
         keyboardType="email-address"
         returnKeyType="next"
       />
@@ -88,50 +92,41 @@ export default function LoginScreen() {
           <Text style={styles.errorText}>{error}</Text>
         </View>
       ) : null}
-
-      {env.isDemoMode ? (
-        <Text style={styles.demoHint}>{t('auth.demoMode')}</Text>
-      ) : null}
     </AuthShell>
   );
 }
 
 const styles = StyleSheet.create({
-  linkWrap: {
-    marginTop: 16,
-    paddingVertical: 4,
-  },
+  footer: { gap: 12 },
+  linkWrap: { paddingVertical: 4 },
   linkMuted: {
     textAlign: 'center',
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   linkStrong: {
-    fontFamily: 'Inter_700Bold',
-    color: brand.navy,
+    fontFamily: fonts.bodyBold,
+    color: brand.accent,
   },
   errorBox: {
-    marginTop: 4,
-    marginBottom: 8,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    borderRadius: 14,
-    backgroundColor: 'rgba(196, 92, 62, 0.1)',
+    borderRadius: brand.radius.md,
+    backgroundColor: 'rgba(217, 83, 79, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(196, 92, 62, 0.25)',
+    borderColor: 'rgba(217, 83, 79, 0.25)',
   },
   errorText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
     lineHeight: 18,
-    color: brand.score.poor,
+    color: brand.error,
   },
   demoHint: {
-    marginTop: 8,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
     lineHeight: 18,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

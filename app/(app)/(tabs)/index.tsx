@@ -8,10 +8,10 @@ import {
   Text,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { AppScreen } from '@/src/components/AppScreen';
-import { ProfileEntry } from '@/src/components/ProfileEntry';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { t } from '@/src/i18n';
 import { isNativeSafeImageUri } from '@/src/lib/image';
 import { listBreedHistory } from '@/src/services/breedId';
@@ -19,7 +19,7 @@ import { resolveCheckImageUrl } from '@/src/services/checkImages';
 import { listPets } from '@/src/services/pets';
 import { listPlantHistory } from '@/src/services/plants';
 import { listScans } from '@/src/services/scans';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 type ActionKind = 'food' | 'plant' | 'breed' | 'compare';
 
@@ -37,6 +37,8 @@ const ACTIONS: {
   titleKey: string;
   bodyKey: string;
   href: string;
+  iconBg: string;
+  iconColor: string;
 }[] = [
   {
     kind: 'food',
@@ -44,6 +46,8 @@ const ACTIONS: {
     titleKey: 'check.foodTitle',
     bodyKey: 'check.foodBody',
     href: '/(app)/scan-food',
+    iconBg: brand.accentTint,
+    iconColor: brand.accentDark,
   },
   {
     kind: 'plant',
@@ -51,6 +55,8 @@ const ACTIONS: {
     titleKey: 'check.plantTitle',
     bodyKey: 'check.plantBody',
     href: '/(app)/plant-safety',
+    iconBg: brand.successTint,
+    iconColor: brand.successDark,
   },
   {
     kind: 'breed',
@@ -58,17 +64,21 @@ const ACTIONS: {
     titleKey: 'check.breedTitle',
     bodyKey: 'check.breedBody',
     href: '/(app)/breed-scan',
+    iconBg: brand.creamDeep,
+    iconColor: brand.ink,
   },
   {
     kind: 'compare',
-    icon: 'list-outline',
+    icon: 'git-compare-outline',
     titleKey: 'check.compareTitle',
     bodyKey: 'check.compareBody',
     href: '/(app)/compare-food',
+    iconBg: brand.creamDeep,
+    iconColor: brand.ink,
   },
 ];
 
-function DashedThumb({
+function RecentThumb({
   label,
   imageUri,
   onPress,
@@ -79,25 +89,21 @@ function DashedThumb({
 }) {
   const uri = imageUri && isNativeSafeImageUri(imageUri) ? imageUri : null;
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.recentCard, pressed && styles.pressed]}
-    >
+    <Pressable onPress={onPress} style={styles.recentItem}>
       {uri ? (
         <Image source={{ uri }} style={styles.recentImage} resizeMode="cover" />
       ) : (
         <View style={styles.recentPlaceholder}>
-          <Ionicons name="image-outline" size={22} color={brand.mutedSoft} />
-          <Text style={styles.browse}>{t('check.browseFiles')}</Text>
+          <Text style={styles.recentPlaceholderText} numberOfLines={1}>
+            {label}
+          </Text>
         </View>
       )}
-      <Text style={styles.recentLabel} numberOfLines={1}>
-        {label}
-      </Text>
     </Pressable>
   );
 }
 
+/** HTML phone “6 · Хаб Перевір”. */
 export default function CheckHubScreen() {
   const [petCount, setPetCount] = useState(0);
   const [checkCount, setCheckCount] = useState(0);
@@ -137,9 +143,9 @@ export default function CheckHubScreen() {
               kind: 'food',
               label: t('check.foodTitle'),
               imageUri: food
-                ? (food.image_path
-                    ? await resolveCheckImageUrl(food.image_path)
-                    : food.image_path)
+                ? food.image_path
+                  ? await resolveCheckImageUrl(food.image_path)
+                  : food.image_path
                 : null,
               href: '/(app)/scan-food',
             },
@@ -148,9 +154,9 @@ export default function CheckHubScreen() {
               kind: 'plant',
               label: t('check.kindPlant'),
               imageUri: plant
-                ? (plant.photo_uri
-                    ? await resolveCheckImageUrl(plant.photo_uri)
-                    : plant.photo_uri)
+                ? plant.photo_uri
+                  ? await resolveCheckImageUrl(plant.photo_uri)
+                  : plant.photo_uri
                 : null,
               href: '/(app)/plant-safety',
             },
@@ -159,9 +165,9 @@ export default function CheckHubScreen() {
               kind: 'breed',
               label: t('check.kindBreed'),
               imageUri: breed
-                ? (breed.photoUri
-                    ? await resolveCheckImageUrl(breed.photoUri)
-                    : breed.photoUri)
+                ? breed.photoUri
+                  ? await resolveCheckImageUrl(breed.photoUri)
+                  : breed.photoUri
                 : null,
               href: '/(app)/breed-scan',
             },
@@ -201,53 +207,53 @@ export default function CheckHubScreen() {
   );
 
   return (
-    <AppScreen>
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.scroll}>
-          <View style={styles.headerRow}>
-            <Text style={styles.title}>{t('tabs.scan')}</Text>
-            <ProfileEntry />
-          </View>
+    <View style={styles.root}>
+      <SafeAreaView style={styles.safe} edges={['bottom']}>
+        <AppChromeHeader />
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scroll}
+        >
+          <Text style={styles.title}>{t('tabs.scan')}</Text>
 
-          <Text style={styles.recentHeading}>{t('check.recent')}</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.recentRow}
-          >
-            {recent.map((slot) => (
-              <DashedThumb
-                key={slot.id}
-                label={slot.label}
-                imageUri={slot.imageUri}
-                onPress={() => router.push(slot.href as never)}
-              />
-            ))}
-            <Pressable
-              onPress={() => router.push('/(app)/scan-food')}
-              style={({ pressed }) => [
-                styles.addCard,
-                pressed && styles.pressed,
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel={t('check.foodTitle')}
+          <View>
+            <Text style={styles.recentHeading}>{t('check.recent')}</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.recentRow}
             >
-              <Ionicons name="add" size={28} color={brand.forest} />
-            </Pressable>
-          </ScrollView>
+              {recent.map((slot) => (
+                <RecentThumb
+                  key={slot.id}
+                  label={slot.label}
+                  imageUri={slot.imageUri}
+                  onPress={() => router.push(slot.href as never)}
+                />
+              ))}
+              <Pressable
+                onPress={() => router.push('/(app)/scan-food')}
+                style={styles.addCard}
+                accessibilityRole="button"
+                accessibilityLabel={t('check.foodTitle')}
+              >
+                <Text style={styles.addPlus}>+</Text>
+              </Pressable>
+            </ScrollView>
+          </View>
 
           <View style={styles.statsRow}>
             <View style={styles.statCard}>
-              <Text style={styles.statValue}>{checkCount}</Text>
+              <Text style={[styles.statValue, styles.statAccent]}>
+                {checkCount}
+              </Text>
               <Text style={styles.statLabel}>{t('check.statChecks')}</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={[styles.statValue, styles.statSafe]}>
                 {safePct != null ? `${safePct}%` : '—'}
               </Text>
-              <Text style={[styles.statLabel, styles.statSafe]}>
-                {t('check.statSafe')}
-              </Text>
+              <Text style={styles.statLabel}>{t('check.statSafe')}</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>{petCount}</Text>
@@ -255,20 +261,7 @@ export default function CheckHubScreen() {
             </View>
           </View>
 
-          {ACTIONS.map((action) => {
-            const iconBg =
-              action.kind === 'food'
-                ? brand.accentTint
-                : action.kind === 'plant'
-                  ? brand.successTint
-                  : brand.chipTrack;
-            const iconColor =
-              action.kind === 'food'
-                ? brand.accentDark
-                : action.kind === 'plant'
-                  ? brand.successDark
-                  : brand.ink;
-            return (
+          {ACTIONS.map((action) => (
             <Pressable
               key={action.kind}
               onPress={() => router.push(action.href as never)}
@@ -277,8 +270,14 @@ export default function CheckHubScreen() {
                 pressed && styles.pressed,
               ]}
             >
-              <View style={[styles.actionIcon, { backgroundColor: iconBg }]}>
-                <Ionicons name={action.icon} size={22} color={iconColor} />
+              <View
+                style={[styles.actionIcon, { backgroundColor: action.iconBg }]}
+              >
+                <Ionicons
+                  name={action.icon}
+                  size={24}
+                  color={action.iconColor}
+                />
               </View>
               <View style={styles.actionCopy}>
                 <Text style={styles.actionTitle}>{t(action.titleKey)}</Text>
@@ -286,111 +285,101 @@ export default function CheckHubScreen() {
               </View>
               <Ionicons
                 name="chevron-forward"
-                size={18}
+                size={16}
                 color={brand.mutedSoft}
               />
             </Pressable>
-            );
-          })}
+          ))}
 
           <Pressable
             onPress={() => router.push('/(app)/(tabs)/history')}
             style={styles.historyLink}
           >
             <Text style={styles.historyLinkText}>{t('check.tabHistory')}</Text>
-            <Ionicons name="chevron-forward" size={16} color={brand.accentDark} />
+            <Ionicons
+              name="chevron-forward"
+              size={16}
+              color={brand.accentDark}
+            />
           </Pressable>
-        </View>
-      </ScrollView>
-    </AppScreen>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: brand.canvas },
+  safe: { flex: 1 },
   scroll: {
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 14,
     paddingBottom: 40,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 14,
+    gap: 14,
   },
   title: {
-    fontFamily: 'Manrope_700Bold',
+    fontFamily: fonts.title,
     fontSize: 22,
     lineHeight: 28,
     color: brand.ink,
+    marginBottom: 2,
   },
   recentHeading: {
-    marginBottom: 10,
-    fontFamily: 'Inter_600SemiBold',
-    fontSize: 14,
-    color: brand.ink,
+    marginBottom: 8,
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.muted,
   },
   recentRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: 10,
-    paddingBottom: 4,
   },
-  recentCard: {
-    width: 64,
-  },
+  recentItem: { width: 64 },
   recentPlaceholder: {
     height: 64,
     width: 64,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
-    borderColor: brand.mutedSoft,
-    backgroundColor: brand.chipTrack,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,
   },
-  recentImage: {
-    height: 64,
-    width: 64,
-    borderRadius: 14,
-    backgroundColor: brand.chipTrack,
-  },
-  browse: {
-    marginTop: 2,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 9,
+  recentPlaceholderText: {
+    fontFamily: fonts.body,
+    fontSize: 10,
     color: brand.mutedSoft,
     textAlign: 'center',
   },
-  recentLabel: {
-    marginTop: 6,
-    fontFamily: 'Inter_500Medium',
-    fontSize: 11,
-    color: brand.muted,
-    textAlign: 'center',
+  recentImage: {
+    height: 64,
+    width: 64,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.creamDeep,
   },
   addCard: {
     height: 64,
     width: 64,
-    borderRadius: 14,
-    borderWidth: 1.5,
+    borderRadius: brand.radius.md,
+    borderWidth: 2,
     borderStyle: 'dashed',
     borderColor: brand.mutedSoft,
-    backgroundColor: brand.chipTrack,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  addPlus: {
+    fontFamily: fonts.body,
+    fontSize: 22,
+    color: brand.mutedSoft,
+    lineHeight: 26,
+  },
   statsRow: {
-    marginTop: 14,
-    marginBottom: 6,
     flexDirection: 'row',
-    gap: 8,
+    gap: 10,
   },
   statCard: {
     flex: 1,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingVertical: 12,
     paddingHorizontal: 8,
@@ -402,25 +391,24 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   statValue: {
-    fontFamily: 'Manrope_700Bold',
+    fontFamily: fonts.title,
     fontSize: 18,
-    color: brand.accentDark,
+    color: brand.ink,
   },
+  statAccent: { color: brand.accentDark },
+  statSafe: { color: brand.successDark },
   statLabel: {
     marginTop: 2,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 11,
     color: brand.muted,
     textAlign: 'center',
   },
-  statSafe: {
-    color: brand.successDark,
-  },
   actionCard: {
-    marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 14,
+    gap: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 14,
@@ -431,36 +419,35 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   actionIcon: {
-    marginRight: 12,
     height: 52,
     width: 52,
     borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  actionCopy: { flex: 1, paddingRight: 8 },
+  actionCopy: { flex: 1 },
   actionTitle: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 15,
     color: brand.ink,
   },
   actionBody: {
-    marginTop: 3,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12.5,
     lineHeight: 17,
     color: brand.muted,
   },
   pressed: { opacity: 0.88 },
   historyLink: {
-    marginTop: 16,
+    marginTop: 2,
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: 4,
   },
   historyLinkText: {
-    fontFamily: 'Inter_600SemiBold',
+    fontFamily: fonts.bodySemi,
     fontSize: 14,
     color: brand.accentDark,
   },

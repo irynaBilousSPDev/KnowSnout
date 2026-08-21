@@ -15,11 +15,23 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 
 ## Phase map (priority)
 
-### P0v — Pixel UI from HTML comps
+### P0v — Pixel UI from design project (hard reset)
 
-**Status:** rebuilding from `docs/design/html/*.dc.html` (Manrope + Inter, teal `#0E6E5D`, canvas `#F4F3F1`). PDF raster is not visual truth.
+**Status (2026-08-21):** ignore current app chrome as reference. Rebuild as if from zero.
 
-Modules in order: Вхід і Перевір → Улюбленці → Стрічка → Спільнота → Профіль → Довідники → Адмінка.
+**Source of truth (full pack):** `docs/design/KnowSnout_project/`  
+(= Downloads `KnowSnout UI Design Setup (2)/KnowSnout_project` + same module HTML as `Downloads/knowsnout`).
+
+| Layer | What | Tokens |
+|--|--|--|
+| **Брендбук (ЗАТВЕРДЖЕНО)** | Color + type for product | Teal `#0E6E5D`, canvas `#F4F3F1`, Manrope + Inter, ink `#152233` |
+| **Module `.dc.html` phones** | Screen layout / copy / IA | Inline `:root` **overrides** Organic CSS with brandbook teal |
+| **Organic `_ds/.../styles.css`** | Component patterns (btn/card/field/seg), spacing, radii scaffolding | Default cream/terracotta/Caprasimo — **do not ship as app colors**; screens already retoken to brandbook |
+| **`assets/ref-*.png`** | Older concepts only — **not** visual truth | — |
+
+**Locked choice (2026-08-21):** option **1** — phone HTML + брендбук. Organic = class/spacing scaffold only; `ref-*.png` ignored for look.
+
+Modules order: Вхід і Перевір → Улюбленці → Стрічка → Спільнота → Профіль → Довідники → Адмінка.
 
 ### P0 — Core (in progress / next)
 - [x] Food scan (barcode → catalog → OFF → photo + AI)

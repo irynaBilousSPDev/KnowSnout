@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#F3F4F3;font-family:'Inter',system-ui,sans-serif;color:#171E38}
+    a{color:#1B7F52}a:hover{color:#14603E}
+    .wrap{max-width:1080px;margin:0 auto;padding:52px 44px 90px}
+    .kick{font:700 11px 'Inter',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#5F6A66}
+    h1{font:800 36px 'Manrope',sans-serif;letter-spacing:-.02em;margin:10px 0 10px}
+    h2{font:800 18px 'Manrope',sans-serif;margin:0 0 14px}
+    .lead{max-width:660px;color:#5F6A66;font-size:15px;line-height:1.65}
+    .sec{margin-top:42px}
+    .card{background:#fff;border-radius:20px;padding:28px 30px;box-shadow:0 1px 2px rgba(23,30,56,.05),0 16px 34px -22px rgba(23,30,56,.2)}
+    .lock{display:flex;align-items:center;gap:0}
+    .lock img{margin-right:-6px}
+    .word{font:800 34px 'Manrope',sans-serif;letter-spacing:-.025em;line-height:1;white-space:nowrap}
+    .note{font:600 11px 'Inter',sans-serif;color:#7A8480;margin-top:12px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  </style>
+</helmet>
+<div class="wrap">
+  <div class="kick">KnowSnout · логотип</div>
+  <h1>Двоколірний вордмарк</h1>
+  <p class="lead">Знак ліворуч, назва праворуч у двох тонах: «Know» темним, «Snout» акцентним. Такий поділ робить назву впізнаваною навіть без знака й дає природну точку для кольору бренду.</p>
+
+  <div class="sec">
+    <h2>Основний варіант</h2>
+    <div class="card">
+      <div class="lock">
+        <img src="assets/logo_emerald.png" alt="" style="height:62px;width:auto">
+        <span class="word"><span style="color:#171E38">Know</span><span style="color:#22C57A">Snout</span></span>
+      </div>
+      <div class="note">Знак смарагдовий · «Know» #171E38 · «Snout» #22C57A</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Колірні пари</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="lock"><img src="assets/logo_petrol.png" alt="" style="height:48px;width:auto"><span class="word" style="font-size:27px"><span style="color:#122A4C">Know</span><span style="color:#2F5233">Snout</span></span></div>
+        <div class="note">Нафтовий синій + лісова зелень</div>
+      </div>
+      <div class="card">
+        <div class="lock"><img src="assets/logo_forest.png" alt="" style="height:48px;width:auto"><span class="word" style="font-size:27px"><span style="color:#2F5233">Know</span><span style="color:#C67139">Snout</span></span></div>
+        <div class="note">Зелень + теракота</div>
+      </div>
+      <div class="card">
+        <div class="lock"><img src="assets/logo_navy.png" alt="" style="height:48px;width:auto"><span class="word" style="font-size:27px"><span style="color:#171E38">Know</span><span style="color:#E8879A">Snout</span></span></div>
+        <div class="note">Темно-синій + троянда</div>
+      </div>
+      <div class="card" style="background:#111A2E">
+        <div class="lock"><img src="assets/logo_emerald.png" alt="" style="height:48px;width:auto"><span class="word" style="font-size:27px"><span style="color:#FFFFFF">Know</span><span style="color:#22C57A">Snout</span></span></div>
+        <div class="note" style="color:rgba(255,255,255,.55)">На темному тлі</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Розміри</h2>
+    <div class="card" style="display:flex;flex-direction:column;gap:26px">
+      <div class="lock"><img src="assets/logo_emerald.png" alt="" style="height:62px;width:auto"><span class="word"><span style="color:#171E38">Know</span><span style="color:#22C57A">Snout</span></span></div>
+      <div class="lock"><img src="assets/logo_emerald.png" alt="" style="height:38px;width:auto"><span class="word" style="font-size:21px"><span style="color:#171E38">Know</span><span style="color:#22C57A">Snout</span></span></div>
+      <div class="lock"><img src="assets/logo_emerald.png" alt="" style="height:26px;width:auto"><span class="word" style="font-size:15px"><span style="color:#171E38">Know</span><span style="color:#22C57A">Snout</span></span></div>
+      <div class="note">Висота знака дорівнює висоті великої літери «K» плюс 25%. Назва стоїть впритул до знака — оптичний просвіт, не геометричний. Мінімальний розмір у застосунку — 26px.</div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

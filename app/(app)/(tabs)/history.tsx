@@ -12,11 +12,11 @@ import {
   View,
 } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { Section } from '@/src/components/Section';
 import { SegmentedControl } from '@/src/components/SegmentedControl';
 import { getScoreTone, SCORE_COLORS } from '@/src/constants/analysis';
@@ -252,12 +252,10 @@ export default function JournalScreen() {
   if (loading) return <LoadingState message={t('history.loading')} />;
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <View style={styles.header}>
-        <View style={styles.headerRow}>
-          <Text style={styles.title}>{t('tabs.scan')}</Text>
-          <ProfileEntry />
-        </View>
+        <Text style={styles.title}>{t('tabs.scan')}</Text>
 
         <SegmentedControl
           options={[
@@ -500,22 +498,18 @@ export default function JournalScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8, gap: 12 },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+  header: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 8, gap: 12 },
   title: {
     fontFamily: fonts.title,
     fontSize: 22,
     lineHeight: 28,
     color: brand.ink,
+    marginBottom: 0,
   },
   chipRow: { flexDirection: 'row', gap: 8, paddingBottom: 0 },
   chip: {
     borderRadius: brand.radius.pill,
-    backgroundColor: brand.chipTrack,
+    backgroundColor: brand.creamDeep,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
@@ -531,14 +525,14 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodyBold,
     color: brand.successDark,
   },
-  list: { paddingHorizontal: 20, paddingBottom: 40, flexGrow: 1 },
+  list: { paddingHorizontal: 20, paddingBottom: 40, flexGrow: 1, gap: 0 },
   card: {
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    padding: 12,
+    padding: 14,
     shadowColor: brand.shadow.color,
     shadowOpacity: brand.shadow.opacity,
     shadowRadius: brand.shadow.radius,
@@ -547,61 +541,64 @@ const styles = StyleSheet.create({
   },
   pressed: { opacity: 0.9 },
   thumbDash: {
-    height: 56,
-    width: 56,
+    height: 52,
+    width: 52,
     borderRadius: 12,
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
-    borderColor: brand.mistBorder,
+    backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
   thumbDashIcon: { color: brand.mutedSoft, fontSize: 18 },
   thumbImage: {
-    height: 56,
-    width: 56,
+    height: 52,
+    width: 52,
     borderRadius: 12,
     marginRight: 12,
-    backgroundColor: brand.mist,
+    backgroundColor: brand.creamDeep,
   },
   cardCopy: { flex: 1, paddingRight: 8 },
   cardTitle: {
     fontFamily: fonts.bodyBold,
-    fontSize: 15,
+    fontSize: 13.5,
     color: brand.ink,
   },
   cardMeta: {
-    marginTop: 4,
+    marginTop: 2,
     fontFamily: fonts.body,
     fontSize: 12,
     color: brand.muted,
   },
   badge: {
-    minWidth: 44,
-    height: 36,
-    borderRadius: 12,
+    minWidth: 40,
+    borderRadius: brand.radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 8,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    backgroundColor: brand.accentTint,
   },
   badgeWide: {
-    maxWidth: 96,
-    borderRadius: 12,
+    maxWidth: 110,
+    borderRadius: brand.radius.pill,
     paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingVertical: 6,
   },
   badgeMuted: {
-    borderRadius: 12,
-    backgroundColor: brand.chipTrack,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.creamDeep,
     paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingVertical: 6,
   },
-  badgeText: { fontFamily: fonts.bodyBold, fontSize: 14 },
+  badgeText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
+  },
   badgeMutedText: {
     fontFamily: fonts.bodyBold,
     fontSize: 13,
-    color: brand.muted,
+    color: brand.ink,
   },
   emptyBody: {
     fontFamily: fonts.body,
@@ -610,10 +607,10 @@ const styles = StyleSheet.create({
     color: brand.muted,
   },
   swipeHint: {
-    marginTop: 8,
+    marginTop: 6,
     textAlign: 'center',
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 11,
     color: brand.mutedSoft,
   },
 });

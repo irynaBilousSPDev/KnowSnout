@@ -10,6 +10,7 @@ import { t } from '@/src/i18n';
 import { env } from '@/src/lib/env';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML phone “2 · Реєстрація”. */
 export default function RegisterScreen() {
   const { user, loading: authLoading, signUp } = useAuth();
   const [displayName, setDisplayName] = useState('');
@@ -35,7 +36,7 @@ export default function RegisterScreen() {
     setLoading(true);
     try {
       await signUp(email, password);
-      router.replace('/(app)/(tabs)');
+      router.replace('/(app)/onboarding' as never);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('auth.registerError'));
     } finally {
@@ -47,8 +48,25 @@ export default function RegisterScreen() {
     <AuthShell
       headline={t('auth.registerTitle')}
       badge={env.isDemoMode ? t('auth.demoModeShort') : null}
+      onBack={() => router.replace('/(auth)/login')}
       footer={
-        <View>
+        <View style={styles.footer}>
+          <Text style={styles.legal}>
+            {t('auth.legalPrefix')}
+            <Text
+              style={styles.legalLink}
+              onPress={() => router.push('/(app)/data-sources' as never)}
+            >
+              {t('auth.legalTerms')}
+            </Text>
+            {t('auth.legalAnd')}
+            <Text
+              style={styles.legalLink}
+              onPress={() => router.push('/(app)/privacy' as never)}
+            >
+              {t('auth.legalPrivacy')}
+            </Text>
+          </Text>
           <GradientButton
             label={t('auth.register')}
             onPress={() => void onSubmit()}
@@ -62,6 +80,9 @@ export default function RegisterScreen() {
               </Text>
             </Pressable>
           </Link>
+          {env.isDemoMode ? (
+            <Text style={styles.demoHint}>{t('auth.demoMode')}</Text>
+          ) : null}
         </View>
       }
     >
@@ -69,7 +90,7 @@ export default function RegisterScreen() {
         label={t('auth.displayName')}
         value={displayName}
         onChangeText={setDisplayName}
-        placeholder={t('auth.displayNamePlaceholder')}
+        placeholder="Марта"
         autoCapitalize="words"
         returnKeyType="next"
       />
@@ -77,7 +98,7 @@ export default function RegisterScreen() {
         label={t('auth.email')}
         value={email}
         onChangeText={setEmail}
-        placeholder="you@email.com"
+        placeholder="marta@пошта.ua"
         keyboardType="email-address"
         returnKeyType="next"
       />
@@ -85,7 +106,7 @@ export default function RegisterScreen() {
         label={t('auth.password')}
         value={password}
         onChangeText={setPassword}
-        placeholder={t('auth.passwordHint')}
+        placeholder="••••••••"
         secureTextEntry
         returnKeyType="go"
         onSubmitEditing={() => void onSubmit()}
@@ -96,36 +117,13 @@ export default function RegisterScreen() {
           <Text style={styles.errorText}>{error}</Text>
         </View>
       ) : null}
-
-      <Text style={styles.legal}>
-        {t('auth.legalPrefix')}
-        <Text
-          style={styles.legalLink}
-          onPress={() => router.push('/(app)/data-sources' as never)}
-        >
-          {t('auth.legalTerms')}
-        </Text>
-        {t('auth.legalAnd')}
-        <Text
-          style={styles.legalLink}
-          onPress={() => router.push('/(app)/privacy' as never)}
-        >
-          {t('auth.legalPrivacy')}
-        </Text>
-      </Text>
-
-      {env.isDemoMode ? (
-        <Text style={styles.demoHint}>{t('auth.demoMode')}</Text>
-      ) : null}
     </AuthShell>
   );
 }
 
 const styles = StyleSheet.create({
-  linkWrap: {
-    marginTop: 16,
-    paddingVertical: 4,
-  },
+  footer: { gap: 12 },
+  linkWrap: { paddingVertical: 4 },
   linkMuted: {
     textAlign: 'center',
     fontFamily: fonts.body,
@@ -137,9 +135,8 @@ const styles = StyleSheet.create({
     color: brand.accent,
   },
   legal: {
-    marginTop: 8,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 11.5,
     lineHeight: 18,
     color: brand.muted,
   },
@@ -148,23 +145,20 @@ const styles = StyleSheet.create({
     color: brand.accent,
   },
   errorBox: {
-    marginTop: 4,
-    marginBottom: 8,
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderRadius: brand.radius.md,
-    backgroundColor: 'rgba(196, 92, 62, 0.1)',
+    backgroundColor: 'rgba(217, 83, 79, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(196, 92, 62, 0.25)',
+    borderColor: 'rgba(217, 83, 79, 0.25)',
   },
   errorText: {
     fontFamily: fonts.bodyMedium,
     fontSize: 13,
     lineHeight: 18,
-    color: brand.score.poor,
+    color: brand.error,
   },
   demoHint: {
-    marginTop: 8,
     fontFamily: fonts.body,
     fontSize: 12,
     lineHeight: 18,

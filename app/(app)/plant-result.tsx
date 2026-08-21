@@ -3,10 +3,12 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { isNativeSafeImageUri } from '@/src/lib/image';
 import { resolveCheckImageUrl } from '@/src/services/checkImages';
@@ -207,6 +209,8 @@ export default function PlantResultScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('plants.resultTitle')} />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"

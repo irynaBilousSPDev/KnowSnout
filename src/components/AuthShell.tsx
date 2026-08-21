@@ -1,41 +1,69 @@
 import type { ReactNode } from 'react';
+import { router } from 'expo-router';
 import {
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { BrandLogo } from '@/src/components/BrandLogo';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   headline: string;
   subtitle?: string | null;
   children: ReactNode;
-  footer: ReactNode;
+  footer?: ReactNode;
   badge?: string | null;
+  showBack?: boolean;
+  onBack?: () => void;
 };
 
-/** HTML kit auth — stone canvas, Manrope headline. */
+/**
+ * Auth layout from HTML phone “2 · Реєстрація”:
+ * app-hd → scr-hd (back + title) → fields + legal + CTA in one column.
+ */
 export function AuthShell({
   headline,
   subtitle,
   children,
   footer,
   badge,
+  showBack = true,
+  onBack,
 }: Props) {
   return (
     <View style={styles.root}>
-      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+      <SafeAreaView style={styles.safe} edges={['bottom']}>
+        <AppChromeHeader showAvatar={false} />
         <KeyboardAvoidingView
           style={styles.flex}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           keyboardVerticalOffset={Platform.OS === 'ios' ? 8 : 0}
         >
+          <View style={styles.scrHd}>
+            {showBack ? (
+              <Pressable
+                onPress={onBack ?? (() => router.back())}
+                style={styles.back}
+                accessibilityRole="button"
+                accessibilityLabel="Назад"
+              >
+                <Ionicons name="chevron-back" size={18} color={brand.ink} />
+              </Pressable>
+            ) : (
+              <View style={styles.backSpacer} />
+            )}
+            <Text style={styles.scrTitle}>{headline}</Text>
+            <View style={styles.backSpacer} />
+          </View>
+
           <ScrollView
             style={styles.flex}
             contentContainerStyle={styles.scrollContent}
@@ -43,8 +71,6 @@ export function AuthShell({
             keyboardDismissMode="on-drag"
             showsVerticalScrollIndicator={false}
           >
-            <BrandLogo variant="full" size="hero" style={styles.logo} />
-            <Text style={styles.headline}>{headline}</Text>
             {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
             {badge ? (
               <View style={styles.badge}>
@@ -52,8 +78,8 @@ export function AuthShell({
               </View>
             ) : null}
             <View style={styles.form}>{children}</View>
+            {footer ? <View style={styles.inlineFooter}>{footer}</View> : null}
           </ScrollView>
-          <View style={styles.footer}>{footer}</View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
@@ -64,21 +90,38 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: brand.canvas },
   safe: { flex: 1 },
   flex: { flex: 1 },
-  scrollContent: {
+  scrHd: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 16,
+    paddingTop: 14,
+    paddingBottom: 6,
   },
-  logo: { alignSelf: 'flex-start' },
-  headline: {
-    marginTop: 20,
+  back: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backSpacer: { width: 34, height: 34 },
+  scrTitle: {
+    flex: 1,
+    textAlign: 'center',
     fontFamily: fonts.title,
     fontSize: 22,
     lineHeight: 28,
     color: brand.ink,
   },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 24,
+    gap: 12,
+  },
   subtitle: {
-    marginTop: 8,
     fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
@@ -86,7 +129,6 @@ const styles = StyleSheet.create({
   },
   badge: {
     alignSelf: 'flex-start',
-    marginTop: 12,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: brand.radius.pill,
@@ -97,13 +139,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: brand.accentDark,
   },
-  form: { marginTop: 20 },
-  footer: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: Platform.OS === 'ios' ? 8 : 16,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: brand.mistBorder,
-    backgroundColor: brand.canvas,
-  },
+  form: { gap: 12 },
+  inlineFooter: { marginTop: 4, gap: 12 },
 });

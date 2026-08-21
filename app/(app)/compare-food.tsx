@@ -10,14 +10,16 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { isNativeSafeImageUri } from '@/src/lib/image';
 import { resolveCheckImageUrl } from '@/src/services/checkImages';
 import { listScans } from '@/src/services/scans';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { ScanRow } from '@/src/types/scan';
 
 type Slot = 'a' | 'b';
@@ -132,10 +134,10 @@ export default function CompareFoodScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('compare.title')} titleSize={18} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.title}>{t('compare.title')}</Text>
-
           {loading ? (
             <Text style={styles.muted}>{t('common.loading')}</Text>
           ) : scans.length === 0 ? (

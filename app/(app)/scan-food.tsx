@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { BarcodeScanner } from '@/src/components/BarcodeScanner';
 import { CameraCapture } from '@/src/components/CameraCapture';
@@ -12,6 +13,7 @@ import {
   ScanModeToggle,
   type ScanMode,
 } from '@/src/components/ScanModeToggle';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { useAnalyzeLabel } from '@/src/hooks/useAnalyzeLabel';
 import { useToast } from '@/src/hooks/useToast';
 import { t } from '@/src/i18n';
@@ -168,13 +170,15 @@ export default function ScanFoodScreen() {
   };
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader
+        title={mode === 'barcode' ? t('scan.barcodeTitle') : t('scan.photoTitle')}
+      />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.lead}>{t('scan.foodLead')}</Text>
-
         {showDevBanners ? (
           <View style={styles.banner}>
             <Text style={styles.bannerText}>{t('scan.mockBanner')}</Text>
@@ -185,7 +189,6 @@ export default function ScanFoodScreen() {
 
         {mode === 'barcode' ? (
           <>
-            <Text style={styles.sectionTitle}>{t('scan.barcodeTitle')}</Text>
             <Text style={styles.sectionHelp}>{t('scan.barcodeHelp')}</Text>
             {lookupHint ? (
               <View style={styles.hint}>
@@ -209,7 +212,6 @@ export default function ScanFoodScreen() {
           </>
         ) : (
           <>
-            <Text style={styles.sectionTitle}>{t('scan.photoTitle')}</Text>
             <Text style={styles.sectionHelp}>{t('scan.photoHelp')}</Text>
 
             {(lookupHint || barcodeContext) && (
