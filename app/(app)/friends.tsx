@@ -9,7 +9,7 @@ import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { listFriends, removeFriend, type FriendUser } from '@/src/services/friends';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function FriendsScreen() {
   const [friends, setFriends] = useState<FriendUser[]>([]);
@@ -39,21 +39,21 @@ export default function FriendsScreen() {
               style={styles.quick}
               onPress={() => router.push('/(app)/friend-requests' as never)}
             >
-              <Ionicons name="mail-outline" size={18} color={brand.navy} />
+              <Ionicons name="mail-outline" size={18} color={brand.accent} />
               <Text style={styles.quickText}>{t('friends.requests')}</Text>
             </Pressable>
             <Pressable
               style={styles.quick}
               onPress={() => router.push('/(app)/friend-invite' as never)}
             >
-              <Ionicons name="qr-code-outline" size={18} color={brand.navy} />
+              <Ionicons name="qr-code-outline" size={18} color={brand.accent} />
               <Text style={styles.quickText}>{t('friends.invite')}</Text>
             </Pressable>
             <Pressable
               style={styles.quick}
               onPress={() => router.push('/(app)/walk-plan' as never)}
             >
-              <Ionicons name="walk-outline" size={18} color={brand.navy} />
+              <Ionicons name="walk-outline" size={18} color={brand.accent} />
               <Text style={styles.quickText}>{t('friends.planWalk')}</Text>
             </Pressable>
           </View>
@@ -122,18 +122,21 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     gap: 6,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingVertical: 12,
     paddingHorizontal: 6,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   quickText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 11,
     textAlign: 'center',
-    color: brand.navy,
+    color: brand.accentDark,
   },
   linkRow: {
     marginTop: 8,
@@ -145,21 +148,21 @@ const styles = StyleSheet.create({
     borderBottomColor: brand.mistBorder,
   },
   linkText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 14,
-    color: brand.navy,
+    color: brand.accentDark,
   },
   section: {
     marginTop: 22,
     marginBottom: 10,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 12,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
     color: brand.mutedSoft,
   },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     color: brand.muted,
   },

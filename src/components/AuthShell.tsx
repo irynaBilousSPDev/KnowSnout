@@ -14,7 +14,7 @@ import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   headline: string;
-  subtitle: string;
+  subtitle?: string | null;
   children: ReactNode;
   footer: ReactNode;
   badge?: string | null;
@@ -45,7 +45,7 @@ export function AuthShell({
           >
             <BrandLogo variant="full" size="hero" style={styles.logo} />
             <Text style={styles.headline}>{headline}</Text>
-            <Text style={styles.subtitle}>{subtitle}</Text>
+            {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
             {badge ? (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>{badge}</Text>

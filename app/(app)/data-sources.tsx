@@ -1,12 +1,14 @@
-import { Linking, Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import {
   DATA_SOURCES,
   dataSourcesUpdatedNote,
   type DataSourceEntry,
 } from '@/src/data/dataSources';
 import { t } from '@/src/i18n';
+import { brand, fonts } from '@/src/theme/brand';
 
 function kindLabel(kind: DataSourceEntry['kind']) {
   switch (kind) {
@@ -23,52 +25,106 @@ function kindLabel(kind: DataSourceEntry['kind']) {
   }
 }
 
+/** HTML kit · Джерела даних — soft white cards, Manrope titles. */
 export default function DataSourcesScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <ScrollView contentContainerClassName="px-5 pb-12 pt-2">
-        <Text className="font-body text-base leading-6 text-forest-600">
-          {t('sources.lead')}
-        </Text>
-        <Text className="mt-2 font-body text-xs text-forest-500">
+    <AppScreen edges={['bottom']}>
+      <ScrollView
+        contentContainerStyle={styles.pad}
+        keyboardShouldPersistTaps="handled"
+      >
+        <HubHero title={t('sources.title')} lead={t('sources.lead')} />
+        <Text style={styles.updated}>
           {t('sources.updated', { date: dataSourcesUpdatedNote() })}
         </Text>
 
         {DATA_SOURCES.map((src) => (
-          <View
-            key={src.id}
-            className="mt-4 rounded-3xl border border-forest-100 bg-white px-5 py-5"
-          >
-            <Text className="font-body text-xs uppercase tracking-wide text-forest-500">
-              {kindLabel(src.kind)}
-            </Text>
-            <Text className="mt-1 font-body-bold text-lg text-forest-900">
-              {src.name}
-            </Text>
-            <Text className="mt-2 font-body text-sm leading-5 text-forest-700">
-              {src.usedForUk}
-            </Text>
-            <Text className="mt-3 font-body text-sm leading-5 text-forest-600">
-              {src.attributionUk}
-            </Text>
-            <Text className="mt-2 font-body text-xs leading-5 text-forest-500">
-              {src.licenseOrTerms}
-            </Text>
+          <View key={src.id} style={styles.card}>
+            <Text style={styles.kind}>{kindLabel(src.kind)}</Text>
+            <Text style={styles.name}>{src.name}</Text>
+            <Text style={styles.body}>{src.usedForUk}</Text>
+            <Text style={styles.attr}>{src.attributionUk}</Text>
+            <Text style={styles.license}>{src.licenseOrTerms}</Text>
             <Pressable
               onPress={() => void Linking.openURL(src.homepage)}
-              className="mt-3"
+              style={styles.linkBtn}
             >
-              <Text className="font-body-bold text-sm text-forest-700">
-                {t('sources.openLink')}
-              </Text>
+              <Text style={styles.link}>{t('sources.openLink')}</Text>
             </Pressable>
           </View>
         ))}
 
-        <Text className="mt-6 font-body text-xs leading-5 text-forest-500">
-          {t('sources.footer')}
-        </Text>
+        <Text style={styles.footer}>{t('sources.footer')}</Text>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  updated: {
+    marginBottom: 14,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  card: {
+    marginBottom: 12,
+    borderRadius: brand.radius.lg,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  kind: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 11,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+    color: brand.mutedSoft,
+  },
+  name: {
+    marginTop: 4,
+    fontFamily: fonts.title,
+    fontSize: 17,
+    color: brand.ink,
+  },
+  body: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+    color: brand.ink,
+  },
+  attr: {
+    marginTop: 10,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    lineHeight: 19,
+    color: brand.muted,
+  },
+  license: {
+    marginTop: 6,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 18,
+    color: brand.mutedSoft,
+  },
+  linkBtn: { marginTop: 12 },
+  link: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.accent,
+  },
+  footer: {
+    marginTop: 12,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 18,
+    color: brand.mutedSoft,
+  },
+});

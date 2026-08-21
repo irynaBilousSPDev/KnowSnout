@@ -7,7 +7,7 @@ import { HubHero } from '@/src/components/HubHero';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { listForumCategories } from '@/src/services/forum';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function ForumScreen() {
   const categories = listForumCategories();
@@ -38,7 +38,7 @@ export default function ForumScreen() {
                 <Ionicons
                   name="chatbubbles-outline"
                   size={20}
-                  color={brand.forest}
+                  color={brand.accent}
                 />
               </View>
               <View style={styles.catCopy}>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 22,
     marginBottom: 10,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 12,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
@@ -99,11 +99,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   catIcon: {
     marginRight: 12,
@@ -112,26 +115,26 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: brand.forestTint,
+    backgroundColor: brand.accentTint,
   },
   catCopy: { flex: 1, paddingRight: 8 },
   catTitle: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 16,
     color: brand.ink,
   },
   catBody: {
     marginTop: 4,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 18,
     color: brand.muted,
   },
   catMeta: {
     marginTop: 6,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 12,
-    color: brand.navy,
+    color: brand.accentDark,
   },
   linkRow: {
     flexDirection: 'row',
@@ -142,8 +145,8 @@ const styles = StyleSheet.create({
     borderBottomColor: brand.mistBorder,
   },
   linkText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 15,
-    color: brand.navy,
+    color: brand.accentDark,
   },
 });

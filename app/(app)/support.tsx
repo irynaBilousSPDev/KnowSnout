@@ -8,13 +8,14 @@ import {
 } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { submitSupportTicket } from '@/src/services/supportTickets';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Підтримка — soft inputs, accent CTA. */
 export default function SupportScreen() {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
@@ -44,16 +45,16 @@ export default function SupportScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('support.title')}
-            subtitle={t('support.subtitle')}
+            lead={t('support.subtitle')}
           />
           <Text style={styles.label}>{t('support.email')}</Text>
           <TextInput
             value={email}
             onChangeText={setEmail}
             placeholder={t('support.emailPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             keyboardType="email-address"
             autoCapitalize="none"
             style={styles.input}
@@ -63,7 +64,7 @@ export default function SupportScreen() {
             value={subject}
             onChangeText={setSubject}
             placeholder={t('support.subjectPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
           />
           <Text style={styles.label}>{t('support.message')}</Text>
@@ -71,7 +72,7 @@ export default function SupportScreen() {
             value={message}
             onChangeText={setMessage}
             placeholder={t('support.messagePlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             multiline
             style={[styles.input, styles.area]}
           />
@@ -92,18 +93,18 @@ const styles = StyleSheet.create({
   label: {
     marginTop: 12,
     marginBottom: 6,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   input: {
     borderWidth: 1,
     borderColor: brand.mistBorder,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },

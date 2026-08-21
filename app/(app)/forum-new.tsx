@@ -16,7 +16,7 @@ import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { createForumThread, listForumCategories } from '@/src/services/forum';
 import { useToast } from '@/src/hooks/useToast';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function ForumNewScreen() {
   const { categoryId: paramCat } = useLocalSearchParams<{ categoryId?: string }>();
@@ -76,7 +76,7 @@ export default function ForumNewScreen() {
             value={title}
             onChangeText={setTitle}
             placeholder={t('forum.threadTitlePlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
           />
           <Text style={styles.label}>{t('forum.threadBody')}</Text>
@@ -84,7 +84,7 @@ export default function ForumNewScreen() {
             value={body}
             onChangeText={setBody}
             placeholder={t('forum.threadBodyPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             multiline
             style={[styles.input, styles.area]}
           />
@@ -105,16 +105,14 @@ const styles = StyleSheet.create({
   label: {
     marginTop: 14,
     marginBottom: 6,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   chip: {
     marginBottom: 8,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -123,19 +121,17 @@ const styles = StyleSheet.create({
     borderColor: brand.navy,
   },
   chipText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 15,
     color: brand.ink,
   },
   chipTextActive: { color: brand.navy },
   input: {
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },

@@ -263,6 +263,12 @@ export async function identifyBreedFromPhoto(input: {
   }
 }
 
+export type BreedHistoryAlternative = {
+  breedName: string;
+  breedNameUk?: string | null;
+  confidence: number;
+};
+
 export type BreedHistoryItem = {
   id: string;
   createdAt: string;
@@ -274,6 +280,7 @@ export type BreedHistoryItem = {
   temperament?: string | null;
   origin?: string | null;
   bredFor?: string | null;
+  alternatives?: BreedHistoryAlternative[];
 };
 
 export async function listBreedHistory(): Promise<BreedHistoryItem[]> {
@@ -320,6 +327,7 @@ export async function saveBreedHistoryItem(
     temperament: item.temperament ?? null,
     origin: item.origin ?? null,
     bredFor: item.bredFor ?? null,
+    alternatives: item.alternatives ?? [],
   };
   const prev = await listBreedHistory();
   const list = [next, ...prev].slice(0, 50);

@@ -11,7 +11,7 @@ import {
   getGamification,
   type GamificationState,
 } from '@/src/services/gamification';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function AchievementsScreen() {
   const [state, setState] = useState<GamificationState | null>(null);
@@ -49,7 +49,7 @@ export default function AchievementsScreen() {
                 <Ionicons
                   name={b.unlocked ? 'ribbon' : 'lock-closed-outline'}
                   size={22}
-                  color={b.unlocked ? brand.navy : '#8AA8A0'}
+                  color={b.unlocked ? brand.accent : brand.mutedSoft}
                 />
               }
               showChevron={false}
@@ -64,33 +64,32 @@ export default function AchievementsScreen() {
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   xpCard: {
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.mist,
     padding: 18,
     marginBottom: 8,
   },
   xpLabel: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: brand.navy,
+    color: brand.accentDark,
   },
   xpValue: {
     marginTop: 6,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.title,
     fontSize: 32,
+    lineHeight: 38,
     color: brand.ink,
   },
   section: {
     marginTop: 16,
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

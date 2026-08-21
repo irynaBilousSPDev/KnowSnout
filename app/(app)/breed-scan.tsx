@@ -4,15 +4,15 @@ import {
   ActivityIndicator,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { SourceLangNote } from '@/src/components/SourceLangNote';
 import { t } from '@/src/i18n';
 import { guessMimeType, uriToBase64 } from '@/src/lib/image';
 import {
@@ -20,19 +20,19 @@ import {
   saveBreedHistoryItem,
   searchBreeds,
 } from '@/src/services/breedId';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type {
-  BreedCheckResult,
   BreedGuess,
   CompanionBreedSpecies,
 } from '@/src/types/breed';
 
+/** HTML «10 · Порода: форма» — photo first, manual name secondary. */
 export default function BreedScanScreen() {
   const [species, setSpecies] = useState<CompanionBreedSpecies>('dog');
   const [query, setQuery] = useState('');
+  const [manualOpen, setManualOpen] = useState(false);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<BreedGuess[]>([]);
-  const [result, setResult] = useState<BreedCheckResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,19 +43,10 @@ export default function BreedScanScreen() {
       setSuggestions([]);
       return;
     }
-    const hits = await searchBreeds(text, species);
-    setSuggestions(hits);
+    setSuggestions(await searchBreeds(text, species));
   };
 
   const applyGuess = async (guess: BreedGuess, photo?: string | null) => {
-    const next: BreedCheckResult = {
-      species,
-      primary: guess,
-      alternatives: [],
-      disclaimer: true,
-    };
-    setResult(next);
-    setSuggestions([]);
     const saved = await saveBreedHistoryItem({
       species,
       breedName: guess.name,
@@ -65,11 +56,9 @@ export default function BreedScanScreen() {
       temperament: guess.temperament,
       origin: guess.origin,
       bredFor: guess.bredFor,
+      alternatives: [],
     });
-    router.push({
-      pathname: '/(app)/breed-result',
-      params: { id: saved.id },
-    });
+    router.push({ pathname: '/(app)/breed-result', params: { id: saved.id } });
   };
 
   const onPhoto = async () => {
@@ -86,7 +75,6 @@ export default function BreedScanScreen() {
         imageBase64,
         mimeType: guessMimeType(photoUri),
       });
-      setResult(next);
       const saved = await saveBreedHistoryItem({
         species,
         breedName: next.primary.name,
@@ -96,11 +84,13 @@ export default function BreedScanScreen() {
         temperament: next.primary.temperament,
         origin: next.primary.origin,
         bredFor: next.primary.bredFor,
+        alternatives: next.alternatives.map((a) => ({
+          breedName: a.name,
+          breedNameUk: a.nameUk,
+          confidence: a.confidence,
+        })),
       });
-      router.push({
-        pathname: '/(app)/breed-result',
-        params: { id: saved.id },
-      });
+      router.push({ pathname: '/(app)/breed-result', params: { id: saved.id } });
     } catch (err) {
       setError(err instanceof Error ? err.message : t('breed.checkError'));
     } finally {
@@ -109,19 +99,14 @@ export default function BreedScanScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
+    <AppScreen edges={['bottom']}>
       <ScrollView
-        contentContainerClassName="px-5 pb-12 pt-2"
+        contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
-        <Text className="font-body text-base leading-6 text-forest-600">
-          {t('breed.subtitle')}
-        </Text>
+        <Text style={styles.title}>{t('breed.askTitle')}</Text>
 
-        <Text className="mb-2 mt-5 font-body-bold text-sm text-forest-700">
-          {t('breed.speciesLabel')}
-        </Text>
-        <View className="mb-4 flex-row gap-2">
+        <View style={styles.speciesRow}>
           {(['dog', 'cat'] as CompanionBreedSpecies[]).map((s) => {
             const active = species === s;
             return (
@@ -129,19 +114,12 @@ export default function BreedScanScreen() {
                 key={s}
                 onPress={() => {
                   setSpecies(s);
-                  setResult(null);
                   setSuggestions([]);
                 }}
-                className={`flex-1 rounded-2xl border px-3 py-3 ${
-                  active
-                    ? 'border-forest-700 bg-forest-700'
-                    : 'border-forest-100 bg-white'
-                }`}
+                style={[styles.speciesChip, active && styles.speciesActive]}
               >
                 <Text
-                  className={`text-center font-body-bold text-sm ${
-                    active ? 'text-white' : 'text-forest-800'
-                  }`}
+                  style={[styles.speciesText, active && styles.speciesTextActive]}
                 >
                   {s === 'cat' ? t('breed.speciesCat') : t('breed.speciesDog')}
                 </Text>
@@ -150,112 +128,163 @@ export default function BreedScanScreen() {
           })}
         </View>
 
-        <Text className="mb-2 font-body-bold text-sm text-forest-700">
-          {t('breed.searchLabel')}
-        </Text>
-        <TextInput
-          value={query}
-          onChangeText={(text) => void onSearch(text)}
-          placeholder={t('breed.searchPlaceholder')}
-          placeholderTextColor="#9bbba5"
-          className="mb-2 rounded-2xl border border-forest-100 bg-white px-4 py-3 font-body text-base text-forest-900"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        {suggestions.length > 0 ? (
-          <View className="mb-3 overflow-hidden rounded-2xl border border-forest-100 bg-white">
-            {suggestions.map((s) => (
-              <Pressable
-                key={s.id}
-                onPress={() => void applyGuess(s)}
-                className="border-b border-forest-50 px-4 py-3"
-              >
-                <Text className="font-body-bold text-sm text-forest-900">
-                  {s.nameUk ?? s.name}
-                </Text>
-                <Text className="font-body text-xs text-forest-500">
-                  {s.name}
-                  {s.source !== 'mock' ? ` · ${s.source}` : ''}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        ) : null}
-
-        <Text className="mb-2 mt-4 font-body-bold text-sm text-forest-700">
-          {t('breed.photoLabel')}
-        </Text>
-        <Text className="mb-3 font-body text-sm leading-5 text-forest-500">
-          {t('breed.photoTapHint')} {t('breed.mockHint')}
-        </Text>
         <PhotoAttachField
           label={t('breed.photoAttach')}
           uri={photoUri}
           onChange={(uri) => {
             setPhotoUri(uri);
             setError(null);
-            setResult(null);
           }}
-          height={180}
+          height={220}
           filePrefix="breed"
           emptyHint={t('breed.photoEmpty')}
         />
-        <View className="mt-3">
+
+        <View style={styles.cta}>
           <PrimaryButton
-            label={t('breed.checkPhoto')}
+            label={t('breed.identifyCta')}
             onPress={() => void onPhoto()}
             disabled={busy || !photoUri}
             loading={busy}
           />
         </View>
 
+        <Pressable
+          onPress={() => setManualOpen((v) => !v)}
+          style={styles.manualBtn}
+        >
+          <Text style={styles.manualText}>{t('breed.manualCta')}</Text>
+        </Pressable>
+
+        {manualOpen ? (
+          <View style={styles.manualBox}>
+            <TextInput
+              value={query}
+              onChangeText={(text) => void onSearch(text)}
+              placeholder={t('breed.searchPlaceholder')}
+              placeholderTextColor={brand.mutedSoft}
+              style={styles.input}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            {suggestions.map((s) => (
+              <Pressable
+                key={s.id}
+                onPress={() => void applyGuess(s)}
+                style={styles.suggest}
+              >
+                <Text style={styles.suggestTitle}>{s.nameUk ?? s.name}</Text>
+                <Text style={styles.suggestMeta}>{s.name}</Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : null}
+
         {busy ? (
-          <View className="mt-4 flex-row items-center gap-2">
-            <ActivityIndicator color={brand.ink} />
-            <Text className="font-body text-sm text-forest-600">
-              {t('breed.checking')}
-            </Text>
+          <View style={styles.busyRow}>
+            <ActivityIndicator color={brand.accent} />
+            <Text style={styles.busyText}>{t('breed.checking')}</Text>
           </View>
         ) : null}
 
-        {error ? (
-          <Text className="mt-4 font-body text-sm leading-5 text-score-poor">
-            {error}
-          </Text>
-        ) : null}
-
-        {result ? (
-          <View className="mt-5 rounded-3xl border border-forest-100 bg-white px-5 py-5">
-            <Text className="font-body-bold text-lg text-forest-900">
-              {result.primary.nameUk ?? result.primary.name}
-            </Text>
-            <Text className="mt-1 font-body text-sm text-forest-600">
-              {result.primary.name}
-            </Text>
-            <Text className="mt-3 font-body text-sm text-forest-700">
-              {t('breed.confidence', {
-                pct: Math.round(result.primary.confidence * 100),
-              })}
-            </Text>
-            {result.primary.temperament ? (
-              <SourceLangNote
-                value={result.primary.temperament}
-                className="mt-2"
-              />
-            ) : null}
-            {result.primary.origin ? (
-              <SourceLangNote
-                value={result.primary.origin}
-                className="mt-1"
-              />
-            ) : null}
-          </View>
-        ) : null}
-
-        <Text className="mt-6 font-body text-xs leading-5 text-forest-500">
-          {t('breed.disclaimer')}
-        </Text>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <Text style={styles.disclaimer}>{t('breed.disclaimer')}</Text>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  scroll: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    color: brand.ink,
+    marginBottom: 14,
+  },
+  speciesRow: { flexDirection: 'row', gap: 8, marginBottom: 14 },
+  speciesChip: {
+    flex: 1,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  speciesActive: { backgroundColor: brand.accent },
+  speciesText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  speciesTextActive: { color: '#FFFFFF' },
+  cta: { marginTop: 14 },
+  manualBtn: {
+    marginTop: 14,
+    minHeight: 46,
+    borderRadius: brand.radius.pill,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  manualText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 14,
+    color: brand.accentDark,
+  },
+  manualBox: { marginTop: 12 },
+  input: {
+    borderRadius: brand.radius.pill,
+    borderWidth: 1,
+    borderColor: 'rgba(21,34,51,0.12)',
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  suggest: {
+    marginTop: 8,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  suggestTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  suggestMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  busyRow: {
+    marginTop: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  busyText: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  error: {
+    marginTop: 12,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.score.poor,
+  },
+  disclaimer: {
+    marginTop: 20,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    lineHeight: 16,
+    color: brand.mutedSoft,
+  },
+});

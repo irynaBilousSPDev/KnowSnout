@@ -2,12 +2,13 @@ import { router } from 'expo-router';
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Видалення акаунта. */
 export default function DeleteAccountScreen() {
   const confirmDelete = () => {
     Alert.alert(t('deleteAccount.confirmTitle'), t('deleteAccount.confirmBody'), [
@@ -27,11 +28,13 @@ export default function DeleteAccountScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('deleteAccount.title')}
-            subtitle={t('deleteAccount.subtitle')}
+            lead={t('deleteAccount.subtitle')}
           />
-          <Text style={styles.body}>{t('deleteAccount.lead')}</Text>
+          <View style={styles.card}>
+            <Text style={styles.body}>{t('deleteAccount.lead')}</Text>
+          </View>
           <View style={styles.gap} />
           <PrimaryButton
             label={t('deleteAccount.confirmAction')}
@@ -46,8 +49,18 @@ export default function DeleteAccountScreen() {
 
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  card: {
+    borderRadius: brand.radius.lg,
+    backgroundColor: brand.surfaceElevated,
+    padding: 16,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
   body: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 22,
     color: brand.ink,

@@ -6,7 +6,7 @@ import { ListRow } from '@/src/components/ListRow';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { listLeaderboard } from '@/src/services/gamification';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function QuizLeaderboardScreen() {
   const rows = listLeaderboard();

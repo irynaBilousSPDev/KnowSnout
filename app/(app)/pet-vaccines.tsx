@@ -5,11 +5,14 @@ import {
   FlatList,
   Modal,
   Pressable,
+  ScrollView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -35,7 +38,7 @@ import {
   listVaccineReminderIds,
   scheduleVaccineAppReminder,
 } from '@/src/services/vaccineReminders';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { CompanionSpecies, PetRow } from '@/src/types/pet';
 import type { PetVaccineRow, VaccineDueStatus } from '@/src/types/vaccine';
 
@@ -46,20 +49,23 @@ function statusLabel(status: VaccineDueStatus) {
   return t('vaccines.statusNone');
 }
 
-function statusColor(status: VaccineDueStatus) {
-  if (status === 'overdue') return brand.score.poor;
-  if (status === 'soon') return brand.score.fair;
-  if (status === 'ok') return brand.score.good;
-  return brand.forest;
-}
-
 function displayName(row: PetVaccineRow) {
-  return (
-    vaccineLabel(row.vaccine_key) ??
-    vaccineDisplayName(row)
-  );
+  return vaccineLabel(row.vaccine_key) ?? vaccineDisplayName(row);
 }
 
+function formatGiven(row: PetVaccineRow) {
+  if (row.given_on && row.next_due_on) {
+    return t('vaccines.givenUntil', {
+      given: row.given_on,
+      until: row.next_due_on,
+    });
+  }
+  if (row.given_on) return t('vaccines.givenOnly', { given: row.given_on });
+  if (row.next_due_on) return `${t('vaccines.nextDue')}: ${row.next_due_on}`;
+  return null;
+}
+
+/** HTML kit · 19 Щеплення */
 export default function PetVaccinesScreen() {
   const params = useLocalSearchParams<{ petId?: string }>();
   const petId = typeof params.petId === 'string' ? params.petId : undefined;
@@ -248,99 +254,98 @@ export default function PetVaccinesScreen() {
 
   if (error || !pet) {
     return (
-      <SafeAreaView className="flex-1 bg-sand-50">
+      <AppScreen edges={['bottom']}>
         <ErrorState
           message={error ?? t('pets.notFound')}
           onRetry={() => void load()}
         />
-      </SafeAreaView>
+      </AppScreen>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <View className="px-5 pb-2 pt-2">
-        <Text className="font-display text-2xl text-forest-900">
-          {t('vaccines.title')}
-        </Text>
-        <Text className="mt-1 font-body text-sm text-forest-600">
+    <AppScreen edges={['bottom']}>
+      <View style={styles.header}>
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>{t('vaccines.title')}</Text>
+          <Pressable
+            onPress={openCompose}
+            style={styles.addCircle}
+            accessibilityRole="button"
+            accessibilityLabel={t('vaccines.add')}
+          >
+            <Ionicons name="add" size={22} color={brand.ink} />
+          </Pressable>
+        </View>
+        <Text style={styles.subtitle}>
           {pet.name} · {t('vaccines.subtitle')}
         </Text>
-        <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
-          <Text className="font-body text-xs leading-5 text-forest-700">
-            {t('vaccines.disclaimer')}
-          </Text>
-        </View>
-        <View className="mt-4">
-          <PrimaryButton label={t('vaccines.add')} onPress={openCompose} />
+        <View style={styles.disclaimer}>
+          <Text style={styles.disclaimerText}>{t('vaccines.disclaimer')}</Text>
         </View>
       </View>
 
       <FlatList
         data={rows}
         keyExtractor={(item) => item.id}
-        contentContainerClassName="px-5 pb-10 pt-2"
+        contentContainerStyle={styles.list}
         ListEmptyComponent={
-          <View className="mt-12 items-center px-6">
-            <Text className="text-center font-body-bold text-lg text-forest-800">
-              {t('vaccines.emptyTitle')}
-            </Text>
-            <Text className="mt-2 text-center font-body text-sm text-forest-600">
-              {t('vaccines.emptyBody')}
-            </Text>
+          <View style={styles.empty}>
+            <Text style={styles.emptyTitle}>{t('vaccines.emptyTitle')}</Text>
+            <Text style={styles.emptyBody}>{t('vaccines.emptyBody')}</Text>
           </View>
         }
         renderItem={({ item }) => {
           const status = vaccineDueStatus(item.next_due_on);
+          const soon = status === 'soon' || status === 'overdue';
+          const meta = formatGiven(item);
           return (
-            <View className="mb-3 rounded-3xl border border-forest-100 bg-white px-4 py-4">
-              <View className="flex-row items-start justify-between">
-                <View className="flex-1 pr-3">
-                  <Text className="font-body-bold text-base text-forest-900">
-                    {displayName(item)}
-                  </Text>
+            <View style={[styles.card, soon && styles.cardWarn]}>
+              <View style={styles.cardRow}>
+                {soon ? (
+                  <View style={styles.warnDot} />
+                ) : (
+                  <Ionicons
+                    name="checkmark"
+                    size={20}
+                    color={brand.successDark}
+                  />
+                )}
+                <View style={styles.cardCopy}>
+                  <Text style={styles.cardTitle}>{displayName(item)}</Text>
                   <Text
-                    className="mt-1 font-body-medium text-xs"
-                    style={{ color: statusColor(status) }}
+                    style={[
+                      styles.cardMeta,
+                      soon && styles.cardMetaWarn,
+                    ]}
                   >
-                    {statusLabel(status)}
+                    {soon ? statusLabel(status) : meta ?? statusLabel(status)}
                   </Text>
+                  {!soon && meta && status !== 'ok' && status !== 'none' ? (
+                    <Text style={styles.cardMeta}>{statusLabel(status)}</Text>
+                  ) : null}
                 </View>
                 <Pressable onPress={() => void onDelete(item)}>
-                  <Text className="font-body text-xs text-forest-500">
-                    {t('pets.delete')}
-                  </Text>
+                  <Text style={styles.delete}>{t('pets.delete')}</Text>
                 </Pressable>
               </View>
-              {item.given_on ? (
-                <Text className="mt-2 font-body text-sm text-forest-600">
-                  {t('vaccines.givenOn')}: {item.given_on}
-                </Text>
-              ) : null}
-              {item.next_due_on ? (
-                <Text className="mt-1 font-body text-sm text-forest-600">
-                  {t('vaccines.nextDue')}: {item.next_due_on}
-                </Text>
-              ) : null}
               {item.notes ? (
-                <Text className="mt-2 font-body text-sm text-forest-500">
-                  {item.notes}
-                </Text>
+                <Text style={styles.notes}>{item.notes}</Text>
               ) : null}
               {item.next_due_on ? (
-                <View className="mt-3 flex-row flex-wrap gap-2">
+                <View style={styles.actions}>
                   <Pressable
                     onPress={() => void onToggleAppReminder(item)}
-                    className={`rounded-2xl px-3 py-2 active:opacity-70 ${
-                      reminded.has(item.id) ? 'bg-forest-700' : 'bg-forest-100'
-                    }`}
+                    style={[
+                      styles.miniPill,
+                      reminded.has(item.id) && styles.miniPillOn,
+                    ]}
                   >
                     <Text
-                      className={`font-body-bold text-xs ${
-                        reminded.has(item.id)
-                          ? 'text-sand-50'
-                          : 'text-forest-800'
-                      }`}
+                      style={[
+                        styles.miniPillText,
+                        reminded.has(item.id) && styles.miniPillTextOn,
+                      ]}
                     >
                       {reminded.has(item.id)
                         ? t('vaccines.reminderOn')
@@ -349,9 +354,9 @@ export default function PetVaccinesScreen() {
                   </Pressable>
                   <Pressable
                     onPress={() => void onToCalendar(item)}
-                    className="rounded-2xl bg-forest-100 px-3 py-2 active:opacity-70"
+                    style={styles.miniPill}
                   >
-                    <Text className="font-body-bold text-xs text-forest-800">
+                    <Text style={styles.miniPillText}>
                       {t('vaccines.toCalendar')}
                     </Text>
                   </Pressable>
@@ -363,40 +368,43 @@ export default function PetVaccinesScreen() {
       />
 
       <Modal visible={composeOpen} animationType="slide" transparent>
-        <View className="flex-1 justify-end bg-black/40">
-          <View className="max-h-[88%] rounded-t-3xl bg-sand-50 px-5 pb-10 pt-5">
-            <Text className="font-display text-2xl text-forest-900">
-              {t('vaccines.add')}
-            </Text>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalSheet}>
+            <ScrollView keyboardShouldPersistTaps="handled">
+              <View style={styles.modalHd}>
+                <Pressable onPress={() => setComposeOpen(false)}>
+                  <Text style={styles.modalCancel}>{t('common.cancel')}</Text>
+                </Pressable>
+                <Text style={styles.modalTitle}>{t('vaccines.title')}</Text>
+                <Pressable onPress={() => void onSave()} disabled={saving}>
+                  <Text style={styles.modalSave}>{t('common.save')}</Text>
+                </Pressable>
+              </View>
 
-            <Text className="mt-4 font-body-medium text-sm text-forest-700">
-              {t('vaccines.pickType')}
-            </Text>
-            <View className="mt-2 flex-row flex-wrap gap-2">
-              {catalog.map((item) => {
-                const active = vaccineKey === item.key;
-                return (
-                  <Pressable
-                    key={item.key}
-                    onPress={() => onPickCatalog(item.key)}
-                    className={`rounded-2xl px-3 py-2 ${
-                      active ? 'bg-forest-700' : 'bg-forest-100'
-                    }`}
-                  >
-                    <Text
-                      className={`font-body-bold text-xs ${
-                        active ? 'text-sand-50' : 'text-forest-800'
-                      }`}
+              <Text style={styles.fieldLbl}>{t('vaccines.pickType')}</Text>
+              <View style={styles.chipWrap}>
+                {catalog.map((item) => {
+                  const active = vaccineKey === item.key;
+                  return (
+                    <Pressable
+                      key={item.key}
+                      onPress={() => onPickCatalog(item.key)}
+                      style={[styles.segChip, active && styles.segChipOn]}
                     >
-                      {item.labelUk}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
+                      <Text
+                        style={[
+                          styles.segChipText,
+                          active && styles.segChipTextOn,
+                        ]}
+                      >
+                        {item.labelUk}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
 
-            {vaccineKey === 'other' ? (
-              <View className="mt-3">
+              {vaccineKey === 'other' ? (
                 <TextField
                   label={t('vaccines.customName')}
                   value={customName}
@@ -404,53 +412,225 @@ export default function PetVaccinesScreen() {
                   placeholder={t('vaccines.customPlaceholder')}
                   autoCapitalize="sentences"
                 />
-              </View>
-            ) : null}
+              ) : null}
 
-            <TextField
-              label={t('vaccines.givenOn')}
-              value={givenOn}
-              onChangeText={(v) => {
-                setGivenOn(v);
-                const item = catalog.find((c) => c.key === vaccineKey);
-                if (v.length === 10 && item?.typicalMonths) {
-                  setNextDueOn(addMonthsIso(v, item.typicalMonths));
-                }
-              }}
-              placeholder="YYYY-MM-DD"
-              keyboardType="numbers-and-punctuation"
-            />
-            <TextField
-              label={t('vaccines.nextDue')}
-              value={nextDueOn}
-              onChangeText={setNextDueOn}
-              placeholder="YYYY-MM-DD"
-              keyboardType="numbers-and-punctuation"
-            />
-            <TextField
-              label={t('vaccines.notes')}
-              value={notes}
-              onChangeText={setNotes}
-              placeholder={t('vaccines.notesPlaceholder')}
-              autoCapitalize="sentences"
-              multiline
-            />
-
-            <View className="mt-2 gap-3">
+              <TextField
+                label={t('vaccines.givenOn')}
+                value={givenOn}
+                onChangeText={(v) => {
+                  setGivenOn(v);
+                  const item = catalog.find((c) => c.key === vaccineKey);
+                  if (v.length === 10 && item?.typicalMonths) {
+                    setNextDueOn(addMonthsIso(v, item.typicalMonths));
+                  }
+                }}
+                placeholder="YYYY-MM-DD"
+                keyboardType="numbers-and-punctuation"
+              />
+              <TextField
+                label={t('vaccines.nextDue')}
+                value={nextDueOn}
+                onChangeText={setNextDueOn}
+                placeholder="YYYY-MM-DD"
+                keyboardType="numbers-and-punctuation"
+              />
+              <TextField
+                label={t('vaccines.notes')}
+                value={notes}
+                onChangeText={setNotes}
+                placeholder={t('vaccines.notesPlaceholder')}
+                autoCapitalize="sentences"
+                multiline
+              />
               <PrimaryButton
                 label={t('common.save')}
                 loading={saving}
                 onPress={() => void onSave()}
+                style={styles.modalSaveBtn}
               />
-              <PrimaryButton
-                label={t('common.cancel')}
-                variant="ghost"
-                onPress={() => setComposeOpen(false)}
-              />
-            </View>
+            </ScrollView>
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 20,
+    lineHeight: 26,
+    color: brand.ink,
+  },
+  addCircle: {
+    height: 34,
+    width: 34,
+    borderRadius: 17,
+    backgroundColor: brand.chipTrack,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subtitle: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  disclaimer: {
+    marginTop: 12,
+    borderRadius: brand.radius.sm,
+    backgroundColor: brand.accentTint,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  disclaimerText: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 17,
+    color: brand.accentDark,
+  },
+  list: { paddingHorizontal: 20, paddingBottom: 40, flexGrow: 1 },
+  empty: { marginTop: 48, paddingHorizontal: 16, alignItems: 'center' },
+  emptyTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 16,
+    color: brand.ink,
+    textAlign: 'center',
+  },
+  emptyBody: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+    textAlign: 'center',
+  },
+  card: {
+    marginBottom: 12,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    padding: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  cardWarn: {
+    borderWidth: 2,
+    borderColor: brand.accentSoft,
+  },
+  cardRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  warnDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: brand.accent,
+  },
+  cardCopy: { flex: 1, minWidth: 0 },
+  cardTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  cardMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  cardMetaWarn: { color: brand.accentDark },
+  delete: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  notes: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  actions: {
+    marginTop: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  miniPill: {
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  miniPillOn: { backgroundColor: brand.accent },
+  miniPillText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 11,
+    color: brand.ink,
+  },
+  miniPillTextOn: { color: '#FFFFFF' },
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(21,34,51,0.4)',
+  },
+  modalSheet: {
+    maxHeight: '88%',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: brand.canvas,
+    paddingHorizontal: 20,
+    paddingBottom: 28,
+    paddingTop: 16,
+  },
+  modalHd: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  modalCancel: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  modalTitle: {
+    fontFamily: fonts.title,
+    fontSize: 18,
+    color: brand.ink,
+  },
+  modalSave: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
+  },
+  fieldLbl: {
+    marginBottom: 8,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: brand.label,
+  },
+  chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
+  segChip: {
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  segChipOn: { backgroundColor: brand.accent },
+  segChipText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.ink,
+  },
+  segChipTextOn: { color: '#FFFFFF' },
+  modalSaveBtn: { marginTop: 8 },
+});

@@ -1,15 +1,15 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
-  FlatList,
   Pressable,
   RefreshControl,
+  ScrollView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
@@ -21,7 +21,7 @@ import {
 } from '@/src/services/care';
 import { hasFedToday } from '@/src/services/feeding';
 import { listPets } from '@/src/services/pets';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { CareDayLog } from '@/src/types/care';
 import type { PetRow } from '@/src/types/pet';
 
@@ -31,6 +31,7 @@ type HubRow = {
   fedFromLogs: boolean;
 };
 
+/** HTML kit · 14 Догляд сьогодні — pet picker hub. */
 export default function CareHubScreen() {
   const [rows, setRows] = useState<HubRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,102 +75,134 @@ export default function CareHubScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <View className="px-5 pb-2 pt-2">
-        <Text className="font-display text-2xl text-forest-900">
-          {t('care.hubTitle')}
-        </Text>
-        <Text className="mt-1 font-body text-sm text-forest-600">
-          {t('care.hubSubtitle')}
-        </Text>
-      </View>
+    <AppScreen edges={['bottom']}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => void load(true)}
+            tintColor={brand.accent}
+          />
+        }
+        contentContainerStyle={styles.scroll}
+      >
+        <Text style={styles.title}>{t('care.hubTitle')}</Text>
+        <Text style={styles.subtitle}>{t('care.hubSubtitle')}</Text>
 
-      {error ? (
-        <ErrorState message={error} onRetry={() => void load()} />
-      ) : (
-        <FlatList
-          data={rows}
-          keyExtractor={(item) => item.pet.id}
-          contentContainerClassName="px-5 pb-12"
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => void load(true)}
-              tintColor={brand.forest}
+        {error ? (
+          <ErrorState message={error} onRetry={() => void load()} />
+        ) : rows.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Text style={styles.emptyTitle}>{t('care.hubEmptyTitle')}</Text>
+            <Text style={styles.emptyBody}>{t('care.hubEmptyBody')}</Text>
+            <PrimaryButton
+              label={t('pets.add')}
+              onPress={() => router.push('/(app)/pet-form')}
+              style={styles.emptyBtn}
             />
-          }
-          ListHeaderComponent={
-            rows.length > 0 ? (
-              <Text className="mb-3 font-body-medium text-sm text-forest-700">
-                {t('care.hubPickPet')}
-              </Text>
-            ) : null
-          }
-          ListEmptyComponent={
-            <View className="mt-6 rounded-3xl bg-forest-100 px-5 py-6">
-              <Text className="font-body-bold text-lg text-forest-900">
-                {t('care.hubEmptyTitle')}
-              </Text>
-              <Text className="mt-2 font-body text-sm leading-5 text-forest-700">
-                {t('care.hubEmptyBody')}
-              </Text>
-              <View className="mt-4">
-                <PrimaryButton
-                  label={t('pets.add')}
-                  onPress={() => router.push('/(app)/pet-form')}
-                />
-              </View>
-            </View>
-          }
-          renderItem={({ item }) => {
-            const progress = careProgress(item.log, {
-              fedFromLogs: item.fedFromLogs,
-            });
-            const chips = [
-              progress.water ? t('care.waterDoneShort') : null,
-              progress.play ? t('care.playDoneShort') : null,
-              progress.feed ? t('care.feedDoneShort') : null,
-            ].filter(Boolean);
-
-            return (
-              <Pressable
-                onPress={() =>
-                  router.push({
-                    pathname: '/(app)/pet-care',
-                    params: { petId: item.pet.id },
-                  })
-                }
-                className="mb-3 flex-row items-center rounded-3xl border border-forest-100 bg-white px-4 py-4"
-              >
-                <PetAvatar
-                  avatarKey={item.pet.avatar_key}
-                  avatarUri={item.pet.avatar_uri}
-                  species={item.pet.species}
-                  size={52}
-                  name={item.pet.name}
-                />
-                <View className="ml-3 flex-1">
-                  <Text className="font-body-bold text-base text-forest-900">
-                    {item.pet.name}
-                  </Text>
-                  <Text className="mt-1 font-body text-sm text-forest-600">
-                    {t('care.progress', {
-                      done: progress.done,
-                      total: progress.total,
-                    })}
-                  </Text>
-                  {chips.length > 0 ? (
-                    <Text className="mt-1 font-body text-xs text-forest-500">
-                      {chips.join(' · ')}
+          </View>
+        ) : (
+          <>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.pickerRow}
+            >
+              {rows.map((item) => {
+                const progress = careProgress(item.log, {
+                  fedFromLogs: item.fedFromLogs,
+                });
+                return (
+                  <Pressable
+                    key={item.pet.id}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/(app)/pet-care',
+                        params: { petId: item.pet.id },
+                      })
+                    }
+                    style={({ pressed }) => [
+                      styles.petPick,
+                      pressed && styles.pressed,
+                    ]}
+                  >
+                    <PetAvatar
+                      avatarKey={item.pet.avatar_key}
+                      avatarUri={item.pet.avatar_uri}
+                      species={item.pet.species}
+                      size={56}
+                      name={item.pet.name}
+                    />
+                    <Text style={styles.petPickName} numberOfLines={1}>
+                      {item.pet.name}
                     </Text>
-                  ) : null}
-                </View>
-                <Ionicons name="chevron-forward" size={18} color="#5A6B7D" />
-              </Pressable>
-            );
-          }}
-        />
-      )}
-    </SafeAreaView>
+                    <Text style={styles.petPickMeta}>
+                      {progress.done}/{progress.total}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+            <Text style={styles.pickHint}>{t('care.hubPickPet')}</Text>
+          </>
+        )}
+      </ScrollView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  scroll: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+  },
+  subtitle: {
+    marginTop: 4,
+    marginBottom: 16,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  pickerRow: { flexDirection: 'row', gap: 14, paddingBottom: 4 },
+  petPick: { width: 72, alignItems: 'center', gap: 6 },
+  petPickName: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
+    color: brand.ink,
+    textAlign: 'center',
+  },
+  petPickMeta: {
+    fontFamily: fonts.body,
+    fontSize: 10,
+    color: brand.muted,
+  },
+  pickHint: {
+    marginTop: 16,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  pressed: { opacity: 0.85 },
+  emptyCard: {
+    marginTop: 8,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
+    padding: 20,
+  },
+  emptyTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 16,
+    color: brand.ink,
+  },
+  emptyBody: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    lineHeight: 19,
+    color: brand.muted,
+  },
+  emptyBtn: { marginTop: 16 },
+});

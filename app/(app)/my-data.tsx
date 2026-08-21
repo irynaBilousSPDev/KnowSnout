@@ -7,6 +7,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
@@ -28,6 +29,7 @@ import { t } from '@/src/i18n';
 import { persistPickerAsset } from '@/src/lib/image';
 import { listPets } from '@/src/services/pets';
 import { getUserProfile, saveUserProfile } from '@/src/services/userProfile';
+import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 import type { UserProfile } from '@/src/types/userProfile';
 
@@ -43,6 +45,7 @@ function speciesLabel(species: PetRow['species']) {
   return t('pets.speciesOther');
 }
 
+/** HTML kit · Профіль — Manrope 22, soft white cards, accent CTAs. */
 export default function MyDataScreen() {
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -162,16 +165,16 @@ export default function MyDataScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <KeyboardAvoidingView
-        className="flex-1"
+        style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
       >
         <ScrollView
-          contentContainerClassName="px-5 pb-16 pt-2"
+          contentContainerStyle={styles.pad}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
-          <View className="items-center pb-6 pt-2">
+          <View style={styles.hero}>
             <UserAvatar
               avatarKey={profile.avatar_key}
               avatarUri={profile.avatar_uri}
@@ -179,37 +182,29 @@ export default function MyDataScreen() {
               size={104}
               name={shownName ?? t('me.title')}
             />
-            <Text className="mt-4 font-display text-3xl text-forest-900">
+            <Text style={styles.heroTitle}>
               {shownName ?? t('me.title')}
             </Text>
             {profile.city ? (
-              <Text className="mt-1 font-body text-sm text-forest-600">
-                {profile.city}
-              </Text>
+              <Text style={styles.heroMeta}>{profile.city}</Text>
             ) : null}
-            <Text className="mt-1 text-center font-body text-sm text-forest-600">
-              {t('me.subtitle')}
-            </Text>
+            <Text style={styles.heroLead}>{t('me.subtitle')}</Text>
           </View>
 
           {__DEV__ ? (
-            <View className="mb-4 rounded-2xl bg-forest-100 px-4 py-3">
-              <Text className="font-body text-xs leading-5 text-forest-700">
-                {t('me.localOnlyHint')}
-              </Text>
+            <View style={styles.devHint}>
+              <Text style={styles.devHintText}>{t('me.localOnlyHint')}</Text>
             </View>
           ) : null}
 
-          <View className="rounded-3xl border border-forest-100 bg-white px-5 py-5">
-            <Text className="font-body-medium text-xs uppercase tracking-wide text-forest-500">
-              {t('me.account')}
-            </Text>
-            <Text className="mt-2 font-body text-base text-forest-900">
+          <View style={styles.card}>
+            <Text style={styles.kicker}>{t('me.account')}</Text>
+            <Text style={styles.cardBody}>
               {user?.email ?? '—'}
             </Text>
           </View>
 
-          <View className="mt-4 rounded-3xl border border-forest-100 bg-white px-5 py-5">
+          <View style={styles.card}>
             <TextField
               label={t('me.displayName')}
               value={displayName}
@@ -217,7 +212,7 @@ export default function MyDataScreen() {
               placeholder={t('me.displayNamePlaceholder')}
               autoCapitalize="words"
             />
-            <View className="mt-3">
+            <View style={styles.fieldGap}>
               <TextField
                 label={t('me.city')}
                 value={city}
@@ -226,7 +221,7 @@ export default function MyDataScreen() {
                 autoCapitalize="words"
               />
             </View>
-            <View className="mt-1">
+            <View style={styles.btnGap}>
               <PrimaryButton
                 label={t('me.saveProfile')}
                 loading={saving}
@@ -235,17 +230,13 @@ export default function MyDataScreen() {
             </View>
           </View>
 
-          <View className="mt-4 rounded-3xl border border-forest-100 bg-white px-5 py-5">
-            <Text className="font-body-bold text-lg text-forest-900">
-              {t('me.kidsTitle')}
-            </Text>
-            <Text className="mt-1 font-body text-sm text-forest-600">
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{t('me.kidsTitle')}</Text>
+            <Text style={styles.cardLead}>
               {t('me.kidsCount', { count: String(pets.length) })}
             </Text>
             {pets.length === 0 ? (
-              <Text className="mt-3 font-body text-sm text-forest-600">
-                {t('me.kidsEmpty')}
-              </Text>
+              <Text style={styles.cardLead}>{t('me.kidsEmpty')}</Text>
             ) : (
               pets.map((pet) => (
                 <Pressable
@@ -256,7 +247,7 @@ export default function MyDataScreen() {
                       params: { id: pet.id },
                     })
                   }
-                  className="mt-3 flex-row items-center border-t border-forest-100 pt-3"
+                  style={styles.petRow}
                 >
                   <PetAvatar
                     avatarKey={pet.avatar_key}
@@ -265,11 +256,9 @@ export default function MyDataScreen() {
                     size={44}
                     name={pet.name}
                   />
-                  <View className="ml-3 flex-1">
-                    <Text className="font-body-bold text-base text-forest-900">
-                      {pet.name}
-                    </Text>
-                    <Text className="font-body text-xs text-forest-500">
+                  <View style={styles.petText}>
+                    <Text style={styles.petName}>{pet.name}</Text>
+                    <Text style={styles.petMeta}>
                       {speciesLabel(pet.species)}
                       {pet.breed ? ` · ${pet.breed}` : ''}
                     </Text>
@@ -277,7 +266,7 @@ export default function MyDataScreen() {
                 </Pressable>
               ))
             )}
-            <View className="mt-4">
+            <View style={styles.btnGap}>
               <PrimaryButton
                 label={t('me.openPets')}
                 variant="secondary"
@@ -286,14 +275,10 @@ export default function MyDataScreen() {
             </View>
           </View>
 
-          <View className="mt-4 rounded-3xl border border-forest-100 bg-white px-5 py-5">
-            <Text className="font-body-bold text-base text-forest-900">
-              {t('me.genderTitle')}
-            </Text>
-            <Text className="mt-1 font-body text-xs text-forest-500">
-              {t('me.genderHint')}
-            </Text>
-            <View className="mt-3 flex-row gap-2">
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{t('me.genderTitle')}</Text>
+            <Text style={styles.cardHint}>{t('me.genderHint')}</Text>
+            <View style={styles.genderRow}>
               {GENDERS.map((g) => {
                 const active = profile.gender === g.id;
                 return (
@@ -309,14 +294,13 @@ export default function MyDataScreen() {
                         { silent: true },
                       )
                     }
-                    className={`flex-1 items-center rounded-2xl py-3 ${
-                      active ? 'bg-forest-700' : 'bg-forest-100'
-                    }`}
+                    style={[styles.genderChip, active && styles.genderChipOn]}
                   >
                     <Text
-                      className={`text-center font-body-bold text-xs ${
-                        active ? 'text-sand-50' : 'text-forest-800'
-                      }`}
+                      style={[
+                        styles.genderChipText,
+                        active && styles.genderChipTextOn,
+                      ]}
                     >
                       {t(g.labelKey)}
                     </Text>
@@ -327,10 +311,10 @@ export default function MyDataScreen() {
 
             {!profile.avatar_uri ? (
               <>
-                <Text className="mt-5 font-body-bold text-base text-forest-900">
+                <Text style={[styles.cardTitle, styles.avatarPickTitle]}>
                   {t('me.pickAvatar')}
                 </Text>
-                <View className="mt-3 flex-row flex-wrap gap-3">
+                <View style={styles.avatarRow}>
                   {pack.map((opt) => {
                     const active = profile.avatar_key === opt.key;
                     return (
@@ -339,11 +323,10 @@ export default function MyDataScreen() {
                         onPress={() =>
                           void persist({ avatar_key: opt.key }, { silent: true })
                         }
-                        className={`rounded-full p-1 ${
-                          active
-                            ? 'border-2 border-forest-700'
-                            : 'border-2 border-transparent'
-                        }`}
+                        style={[
+                          styles.avatarRing,
+                          active && styles.avatarRingOn,
+                        ]}
                       >
                         <UserAvatar
                           avatarKey={opt.key}
@@ -357,7 +340,7 @@ export default function MyDataScreen() {
               </>
             ) : null}
 
-            <View className="mt-5 gap-3">
+            <View style={styles.photoActions}>
               <PrimaryButton
                 label={t('me.addPhoto')}
                 variant="secondary"
@@ -373,17 +356,13 @@ export default function MyDataScreen() {
             </View>
           </View>
 
-          <View className="mt-4 rounded-3xl border border-forest-100 bg-white px-5 py-5">
-            <Text className="font-body-bold text-lg text-forest-900">
-              {t('me.privacyTitle')}
-            </Text>
-            <Text className="mt-2 font-body text-sm leading-5 text-forest-600">
-              {t('me.privacyBody')}
-            </Text>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{t('me.privacyTitle')}</Text>
+            <Text style={styles.cardLead}>{t('me.privacyBody')}</Text>
           </View>
 
-          <View className="mt-4 rounded-3xl border border-forest-100 bg-white px-5 py-5">
-            <Text className="mb-2 font-body-bold text-lg text-forest-900">
+          <View style={styles.card}>
+            <Text style={[styles.cardTitle, styles.systemTitle]}>
               {t('me.systemSection')}
             </Text>
             <ListRow
@@ -408,7 +387,7 @@ export default function MyDataScreen() {
             />
           </View>
 
-          <View className="mt-4 gap-3">
+          <View style={styles.footerActions}>
             <PrimaryButton
               label={t('me.openMessages')}
               variant="secondary"
@@ -421,7 +400,7 @@ export default function MyDataScreen() {
             />
           </View>
 
-          <View className="mt-6">
+          <View style={styles.signOut}>
             <PrimaryButton
               label={t('common.signOut')}
               variant="ghost"
@@ -433,3 +412,140 @@ export default function MyDataScreen() {
     </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
+  hero: { alignItems: 'center', paddingBottom: 20, paddingTop: 8 },
+  heroTitle: {
+    marginTop: 16,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+  },
+  heroMeta: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.muted,
+  },
+  heroLead: {
+    marginTop: 4,
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.muted,
+  },
+  devHint: {
+    marginBottom: 12,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  devHintText: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 18,
+    color: brand.accentDark,
+  },
+  card: {
+    marginBottom: 12,
+    borderRadius: brand.radius.lg,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  kicker: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+    color: brand.mutedSoft,
+  },
+  cardTitle: {
+    fontFamily: fonts.title,
+    fontSize: 17,
+    color: brand.ink,
+  },
+  cardBody: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  cardLead: {
+    marginTop: 6,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+    color: brand.muted,
+  },
+  cardHint: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  fieldGap: { marginTop: 12 },
+  btnGap: { marginTop: 12 },
+  petRow: {
+    marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: brand.mistBorder,
+    paddingTop: 12,
+  },
+  petText: { marginLeft: 12, flex: 1 },
+  petName: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  petMeta: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  genderRow: { marginTop: 12, flexDirection: 'row', gap: 8 },
+  genderChip: {
+    flex: 1,
+    alignItems: 'center',
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.chipTrack,
+    paddingVertical: 12,
+  },
+  genderChipOn: { backgroundColor: brand.accent },
+  genderChipText: {
+    textAlign: 'center',
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.ink,
+  },
+  genderChipTextOn: { color: '#FFFFFF' },
+  avatarPickTitle: { marginTop: 18 },
+  avatarRow: {
+    marginTop: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  avatarRing: {
+    borderRadius: 999,
+    padding: 3,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  avatarRingOn: { borderColor: brand.accent },
+  photoActions: { marginTop: 18, gap: 10 },
+  systemTitle: { marginBottom: 8 },
+  footerActions: { marginTop: 4, gap: 10 },
+  signOut: { marginTop: 20 },
+});

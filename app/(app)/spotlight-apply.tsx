@@ -19,7 +19,7 @@ import {
   listSpotlightContests,
   type SpotlightContest,
 } from '@/src/services/spotlight';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function SpotlightApplyScreen() {
   const [contests, setContests] = useState<SpotlightContest[]>([]);
@@ -91,7 +91,7 @@ export default function SpotlightApplyScreen() {
             value={petName}
             onChangeText={setPetName}
             placeholder={t('spotlight.petPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
           />
 
@@ -100,7 +100,7 @@ export default function SpotlightApplyScreen() {
             value={caption}
             onChangeText={setCaption}
             placeholder={t('spotlight.captionPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             multiline
             style={[styles.input, styles.area]}
           />
@@ -122,16 +122,14 @@ const styles = StyleSheet.create({
   label: {
     marginTop: 14,
     marginBottom: 6,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   chip: {
     marginBottom: 8,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -140,19 +138,17 @@ const styles = StyleSheet.create({
     borderColor: brand.navy,
   },
   chipText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 15,
     color: brand.ink,
   },
   chipTextActive: { color: brand.navy },
   input: {
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },

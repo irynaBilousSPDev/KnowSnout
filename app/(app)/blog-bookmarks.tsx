@@ -12,7 +12,7 @@ import {
   listBookmarks,
   type BlogArticle,
 } from '@/src/services/blog';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function BlogBookmarksScreen() {
   const [articles, setArticles] = useState<BlogArticle[]>([]);
@@ -65,8 +65,8 @@ export default function BlogBookmarksScreen() {
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

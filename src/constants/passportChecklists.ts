@@ -1,4 +1,4 @@
-export type PassportPackId = 'home' | 'eu';
+export type PassportPackId = 'home' | 'eu' | 'non_schengen';
 
 export type PassportChecklistItem = {
   id: string;
@@ -61,22 +61,26 @@ export const PASSPORT_PACKS: PassportPack[] = [
   },
   {
     id: 'eu',
-    titleUk: 'Перед виїздом (ЄС)',
+    titleUk: 'В межах ЄС',
     subtitleUk: 'Документний мінімум перед поїздкою в зону ЄС / Шенген (інформаційно)',
     items: [
       {
         id: 'chip_iso',
-        labelUk: 'Мікрочип читається (ISO) і збігається з паспортом',
+        labelUk: 'Мікрочипування',
       },
       {
         id: 'rabies_valid',
-        labelUk: 'Сказ у паспорті дійсний на дати поїздки',
+        labelUk: 'Щеплення проти сказу',
         tipUk: 'Для перших виїздів часто є правило «21 день» — уточни у вета.',
       },
       {
         id: 'eu_passport',
-        labelUk: 'Європейський паспорт або потрібний сертифікат',
+        labelUk: 'Ветеринарний паспорт ЄС',
         tipUk: 'Для тварин з UA вимоги можуть відрізнятись — перевір офіційні правила.',
+      },
+      {
+        id: 'titers',
+        labelUk: 'Аналіз титрів антитіл',
       },
       {
         id: 'tapeworm',
@@ -86,9 +90,36 @@ export const PASSPORT_PACKS: PassportPack[] = [
         id: 'carrier_rules',
         labelUk: 'Правила перевізника (авіа / потяг / авто) звірено',
       },
+    ],
+  },
+  {
+    id: 'non_schengen',
+    titleUk: 'Поза Шенгеном',
+    subtitleUk: 'Додаткові пункти для країн поза Шенгеном / дальніх напрямків',
+    items: [
       {
-        id: 'backup_contacts',
-        labelUk: 'Копії + телефон вета в телефоні',
+        id: 'dest_rules',
+        labelUk: 'Перевірити правила країни призначення',
+      },
+      {
+        id: 'chip_iso',
+        labelUk: 'Мікрочипування',
+      },
+      {
+        id: 'rabies_valid',
+        labelUk: 'Щеплення проти сказу',
+      },
+      {
+        id: 'titers',
+        labelUk: 'Аналіз титрів антитіл',
+      },
+      {
+        id: 'health_cert',
+        labelUk: 'Офіційний ветсертифікат / дозвіл',
+      },
+      {
+        id: 'quarantine',
+        labelUk: 'Карантин / додаткові аналізи (якщо потрібно)',
       },
     ],
   },

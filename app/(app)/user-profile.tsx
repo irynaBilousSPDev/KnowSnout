@@ -26,7 +26,7 @@ import {
   unfollowUser,
 } from '@/src/services/storyFollows';
 import type { StoryPost } from '@/src/types/story';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function UserProfileScreen() {
   const { userId } = useLocalSearchParams<{ userId?: string }>();
@@ -219,11 +219,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 18,
     paddingVertical: 16,
-    borderRadius: 20,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-  },
+      },
   avatar: {
     width: 64,
     height: 64,
@@ -240,7 +238,7 @@ const styles = StyleSheet.create({
   },
   meta: {
     marginTop: 6,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     color: brand.forest,
   },
@@ -248,24 +246,24 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingHorizontal: 20,
     textAlign: 'center',
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   actions: { marginBottom: 8 },
   gap: { height: 10 },
   section: {
     marginTop: 18,
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
     color: brand.forest,
   },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     color: brand.forest,
   },

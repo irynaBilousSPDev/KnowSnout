@@ -5,11 +5,14 @@ import {
   FlatList,
   Modal,
   Pressable,
+  ScrollView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -22,6 +25,7 @@ import {
   deletePetVetLog,
   listPetVetLogs,
 } from '@/src/services/vetLogs';
+import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 import type { PetVetLogRow, VetLogEntryType } from '@/src/types/vetLog';
 
@@ -44,6 +48,7 @@ function typeLabel(type: VetLogEntryType) {
   return t('vetLog.typeNote');
 }
 
+/** HTML kit · 20 Ліки та візити */
 export default function PetVetLogScreen() {
   const params = useLocalSearchParams<{ petId?: string }>();
   const petId = typeof params.petId === 'string' ? params.petId : undefined;
@@ -160,157 +165,319 @@ export default function PetVetLogScreen() {
 
   if (error || !pet) {
     return (
-      <SafeAreaView className="flex-1 bg-sand-50">
+      <AppScreen edges={['bottom']}>
         <ErrorState
           message={error ?? t('pets.notFound')}
           onRetry={() => void load()}
         />
-      </SafeAreaView>
+      </AppScreen>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <View className="px-5 pb-2 pt-2">
-        <Text className="font-display text-2xl text-forest-900">
-          {t('vetLog.title')}
-        </Text>
-        <Text className="mt-1 font-body text-sm text-forest-600">
+    <AppScreen edges={['bottom']}>
+      <View style={styles.header}>
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>{t('vetLog.title')}</Text>
+          <Pressable
+            onPress={openCompose}
+            style={styles.addCircle}
+            accessibilityRole="button"
+            accessibilityLabel={t('vetLog.add')}
+          >
+            <Ionicons name="add" size={22} color={brand.ink} />
+          </Pressable>
+        </View>
+        <Text style={styles.subtitle}>
           {pet.name} · {t('vetLog.subtitle')}
         </Text>
-        <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
-          <Text className="font-body text-xs leading-5 text-forest-700">
-            {t('vetLog.disclaimer')}
-          </Text>
-        </View>
-        <View className="mt-4">
-          <PrimaryButton label={t('vetLog.add')} onPress={openCompose} />
+        <View style={styles.disclaimer}>
+          <Text style={styles.disclaimerText}>{t('vetLog.disclaimer')}</Text>
         </View>
       </View>
 
       <FlatList
         data={rows}
         keyExtractor={(item) => item.id}
-        contentContainerClassName="px-5 pb-10 pt-2"
+        contentContainerStyle={styles.list}
         ListEmptyComponent={
-          <View className="mt-12 items-center px-6">
-            <Text className="text-center font-body-bold text-lg text-forest-800">
-              {t('vetLog.emptyTitle')}
-            </Text>
-            <Text className="mt-2 text-center font-body text-sm text-forest-600">
-              {t('vetLog.emptyBody')}
-            </Text>
+          <View style={styles.empty}>
+            <Text style={styles.emptyTitle}>{t('vetLog.emptyTitle')}</Text>
+            <Text style={styles.emptyBody}>{t('vetLog.emptyBody')}</Text>
           </View>
         }
-        renderItem={({ item }) => (
-          <View className="mb-3 rounded-3xl border border-forest-100 bg-white px-4 py-4">
-            <View className="flex-row items-start justify-between">
-              <View className="flex-1 pr-3">
-                <Text className="font-body-medium text-xs uppercase tracking-wide text-forest-500">
+        renderItem={({ item }) => {
+          const isVisit = item.entry_type === 'visit';
+          const metaParts = [
+            item.entry_type === 'meds' && item.next_due_on
+              ? `${t('vetLog.nextDue')} ${item.next_due_on}`
+              : null,
+            item.logged_on,
+            item.notes?.trim() || null,
+          ].filter(Boolean);
+
+          return (
+            <View style={styles.card}>
+              <View style={[styles.typeChip, isVisit ? styles.chipGood : styles.chipWarn]}>
+                <Text
+                  style={[
+                    styles.typeChipText,
+                    isVisit && styles.typeChipTextGood,
+                  ]}
+                >
                   {typeLabel(item.entry_type)}
                 </Text>
-                <Text className="mt-1 font-body-bold text-base text-forest-900">
-                  {item.title}
-                </Text>
+              </View>
+              <View style={styles.cardCopy}>
+                <Text style={styles.cardTitle}>{item.title}</Text>
+                <Text style={styles.cardMeta}>{metaParts.join(' · ')}</Text>
               </View>
               <Pressable onPress={() => void onDelete(item)}>
-                <Text className="font-body text-xs text-forest-500">
-                  {t('pets.delete')}
-                </Text>
+                <Text style={styles.delete}>{t('pets.delete')}</Text>
               </Pressable>
             </View>
-            <Text className="mt-2 font-body text-sm text-forest-600">
-              {t('vetLog.loggedOn')}: {item.logged_on}
-            </Text>
-            {item.next_due_on ? (
-              <Text className="mt-1 font-body text-sm text-forest-600">
-                {t('vetLog.nextDue')}: {item.next_due_on}
-              </Text>
-            ) : null}
-            {item.notes ? (
-              <Text className="mt-2 font-body text-sm text-forest-500">
-                {item.notes}
-              </Text>
-            ) : null}
-          </View>
-        )}
+          );
+        }}
       />
 
       <Modal visible={composeOpen} animationType="slide" transparent>
-        <View className="flex-1 justify-end bg-black/40">
-          <View className="max-h-[88%] rounded-t-3xl bg-sand-50 px-5 pb-10 pt-5">
-            <Text className="font-display text-2xl text-forest-900">
-              {t('vetLog.add')}
-            </Text>
-            <Text className="mb-2 mt-4 font-body-medium text-sm text-forest-700">
-              {t('vetLog.pickType')}
-            </Text>
-            <View className="mb-3 flex-row flex-wrap gap-2">
-              {ENTRY_TYPES.map((option) => {
-                const active = entryType === option.id;
-                return (
-                  <Pressable
-                    key={option.id}
-                    onPress={() => setEntryType(option.id)}
-                    className={`rounded-2xl px-4 py-2.5 ${
-                      active ? 'bg-forest-700' : 'bg-forest-100'
-                    }`}
-                  >
-                    <Text
-                      className={`font-body-bold text-sm ${
-                        active ? 'text-sand-50' : 'text-forest-700'
-                      }`}
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalSheet}>
+            <ScrollView keyboardShouldPersistTaps="handled">
+              <View style={styles.modalHd}>
+                <Pressable onPress={() => setComposeOpen(false)}>
+                  <Text style={styles.modalCancel}>{t('common.cancel')}</Text>
+                </Pressable>
+                <Text style={styles.modalTitle}>
+                  {entryType === 'meds'
+                    ? t('vetLog.typeMeds')
+                    : t('vetLog.add')}
+                </Text>
+                <Pressable onPress={() => void onSave()} disabled={saving}>
+                  <Text style={styles.modalSave}>{t('common.save')}</Text>
+                </Pressable>
+              </View>
+
+              <Text style={styles.fieldLbl}>{t('vetLog.pickType')}</Text>
+              <View style={styles.chipWrap}>
+                {ENTRY_TYPES.map((option) => {
+                  const active = entryType === option.id;
+                  return (
+                    <Pressable
+                      key={option.id}
+                      onPress={() => setEntryType(option.id)}
+                      style={[styles.segChip, active && styles.segChipOn]}
                     >
-                      {t(option.labelKey)}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-            <TextField
-              label={t('vetLog.entryTitle')}
-              value={title}
-              onChangeText={setTitle}
-              placeholder={t('vetLog.entryTitlePlaceholder')}
-              autoCapitalize="sentences"
-            />
-            <TextField
-              label={t('vetLog.loggedOn')}
-              value={loggedOn}
-              onChangeText={setLoggedOn}
-              placeholder="YYYY-MM-DD"
-              autoCapitalize="none"
-            />
-            <TextField
-              label={t('vetLog.nextDue')}
-              value={nextDueOn}
-              onChangeText={setNextDueOn}
-              placeholder={t('vetLog.nextDueOptional')}
-              autoCapitalize="none"
-            />
-            <TextField
-              label={t('vetLog.notes')}
-              value={notes}
-              onChangeText={setNotes}
-              placeholder={t('vetLog.notesPlaceholder')}
-              autoCapitalize="sentences"
-              multiline
-            />
-            <View className="mt-4 gap-3">
+                      <Text
+                        style={[
+                          styles.segChipText,
+                          active && styles.segChipTextOn,
+                        ]}
+                      >
+                        {t(option.labelKey)}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              <TextField
+                label={t('vetLog.entryTitle')}
+                value={title}
+                onChangeText={setTitle}
+                placeholder={t('vetLog.entryTitlePlaceholder')}
+                autoCapitalize="sentences"
+              />
+              <TextField
+                label={t('vetLog.loggedOn')}
+                value={loggedOn}
+                onChangeText={setLoggedOn}
+                placeholder="YYYY-MM-DD"
+                autoCapitalize="none"
+              />
+              <TextField
+                label={t('vetLog.nextDue')}
+                value={nextDueOn}
+                onChangeText={setNextDueOn}
+                placeholder={t('vetLog.nextDueOptional')}
+                autoCapitalize="none"
+              />
+              <TextField
+                label={t('vetLog.notes')}
+                value={notes}
+                onChangeText={setNotes}
+                placeholder={t('vetLog.notesPlaceholder')}
+                autoCapitalize="sentences"
+                multiline
+              />
               <PrimaryButton
                 label={t('common.save')}
                 onPress={() => void onSave()}
                 loading={saving}
+                style={styles.modalSaveBtn}
               />
-              <PrimaryButton
-                label={t('common.cancel')}
-                variant="ghost"
-                onPress={() => setComposeOpen(false)}
-              />
-            </View>
+            </ScrollView>
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 20,
+    lineHeight: 26,
+    color: brand.ink,
+  },
+  addCircle: {
+    height: 34,
+    width: 34,
+    borderRadius: 17,
+    backgroundColor: brand.chipTrack,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subtitle: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  disclaimer: {
+    marginTop: 12,
+    borderRadius: brand.radius.sm,
+    backgroundColor: brand.accentTint,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  disclaimerText: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 17,
+    color: brand.accentDark,
+  },
+  list: { paddingHorizontal: 20, paddingBottom: 40, flexGrow: 1 },
+  empty: { marginTop: 48, paddingHorizontal: 16, alignItems: 'center' },
+  emptyTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 16,
+    color: brand.ink,
+    textAlign: 'center',
+  },
+  emptyBody: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+    textAlign: 'center',
+  },
+  card: {
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    padding: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  typeChip: {
+    borderRadius: brand.radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    flexShrink: 0,
+  },
+  chipWarn: { backgroundColor: brand.terracottaTint },
+  chipGood: { backgroundColor: brand.successTint },
+  typeChipText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
+    color: brand.terracotta,
+  },
+  typeChipTextGood: { color: brand.successDark },
+  cardCopy: { flex: 1, minWidth: 0 },
+  cardTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  cardMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  delete: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(21,34,51,0.4)',
+  },
+  modalSheet: {
+    maxHeight: '88%',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: brand.canvas,
+    paddingHorizontal: 20,
+    paddingBottom: 28,
+    paddingTop: 16,
+  },
+  modalHd: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  modalCancel: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  modalTitle: {
+    fontFamily: fonts.title,
+    fontSize: 18,
+    color: brand.ink,
+  },
+  modalSave: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
+  },
+  fieldLbl: {
+    marginBottom: 8,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: brand.label,
+  },
+  chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
+  segChip: {
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  segChipOn: { backgroundColor: brand.accent },
+  segChipText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  segChipTextOn: { color: '#FFFFFF' },
+  modalSaveBtn: { marginTop: 8 },
+});

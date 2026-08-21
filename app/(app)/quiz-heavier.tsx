@@ -7,7 +7,7 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { addQuizXp } from '@/src/services/gamification';
 import { getHeavierQuestions } from '@/src/services/quizMocks';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function QuizHeavierScreen() {
   const questions = useMemo(() => getHeavierQuestions(), []);
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   prompt: {
     marginBottom: 14,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 18,
     lineHeight: 26,
     color: brand.ink,
@@ -118,29 +118,27 @@ const styles = StyleSheet.create({
   choice: {
     marginBottom: 10,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 14,
   },
   choiceOk: { borderColor: brand.score.good, backgroundColor: '#E8F8F2' },
   choiceBad: { borderColor: brand.score.poor, backgroundColor: '#FBEDEA' },
   choiceText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 15,
     color: brand.ink,
   },
   explain: {
     marginVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   score: {
     marginBottom: 16,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 22,
     color: brand.ink,
   },

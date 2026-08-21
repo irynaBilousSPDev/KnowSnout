@@ -9,6 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
@@ -17,7 +18,7 @@ import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { notify } from '@/src/lib/notify';
 import { t } from '@/src/i18n';
 import { getPet } from '@/src/services/pets';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 
 type DestType = 'city' | 'schengen' | 'other';
@@ -47,6 +48,13 @@ async function saveTripStub(trip: TripStub) {
   await AsyncStorage.setItem(TRIPS_KEY, JSON.stringify(rows));
 }
 
+function destLabel(dest: DestType) {
+  if (dest === 'city') return t('travelWizard.destCity');
+  if (dest === 'schengen') return t('travelWizard.destSchengen');
+  return t('travelWizard.destOther');
+}
+
+/** HTML kit · Подорож wizard with deadline banner. */
 export default function PetTravelWizardScreen() {
   const params = useLocalSearchParams<{ petId?: string }>();
   const petId = typeof params.petId === 'string' ? params.petId : undefined;
@@ -131,14 +139,46 @@ export default function PetTravelWizardScreen() {
     );
   }
 
+  const routeTitle =
+    dest === 'schengen'
+      ? 'Україна → ЄС'
+      : dest === 'other'
+        ? 'Україна → …'
+        : 'Україна';
+
   return (
     <AppScreen edges={['bottom']}>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
+          <View style={styles.topBar}>
+            <Pressable
+              onPress={() => (step > 0 ? setStep(step - 1) : router.back())}
+              style={styles.backBtn}
+            >
+              <Ionicons name="chevron-back" size={18} color={brand.ink} />
+            </Pressable>
+            <Text style={styles.routeTitle} numberOfLines={1}>
+              {step === 2 ? `Маршрут: ${routeTitle}` : t('travelWizard.title')}
+            </Text>
+            <View style={styles.backSpacer} />
+          </View>
+
           <Text style={styles.subtitle}>
             {pet.name} · {t('travelWizard.subtitle')}
           </Text>
           <Text style={styles.stepMeta}>{step + 1} / 3</Text>
+
+          {step === 2 ? (
+            <View style={styles.deadlineBanner}>
+              <Ionicons name="time-outline" size={18} color={brand.accentDark} />
+              <View style={styles.deadlineCopy}>
+                <Text style={styles.deadlineTitle}>
+                  {date || t('travelWizard.dateLabel')}
+                </Text>
+                <Text style={styles.deadlineMeta}>{destLabel(dest)}</Text>
+              </View>
+            </View>
+          ) : null}
 
           {step === 0 ? (
             <View>
@@ -186,7 +226,7 @@ export default function PetTravelWizardScreen() {
                 value={date}
                 onChangeText={setDate}
                 placeholder={t('travelWizard.datePlaceholder')}
-                placeholderTextColor="#9bbba5"
+                placeholderTextColor={brand.mutedSoft}
                 autoCapitalize="none"
                 style={styles.input}
               />
@@ -206,17 +246,47 @@ export default function PetTravelWizardScreen() {
           {step === 2 ? (
             <View>
               <Text style={styles.stepTitle}>{t('travelWizard.step3')}</Text>
-              <View style={styles.summary}>
-                <Text style={styles.summaryLine}>
-                  {dest === 'city'
-                    ? t('travelWizard.destCity')
-                    : dest === 'schengen'
-                      ? t('travelWizard.destSchengen')
-                      : t('travelWizard.destOther')}
-                </Text>
-                <Text style={styles.summaryLine}>{date || '—'}</Text>
-                <Text style={styles.hint}>{t('travelWizard.checklistHint')}</Text>
+              <View style={styles.timeline}>
+                {(
+                  [
+                    ['done', t('travel.chipDone'), 'Мікрочипування'],
+                    ['done', t('travel.chipDone'), 'Щеплення проти сказу'],
+                    ['warn', destLabel(dest), date || '—'],
+                    ['todo', t('travel.chipNeeded'), 'Ветеринарний паспорт ЄС'],
+                  ] as const
+                ).map(([state, meta, label], idx) => (
+                  <View key={`${label}-${idx}`} style={styles.timelineRow}>
+                    <View style={styles.rail}>
+                      <View
+                        style={[
+                          styles.dot,
+                          state === 'done' && styles.dotDone,
+                          state === 'warn' && styles.dotWarn,
+                          state === 'todo' && styles.dotTodo,
+                        ]}
+                      >
+                        {state === 'done' ? (
+                          <Ionicons name="checkmark" size={12} color="#fff" />
+                        ) : state === 'warn' ? (
+                          <Text style={styles.dotBang}>!</Text>
+                        ) : null}
+                      </View>
+                      {idx < 3 ? <View style={styles.line} /> : null}
+                    </View>
+                    <View
+                      style={[
+                        styles.tlCard,
+                        state === 'warn' && styles.tlCardWarn,
+                        state === 'todo' && styles.tlCardDim,
+                      ]}
+                    >
+                      <Text style={styles.tlTitle}>{label}</Text>
+                      <Text style={styles.tlMeta}>{meta}</Text>
+                    </View>
+                  </View>
+                ))}
               </View>
+              <Text style={styles.hint}>{t('travelWizard.checklistHint')}</Text>
               <PrimaryButton
                 label={t('travelWizard.confirm')}
                 onPress={() => void onConfirm()}
@@ -237,82 +307,168 @@ export default function PetTravelWizardScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40 },
-  subtitle: {
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 8,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    color: '#5A6B7D',
+  },
+  backBtn: {
+    height: 34,
+    width: 34,
+    borderRadius: 17,
+    backgroundColor: brand.chipTrack,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backSpacer: { width: 34 },
+  routeTitle: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: fonts.title,
+    fontSize: 18,
+    color: brand.ink,
+    paddingHorizontal: 8,
+  },
+  subtitle: {
+    marginBottom: 4,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
   },
   stepMeta: {
-    marginBottom: 16,
-    fontFamily: 'Inter_400Regular',
+    marginBottom: 14,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  deadlineBanner: {
+    marginBottom: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
+    padding: 14,
+  },
+  deadlineCopy: { flex: 1 },
+  deadlineTitle: {
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
-    color: '#8A9AAB',
+    color: brand.accentDark,
+  },
+  deadlineMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.accentDark,
   },
   stepTitle: {
     marginBottom: 14,
-    fontFamily: 'Manrope_700Bold',
-    fontSize: 24,
+    fontFamily: fonts.title,
+    fontSize: 22,
     color: brand.ink,
   },
   option: {
     marginBottom: 10,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   optionActive: {
-    borderColor: brand.navy,
-    backgroundColor: brand.mist,
+    borderWidth: 1.5,
+    borderColor: brand.accent,
+    backgroundColor: brand.accentTint,
   },
   optionLabel: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 15,
     color: brand.ink,
   },
-  optionLabelActive: { color: brand.navy },
+  optionLabelActive: { color: brand.accentDark },
   fieldLabel: {
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.label,
   },
   input: {
-    borderRadius: 14,
-    borderWidth: 1,
+    borderRadius: brand.radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
     marginBottom: 8,
   },
   nextBtn: { marginTop: 8, marginBottom: 8 },
-  summary: {
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+  timeline: { marginBottom: 8 },
+  timelineRow: { flexDirection: 'row', gap: 12 },
+  rail: { width: 22, alignItems: 'center' },
+  dot: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dotDone: { backgroundColor: brand.success },
+  dotWarn: { backgroundColor: brand.accent },
+  dotTodo: { backgroundColor: brand.mistBorder },
+  dotBang: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 11,
+    color: '#fff',
+  },
+  line: {
+    width: 2,
+    flex: 1,
+    minHeight: 24,
+    backgroundColor: brand.mistBorder,
+  },
+  tlCard: {
+    flex: 1,
+    marginBottom: 12,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
-    marginBottom: 8,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
-  summaryLine: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 15,
+  tlCardWarn: {
+    borderWidth: 1.5,
+    borderColor: brand.accent,
+  },
+  tlCardDim: { opacity: 0.6 },
+  tlTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
     color: brand.ink,
-    marginBottom: 6,
+  },
+  tlMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.muted,
   },
   hint: {
-    marginTop: 6,
-    fontFamily: 'Inter_400Regular',
+    marginBottom: 8,
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 19,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

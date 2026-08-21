@@ -8,18 +8,21 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { ListRow } from '@/src/components/ListRow';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
+import { petProfileMeta } from '@/src/lib/petMeta';
 import {
   addFeedingLog,
   listFeedingLogs,
@@ -47,10 +50,10 @@ import {
   getCareToday,
 } from '@/src/services/care';
 import { vaccineLabel } from '@/src/constants/vaccines';
+import { brand, fonts } from '@/src/theme/brand';
 import type {
   ActivityLevel,
   CoatType,
-  CompanionSpecies,
   DietType,
   IndoorOutdoor,
   LifeStage,
@@ -63,12 +66,6 @@ import type { CareDayLog } from '@/src/types/care';
 import type { FeedingLogRow, ScanRow } from '@/src/types/scan';
 import type { PetVaccineRow } from '@/src/types/vaccine';
 import type { PetVetLogRow } from '@/src/types/vetLog';
-
-function speciesLabel(species: CompanionSpecies) {
-  if (species === 'dog') return t('pets.speciesDog');
-  if (species === 'cat') return t('pets.speciesCat');
-  return t('pets.speciesOther');
-}
 
 function sexLabel(sex: PetSex | null) {
   if (sex === 'female') return t('pets.sexFemale');
@@ -116,11 +113,11 @@ function lifeStageLabel(value: LifeStage | null) {
   return key ? t(key) : null;
 }
 
-function matchToneClass(level: 'ok' | 'caution' | 'alert' | 'unknown') {
-  if (level === 'alert') return 'border-rose-200 bg-rose-50';
-  if (level === 'caution') return 'border-amber-200 bg-amber-50';
-  if (level === 'ok') return 'border-emerald-200 bg-emerald-50';
-  return 'border-forest-100 bg-forest-50';
+function matchToneStyle(level: 'ok' | 'caution' | 'alert' | 'unknown') {
+  if (level === 'alert') return styles.matchAlert;
+  if (level === 'caution') return styles.matchCaution;
+  if (level === 'ok') return styles.matchOk;
+  return styles.matchUnknown;
 }
 
 function indoorLabel(value: IndoorOutdoor | null) {
@@ -133,11 +130,9 @@ function indoorLabel(value: IndoorOutdoor | null) {
 function Fact({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
   return (
-    <View className="mb-3">
-      <Text className="font-body-medium text-xs uppercase tracking-wide text-forest-500">
-        {label}
-      </Text>
-      <Text className="mt-1 font-body text-base text-forest-900">{value}</Text>
+    <View style={styles.fact}>
+      <Text style={styles.factLabel}>{label}</Text>
+      <Text style={styles.factValue}>{value}</Text>
     </View>
   );
 }
@@ -150,8 +145,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <View className="mt-4 rounded-3xl bg-white px-5 py-5">
-      <Text className="mb-4 font-body-bold text-lg text-forest-800">{title}</Text>
+    <View style={styles.card}>
+      <Text style={styles.cardTitle}>{title}</Text>
       {children}
     </View>
   );
@@ -345,12 +340,12 @@ export default function PetProfileScreen() {
 
   if (error || !pet) {
     return (
-      <SafeAreaView className="flex-1 bg-sand-50">
+      <AppScreen edges={['bottom']}>
         <ErrorState
           message={error ?? t('pets.notFound')}
           onRetry={() => void load()}
         />
-      </SafeAreaView>
+      </AppScreen>
     );
   }
 
@@ -367,41 +362,92 @@ export default function PetProfileScreen() {
     ? careProgress(care, { fedFromLogs: fedToday })
     : null;
 
+  const aboutText = [pet.notes?.trim(), pet.personality?.trim()]
+    .filter(Boolean)
+    .join('\n\n');
+  const isShelter = pet.origin === 'shelter';
+
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <ScrollView contentContainerClassName="px-5 pb-12 pt-2">
-        <View className="items-center pb-6 pt-2">
+    <AppScreen edges={['bottom']}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.topBar}>
+          <Pressable
+            onPress={() => router.back()}
+            style={styles.backBtn}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.back')}
+          >
+            <Ionicons name="chevron-back" size={18} color={brand.ink} />
+          </Pressable>
+          <Text style={styles.topTitle} numberOfLines={1}>
+            {pet.name}
+          </Text>
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/pet-form',
+                params: { id: pet.id },
+              })
+            }
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={t('pets.edit')}
+          >
+            <Text style={styles.editLink}>{t('pets.editShort')}</Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.hero}>
           <PetAvatar
             avatarKey={pet.avatar_key}
             avatarUri={pet.avatar_uri}
             species={pet.species}
-            size={112}
+            size={104}
             name={pet.name}
           />
-          <Text className="mt-4 font-display text-3xl text-forest-900">
-            {pet.name}
-          </Text>
-          <Text className="mt-1 font-body text-base text-forest-600">
-            {speciesLabel(pet.species)}
-            {pet.breed ? ` · ${pet.breed}` : ''}
-          </Text>
-          <Text className="mt-2 font-body text-sm text-forest-500">
-            {pet.origin === 'shelter'
-              ? t('pets.originShelter')
-              : t('pets.originHome')}
+          <Text style={styles.heroName}>{pet.name}</Text>
+          <Text style={styles.heroMeta}>{petProfileMeta(pet)}</Text>
+        </View>
+
+        {aboutText ? (
+          <View style={styles.card}>
+            <Text style={styles.aboutTitle}>
+              {t('pets.about', { name: pet.name })}
+            </Text>
+            <Text style={styles.aboutBody}>{aboutText}</Text>
+          </View>
+        ) : null}
+
+        <View style={styles.rowCard}>
+          <Text style={styles.rowLabel}>{t('pets.favoriteFood')}</Text>
+          <Text style={styles.rowValue} numberOfLines={2}>
+            {pet.favorite_food?.trim()
+              ? pet.favorite_food
+              : t('pets.favoriteFoodEmptyShort')}
           </Text>
         </View>
 
-        <PrimaryButton
-          label={t('pets.edit')}
-          variant="secondary"
-          onPress={() =>
-            router.push({
-              pathname: '/(app)/pet-form',
-              params: { id: pet.id },
-            })
-          }
-        />
+        <View style={styles.rowCard}>
+          <Text style={styles.rowLabel}>{t('pets.origin')}</Text>
+          <View
+            style={[
+              styles.chip,
+              isShelter ? styles.chipGood : styles.chipNeutral,
+            ]}
+          >
+            <Text
+              style={[
+                styles.chipText,
+                isShelter ? styles.chipTextGood : null,
+              ]}
+            >
+              {isShelter ? t('pets.originShelter') : t('pets.originHome')}
+            </Text>
+          </View>
+        </View>
 
         <Section title={t('pets.sectionBasics')}>
           <Fact label={t('pets.sex')} value={sexLabel(pet.sex)} />
@@ -467,15 +513,13 @@ export default function PetProfileScreen() {
           />
           {favoriteMatch && favoriteMatch.level !== 'unknown' ? (
             <View
-              className={`mt-2 rounded-2xl border px-3 py-3 ${matchToneClass(favoriteMatch.level)}`}
+              style={[styles.matchBox, matchToneStyle(favoriteMatch.level)]}
             >
-              <Text className="font-body-bold text-sm text-forest-900">
-                {t('foodMatch.title')}
-              </Text>
+              <Text style={styles.matchTitle}>{t('foodMatch.title')}</Text>
               {favoriteMatch.hits.map((hit, index) => (
                 <Text
                   key={`${hit.kind}-${hit.detail}-${index}`}
-                  className="mt-1 font-body text-sm text-forest-800"
+                  style={styles.matchHit}
                 >
                   {t(foodMatchHitKey(hit), {
                     detail: hit.detail,
@@ -483,12 +527,12 @@ export default function PetProfileScreen() {
                   })}
                 </Text>
               ))}
-              <Text className="mt-2 font-body text-xs text-forest-600">
+              <Text style={styles.matchDisclaimer}>
                 {t('foodMatch.disclaimer')}
               </Text>
             </View>
           ) : null}
-          <View className="mt-1 gap-2">
+          <View style={styles.btnStack}>
             <PrimaryButton
               label={t('pets.pickFavoriteFood')}
               variant="secondary"
@@ -508,7 +552,7 @@ export default function PetProfileScreen() {
               />
             ) : null}
           </View>
-          <View className="mt-3">
+          <View style={styles.factSpacer}>
             <Fact
               label={t('pets.indoorOutdoor')}
               value={indoorLabel(pet.indoor_outdoor)}
@@ -529,19 +573,12 @@ export default function PetProfileScreen() {
             }}
           />
           {feeds.length === 0 ? (
-            <Text className="mt-3 font-body text-base text-forest-600">
-              {t('pets.feedingEmpty')}
-            </Text>
+            <Text style={styles.emptyText}>{t('pets.feedingEmpty')}</Text>
           ) : (
             feeds.slice(0, 8).map((feed) => (
-              <View
-                key={feed.id}
-                className="mt-3 border-t border-forest-100 pt-3"
-              >
-                <Text className="font-body-bold text-sm text-forest-900">
-                  {feed.product_name}
-                </Text>
-                <Text className="mt-1 font-body text-xs text-forest-500">
+              <View key={feed.id} style={styles.feedItem}>
+                <Text style={styles.feedName}>{feed.product_name}</Text>
+                <Text style={styles.feedMeta}>
                   {new Date(feed.fed_at).toLocaleString('uk-UA')}
                   {feed.ate_fully === true
                     ? ` · ${t('pets.feedingAteYes')}`
@@ -550,21 +587,17 @@ export default function PetProfileScreen() {
                       : ''}
                 </Text>
                 {feed.note ? (
-                  <Text className="mt-1 font-body text-sm text-forest-700">
-                    {feed.note}
-                  </Text>
+                  <Text style={styles.feedNote}>{feed.note}</Text>
                 ) : null}
               </View>
             ))
           )}
         </Section>
 
-        <View className="mt-4 rounded-3xl bg-forest-100 px-5 py-5">
-          <Text className="mb-2 font-body-bold text-lg text-forest-800">
-            {t('care.waterTitle')}
-          </Text>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{t('care.waterTitle')}</Text>
           {todayCare ? (
-            <Text className="mb-4 font-body text-base leading-6 text-forest-700">
+            <Text style={styles.bodyLead}>
               {t('care.progress', {
                 done: todayCare.done,
                 total: todayCare.total,
@@ -574,9 +607,7 @@ export default function PetProfileScreen() {
               {todayCare.feed ? ` · ${t('care.feedDoneShort')}` : ''}
             </Text>
           ) : (
-            <Text className="mb-4 font-body text-base leading-6 text-forest-700">
-              {t('care.cardHint')}
-            </Text>
+            <Text style={styles.bodyLead}>{t('care.cardHint')}</Text>
           )}
           <PrimaryButton
             label={t('care.open')}
@@ -588,7 +619,7 @@ export default function PetProfileScreen() {
               })
             }
           />
-          <View className="mt-3">
+          <View style={styles.btnGap}>
             <PrimaryButton
               label={t('plants.open')}
               variant="secondary"
@@ -600,7 +631,7 @@ export default function PetProfileScreen() {
               }
             />
           </View>
-          <View className="mt-3">
+          <View style={styles.btnGap}>
             <PrimaryButton
               label={t('play.open')}
               variant="secondary"
@@ -619,7 +650,7 @@ export default function PetProfileScreen() {
           <Fact label={t('pets.passport')} value={pet.passport_number} />
           <Fact label={t('pets.vetName')} value={pet.vet_name} />
           <Fact label={t('pets.vetPhone')} value={pet.vet_phone} />
-          <View className="mt-2 gap-2">
+          <View style={styles.btnStack}>
             <PrimaryButton
               label={t('passport.open')}
               variant="secondary"
@@ -645,6 +676,7 @@ export default function PetProfileScreen() {
 
         <Section title={t('habits.title')}>
           <ListRow
+            variant="flat"
             title={t('habits.open')}
             subtitle={t('habits.subtitle')}
             onPress={() =>
@@ -655,6 +687,7 @@ export default function PetProfileScreen() {
             }
           />
           <ListRow
+            variant="flat"
             title={t('calendar.open')}
             subtitle={t('calendar.subtitle')}
             onPress={() =>
@@ -665,6 +698,7 @@ export default function PetProfileScreen() {
             }
           />
           <ListRow
+            variant="flat"
             title={t('travelWizard.open')}
             subtitle={t('travelWizard.subtitle')}
             onPress={() =>
@@ -676,16 +710,12 @@ export default function PetProfileScreen() {
           />
         </Section>
 
-        <View className="mt-4 rounded-3xl bg-white px-5 py-5">
-          <Text className="mb-2 font-body-bold text-lg text-forest-800">
-            {t('pets.vaccines')}
-          </Text>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{t('pets.vaccines')}</Text>
           {vaccines.length === 0 ? (
-            <Text className="mb-4 font-body text-base leading-6 text-forest-600">
-              {t('pets.vaccinesEmpty')}
-            </Text>
+            <Text style={styles.bodyLead}>{t('pets.vaccinesEmpty')}</Text>
           ) : (
-            <View className="mb-4">
+            <View style={styles.summaryBlock}>
               {vaccines.slice(0, 3).map((v) => {
                 const status = vaccineDueStatus(v.next_due_on);
                 const name =
@@ -702,10 +732,7 @@ export default function PetProfileScreen() {
                         ? `${t('vaccines.nextDue')}: ${v.next_due_on}`
                         : t('vaccines.statusNone');
                 return (
-                  <Text
-                    key={v.id}
-                    className="mb-1 font-body text-sm text-forest-700"
-                  >
+                  <Text key={v.id} style={styles.summaryLine}>
                     {name} — {hint}
                   </Text>
                 );
@@ -724,21 +751,14 @@ export default function PetProfileScreen() {
           />
         </View>
 
-        <View className="mt-4 rounded-3xl bg-white px-5 py-5">
-          <Text className="mb-2 font-body-bold text-lg text-forest-800">
-            {t('pets.vetLog')}
-          </Text>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{t('pets.vetLog')}</Text>
           {vetLogs.length === 0 ? (
-            <Text className="mb-4 font-body text-base leading-6 text-forest-600">
-              {t('pets.vetLogEmpty')}
-            </Text>
+            <Text style={styles.bodyLead}>{t('pets.vetLogEmpty')}</Text>
           ) : (
-            <View className="mb-4">
+            <View style={styles.summaryBlock}>
               {vetLogs.slice(0, 3).map((row) => (
-                <Text
-                  key={row.id}
-                  className="mb-1 font-body text-sm text-forest-700"
-                >
+                <Text key={row.id} style={styles.summaryLine}>
                   {row.logged_on} · {row.title}
                   {row.next_due_on
                     ? ` · ${t('vetLog.nextDue')}: ${row.next_due_on}`
@@ -759,21 +779,17 @@ export default function PetProfileScreen() {
           />
         </View>
 
-        <View className="mt-4 rounded-3xl bg-white px-5 py-5">
-          <View className="mb-3 flex-row items-center justify-between">
-            <Text className="font-body-bold text-lg text-forest-800">
-              {t('pets.album')}
-            </Text>
+        <View style={styles.card}>
+          <View style={styles.albumHeader}>
+            <Text style={styles.cardTitleTight}>{t('pets.album')}</Text>
             <Pressable onPress={() => void onAddPhoto()} disabled={addingPhoto}>
-              <Text className="font-body-bold text-sm text-forest-700">
+              <Text style={styles.albumAdd}>
                 {addingPhoto ? '…' : t('pets.albumAdd')}
               </Text>
             </Pressable>
           </View>
           {photos.length === 0 ? (
-            <Text className="font-body text-base text-forest-600">
-              {t('pets.albumEmpty')}
-            </Text>
+            <Text style={styles.emptyText}>{t('pets.albumEmpty')}</Text>
           ) : (
             <FlatList
               data={photos}
@@ -785,10 +801,7 @@ export default function PetProfileScreen() {
                 const uri = item.local_uri;
                 if (!uri) return null;
                 return (
-                  <Image
-                    source={{ uri }}
-                    className="mr-3 h-28 w-28 rounded-2xl bg-forest-100"
-                  />
+                  <Image source={{ uri }} style={styles.albumThumb} />
                 );
               }}
             />
@@ -797,29 +810,28 @@ export default function PetProfileScreen() {
       </ScrollView>
 
       <Modal visible={pickerOpen} animationType="slide" transparent>
-        <View className="flex-1 justify-end bg-black/40">
-          <View className="max-h-[70%] rounded-t-3xl bg-sand-50 px-5 pb-8 pt-4">
-            <Text className="mb-3 font-body-bold text-lg text-forest-800">
-              {t('pets.pickFavoriteFood')}
-            </Text>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalSheet}>
+            <Text style={styles.modalTitle}>{t('pets.pickFavoriteFood')}</Text>
             <FlatList
               data={scans}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <Pressable
                   onPress={() => void onPickFavorite(item)}
-                  className="border-b border-forest-100 py-3 active:opacity-70"
+                  style={({ pressed }) => [
+                    styles.scanRow,
+                    pressed && styles.pressed,
+                  ]}
                 >
-                  <Text className="font-body-bold text-base text-forest-900">
-                    {item.product_name}
-                  </Text>
-                  <Text className="mt-1 font-body text-xs text-forest-500">
+                  <Text style={styles.scanName}>{item.product_name}</Text>
+                  <Text style={styles.scanMeta}>
                     {new Date(item.created_at).toLocaleString('uk-UA')}
                   </Text>
                 </Pressable>
               )}
             />
-            <View className="mt-3">
+            <View style={styles.btnGap}>
               <PrimaryButton
                 label={t('common.cancel')}
                 variant="ghost"
@@ -831,15 +843,11 @@ export default function PetProfileScreen() {
       </Modal>
 
       <Modal visible={feedOpen} animationType="slide" transparent>
-        <View className="flex-1 justify-end bg-black/40">
-          <View className="rounded-t-3xl bg-sand-50 px-5 pb-8 pt-4">
-            <Text className="mb-2 font-body-bold text-lg text-forest-800">
-              {t('pets.feedingAdd')}
-            </Text>
-            <Text className="mb-3 font-body text-sm text-forest-600">
-              {pet.favorite_food}
-            </Text>
-            <View className="mb-3 flex-row flex-wrap gap-2">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalSheetCompact}>
+            <Text style={styles.modalTitle}>{t('pets.feedingAdd')}</Text>
+            <Text style={styles.modalLead}>{pet.favorite_food}</Text>
+            <View style={styles.ateRow}>
               {(
                 [
                   [true, t('pets.feedingAteYes')],
@@ -852,14 +860,10 @@ export default function PetProfileScreen() {
                   <Pressable
                     key={String(value)}
                     onPress={() => setAteFully(value)}
-                    className={`rounded-2xl px-4 py-2.5 ${
-                      active ? 'bg-forest-700' : 'bg-forest-100'
-                    }`}
+                    style={[styles.ateChip, active && styles.ateChipOn]}
                   >
                     <Text
-                      className={`font-body-bold text-sm ${
-                        active ? 'text-sand-50' : 'text-forest-700'
-                      }`}
+                      style={[styles.ateChipText, active && styles.ateChipTextOn]}
                     >
                       {label}
                     </Text>
@@ -867,23 +871,21 @@ export default function PetProfileScreen() {
                 );
               })}
             </View>
-            <Text className="mb-2 font-body-medium text-sm text-forest-700">
-              {t('pets.feedingNote')}
-            </Text>
+            <Text style={styles.inputLabel}>{t('pets.feedingNote')}</Text>
             <TextInput
               value={feedNote}
               onChangeText={setFeedNote}
               placeholder={t('pets.feedingNotePlaceholder')}
-              placeholderTextColor="#9bbba5"
+              placeholderTextColor={brand.mutedSoft}
               multiline
-              className="mb-4 min-h-[80px] rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-base text-forest-900"
+              style={styles.noteInput}
             />
             <PrimaryButton
               label={t('common.save')}
               onPress={() => void onSaveFeed()}
               loading={savingFeed}
             />
-            <View className="mt-2">
+            <View style={styles.btnGap}>
               <PrimaryButton
                 label={t('common.cancel')}
                 variant="ghost"
@@ -893,6 +895,346 @@ export default function PetProfileScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  scroll: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 40,
+    gap: 14,
+  },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  backBtn: {
+    height: 34,
+    width: 34,
+    borderRadius: 17,
+    backgroundColor: brand.chipTrack,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  topTitle: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+  },
+  editLink: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 12,
+    color: brand.accent,
+    minWidth: 34,
+    textAlign: 'right',
+  },
+  hero: {
+    alignItems: 'center',
+    gap: 8,
+    paddingTop: 4,
+    paddingBottom: 2,
+  },
+  heroName: {
+    fontFamily: fonts.title,
+    fontSize: 19,
+    lineHeight: 24,
+    color: brand.ink,
+  },
+  heroMeta: {
+    fontFamily: fonts.body,
+    fontSize: 12.5,
+    color: brand.muted,
+    textAlign: 'center',
+  },
+  card: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  cardTitle: {
+    marginBottom: 12,
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  cardTitleTight: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  aboutTitle: {
+    marginBottom: 6,
+    fontFamily: fonts.bodyBold,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  aboutBody: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    lineHeight: 20,
+    color: brand.label,
+  },
+  rowCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  rowLabel: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+    flexShrink: 0,
+  },
+  rowValue: {
+    flex: 1,
+    textAlign: 'right',
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  chip: {
+    borderRadius: brand.radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  chipGood: { backgroundColor: brand.successTint },
+  chipNeutral: { backgroundColor: brand.chipTrack },
+  chipText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
+    color: brand.muted,
+  },
+  chipTextGood: { color: brand.successDark },
+  fact: { marginBottom: 12 },
+  factLabel: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 11,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+    color: brand.mutedSoft,
+  },
+  factValue: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  factSpacer: { marginTop: 4 },
+  matchBox: {
+    marginTop: 8,
+    marginBottom: 8,
+    borderRadius: brand.radius.sm,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  matchOk: {
+    borderColor: brand.success,
+    backgroundColor: brand.successTint,
+  },
+  matchCaution: {
+    borderColor: brand.score.fair,
+    backgroundColor: '#FBF6E8',
+  },
+  matchAlert: {
+    borderColor: brand.terracotta,
+    backgroundColor: brand.terracottaTint,
+  },
+  matchUnknown: {
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.accentTint,
+  },
+  matchTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  matchHit: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.label,
+  },
+  matchDisclaimer: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.muted,
+  },
+  btnStack: { marginTop: 4, gap: 8 },
+  btnGap: { marginTop: 10 },
+  emptyText: {
+    marginTop: 12,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.muted,
+  },
+  bodyLead: {
+    marginBottom: 14,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+    color: brand.label,
+  },
+  feedItem: {
+    marginTop: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: brand.mistBorder,
+    paddingTop: 12,
+  },
+  feedName: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  feedMeta: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.mutedSoft,
+  },
+  feedNote: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.label,
+  },
+  summaryBlock: { marginBottom: 14 },
+  summaryLine: {
+    marginBottom: 4,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.label,
+  },
+  albumHeader: {
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  albumAdd: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accent,
+  },
+  albumThumb: {
+    marginRight: 10,
+    height: 112,
+    width: 112,
+    borderRadius: brand.radius.sm,
+    backgroundColor: brand.chipTrack,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(21,34,51,0.4)',
+  },
+  modalSheet: {
+    maxHeight: '70%',
+    borderTopLeftRadius: brand.radius.xl,
+    borderTopRightRadius: brand.radius.xl,
+    backgroundColor: brand.canvas,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 28,
+  },
+  modalSheetCompact: {
+    borderTopLeftRadius: brand.radius.xl,
+    borderTopRightRadius: brand.radius.xl,
+    backgroundColor: brand.canvas,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 28,
+  },
+  modalTitle: {
+    marginBottom: 12,
+    fontFamily: fonts.bodyBold,
+    fontSize: 16,
+    color: brand.ink,
+  },
+  modalLead: {
+    marginBottom: 12,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  scanRow: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: brand.mistBorder,
+    paddingVertical: 12,
+  },
+  scanName: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  scanMeta: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.mutedSoft,
+  },
+  ateRow: {
+    marginBottom: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  ateChip: {
+    borderRadius: brand.radius.sm,
+    backgroundColor: brand.chipTrack,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  ateChipOn: { backgroundColor: brand.accent },
+  ateChipText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  ateChipTextOn: { color: '#FFFFFF' },
+  inputLabel: {
+    marginBottom: 8,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: brand.label,
+  },
+  noteInput: {
+    marginBottom: 14,
+    minHeight: 80,
+    borderRadius: brand.radius.sm,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+    textAlignVertical: 'top',
+  },
+  pressed: { opacity: 0.7 },
+});

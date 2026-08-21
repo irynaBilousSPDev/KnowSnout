@@ -5,16 +5,17 @@ import {
   FlatList,
   Pressable,
   RefreshControl,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
+import { HubHero } from '@/src/components/HubHero';
 import { IconButton } from '@/src/components/IconButton';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { Section } from '@/src/components/Section';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
@@ -27,7 +28,7 @@ import {
   type QuizStats,
   emptyQuizStats,
 } from '@/src/services/quizResults';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 function categoryLabel(category: QuizCategory) {
   switch (category) {
@@ -42,6 +43,7 @@ function categoryLabel(category: QuizCategory) {
   }
 }
 
+/** HTML kit · Історія результатів квізу. */
 export default function QuizResultsScreen() {
   const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [stats, setStats] = useState<QuizStats>(emptyQuizStats());
@@ -96,44 +98,49 @@ export default function QuizResultsScreen() {
   };
 
   if (loading) {
-    return <LoadingState message={t('quiz.resultsLoading')} />;
+    return (
+      <AppScreen>
+        <LoadingState message={t('quiz.resultsLoading')} />
+      </AppScreen>
+    );
   }
 
   return (
     <AppScreen>
-      <View className="px-5 pb-2 pt-2">
-        <ScreenHeader
-          title={t('quiz.resultsTitle')}
-          subtitle={t('quiz.resultsSubtitle')}
-        />
-      </View>
-
       {error ? (
-        <ErrorState message={error} onRetry={() => void load()} />
+        <View style={styles.pad}>
+          <HubHero
+            title={t('quiz.resultsTitle')}
+            lead={t('quiz.resultsSubtitle')}
+          />
+          <ErrorState message={error} onRetry={() => void load()} />
+        </View>
       ) : (
         <FlatList
           data={sessions}
           keyExtractor={(item) => item.id}
-          contentContainerClassName="px-5 pb-10"
+          contentContainerStyle={styles.list}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor="#00A894"
+              tintColor={brand.accent}
             />
           }
           ListHeaderComponent={
-            <View className="mb-4">
-              <View className="rounded-3xl border border-forest-100 bg-white px-5 py-5">
-                <Text className="font-body text-sm text-forest-600">
-                  {t('quiz.avgLabel')}
-                </Text>
-                <Text className="mt-1 font-display text-4xl text-forest-800">
+            <View style={styles.headerBlock}>
+              <HubHero
+                title={t('quiz.resultsTitle')}
+                lead={t('quiz.resultsSubtitle')}
+              />
+              <View style={styles.statsCard}>
+                <Text style={styles.statsLabel}>{t('quiz.avgLabel')}</Text>
+                <Text style={styles.statsValue}>
                   {stats.games > 0
                     ? t('quiz.avgValue', { value: stats.averagePercent })
                     : '—'}
                 </Text>
-                <Text className="mt-2 font-body text-sm text-forest-600">
+                <Text style={styles.statsMeta}>
                   {t('quiz.statsLine', {
                     games: stats.games,
                     best: stats.bestPercent,
@@ -141,49 +148,38 @@ export default function QuizResultsScreen() {
                 </Text>
               </View>
 
-              <View className="mt-3 gap-2">
-                {(
-                  [
-                    'breed',
-                    'breed_origin',
-                    'animal_group',
-                    'animals_trivia',
-                  ] as QuizCategory[]
-                ).map((cat) => {
-                  const c = stats.byCategory[cat];
-                  return (
-                    <View
-                      key={cat}
-                      className="rounded-2xl border border-forest-100 bg-white px-4 py-3"
-                    >
-                      <Text className="font-body-bold text-sm text-forest-900">
-                        {categoryLabel(cat)}
-                      </Text>
-                      <Text className="mt-1 font-body text-xs text-forest-600">
-                        {c.games === 0
-                          ? t('quiz.categoryEmpty')
-                          : t('quiz.categoryStats', {
-                              games: c.games,
-                              avg: c.averagePercent,
-                              best: c.bestPercent,
-                            })}
-                      </Text>
-                    </View>
-                  );
-                })}
-              </View>
+              {(
+                [
+                  'breed',
+                  'breed_origin',
+                  'animal_group',
+                  'animals_trivia',
+                ] as QuizCategory[]
+              ).map((cat) => {
+                const c = stats.byCategory[cat];
+                return (
+                  <View key={cat} style={styles.catCard}>
+                    <Text style={styles.catTitle}>{categoryLabel(cat)}</Text>
+                    <Text style={styles.catMeta}>
+                      {c.games === 0
+                        ? t('quiz.categoryEmpty')
+                        : t('quiz.categoryStats', {
+                            games: c.games,
+                            avg: c.averagePercent,
+                            best: c.bestPercent,
+                          })}
+                    </Text>
+                  </View>
+                );
+              })}
 
-              <Text className="mb-2 mt-5 font-body-bold text-base text-forest-800">
-                {t('quiz.historyTitle')}
-              </Text>
+              <Text style={styles.historyTitle}>{t('quiz.historyTitle')}</Text>
             </View>
           }
           ListEmptyComponent={
             <Section tone="mist" title={t('quiz.historyEmptyTitle')}>
-              <Text className="font-body text-sm leading-5 text-forest-600">
-                {t('quiz.historyEmptyBody')}
-              </Text>
-              <View className="mt-3">
+              <Text style={styles.emptyBody}>{t('quiz.historyEmptyBody')}</Text>
+              <View style={styles.emptyBtn}>
                 <PrimaryButton
                   label={t('quiz.backToHub')}
                   variant="secondary"
@@ -193,13 +189,13 @@ export default function QuizResultsScreen() {
             </Section>
           }
           renderItem={({ item }) => (
-            <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
-              <Pressable className="flex-row items-center justify-between">
-                <View className="flex-1 pr-3">
-                  <Text className="font-body-bold text-base text-forest-900">
+            <View style={styles.sessionCard}>
+              <Pressable style={styles.sessionRow}>
+                <View style={styles.sessionCopy}>
+                  <Text style={styles.sessionTitle}>
                     {categoryLabel(item.category)}
                   </Text>
-                  <Text className="mt-1 font-body text-xs text-forest-500">
+                  <Text style={styles.sessionMeta}>
                     {item.species === 'dog'
                       ? t('quiz.speciesDog')
                       : item.species === 'cat'
@@ -208,7 +204,7 @@ export default function QuizResultsScreen() {
                     {' · '}
                     {new Date(item.created_at).toLocaleString('uk-UA')}
                   </Text>
-                  <Text className="mt-2 font-body text-sm text-forest-700">
+                  <Text style={styles.sessionScore}>
                     {t('quiz.sessionScoreLine', {
                       score: item.score,
                       total: item.total,
@@ -216,13 +212,13 @@ export default function QuizResultsScreen() {
                     })}
                   </Text>
                 </View>
-                <View className="h-12 w-12 items-center justify-center rounded-full bg-forest-100">
-                  <Text className="font-body-bold text-sm text-forest-800">
+                <View style={styles.percentBadge}>
+                  <Text style={styles.percentText}>
                     {Math.round(item.percent)}%
                   </Text>
                 </View>
               </Pressable>
-              <View className="mt-2 flex-row justify-end">
+              <View style={styles.deleteRow}>
                 <IconButton
                   name="trash-outline"
                   color={brand.score.poor}
@@ -237,3 +233,133 @@ export default function QuizResultsScreen() {
     </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  pad: { paddingHorizontal: 20, paddingTop: 16 },
+  list: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 40,
+  },
+  headerBlock: { marginBottom: 8 },
+  statsCard: {
+    marginBottom: 12,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  statsLabel: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  statsValue: {
+    marginTop: 4,
+    fontFamily: fonts.title,
+    fontSize: 36,
+    lineHeight: 42,
+    color: brand.ink,
+  },
+  statsMeta: {
+    marginTop: 6,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  catCard: {
+    marginBottom: 8,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  catTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  catMeta: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  historyTitle: {
+    marginTop: 16,
+    marginBottom: 10,
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  emptyBody: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+    color: brand.muted,
+  },
+  emptyBtn: { marginTop: 12 },
+  sessionCard: {
+    marginBottom: 10,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  sessionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sessionCopy: { flex: 1, paddingRight: 12 },
+  sessionTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  sessionMeta: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  sessionScore: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.label,
+  },
+  percentBadge: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: brand.accentTint,
+  },
+  percentText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
+  },
+  deleteRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+});

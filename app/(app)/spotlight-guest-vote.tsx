@@ -24,7 +24,7 @@ import {
   type SpotlightContest,
   type SpotlightEntry,
 } from '@/src/services/spotlight';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function SpotlightGuestVoteScreen() {
   const { contestId: contestIdParam } = useLocalSearchParams<{
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   section: {
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
@@ -191,21 +191,21 @@ const styles = StyleSheet.create({
   },
   chipActive: { backgroundColor: brand.navy },
   chipText: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.ink,
   },
   chipTextActive: { color: '#FFFFFF' },
   brief: {
     marginBottom: 14,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 18,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   empty: {
     marginTop: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     color: brand.forest,
   },
@@ -213,28 +213,26 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 12,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     padding: 14,
     gap: 12,
   },
   cardTop: { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
   cardBody: { flex: 1 },
   cardTitle: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 16,
     color: brand.ink,
   },
   cardCaption: {
     marginTop: 4,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   cardMeta: {
     marginTop: 6,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
     color: brand.forest,
   },

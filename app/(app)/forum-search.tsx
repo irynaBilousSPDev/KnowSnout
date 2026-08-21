@@ -8,7 +8,7 @@ import { ListRow } from '@/src/components/ListRow';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { searchForum, type ForumThread } from '@/src/services/forum';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function ForumSearchScreen() {
   const [query, setQuery] = useState('');
@@ -38,7 +38,7 @@ export default function ForumSearchScreen() {
               if (results.length === 0) void run(query);
             }}
             placeholder={t('forum.searchPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
           />
           {results.map((th) => (
@@ -72,18 +72,16 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 14,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

@@ -8,10 +8,11 @@ import { GradientButton } from '@/src/components/GradientButton';
 import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { env } from '@/src/lib/env';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function RegisterScreen() {
   const { user, loading: authLoading, signUp } = useAuth();
+  const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -44,8 +45,7 @@ export default function RegisterScreen() {
 
   return (
     <AuthShell
-      headline={t('auth.registerHeadline')}
-      subtitle={t('auth.registerSubtitle')}
+      headline={t('auth.registerTitle')}
       badge={env.isDemoMode ? t('auth.demoModeShort') : null}
       footer={
         <View>
@@ -65,6 +65,14 @@ export default function RegisterScreen() {
         </View>
       }
     >
+      <AuthTextField
+        label={t('auth.displayName')}
+        value={displayName}
+        onChangeText={setDisplayName}
+        placeholder={t('auth.displayNamePlaceholder')}
+        autoCapitalize="words"
+        returnKeyType="next"
+      />
       <AuthTextField
         label={t('auth.email')}
         value={email}
@@ -89,7 +97,22 @@ export default function RegisterScreen() {
         </View>
       ) : null}
 
-      <Text style={styles.legal}>{t('auth.legalAgree')}</Text>
+      <Text style={styles.legal}>
+        {t('auth.legalPrefix')}
+        <Text
+          style={styles.legalLink}
+          onPress={() => router.push('/(app)/data-sources' as never)}
+        >
+          {t('auth.legalTerms')}
+        </Text>
+        {t('auth.legalAnd')}
+        <Text
+          style={styles.legalLink}
+          onPress={() => router.push('/(app)/privacy' as never)}
+        >
+          {t('auth.legalPrivacy')}
+        </Text>
+      </Text>
 
       {env.isDemoMode ? (
         <Text style={styles.demoHint}>{t('auth.demoMode')}</Text>
@@ -105,42 +128,46 @@ const styles = StyleSheet.create({
   },
   linkMuted: {
     textAlign: 'center',
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   linkStrong: {
-    fontFamily: 'Inter_700Bold',
-    color: brand.sage,
+    fontFamily: fonts.bodyBold,
+    color: brand.accent,
   },
   legal: {
     marginTop: 8,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
     lineHeight: 18,
     color: brand.muted,
+  },
+  legalLink: {
+    fontFamily: fonts.bodySemi,
+    color: brand.accent,
   },
   errorBox: {
     marginTop: 4,
     marginBottom: 8,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: 'rgba(196, 92, 62, 0.1)',
     borderWidth: 1,
     borderColor: 'rgba(196, 92, 62, 0.25)',
   },
   errorText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
     lineHeight: 18,
     color: brand.score.poor,
   },
   demoHint: {
     marginTop: 8,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
     lineHeight: 18,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

@@ -10,7 +10,7 @@ import {
   searchGlobal,
   type SearchSectionId,
 } from '@/src/services/globalSearch';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 const SECTIONS: { id: SearchSectionId; titleKey: string; icon: keyof typeof Ionicons.glyphMap }[] =
   [
@@ -33,7 +33,7 @@ export default function GlobalSearchScreen() {
             value={query}
             onChangeText={setQuery}
             placeholder={t('search.placeholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
             autoCapitalize="none"
           />
@@ -71,28 +71,26 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 8,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },
   section: {
     marginTop: 16,
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   empty: {
     marginTop: 16,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

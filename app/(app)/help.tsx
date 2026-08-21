@@ -3,22 +3,20 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { HELP_TOPICS } from '@/src/services/helpContent';
 import { brand } from '@/src/theme/brand';
 
+/** HTML kit · Довідка — soft white FAQ rows. */
 export default function HelpScreen() {
   return (
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
-            title={t('help.title')}
-            subtitle={t('help.subtitle')}
-          />
+          <HubHero title={t('help.title')} lead={t('help.subtitle')} />
           {HELP_TOPICS.map((topic) => (
             <ListRow
               key={topic.id}
@@ -27,7 +25,7 @@ export default function HelpScreen() {
                 <Ionicons
                   name="help-circle-outline"
                   size={22}
-                  color={brand.navy}
+                  color={brand.accent}
                 />
               }
               onPress={() =>

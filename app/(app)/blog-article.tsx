@@ -15,7 +15,7 @@ import {
   toggleBookmark,
   type BlogComment,
 } from '@/src/services/blog';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function BlogArticleScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -88,7 +88,7 @@ export default function BlogArticleScreen() {
             value={text}
             onChangeText={setText}
             placeholder={t('blog.commentPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             multiline
             style={[styles.input, styles.area]}
           />
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   body: {
     marginTop: 16,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 24,
     color: brand.ink,
@@ -128,40 +128,36 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 22,
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   comment: {
     marginBottom: 10,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     padding: 12,
   },
   author: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.navy,
   },
   commentBody: {
     marginTop: 4,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     color: brand.ink,
   },
   input: {
     marginTop: 8,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },

@@ -20,7 +20,7 @@ import {
   type QuizStreakState,
 } from '@/src/services/quizStreak';
 import { prefetchWikiQuizData } from '@/src/services/wikidataQuiz';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 type QuizCategoryCard = {
   id: string;
@@ -180,7 +180,7 @@ export default function QuizHubScreen() {
             >
               <View style={styles.card}>
                 <View style={styles.cardIcon}>
-                  <Ionicons name={cat.icon} size={26} color={brand.navy} />
+                  <Ionicons name={cat.icon} size={22} color={brand.accent} />
                 </View>
                 <View style={styles.cardCopy}>
                   <Text style={styles.cardTitle}>{t(cat.titleKey)}</Text>
@@ -194,7 +194,11 @@ export default function QuizHubScreen() {
                     </Text>
                   ) : null}
                 </View>
-                <Ionicons name="chevron-forward" size={20} color="#C8D2C4" />
+                <Ionicons
+                  name="chevron-forward"
+                  size={18}
+                  color={brand.mutedSoft}
+                />
               </View>
             </Pressable>
           );
@@ -207,6 +211,15 @@ export default function QuizHubScreen() {
   );
 }
 
+const softCard = {
+  backgroundColor: brand.surfaceElevated,
+  shadowColor: brand.shadow.color,
+  shadowOpacity: brand.shadow.opacity,
+  shadowRadius: brand.shadow.radius,
+  shadowOffset: brand.shadow.offset,
+  elevation: 1,
+} as const;
+
 const styles = StyleSheet.create({
   scroll: {
     paddingHorizontal: 20,
@@ -215,32 +228,31 @@ const styles = StyleSheet.create({
   },
   dailyCard: {
     marginBottom: 16,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.mist,
-    paddingHorizontal: 18,
-    paddingVertical: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
   },
   dailyEyebrow: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: brand.navy,
+    color: brand.accentDark,
   },
   dailyTitle: {
     marginTop: 6,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.title,
     fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
   },
   dailyBody: {
     marginTop: 6,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   streakRow: {
     marginTop: 12,
@@ -249,107 +261,97 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   streakValue: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 15,
     color: brand.ink,
   },
   streakBest: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   doneToday: {
     marginTop: 8,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
-    color: brand.navy,
+    color: brand.accentDark,
   },
   ratingCard: {
     marginBottom: 16,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 18,
-    paddingVertical: 18,
+    borderRadius: brand.radius.md,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    ...softCard,
   },
   ratingLabel: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   ratingValue: {
     marginTop: 4,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.title,
     fontSize: 36,
+    lineHeight: 42,
     color: brand.ink,
   },
   ratingMeta: {
     marginTop: 6,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
-  ratingBtn: {
-    marginTop: 14,
-  },
+  ratingBtn: { marginTop: 14 },
   lead: {
     marginBottom: 16,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 22,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   card: {
-    marginBottom: 12,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+    borderRadius: brand.radius.md,
     paddingHorizontal: 14,
-    paddingVertical: 16,
+    paddingVertical: 14,
+    ...softCard,
   },
-  cardPressed: {
-    opacity: 0.88,
-  },
+  cardPressed: { opacity: 0.9 },
   cardIcon: {
     marginRight: 12,
-    height: 48,
-    width: 48,
+    height: 44,
+    width: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 16,
-    backgroundColor: brand.mist,
+    borderRadius: 14,
+    backgroundColor: brand.accentTint,
   },
-  cardCopy: {
-    flex: 1,
-    paddingRight: 8,
-  },
+  cardCopy: { flex: 1, paddingRight: 8 },
   cardTitle: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 17,
+    fontFamily: fonts.bodyBold,
+    fontSize: 16,
     color: brand.ink,
   },
   cardBody: {
     marginTop: 4,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 18,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   cardStats: {
     marginTop: 6,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 12,
-    color: brand.navy,
+    color: brand.accentDark,
   },
   hint: {
     marginTop: 8,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
     lineHeight: 18,
-    color: '#8A9AAB',
+    color: brand.mutedSoft,
   },
 });

@@ -1,18 +1,20 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Адмінка · Банк квізів. */
 export default function QuizBankScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('admin.quizBank')}
-            subtitle={t('admin.stubBody')}
+            lead={t('admin.stubBody')}
           />
           <ListRow title="Myth pack v1" meta="12 Q" showChevron={false} />
           <ListRow title="Zoom pack v1" meta="8 Q" showChevron={false} />
@@ -27,8 +29,8 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   hint: {
     marginTop: 8,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

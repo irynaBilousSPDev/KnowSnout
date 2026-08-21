@@ -21,7 +21,7 @@ import {
   type ForumPost,
   type ForumThread,
 } from '@/src/services/forum';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 function openAuthor(authorId: string) {
   router.push({
@@ -115,7 +115,7 @@ export default function ForumThreadScreen() {
             value={reply}
             onChangeText={setReply}
             placeholder={t('forum.replyPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             multiline
             style={[styles.input, styles.area]}
           />
@@ -135,51 +135,47 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   authorLink: { marginBottom: 12 },
   authorLinkText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
     color: brand.navy,
   },
   post: {
     marginBottom: 10,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     padding: 14,
   },
   author: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 14,
     color: brand.navy,
   },
   body: {
     marginTop: 6,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 22,
     color: brand.ink,
   },
   meta: {
     marginTop: 8,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   label: {
     marginTop: 16,
     marginBottom: 6,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   input: {
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },

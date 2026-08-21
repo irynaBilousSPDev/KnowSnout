@@ -23,7 +23,7 @@ import {
   suggestedWalkSlots,
   type WalkPlan,
 } from '@/src/services/walks';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function WalkPlanScreen() {
   const [friends, setFriends] = useState<FriendUser[]>([]);
@@ -113,7 +113,7 @@ export default function WalkPlanScreen() {
             value={place}
             onChangeText={setPlace}
             placeholder={t('walks.placePlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
           />
           <Text style={styles.label}>{t('walks.note')}</Text>
@@ -121,7 +121,7 @@ export default function WalkPlanScreen() {
             value={note}
             onChangeText={setNote}
             placeholder={t('walks.notePlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
           />
 
@@ -166,16 +166,14 @@ const styles = StyleSheet.create({
   label: {
     marginTop: 14,
     marginBottom: 6,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   chip: {
     marginBottom: 8,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -184,35 +182,33 @@ const styles = StyleSheet.create({
     borderColor: brand.navy,
   },
   chipText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 15,
     color: brand.ink,
   },
   chipTextActive: { color: brand.navy },
   input: {
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },
   section: {
     marginTop: 22,
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   gap: { height: 12 },
 });

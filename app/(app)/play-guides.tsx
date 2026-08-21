@@ -1,8 +1,9 @@
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import {
@@ -12,9 +13,23 @@ import {
   type PlayPackId,
 } from '@/src/constants/playGuides';
 import { t } from '@/src/i18n';
+import { petAgeLabel, speciesLabel } from '@/src/lib/petMeta';
 import { getPet } from '@/src/services/pets';
+import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 
+const ICON_TONES = [
+  brand.successTint,
+  brand.accentTint,
+  brand.chipTrack,
+] as const;
+const ICON_COLORS = [
+  brand.successDark,
+  brand.accentDark,
+  brand.ink,
+] as const;
+
+/** HTML kit · Ігри та активності */
 export default function PlayGuidesScreen() {
   const params = useLocalSearchParams<{ petId?: string }>();
   const petId = typeof params.petId === 'string' ? params.petId : undefined;
@@ -62,89 +77,182 @@ export default function PlayGuidesScreen() {
 
   if (error) {
     return (
-      <SafeAreaView className="flex-1 bg-sand-50">
+      <AppScreen edges={['bottom']}>
         <ErrorState message={error} onRetry={() => void load()} />
-      </SafeAreaView>
+      </AppScreen>
     );
   }
 
+  const age = pet ? petAgeLabel(pet.birth_date) : null;
+
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <ScrollView contentContainerClassName="px-5 pb-12 pt-2">
-        <Text className="font-display text-2xl text-forest-900">
-          {t('play.title')}
-        </Text>
-        <Text className="mt-1 font-body text-sm text-forest-600">
-          {pet
-            ? `${pet.name} · ${t('play.subtitle')}`
-            : t('play.subtitle')}
+    <AppScreen edges={['bottom']}>
+      <ScrollView contentContainerStyle={styles.pad}>
+        <Text style={styles.title}>
+          {pet ? t('play.titleFor', { name: pet.name }) : t('play.title')}
         </Text>
 
-        <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
-          <Text className="font-body text-xs leading-5 text-forest-700">
-            {t('play.disclaimer')}
-          </Text>
-        </View>
-
-        <View className="mt-4 flex-row flex-wrap gap-2 rounded-2xl bg-forest-100 p-1">
-          {PLAY_PACKS.map((p) => {
-            const active = packId === p.id;
-            return (
-              <Pressable
-                key={p.id}
-                onPress={() => setPackId(p.id)}
-                className={`flex-1 min-w-[30%] items-center rounded-xl px-2 py-2.5 ${
-                  active ? 'bg-forest-700' : ''
-                }`}
-              >
-                <Text
-                  className={`font-body-bold text-sm ${
-                    active ? 'text-sand-50' : 'text-forest-700'
-                  }`}
-                >
-                  {p.titleUk}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        <Text className="mt-5 font-body-bold text-lg text-forest-900">
-          {pack.titleUk}
-        </Text>
-        <Text className="mt-1 font-body text-sm text-forest-600">
-          {pack.subtitleUk}
-        </Text>
-
-        {pack.cards.map((card) => (
-          <View
-            key={card.id}
-            className="mt-4 rounded-3xl border border-forest-100 bg-white px-5 py-4"
-          >
-            <Text className="font-body-bold text-base text-forest-900">
-              {card.titleUk}
-            </Text>
-            <Text className="mt-2 font-body text-sm leading-5 text-forest-700">
-              {card.bodyUk}
-            </Text>
-            {card.toysUk && card.toysUk.length > 0 ? (
-              <View className="mt-3 rounded-2xl bg-forest-50 px-3 py-3">
-                <Text className="font-body-medium text-xs uppercase tracking-wide text-forest-500">
-                  {t('play.toysLabel')}
-                </Text>
-                {card.toysUk.map((toy) => (
-                  <Text
-                    key={toy}
-                    className="mt-1 font-body text-sm text-forest-800"
-                  >
-                    · {toy}
-                  </Text>
-                ))}
+        {pet ? (
+          <View style={styles.metaRow}>
+            <View style={[styles.chip, styles.chipGood]}>
+              <Text style={[styles.chipText, styles.chipTextGood]}>
+                {[pet.breed?.trim(), speciesLabel(pet.species)]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </Text>
+            </View>
+            {age ? (
+              <View style={styles.chip}>
+                <Text style={styles.chipText}>{age}</Text>
               </View>
             ) : null}
           </View>
-        ))}
+        ) : (
+          <View style={styles.seg}>
+            {PLAY_PACKS.map((p) => {
+              const active = packId === p.id;
+              return (
+                <Pressable
+                  key={p.id}
+                  onPress={() => setPackId(p.id)}
+                  style={[styles.segOpt, active && styles.segOptOn]}
+                >
+                  <Text
+                    style={[styles.segOptText, active && styles.segOptTextOn]}
+                  >
+                    {p.titleUk}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
+
+        {pack.cards.map((card, index) => {
+          const tone = ICON_TONES[index % ICON_TONES.length]!;
+          const color = ICON_COLORS[index % ICON_COLORS.length]!;
+          return (
+            <View key={card.id} style={styles.card}>
+              <View style={[styles.iconCircle, { backgroundColor: tone }]}>
+                <Ionicons name="football-outline" size={19} color={color} />
+              </View>
+              <View style={styles.cardCopy}>
+                <Text style={styles.cardTitle}>{card.titleUk}</Text>
+                <Text style={styles.cardMeta} numberOfLines={2}>
+                  {card.bodyUk}
+                </Text>
+                {card.toysUk && card.toysUk.length > 0 ? (
+                  <Text style={styles.toys}>
+                    {card.toysUk.slice(0, 2).join(' · ')}
+                  </Text>
+                ) : null}
+              </View>
+              {index === 0 ? (
+                <View style={[styles.chip, styles.chipGood]}>
+                  <Text style={[styles.chipText, styles.chipTextGood]}>
+                    {t('play.favorite')}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
+          );
+        })}
+
+        <Text style={styles.hint}>{t('play.disclaimer')}</Text>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 19,
+    lineHeight: 24,
+    color: brand.ink,
+    marginBottom: 10,
+  },
+  metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
+  chip: {
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  chipGood: { backgroundColor: brand.successTint },
+  chipText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
+    color: brand.muted,
+  },
+  chipTextGood: { color: brand.successDark },
+  seg: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 14,
+    backgroundColor: brand.chipTrack,
+    borderRadius: brand.radius.md,
+    padding: 4,
+  },
+  segOpt: {
+    flexGrow: 1,
+    minWidth: '30%',
+    alignItems: 'center',
+    borderRadius: 12,
+    paddingVertical: 10,
+  },
+  segOptOn: { backgroundColor: brand.accent },
+  segOptText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  segOptTextOn: { color: '#FFFFFF' },
+  card: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    padding: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardCopy: { flex: 1, minWidth: 0 },
+  cardTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  cardMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  toys: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.mutedSoft,
+  },
+  hint: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.mutedSoft,
+  },
+});

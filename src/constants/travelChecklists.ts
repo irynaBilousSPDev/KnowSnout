@@ -22,23 +22,27 @@ export type TravelPack = {
 export const TRAVEL_PACKS: TravelPack[] = [
   {
     id: 'schengen',
-    titleUk: 'Schengen / ЄС',
+    titleUk: 'В межах ЄС',
     subtitleUk: 'Типовий набір для подорожі з собакою чи котом у зону Шенгену / ЄС',
     items: [
       {
         id: 'chip',
-        labelUk: 'Мікрочип ISO (читається в ЄС)',
+        labelUk: 'Мікрочипування',
         tipUk: 'Чіп зазвичай ставлять до вакцини від сказу.',
       },
       {
         id: 'rabies',
-        labelUk: 'Щеплення від сказу в паспорті',
+        labelUk: 'Щеплення проти сказу',
         tipUk: 'Перевір термін дії та правила «21 день після першої дози» для перших поїздок.',
       },
       {
         id: 'passport',
-        labelUk: 'Європейський ветпаспорт або сертифікат',
+        labelUk: 'Ветеринарний паспорт ЄС',
         tipUk: 'Для тварин з UA часто потрібен офіційний сертифікат — уточни перед виїздом.',
+      },
+      {
+        id: 'titers',
+        labelUk: 'Аналіз титрів антитіл',
       },
       {
         id: 'tapeworm',
@@ -70,7 +74,7 @@ export const TRAVEL_PACKS: TravelPack[] = [
   },
   {
     id: 'non_schengen',
-    titleUk: 'Поза Schengen',
+    titleUk: 'Поза Шенгеном',
     subtitleUk: 'Додаткові пункти для країн поза Шенгеном / дальніх напрямків',
     items: [
       {

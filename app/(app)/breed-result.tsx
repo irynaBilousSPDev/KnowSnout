@@ -1,19 +1,43 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Image, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { SourceLangNote } from '@/src/components/SourceLangNote';
 import { t } from '@/src/i18n';
 import { isNativeSafeImageUri } from '@/src/lib/image';
 import {
   getBreedHistoryItem,
+  type BreedHistoryAlternative,
   type BreedHistoryItem,
 } from '@/src/services/breedId';
 import { resolveCheckImageUrl } from '@/src/services/checkImages';
+import { brand, fonts } from '@/src/theme/brand';
+
+type MatchRow = {
+  name: string;
+  confidence: number;
+};
+
+function buildMatches(item: BreedHistoryItem): MatchRow[] {
+  const primaryName = item.breedNameUk ?? item.breedName;
+  const primary: MatchRow = {
+    name: primaryName,
+    confidence: item.confidence,
+  };
+  const alts = (item.alternatives ?? [])
+    .filter((a) => a.breedName.trim().length > 0)
+    .map((a: BreedHistoryAlternative) => ({
+      name: a.breedNameUk?.trim() || a.breedName.trim(),
+      confidence: a.confidence,
+    }))
+    .filter(
+      (a) => a.name.toLowerCase() !== primaryName.toLowerCase(),
+    );
+  return [primary, ...alts].slice(0, 4);
+}
 
 export default function BreedResultScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -56,88 +80,185 @@ export default function BreedResultScreen() {
 
   if (!item) {
     return (
-      <SafeAreaView className="flex-1 bg-sand-50">
+      <AppScreen edges={['bottom']}>
         <ErrorState
           title={t('journal.detailMissingTitle')}
           message={t('journal.detailMissingBody')}
           onRetry={() => router.replace('/(app)/(tabs)/history')}
         />
-      </SafeAreaView>
+      </AppScreen>
     );
   }
 
   const showPhoto = isNativeSafeImageUri(photoUrl);
+  const displayName = item.breedNameUk ?? item.breedName;
+  const matches = buildMatches(item);
+  const hasAlternatives = (item.alternatives?.length ?? 0) > 0;
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <ScrollView contentContainerClassName="px-5 pb-10 pt-2">
+    <AppScreen edges={['bottom']}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+      >
         {showPhoto ? (
           <Image
             source={{ uri: photoUrl! }}
-            className="mb-5 h-56 w-full rounded-3xl bg-forest-100"
+            style={styles.photo}
             resizeMode="cover"
             accessibilityIgnoresInvertColors
           />
         ) : (
-          <View className="mb-5 h-40 w-full items-center justify-center rounded-3xl border border-dashed border-forest-200 bg-forest-50">
-            <Text className="font-body text-sm text-forest-500">
-              {t('journal.noPhoto')}
-            </Text>
+          <View style={styles.photoEmpty}>
+            <Text style={styles.photoEmptyText}>{t('journal.noPhoto')}</Text>
           </View>
         )}
 
-        <Text className="text-center font-display text-2xl text-forest-800">
-          {item.breedNameUk ?? item.breedName}
-        </Text>
-        <Text className="mt-2 text-center font-body text-sm text-forest-600">
-          {item.breedName}
-        </Text>
-
-        <View className="mt-5 self-center rounded-full border border-forest-200 bg-forest-100 px-4 py-2">
-          <Text className="font-body-bold text-base text-forest-800">
-            {t('breed.confidence', {
-              pct: Math.round(item.confidence * 100),
-            })}
-          </Text>
+        <View style={styles.hero}>
+          <Text style={styles.heroName}>{displayName}</Text>
+          {hasAlternatives ? (
+            <Text style={styles.heroNote}>{t('breed.mixedNote')}</Text>
+          ) : null}
         </View>
 
-        <View className="mt-6 rounded-3xl bg-white px-5 py-5">
-          <Text className="mb-3 font-body-bold text-lg text-forest-800">
-            {t('result.verdict')}
-          </Text>
-          {item.temperament ? (
-            <SourceLangNote value={item.temperament} className="mb-3" />
-          ) : null}
-          {item.bredFor ? (
-            <SourceLangNote value={item.bredFor} className="mb-3" />
-          ) : null}
-          <Text className="font-body text-xs leading-5 text-forest-500">
-            {item.species === 'cat'
-              ? t('breed.speciesCat')
-              : t('breed.speciesDog')}
-            {' · '}
-            {new Date(item.createdAt).toLocaleString('uk-UA')}
-          </Text>
-          {item.origin ? (
-            <SourceLangNote value={item.origin} className="mt-2" />
-          ) : null}
-          <Text className="mt-4 font-body text-xs leading-5 text-forest-500">
-            {t('breed.disclaimer')}
-          </Text>
-        </View>
+        <Text style={styles.sectionLabel}>{t('breed.closestMatches')}</Text>
 
-        <View className="mt-6 gap-3">
-          <PrimaryButton
-            label={t('journal.openJournal')}
-            variant="secondary"
-            onPress={() => router.replace('/(app)/(tabs)/history')}
-          />
-          <PrimaryButton
-            label={t('journal.checkAnotherBreed')}
-            onPress={() => router.replace('/(app)/breed-scan')}
-          />
-        </View>
+        {matches.map((row, index) => {
+          const pct = Math.max(
+            0,
+            Math.min(100, Math.round(row.confidence * 100)),
+          );
+          const isTop = index === 0;
+          return (
+            <View key={`${row.name}-${index}`} style={styles.matchCard}>
+              <Text style={styles.matchName} numberOfLines={1}>
+                {row.name}
+              </Text>
+              <View style={styles.matchRight}>
+                <View style={styles.barTrack}>
+                  <View
+                    style={[
+                      styles.barFill,
+                      {
+                        width: `${pct}%`,
+                        backgroundColor: isTop
+                          ? brand.success
+                          : brand.mutedSoft,
+                      },
+                    ]}
+                  />
+                </View>
+                <Text style={styles.matchPct}>{pct}%</Text>
+              </View>
+            </View>
+          );
+        })}
+
+        <PrimaryButton
+          label={t('breed.saveToProfile')}
+          onPress={() =>
+            router.push({
+              pathname: '/(app)/pet-form',
+              params: {
+                breed: displayName,
+                species: item.species,
+              },
+            })
+          }
+        />
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  scroll: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 24,
+    gap: 14,
+  },
+  photo: {
+    width: '100%',
+    height: 150,
+    borderRadius: brand.radius.lg,
+    backgroundColor: brand.creamDeep,
+  },
+  photoEmpty: {
+    height: 120,
+    borderRadius: brand.radius.lg,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  photoEmptyText: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  hero: {
+    alignItems: 'center',
+  },
+  heroName: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 19,
+    color: brand.ink,
+    textAlign: 'center',
+  },
+  heroNote: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+    textAlign: 'center',
+  },
+  sectionLabel: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  matchCard: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  matchName: {
+    flex: 1,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  matchRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  barTrack: {
+    width: 60,
+    height: 6,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
+    overflow: 'hidden',
+  },
+  barFill: {
+    height: '100%',
+    borderRadius: brand.radius.pill,
+  },
+  matchPct: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.ink,
+    minWidth: 32,
+    textAlign: 'right',
+  },
+});

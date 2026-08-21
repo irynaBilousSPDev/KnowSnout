@@ -1,9 +1,10 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
+import { brand, fonts } from '@/src/theme/brand';
 
 const VERSIONS = [
   { id: 'v3', title: 'Rules UA v3', meta: 'draft' },
@@ -11,12 +12,13 @@ const VERSIONS = [
   { id: 'v1', title: 'Rules UA v1', meta: 'archived' },
 ];
 
+/** HTML kit · Адмінка · CMS. */
 export default function AdminCmsScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader title={t('admin.cms')} subtitle={t('admin.cmsBody')} />
+          <HubHero title={t('admin.cms')} lead={t('admin.cmsBody')} />
           <Text style={styles.hint}>{t('admin.cmsHint')}</Text>
           {VERSIONS.map((v) => (
             <ListRow
@@ -36,8 +38,8 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   hint: {
     marginBottom: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

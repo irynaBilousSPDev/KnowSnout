@@ -13,7 +13,7 @@ import {
   listBlogCategories,
   type BlogArticle,
 } from '@/src/services/blog';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function BlogScreen() {
   const categories = listBlogCategories();
@@ -101,15 +101,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 999,
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-  },
+      },
   chipActive: {
     backgroundColor: brand.navy,
     borderColor: brand.navy,
   },
   chipText: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     color: brand.navy,
   },

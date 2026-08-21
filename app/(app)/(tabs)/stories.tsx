@@ -105,15 +105,15 @@ const tagStyles = StyleSheet.create({
     marginTop: 8,
   },
   chip: {
-    borderRadius: 12,
-    backgroundColor: brand.roseTint,
+    borderRadius: brand.radius.sm,
+    backgroundColor: brand.terracottaTint,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
   chipText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 11,
-    color: brand.navy,
+    color: brand.accentDark,
   },
 });
 
@@ -139,17 +139,14 @@ function StoryPostCard({
   const timeAgo = formatStoryTimeAgo(post.createdAt);
   const likedBy = formatLikedBy(post.likes, post.liked);
   const darkCard = dark
-    ? { backgroundColor: STORIES_DARK.card, borderColor: STORIES_DARK.border }
+    ? { backgroundColor: STORIES_DARK.card }
     : undefined;
   const darkTitle = dark ? { color: STORIES_DARK.text } : undefined;
   const darkMuted = dark ? { color: STORIES_DARK.muted } : undefined;
 
   if (compact) {
     return (
-      <View
-        className="mb-3 overflow-hidden rounded-2xl border border-sand-300 bg-white"
-        style={darkCard}
-      >
+      <View style={[styles.cardCompact, darkCard]}>
         <Pressable onPress={() => onOpenComments(post)}>
           <View style={styles.compactMedia}>
             {post.imageUri ? (
@@ -168,53 +165,39 @@ function StoryPostCard({
             )}
           </View>
         </Pressable>
-        <View className="px-2.5 py-2">
+        <View style={styles.compactBody}>
           <Pressable onPress={() => onOpenAuthor(post)}>
-            <Text
-              numberOfLines={1}
-              className="font-body-bold text-[11px] text-snout-ink"
-              style={darkTitle}
-            >
+            <Text numberOfLines={1} style={[styles.compactAuthor, darkTitle]}>
               {post.author}
             </Text>
           </Pressable>
-          <Text
-            numberOfLines={2}
-            className="mt-0.5 font-body text-xs text-snout-ink"
-            style={darkMuted}
-          >
+          <Text numberOfLines={2} style={[styles.compactCaption, darkMuted]}>
             {post.caption}
           </Text>
-          <View className="mt-1.5 flex-row items-center gap-3">
+          <View style={styles.compactActions}>
             <Pressable
               onPress={() => onToggleLike(post)}
-              className="flex-row items-center gap-1"
+              style={styles.compactAction}
             >
               <Ionicons
                 name={post.liked ? 'heart' : 'heart-outline'}
                 size={16}
-                color={post.liked ? brand.rose : brand.muted}
+                color={post.liked ? brand.terracotta : brand.muted}
               />
-              <Text
-                className="font-body text-[11px] text-snout-muted"
-                style={darkMuted}
-              >
+              <Text style={[styles.compactActionText, darkMuted]}>
                 {post.likes}
               </Text>
             </Pressable>
             <Pressable
               onPress={() => onOpenComments(post)}
-              className="flex-row items-center gap-1"
+              style={styles.compactAction}
             >
               <Ionicons
                 name="chatbubble-outline"
                 size={15}
-                color={brand.navy}
+                color={brand.accent}
               />
-              <Text
-                className="font-body text-[11px] text-snout-muted"
-                style={darkMuted}
-              >
+              <Text style={[styles.compactActionText, darkMuted]}>
                 {post.commentsCount}
               </Text>
             </Pressable>
@@ -238,13 +221,13 @@ function StoryPostCard({
   }
 
   return (
-    <View
-      className="mb-5 overflow-hidden rounded-3xl border border-sand-300 bg-white"
-      style={darkCard}
-    >
+    <View style={[styles.card, darkCard]}>
       <Pressable
         onPress={() => onOpenAuthor(post)}
-        className="flex-row items-center px-4 py-3 active:opacity-80"
+        style={({ pressed }) => [
+          styles.cardAuthorRow,
+          pressed && styles.pressed,
+        ]}
       >
         <PetAvatar
           avatarKey={post.avatarKey}
@@ -252,17 +235,9 @@ function StoryPostCard({
           size={40}
           name={post.petName}
         />
-        <View className="ml-3 flex-1">
-          <Text
-            className="font-body-bold text-sm text-snout-ink"
-            style={darkTitle}
-          >
-            {post.author}
-          </Text>
-          <Text
-            className="font-body text-xs text-snout-muted"
-            style={darkMuted}
-          >
+        <View style={styles.cardAuthorCopy}>
+          <Text style={[styles.cardAuthorName, darkTitle]}>{post.author}</Text>
+          <Text style={[styles.cardAuthorMeta, darkMuted]}>
             {post.petName}
             {post.privacy === 'private'
               ? ` · ${t('stories.privacyPrivate')}`
@@ -272,7 +247,7 @@ function StoryPostCard({
         <Ionicons
           name="chevron-forward"
           size={16}
-          color={dark ? STORIES_DARK.muted : '#8A9AAB'}
+          color={dark ? STORIES_DARK.muted : brand.mutedSoft}
         />
       </Pressable>
 
@@ -284,17 +259,14 @@ function StoryPostCard({
             resizeMode="cover"
           />
         ) : (
-          <View className="items-center px-6">
+          <View style={styles.noImage}>
             <PetAvatar
               avatarKey={post.avatarKey}
               species={post.species}
               size={96}
               name={post.petName}
             />
-            <Text
-              className="mt-3 text-center font-body text-sm text-snout-muted"
-              style={darkMuted}
-            >
+            <Text style={[styles.noImageCaption, darkMuted]}>
               {post.caption}
             </Text>
           </View>
@@ -304,48 +276,39 @@ function StoryPostCard({
         <StoryTagsRow post={post} />
       </View>
 
-      <View className="px-4 py-3">
-        <Text
-          className="font-body text-xs uppercase tracking-wide text-snout-muted"
-          style={darkMuted}
-        >
-          {timeAgo}
-        </Text>
-        <View className="mt-3 flex-row items-center gap-5">
+      <View style={styles.cardFooter}>
+        <Text style={[styles.timeAgo, darkMuted]}>{timeAgo}</Text>
+        <View style={styles.actionsIcons}>
           <Pressable
             onPress={() => onToggleLike(post)}
-            className="active:opacity-70"
+            style={({ pressed }) => pressed && styles.pressed}
           >
             <Ionicons
               name={post.liked ? 'heart' : 'heart-outline'}
               size={26}
-              color={post.liked ? brand.rose : brand.muted}
+              color={post.liked ? brand.terracotta : brand.muted}
             />
           </Pressable>
           <Pressable
             onPress={() => onOpenComments(post)}
-            className="active:opacity-70"
+            style={({ pressed }) => pressed && styles.pressed}
           >
             <Ionicons
               name="chatbubble-outline"
               size={24}
-              color={brand.navy}
+              color={brand.accent}
             />
           </Pressable>
           <Pressable
             onPress={() => onShare(post)}
-            className="active:opacity-70"
+            style={({ pressed }) => pressed && styles.pressed}
           >
-            <Ionicons
-              name="share-outline"
-              size={24}
-              color={brand.navy}
-            />
+            <Ionicons name="share-outline" size={24} color={brand.accent} />
           </Pressable>
           {post.mine && onDelete ? (
             <Pressable
               onPress={() => onDelete(post)}
-              className="active:opacity-70"
+              style={({ pressed }) => pressed && styles.pressed}
               accessibilityRole="button"
               accessibilityLabel={t('stories.delete')}
             >
@@ -357,33 +320,20 @@ function StoryPostCard({
             </Pressable>
           ) : null}
         </View>
-        <View className="mt-3 flex-row items-center">
+        <View style={styles.likedRow}>
           <Ionicons
             name="heart"
             size={14}
             color={dark ? STORIES_DARK.text : brand.ink}
           />
-          <Text
-            className="ml-2 flex-1 font-body text-sm text-snout-ink"
-            style={darkTitle}
-          >
-            {likedBy}
-          </Text>
+          <Text style={[styles.likedBy, darkTitle]}>{likedBy}</Text>
         </View>
-        <Text
-          className="mt-2 font-body text-sm text-snout-navy"
-          style={darkMuted}
-        >
-          <Text className="font-body-bold" style={darkTitle}>
-            {post.author}
-          </Text>{' '}
+        <Text style={[styles.captionLine, darkMuted]}>
+          <Text style={[styles.captionAuthor, darkTitle]}>{post.author}</Text>{' '}
           {post.caption}
         </Text>
         <Pressable onPress={() => onOpenComments(post)}>
-          <Text
-            className="mt-1 font-body text-xs text-snout-muted"
-            style={darkMuted}
-          >
+          <Text style={[styles.commentsLink, darkMuted]}>
             {post.likes} {t('stories.likes')}
             {post.commentsCount > 0
               ? ` · ${t('stories.commentsCount', { count: String(post.commentsCount) })}`
@@ -881,7 +831,7 @@ export default function StoriesScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor={dark ? brand.rose : brand.forest}
+              tintColor={brand.accent}
             />
           }
           ListEmptyComponent={
@@ -928,30 +878,28 @@ export default function StoriesScreen() {
         transparent
         onRequestClose={closeCompose}
       >
-        <View className="flex-1 justify-end">
+        <View style={styles.modalRoot}>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('common.close')}
             onPress={closeCompose}
-            className="absolute inset-0 bg-black/40"
+            style={styles.modalScrim}
           />
-          <View className="max-h-[90%] rounded-t-3xl bg-sand-50 px-5 pb-10 pt-5">
-            <View className="mb-2 flex-row items-center justify-between">
-              <Text className="font-display text-2xl text-snout-ink">
-                {t('stories.composeTitle')}
-              </Text>
+          <View style={styles.modalSheet}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t('stories.composeTitle')}</Text>
               <Pressable
                 onPress={closeCompose}
                 accessibilityRole="button"
                 accessibilityLabel={t('common.close')}
-                className="h-10 w-10 items-center justify-center rounded-full bg-sand-200"
+                style={styles.modalClose}
               >
                 <Ionicons name="close" size={22} color={brand.ink} />
               </Pressable>
             </View>
 
             <ScrollView keyboardShouldPersistTaps="handled">
-              <View className="mt-2">
+              <View style={styles.composePhoto}>
                 <PhotoAttachField
                   label={t('stories.photo')}
                   uri={imageUri}
@@ -968,10 +916,8 @@ export default function StoriesScreen() {
 
               {pets.length > 0 ? (
                 <>
-                  <Text className="mt-4 font-body-medium text-sm text-snout-navy">
-                    {t('stories.pickPet')}
-                  </Text>
-                  <View className="mt-2 flex-row flex-wrap gap-2">
+                  <Text style={styles.fieldLabel}>{t('stories.pickPet')}</Text>
+                  <View style={styles.chipWrap}>
                     {pets
                       .filter(
                         (p) => p.species === 'dog' || p.species === 'cat',
@@ -987,14 +933,13 @@ export default function StoriesScreen() {
                                 setSpecies(p.species);
                               }
                             }}
-                            className={`rounded-2xl px-4 py-2.5 ${
-                              active ? 'bg-forest-700' : 'bg-sand-200'
-                            }`}
+                            style={[styles.pickChip, active && styles.pickChipActive]}
                           >
                             <Text
-                              className={`font-body-bold text-sm ${
-                                active ? 'text-sand-50' : 'text-snout-ink'
-                              }`}
+                              style={[
+                                styles.pickChipText,
+                                active && styles.pickChipTextActive,
+                              ]}
                             >
                               {p.name}
                             </Text>
@@ -1005,22 +950,22 @@ export default function StoriesScreen() {
                 </>
               ) : (
                 <>
-                  <Text className="mt-4 font-body-medium text-sm text-snout-navy">
-                    {t('stories.species')}
-                  </Text>
-                  <View className="mt-2 flex-row gap-2">
+                  <Text style={styles.fieldLabel}>{t('stories.species')}</Text>
+                  <View style={styles.rowGap}>
                     {(['cat', 'dog'] as StorySpecies[]).map((s) => (
                       <Pressable
                         key={s}
                         onPress={() => setSpecies(s)}
-                        className={`flex-1 items-center rounded-2xl py-3 ${
-                          species === s ? 'bg-forest-700' : 'bg-sand-200'
-                        }`}
+                        style={[
+                          styles.pickChipFlex,
+                          species === s && styles.pickChipActive,
+                        ]}
                       >
                         <Text
-                          className={`font-body-bold text-sm ${
-                            species === s ? 'text-sand-50' : 'text-snout-ink'
-                          }`}
+                          style={[
+                            styles.pickChipText,
+                            species === s && styles.pickChipTextActive,
+                          ]}
                         >
                           {s === 'cat'
                             ? t('stories.filterCats')
@@ -1032,10 +977,8 @@ export default function StoriesScreen() {
                 </>
               )}
 
-              <Text className="mt-4 font-body-medium text-sm text-snout-navy">
-                {t('stories.privacy')}
-              </Text>
-              <View className="mt-2 flex-row gap-2">
+              <Text style={styles.fieldLabel}>{t('stories.privacy')}</Text>
+              <View style={styles.rowGap}>
                 {(
                   [
                     { id: 'public' as const, label: t('stories.privacyPublic') },
@@ -1048,14 +991,16 @@ export default function StoriesScreen() {
                   <Pressable
                     key={item.id}
                     onPress={() => setPrivacy(item.id)}
-                    className={`flex-1 items-center rounded-2xl py-3 ${
-                      privacy === item.id ? 'bg-forest-700' : 'bg-sand-200'
-                    }`}
+                    style={[
+                      styles.pickChipFlex,
+                      privacy === item.id && styles.pickChipActive,
+                    ]}
                   >
                     <Text
-                      className={`text-center font-body-bold text-xs ${
-                        privacy === item.id ? 'text-sand-50' : 'text-snout-ink'
-                      }`}
+                      style={[
+                        styles.pickChipTextSm,
+                        privacy === item.id && styles.pickChipTextActive,
+                      ]}
                     >
                       {item.label}
                     </Text>
@@ -1063,35 +1008,27 @@ export default function StoriesScreen() {
                 ))}
               </View>
 
-              <Text className="mt-4 font-body-medium text-sm text-snout-navy">
-                {t('stories.tagPets')}
-              </Text>
+              <Text style={styles.fieldLabel}>{t('stories.tagPets')}</Text>
               {pets.length === 0 ? (
-                <Text className="mt-2 font-body text-xs text-snout-muted">
-                  {t('stories.tagPetsEmpty')}
-                </Text>
+                <Text style={styles.fieldHint}>{t('stories.tagPetsEmpty')}</Text>
               ) : (
-                <View className="mt-2 flex-row flex-wrap gap-2">
+                <View style={styles.chipWrap}>
                   {pets.map((p) => {
                     const active = taggedPetIds.includes(p.id);
                     return (
                       <Pressable
                         key={p.id}
                         onPress={() => toggleTaggedPet(p.id)}
-                        className={`rounded-2xl px-4 py-2.5 ${
-                          active ? 'bg-rose-400' : 'bg-sand-200'
-                        }`}
-                        style={
-                          active
-                            ? { backgroundColor: brand.rose }
-                            : undefined
-                        }
+                        style={[
+                          styles.pickChip,
+                          active && styles.tagPetActive,
+                        ]}
                       >
                         <Text
-                          className={`font-body-bold text-sm ${
-                            active ? 'text-white' : 'text-snout-ink'
-                          }`}
-                          style={active ? { color: '#fff' } : undefined}
+                          style={[
+                            styles.pickChipText,
+                            active && styles.pickChipTextActive,
+                          ]}
                         >
                           {p.name}
                         </Text>
@@ -1101,29 +1038,29 @@ export default function StoriesScreen() {
                 </View>
               )}
 
-              <Text className="mt-4 font-body-medium text-sm text-snout-navy">
-                {t('stories.tagFriends')}
-              </Text>
+              <Text style={styles.fieldLabel}>{t('stories.tagFriends')}</Text>
               {friends.length === 0 ? (
-                <Text className="mt-2 font-body text-xs text-snout-muted">
+                <Text style={styles.fieldHint}>
                   {t('stories.tagFriendsEmpty')}
                 </Text>
               ) : (
-                <View className="mt-2 flex-row flex-wrap gap-2">
+                <View style={styles.chipWrap}>
                   {friends.map((f) => {
                     const active = taggedFriendIds.includes(f.id);
                     return (
                       <Pressable
                         key={f.id}
                         onPress={() => toggleTaggedFriend(f.id)}
-                        className="rounded-2xl px-4 py-2.5"
-                        style={{
-                          backgroundColor: active ? brand.navy : brand.mist,
-                        }}
+                        style={[
+                          styles.pickChip,
+                          active && styles.pickChipActive,
+                        ]}
                       >
                         <Text
-                          className="font-body-bold text-sm"
-                          style={{ color: active ? '#fff' : brand.ink }}
+                          style={[
+                            styles.pickChipText,
+                            active && styles.pickChipTextActive,
+                          ]}
                         >
                           {f.name}
                         </Text>
@@ -1133,9 +1070,7 @@ export default function StoriesScreen() {
                 </View>
               )}
 
-              <Text className="mt-4 font-body-medium text-sm text-snout-navy">
-                {t('stories.caption')}
-              </Text>
+              <Text style={styles.fieldLabel}>{t('stories.caption')}</Text>
               <TextInput
                 value={caption}
                 onChangeText={(text) => {
@@ -1144,17 +1079,15 @@ export default function StoriesScreen() {
                 }}
                 placeholder={t('stories.captionPlaceholder')}
                 multiline
-                className="mt-2 min-h-[96px] rounded-2xl border border-sand-300 bg-white px-4 py-3 font-body text-base text-snout-ink"
-                placeholderTextColor="#C8D2C4"
+                style={styles.captionInput}
+                placeholderTextColor={brand.mutedSoft}
               />
 
               {composeError ? (
-                <Text className="mt-3 font-body text-sm leading-5 text-score-poor">
-                  {composeError}
-                </Text>
+                <Text style={styles.composeError}>{composeError}</Text>
               ) : null}
 
-              <View className="mt-5 gap-3">
+              <View style={styles.modalActions}>
                 <PrimaryButton
                   label={t('stories.publish')}
                   loading={publishing}
@@ -1183,49 +1116,43 @@ export default function StoriesScreen() {
           setAuthorCard(null);
         }}
       >
-        <View className="flex-1 justify-end bg-black/40">
-          <View className="rounded-t-3xl bg-sand-50 px-5 pb-10 pt-5">
+        <View style={styles.authorModalRoot}>
+          <View style={styles.modalSheet}>
             {authorCard ? (
               <>
-                <View className="flex-row items-center">
+                <View style={styles.authorHeader}>
                   <PetAvatar
                     avatarKey={authorCard.avatarKey}
                     species={authorCard.species}
                     size={56}
                     name={authorCard.petName}
                   />
-                  <View className="ml-3 flex-1">
-                    <Text className="font-display text-2xl text-snout-ink">
-                      {authorCard.author}
-                    </Text>
-                    <Text className="mt-1 font-body text-sm text-snout-muted">
+                  <View style={styles.authorHeaderCopy}>
+                    <Text style={styles.modalTitle}>{authorCard.author}</Text>
+                    <Text style={styles.authorPet}>
                       {t('stories.authorPet', { name: authorCard.petName })}
                     </Text>
                   </View>
                 </View>
-                <Text className="mt-4 font-body text-xs leading-5 text-snout-muted">
-                  {t('stories.authorHint')}
-                </Text>
+                <Text style={styles.authorHint}>{t('stories.authorHint')}</Text>
                 {authorCard.mine && careStreak ? (
-                  <View className="mt-3 rounded-2xl bg-mist px-4 py-3">
-                    <Text className="font-body-bold text-sm text-snout-ink">
+                  <View style={styles.streakCard}>
+                    <Text style={styles.streakTitle}>
                       {t('stories.careStreakTitle', {
                         count: careStreak.currentStreak,
                       })}
                     </Text>
-                    <Text className="mt-1 font-body text-xs text-snout-muted">
+                    <Text style={styles.streakBest}>
                       {t('stories.careStreakBest', {
                         count: careStreak.bestStreak,
                       })}
                     </Text>
                   </View>
                 ) : null}
-                <View className="mt-5 gap-3">
+                <View style={styles.modalActions}>
                   {authorCard.mine ? (
                     <>
-                      <Text className="text-center font-body text-sm text-snout-muted">
-                        {t('stories.authorSelf')}
-                      </Text>
+                      <Text style={styles.selfHint}>{t('stories.authorSelf')}</Text>
                       {authorCard.postId ? (
                         <PrimaryButton
                           label={t('stories.delete')}
@@ -1280,8 +1207,8 @@ export default function StoriesScreen() {
                         }}
                       />
                       {reportOpen ? (
-                        <View className="gap-2">
-                          <Text className="font-body-medium text-sm text-snout-navy">
+                        <View style={styles.reportBlock}>
+                          <Text style={styles.fieldLabel}>
                             {t('stories.reportPick')}
                           </Text>
                           {(
@@ -1359,23 +1286,22 @@ export default function StoriesScreen() {
   );
 }
 
+const softCard = {
+  backgroundColor: brand.surfaceElevated,
+  shadowColor: brand.shadow.color,
+  shadowOpacity: brand.shadow.opacity,
+  shadowRadius: brand.shadow.radius,
+  shadowOffset: brand.shadow.offset,
+  elevation: 1,
+} as const;
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  darkScreen: {
-    backgroundColor: STORIES_DARK.bg,
-  },
-  feedHeader: {
-    paddingHorizontal: 20,
-    paddingBottom: 8,
-  },
-  feedHeaderDark: {
-    backgroundColor: STORIES_DARK.bg,
-  },
-  moduleNav: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingBottom: 12,
-  },
+  pressed: { opacity: 0.9 },
+  darkScreen: { backgroundColor: STORIES_DARK.bg },
+  feedHeader: { paddingHorizontal: 20, paddingBottom: 8 },
+  feedHeaderDark: { backgroundColor: STORIES_DARK.bg },
+  moduleNav: { flexDirection: 'row', gap: 8, paddingBottom: 12 },
   moduleChip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1385,9 +1311,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
-  moduleChipDark: {
-    backgroundColor: STORIES_DARK.card,
-  },
+  moduleChipDark: { backgroundColor: STORIES_DARK.card },
   moduleChipText: {
     fontFamily: fonts.bodyMedium,
     fontSize: 12.5,
@@ -1407,16 +1331,9 @@ const styles = StyleSheet.create({
     borderRadius: brand.radius.md,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: brand.surfaceElevated,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+    ...softCard,
   },
-  contestsBtnDark: {
-    backgroundColor: STORIES_DARK.card,
-  },
+  contestsBtnDark: { backgroundColor: STORIES_DARK.card },
   quickRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1432,17 +1349,13 @@ const styles = StyleSheet.create({
     borderRadius: brand.radius.pill,
     backgroundColor: brand.chipTrack,
   },
-  quickChipDark: {
-    backgroundColor: STORIES_DARK.card,
-  },
+  quickChipDark: { backgroundColor: STORIES_DARK.card },
   quickChipText: {
     fontFamily: fonts.bodyMedium,
     fontSize: 12.5,
     color: brand.accentDark,
   },
-  quickChipTextDark: {
-    color: brand.rose,
-  },
+  quickChipTextDark: { color: brand.terracotta },
   filterRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1456,40 +1369,23 @@ const styles = StyleSheet.create({
     borderRadius: brand.radius.pill,
     backgroundColor: brand.chipTrack,
   },
-  filterChipDark: {
-    backgroundColor: STORIES_DARK.card,
-  },
-  filterChipActive: {
-    backgroundColor: brand.accentTint,
-  },
+  filterChipDark: { backgroundColor: STORIES_DARK.card },
+  filterChipActive: { backgroundColor: brand.accentTint },
   filterChipText: {
     fontFamily: fonts.bodyMedium,
     fontSize: 12.5,
     color: brand.ink,
   },
-  filterChipTextDark: {
-    color: STORIES_DARK.muted,
-  },
+  filterChipTextDark: { color: STORIES_DARK.muted },
   filterChipTextActive: {
     fontFamily: fonts.bodyBold,
     color: brand.accentDark,
   },
-  listContent: {
-    paddingBottom: 24,
-  },
-  listItem: {
-    paddingHorizontal: 20,
-  },
-  gridContent: {
-    paddingBottom: 24,
-  },
-  gridRow: {
-    gap: 10,
-    paddingHorizontal: 20,
-  },
-  gridItem: {
-    flex: 1,
-  },
+  listContent: { paddingBottom: 24 },
+  listItem: { paddingHorizontal: 20 },
+  gridContent: { paddingBottom: 24 },
+  gridRow: { gap: 10, paddingHorizontal: 20 },
+  gridItem: { flex: 1 },
   emptyWrap: {
     marginTop: 32,
     alignItems: 'center',
@@ -1497,18 +1393,24 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
-  emptyTextDark: {
-    color: STORIES_DARK.muted,
+  emptyTextDark: { color: STORIES_DARK.muted },
+  emptyBtn: { marginTop: 16, width: '100%', paddingHorizontal: 20 },
+  card: {
+    marginBottom: 16,
+    overflow: 'hidden',
+    borderRadius: brand.radius.md,
+    ...softCard,
   },
-  emptyBtn: {
-    marginTop: 16,
-    width: '100%',
-    paddingHorizontal: 20,
+  cardCompact: {
+    marginBottom: 10,
+    overflow: 'hidden',
+    borderRadius: brand.radius.md,
+    ...softCard,
   },
   compactMedia: {
     width: '100%',
@@ -1517,6 +1419,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  compactBody: { paddingHorizontal: 10, paddingVertical: 8 },
+  compactAuthor: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 11,
+    color: brand.ink,
+  },
+  compactCaption: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.ink,
+  },
+  compactActions: {
+    marginTop: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  compactAction: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  compactActionText: {
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.muted,
+  },
+  cardAuthorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  cardAuthorCopy: { flex: 1, marginLeft: 12 },
+  cardAuthorName: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  cardAuthorMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
   listMedia: {
     width: '100%',
     aspectRatio: 4 / 3,
@@ -1524,12 +1468,201 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  tagsUnderImage: {
-    paddingHorizontal: 16,
-    paddingBottom: 4,
+  noImage: { alignItems: 'center', paddingHorizontal: 24 },
+  noImageCaption: {
+    marginTop: 12,
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.muted,
   },
-  fillImage: {
-    width: '100%',
-    height: '100%',
+  tagsUnderImage: { paddingHorizontal: 14, paddingBottom: 4 },
+  fillImage: { width: '100%', height: '100%' },
+  cardFooter: { paddingHorizontal: 14, paddingVertical: 12 },
+  timeAgo: {
+    fontFamily: fonts.body,
+    fontSize: 11,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+    color: brand.muted,
   },
+  actionsIcons: {
+    marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+  },
+  likedRow: {
+    marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  likedBy: {
+    marginLeft: 8,
+    flex: 1,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  captionLine: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.label,
+  },
+  captionAuthor: { fontFamily: fonts.bodyBold, color: brand.ink },
+  commentsLink: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  modalRoot: { flex: 1, justifyContent: 'flex-end' },
+  modalScrim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(21, 34, 51, 0.4)',
+  },
+  modalSheet: {
+    maxHeight: '90%',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    backgroundColor: brand.canvas,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 40,
+  },
+  modalHeader: {
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  modalTitle: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+  },
+  modalClose: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: brand.chipTrack,
+  },
+  composePhoto: { marginTop: 8 },
+  fieldLabel: {
+    marginTop: 16,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 14,
+    color: brand.accentDark,
+  },
+  fieldHint: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  chipWrap: {
+    marginTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  rowGap: { marginTop: 8, flexDirection: 'row', gap: 8 },
+  pickChip: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.chipTrack,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  pickChipFlex: {
+    flex: 1,
+    alignItems: 'center',
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.chipTrack,
+    paddingVertical: 12,
+  },
+  pickChipActive: { backgroundColor: brand.accent },
+  tagPetActive: { backgroundColor: brand.terracotta },
+  pickChipText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  pickChipTextSm: {
+    textAlign: 'center',
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.ink,
+  },
+  pickChipTextActive: { color: '#FFFFFF' },
+  captionInput: {
+    marginTop: 8,
+    minHeight: 96,
+    borderRadius: brand.radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+    textAlignVertical: 'top',
+  },
+  composeError: {
+    marginTop: 12,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+    color: brand.score.poor,
+  },
+  modalActions: { marginTop: 20, gap: 12 },
+  authorModalRoot: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(21, 34, 51, 0.4)',
+  },
+  authorHeader: { flexDirection: 'row', alignItems: 'center' },
+  authorHeaderCopy: { flex: 1, marginLeft: 12 },
+  authorPet: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.muted,
+  },
+  authorHint: {
+    marginTop: 16,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 18,
+    color: brand.muted,
+  },
+  streakCard: {
+    marginTop: 12,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.mist,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  streakTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  streakBest: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  selfHint: {
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.muted,
+  },
+  reportBlock: { gap: 8 },
 });

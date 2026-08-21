@@ -6,7 +6,7 @@ import { ListRow } from '@/src/components/ListRow';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { listSpotlightWinners } from '@/src/services/spotlight';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function SpotlightWinnersScreen() {
   const winners = listSpotlightWinners();
@@ -42,8 +42,8 @@ export default function SpotlightWinnersScreen() {
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

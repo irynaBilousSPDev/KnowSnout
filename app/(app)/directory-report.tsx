@@ -9,13 +9,14 @@ import {
 } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { queueFraudReport } from '@/src/services/directoryReviews';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Скарга на шахрайство. */
 export default function DirectoryReportScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const [reason, setReason] = useState('');
@@ -44,16 +45,16 @@ export default function DirectoryReportScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('directories.reportTitle')}
-            subtitle={t('directories.reportSubtitle')}
+            lead={t('directories.reportSubtitle')}
           />
           <Text style={styles.label}>{t('directories.reportReason')}</Text>
           <TextInput
             value={reason}
             onChangeText={setReason}
             placeholder={t('directories.reportReasonPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
           />
           <Text style={styles.label}>{t('directories.reportDetails')}</Text>
@@ -61,7 +62,7 @@ export default function DirectoryReportScreen() {
             value={details}
             onChangeText={setDetails}
             placeholder={t('directories.reportDetailsPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             multiline
             style={[styles.input, styles.area]}
           />
@@ -82,18 +83,18 @@ const styles = StyleSheet.create({
   label: {
     marginTop: 12,
     marginBottom: 6,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   input: {
     borderWidth: 1,
     borderColor: brand.mistBorder,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },

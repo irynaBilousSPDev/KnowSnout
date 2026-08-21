@@ -14,7 +14,7 @@ import {
   getLatestInvite,
   type FriendInvite,
 } from '@/src/services/friends';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function FriendInviteScreen() {
   const [invite, setInvite] = useState<FriendInvite | null>(null);
@@ -104,22 +104,20 @@ const styles = StyleSheet.create({
   pad: { flex: 1, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   hint: {
     marginBottom: 16,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
     color: brand.forest,
   },
   codeCard: {
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+    borderRadius: brand.radius.md,
+        backgroundColor: brand.surfaceElevated,
     paddingVertical: 28,
     paddingHorizontal: 16,
     alignItems: 'center',
   },
   codeLabel: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 12,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
@@ -134,7 +132,7 @@ const styles = StyleSheet.create({
   },
   link: {
     marginTop: 14,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     color: brand.ink,
     textAlign: 'center',

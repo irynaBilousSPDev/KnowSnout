@@ -10,15 +10,15 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import {
   listDirectoryPlaces,
   type DirectoryCategoryId,
   type DirectoryPlace,
 } from '@/src/services/directories';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 function isCategory(v: string | undefined): v is DirectoryCategoryId {
   return (
@@ -31,6 +31,7 @@ function isCategory(v: string | undefined): v is DirectoryCategoryId {
   );
 }
 
+/** HTML kit · Довідник список. */
 export default function DirectoryListScreen() {
   const { category } = useLocalSearchParams<{ category?: string }>();
   const cat = isCategory(category) ? category : 'vets';
@@ -51,16 +52,16 @@ export default function DirectoryListScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t(`directories.cat.${cat}`)}
-            subtitle={t('directories.listSubtitle')}
+            lead={t('directories.listSubtitle')}
           />
           <Text style={styles.label}>{t('directories.cityFilter')}</Text>
           <TextInput
             value={city}
             onChangeText={setCity}
             placeholder={t('directories.cityPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
           />
           {places.map((place) => (
@@ -73,7 +74,7 @@ export default function DirectoryListScreen() {
                 <Ionicons
                   name="location-outline"
                   size={22}
-                  color={brand.navy}
+                  color={brand.accent}
                 />
               }
               onPress={() =>
@@ -97,25 +98,25 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   label: {
     marginBottom: 6,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   input: {
     marginBottom: 14,
     borderWidth: 1,
     borderColor: brand.mistBorder,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

@@ -1,10 +1,11 @@
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
+import { brand, fonts } from '@/src/theme/brand';
 
 const PLANS = [
   { id: 'free', priceKey: 'subscription.priceFree' as const },
@@ -12,16 +13,19 @@ const PLANS = [
   { id: 'pro', priceKey: 'subscription.pricePro' as const },
 ];
 
+/** HTML kit · Підписка — plan cards + accent CTA. */
 export default function SubscriptionScreen() {
   return (
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('subscription.title')}
-            subtitle={t('subscription.subtitle')}
+            lead={t('subscription.subtitle')}
           />
-          <Text style={styles.lead}>{t('subscription.lead')}</Text>
+          <View style={styles.leadCard}>
+            <Text style={styles.lead}>{t('subscription.lead')}</Text>
+          </View>
           {PLANS.map((plan) => (
             <ListRow
               key={plan.id}
@@ -49,12 +53,17 @@ export default function SubscriptionScreen() {
 
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  lead: {
+  leadCard: {
     marginBottom: 12,
-    fontFamily: 'Inter_400Regular',
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
+    padding: 14,
+  },
+  lead: {
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A6B7D',
+    color: brand.accentDark,
   },
   gap: { height: 12 },
 });

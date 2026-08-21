@@ -1,10 +1,18 @@
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Linking, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
-import { ListRow } from '@/src/components/ListRow';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { confirmAction } from '@/src/lib/confirm';
@@ -20,9 +28,34 @@ import {
   type PetCalendarEvent,
 } from '@/src/services/petCalendar';
 import { getPet } from '@/src/services/pets';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 
+const MONTHS_UA = [
+  'СІЧ',
+  'ЛЮТ',
+  'БЕР',
+  'КВІ',
+  'ТРА',
+  'ЧЕР',
+  'ЛИП',
+  'СЕР',
+  'ВЕР',
+  'ЖОВ',
+  'ЛИС',
+  'ГРУ',
+];
+
+function dateParts(iso: string) {
+  const d = new Date(`${iso.slice(0, 10)}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return { day: '—', mon: '' };
+  return {
+    day: String(d.getDate()),
+    mon: MONTHS_UA[d.getMonth()] ?? '',
+  };
+}
+
+/** HTML kit · Календар догляду + Google sync */
 export default function PetCalendarScreen() {
   const params = useLocalSearchParams<{ petId?: string }>();
   const petId = typeof params.petId === 'string' ? params.petId : undefined;
@@ -34,6 +67,7 @@ export default function PetCalendarScreen() {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [saving, setSaving] = useState(false);
+  const [composeOpen, setComposeOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (!petId) {
@@ -72,6 +106,7 @@ export default function PetCalendarScreen() {
       await addEvent({ petId, title, date });
       setTitle('');
       setDate('');
+      setComposeOpen(false);
       setEvents(await listUpcoming(petId));
     } catch (err) {
       notify(
@@ -152,9 +187,19 @@ export default function PetCalendarScreen() {
     <AppScreen edges={['bottom']}>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.subtitle}>
-            {pet.name} · {t('calendar.subtitle')}
-          </Text>
+          <View style={styles.headerRow}>
+            <Text style={styles.title}>
+              {t('calendar.titleFor', { name: pet.name })}
+            </Text>
+            <Pressable
+              onPress={() => setComposeOpen((v) => !v)}
+              style={styles.addCircle}
+              accessibilityRole="button"
+              accessibilityLabel={t('calendar.add')}
+            >
+              <Ionicons name="add" size={22} color={brand.ink} />
+            </Pressable>
+          </View>
 
           <PrimaryButton
             label={t('calendar.googleSync')}
@@ -169,42 +214,69 @@ export default function PetCalendarScreen() {
             style={styles.syncBtn}
           />
 
-          <View style={styles.form}>
-            <TextInput
-              value={title}
-              onChangeText={setTitle}
-              placeholder={t('calendar.titlePlaceholder')}
-              placeholderTextColor="#9bbba5"
-              style={styles.input}
-            />
-            <TextInput
-              value={date}
-              onChangeText={setDate}
-              placeholder={t('calendar.datePlaceholder')}
-              placeholderTextColor="#9bbba5"
-              autoCapitalize="none"
-              style={styles.input}
-            />
-            <PrimaryButton
-              label={t('calendar.add')}
-              onPress={() => void onAdd()}
-              loading={saving}
-              disabled={!title.trim() || !date.trim()}
-            />
-          </View>
+          {composeOpen ? (
+            <View style={styles.form}>
+              <TextInput
+                value={title}
+                onChangeText={setTitle}
+                placeholder={t('calendar.titlePlaceholder')}
+                placeholderTextColor={brand.mutedSoft}
+                style={styles.input}
+              />
+              <TextInput
+                value={date}
+                onChangeText={setDate}
+                placeholder={t('calendar.datePlaceholder')}
+                placeholderTextColor={brand.mutedSoft}
+                autoCapitalize="none"
+                style={styles.input}
+              />
+              <PrimaryButton
+                label={t('calendar.add')}
+                onPress={() => void onAdd()}
+                loading={saving}
+                disabled={!title.trim() || !date.trim()}
+              />
+            </View>
+          ) : null}
 
           {events.length === 0 ? (
             <Text style={styles.empty}>{t('calendar.empty')}</Text>
           ) : (
-            events.map((event) => (
-              <ListRow
-                key={event.id}
-                title={event.title}
-                meta={event.date}
-                onPress={() => void onDelete(event)}
-                showChevron={false}
-              />
-            ))
+            events.map((event, index) => {
+              const { day, mon } = dateParts(event.date);
+              const highlight = index === 0;
+              return (
+                <Pressable
+                  key={event.id}
+                  onLongPress={() => void onDelete(event)}
+                  style={[styles.card, highlight && styles.cardHighlight]}
+                >
+                  <View style={styles.dateCol}>
+                    <Text
+                      style={[
+                        styles.dayNum,
+                        highlight && styles.dayNumHighlight,
+                      ]}
+                    >
+                      {day}
+                    </Text>
+                    <Text style={styles.monLabel}>{mon}</Text>
+                  </View>
+                  <View style={styles.cardCopy}>
+                    <Text style={styles.cardTitle}>{event.title}</Text>
+                    <Text style={styles.cardMeta}>{event.date}</Text>
+                  </View>
+                  {index === 1 ? (
+                    <Ionicons
+                      name="calendar-outline"
+                      size={16}
+                      color={brand.successDark}
+                    />
+                  ) : null}
+                </Pressable>
+              );
+            })
           )}
         </View>
       </ScrollView>
@@ -213,39 +285,98 @@ export default function PetCalendarScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40 },
-  subtitle: {
-    marginBottom: 14,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    color: '#5A6B7D',
+  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  title: {
+    flex: 1,
+    fontFamily: fonts.title,
+    fontSize: 19,
+    lineHeight: 24,
+    color: brand.ink,
+  },
+  addCircle: {
+    height: 34,
+    width: 34,
+    borderRadius: 17,
+    backgroundColor: brand.chipTrack,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   syncBtn: { marginBottom: 10 },
   form: {
-    marginTop: 4,
-    marginBottom: 20,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    marginBottom: 16,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
     gap: 10,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   input: {
-    borderRadius: 14,
-    borderWidth: 1,
+    borderRadius: brand.radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: brand.mistBorder,
-    backgroundColor: brand.surface,
+    backgroundColor: brand.canvas,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    marginTop: 12,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.muted,
+  },
+  card: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    padding: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  cardHighlight: {
+    borderWidth: 2,
+    borderColor: brand.accentSoft,
+  },
+  dateCol: { width: 36, alignItems: 'center' },
+  dayNum: {
+    fontFamily: fonts.title,
     fontSize: 15,
-    lineHeight: 22,
-    color: '#5A6B7D',
+    color: brand.ink,
+  },
+  dayNumHighlight: { color: brand.accentDark },
+  monLabel: {
+    fontFamily: fonts.body,
+    fontSize: 9.5,
+    color: brand.muted,
+  },
+  cardCopy: { flex: 1, minWidth: 0 },
+  cardTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  cardMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
   },
 });

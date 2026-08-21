@@ -18,21 +18,18 @@ import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { Section } from '@/src/components/Section';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
+import { petAgeLabel, speciesLabel } from '@/src/lib/petMeta';
 import { deletePet, listPets } from '@/src/services/pets';
 import { brand, fonts } from '@/src/theme/brand';
-import type { CompanionSpecies, PetRow } from '@/src/types/pet';
-
-function speciesLabel(species: CompanionSpecies) {
-  if (species === 'dog') return t('pets.speciesDog');
-  if (species === 'cat') return t('pets.speciesCat');
-  if (species === 'bird') return t('pets.speciesBird');
-  return t('pets.speciesOther');
-}
+import type { PetRow } from '@/src/types/pet';
 
 function petMeta(pet: PetRow) {
-  const parts = [speciesLabel(pet.species)];
-  if (pet.breed) parts.push(pet.breed);
-  if (pet.weight_kg != null) parts.push(`${pet.weight_kg} ${t('pets.kg')}`);
+  const parts: string[] = [];
+  if (pet.breed?.trim()) parts.push(pet.breed.trim());
+  else parts.push(speciesLabel(pet.species));
+  const age = petAgeLabel(pet.birth_date);
+  if (age) parts.push(age);
+  else if (pet.breed?.trim()) parts.push(speciesLabel(pet.species));
   return parts.join(' · ');
 }
 

@@ -7,7 +7,7 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { addQuizXp } from '@/src/services/gamification';
 import { getZoomQuestions } from '@/src/services/quizMocks';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function QuizZoomScreen() {
   const questions = useMemo(() => getZoomQuestions(), []);
@@ -106,16 +106,14 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   zoomCard: {
     marginBottom: 14,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.mist,
+    borderRadius: brand.radius.md,
+        backgroundColor: brand.mist,
     padding: 18,
     minHeight: 120,
     justifyContent: 'center',
   },
   zoomLabel: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
@@ -123,29 +121,27 @@ const styles = StyleSheet.create({
   },
   zoomBody: {
     marginTop: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 18,
     color: brand.ink,
   },
   choice: {
     marginBottom: 10,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 14,
   },
   choiceOk: { borderColor: brand.score.good, backgroundColor: '#E8F8F2' },
   choiceBad: { borderColor: brand.score.poor, backgroundColor: '#FBEDEA' },
   choiceText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 15,
     color: brand.ink,
   },
   score: {
     marginBottom: 16,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 22,
     color: brand.ink,
   },

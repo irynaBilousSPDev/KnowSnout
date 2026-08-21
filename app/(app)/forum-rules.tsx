@@ -4,7 +4,7 @@ import { AppScreen } from '@/src/components/AppScreen';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { FORUM_RULES_UA } from '@/src/services/forum';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function ForumRulesScreen() {
   return (
@@ -28,13 +28,11 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   card: {
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     padding: 16,
   },
   body: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 24,
     color: brand.ink,

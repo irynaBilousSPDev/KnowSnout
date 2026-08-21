@@ -1,17 +1,25 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
@@ -34,6 +42,7 @@ import {
   listPets,
   updatePet,
 } from '@/src/services/pets';
+import { brand, fonts } from '@/src/theme/brand';
 import type {
   ActivityLevel,
   CoatType,
@@ -41,19 +50,13 @@ import type {
   DietType,
   IndoorOutdoor,
   LifeStage,
+  PetOrigin,
   PetSex,
   SizeCategory,
 } from '@/src/types/pet';
 
 type ChipOption<T extends string> = { id: T; label: string };
-
-function SectionTitle({ children }: { children: string }) {
-  return (
-    <Text className="mb-3 mt-2 font-body-bold text-lg text-forest-800">
-      {children}
-    </Text>
-  );
-}
+type SectionId = 'basics' | 'health' | 'nutrition' | 'docs' | 'origin';
 
 function OptionChips<T extends string>({
   options,
@@ -65,21 +68,20 @@ function OptionChips<T extends string>({
   onChange: (next: T) => void;
 }) {
   return (
-    <View className="mb-4 flex-row flex-wrap gap-2">
+    <View style={styles.chipsRow}>
       {options.map((option) => {
         const active = value === option.id;
         return (
           <Pressable
             key={option.id}
             onPress={() => onChange(option.id)}
-            className={`rounded-2xl px-4 py-2.5 ${
-              active ? 'bg-forest-700' : 'bg-forest-100'
-            }`}
+            style={[styles.chip, active ? styles.chipActive : styles.chipIdle]}
           >
             <Text
-              className={`font-body-bold text-sm ${
-                active ? 'text-sand-50' : 'text-forest-700'
-              }`}
+              style={[
+                styles.chipText,
+                active ? styles.chipTextActive : styles.chipTextIdle,
+              ]}
             >
               {option.label}
             </Text>
@@ -88,6 +90,10 @@ function OptionChips<T extends string>({
       })}
     </View>
   );
+}
+
+function FieldLabel({ children }: { children: string }) {
+  return <Text style={styles.fieldLabel}>{children}</Text>;
 }
 
 function parseWeight(raw: string): number | null {
@@ -106,17 +112,30 @@ type SterilizedChoice = 'yes' | 'no' | 'unknown';
 
 export default function PetFormScreen() {
   const navigation = useNavigation();
-  const params = useLocalSearchParams<{ id?: string }>();
+  const params = useLocalSearchParams<{
+    id?: string;
+    breed?: string;
+    species?: string;
+  }>();
   const petId = typeof params.id === 'string' ? params.id : undefined;
   const isEdit = Boolean(petId);
+  const prefillBreed =
+    typeof params.breed === 'string' ? params.breed.trim() : '';
+  const prefillSpecies =
+    params.species === 'cat' || params.species === 'dog'
+      ? params.species
+      : null;
 
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [openSection, setOpenSection] = useState<SectionId>('basics');
 
   const [name, setName] = useState('');
-  const [species, setSpecies] = useState<CompanionSpecies>('dog');
-  const [breed, setBreed] = useState('');
+  const [species, setSpecies] = useState<CompanionSpecies>(
+    prefillSpecies ?? 'dog',
+  );
+  const [breed, setBreed] = useState(prefillBreed);
   const [sex, setSex] = useState<PetSex>('unknown');
   const [birthDate, setBirthDate] = useState('');
   const [weight, setWeight] = useState('');
@@ -138,6 +157,7 @@ export default function PetFormScreen() {
   const [personality, setPersonality] = useState('');
   const [marks, setMarks] = useState('');
   const [acquiredDate, setAcquiredDate] = useState('');
+  const [origin, setOrigin] = useState<PetOrigin>('home');
   const [passport, setPassport] = useState('');
   const [vetName, setVetName] = useState('');
   const [vetPhone, setVetPhone] = useState('');
@@ -147,11 +167,88 @@ export default function PetFormScreen() {
 
   const avatarChoices = useMemo(() => avatarsForSpecies(species), [species]);
 
+  const sectionComplete = useMemo(() => {
+    const basics =
+      Boolean(name.trim()) ||
+      Boolean(breed.trim()) ||
+      Boolean(birthDate.trim()) ||
+      sex !== 'unknown' ||
+      Boolean(colorCoat.trim()) ||
+      coatType !== 'unknown' ||
+      sizeCategory !== 'unknown' ||
+      Boolean(personality.trim()) ||
+      Boolean(marks.trim()) ||
+      Boolean(avatarUri);
+    const health =
+      Boolean(weight.trim()) ||
+      Boolean(idealWeight.trim()) ||
+      lifeStage !== 'unknown' ||
+      sterilized !== 'unknown' ||
+      Boolean(allergies.trim()) ||
+      Boolean(conditions.trim()) ||
+      Boolean(medications.trim()) ||
+      activity !== 'unknown' ||
+      Boolean(vetName.trim()) ||
+      Boolean(vetPhone.trim());
+    const nutrition =
+      Boolean(favoriteFood.trim()) ||
+      dietType !== 'unknown' ||
+      indoorOutdoor !== 'unknown';
+    const docs =
+      Boolean(chipCode.trim()) ||
+      Boolean(passport.trim()) ||
+      Boolean(notes.trim());
+    const originDone =
+      Boolean(acquiredDate.trim()) || origin === 'shelter';
+    return {
+      basics,
+      health,
+      nutrition,
+      docs,
+      origin: originDone,
+    } as const;
+  }, [
+    name,
+    breed,
+    birthDate,
+    sex,
+    colorCoat,
+    coatType,
+    sizeCategory,
+    personality,
+    marks,
+    avatarUri,
+    weight,
+    idealWeight,
+    lifeStage,
+    sterilized,
+    allergies,
+    conditions,
+    medications,
+    activity,
+    vetName,
+    vetPhone,
+    favoriteFood,
+    dietType,
+    indoorOutdoor,
+    chipCode,
+    passport,
+    notes,
+    acquiredDate,
+    origin,
+  ]);
+
+  const completedCount = useMemo(
+    () =>
+      (['basics', 'health', 'nutrition', 'docs', 'origin'] as const).filter(
+        (id) => sectionComplete[id],
+      ).length,
+    [sectionComplete],
+  );
+
   useLayoutEffect(() => {
-    navigation.setOptions({
-      title: isEdit ? t('pets.formEditTitle') : t('pets.formAddTitle'),
-    });
-  }, [isEdit, navigation]);
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   useEffect(() => {
     let cancelled = false;
@@ -161,7 +258,9 @@ export default function PetFormScreen() {
         if (cancelled) return;
         const used = usedAvatarKeysFromPets(pets, { exceptPetId: petId });
         setUsedKeys(used);
-        if (!petId) setAvatarKey(pickUniqueAvatarKey('dog', used));
+        if (!petId) {
+          setAvatarKey(pickUniqueAvatarKey(prefillSpecies ?? 'dog', used));
+        }
       } catch {
         // keep defaults
       }
@@ -169,7 +268,7 @@ export default function PetFormScreen() {
     return () => {
       cancelled = true;
     };
-  }, [petId]);
+  }, [petId, prefillSpecies]);
 
   useEffect(() => {
     if (!petId) return;
@@ -217,6 +316,7 @@ export default function PetFormScreen() {
         setPersonality(pet.personality ?? '');
         setMarks(pet.distinctive_marks ?? '');
         setAcquiredDate(pet.acquired_date ?? '');
+        setOrigin(pet.origin ?? 'home');
         setPassport(pet.passport_number ?? '');
         setVetName(pet.vet_name ?? '');
         setVetPhone(pet.vet_phone ?? '');
@@ -273,6 +373,7 @@ export default function PetFormScreen() {
     setError(null);
     if (!name.trim()) {
       setError(t('pets.nameRequired'));
+      setOpenSection('basics');
       return;
     }
     if (!isValidDate(birthDate) || !isValidDate(acquiredDate)) {
@@ -282,7 +383,10 @@ export default function PetFormScreen() {
 
     const weightKg = parseWeight(weight);
     const idealKg = parseWeight(idealWeight);
-    if ((weight.trim() && weightKg === null) || (idealWeight.trim() && idealKg === null)) {
+    if (
+      (weight.trim() && weightKg === null) ||
+      (idealWeight.trim() && idealKg === null)
+    ) {
       setError(t('pets.weightInvalid'));
       return;
     }
@@ -317,6 +421,7 @@ export default function PetFormScreen() {
         personality,
         distinctive_marks: marks,
         acquired_date: acquiredDate,
+        origin,
         passport_number: passport,
         vet_name: vetName,
         vet_phone: vetPhone,
@@ -369,37 +474,35 @@ export default function PetFormScreen() {
     }
   };
 
+  const toggleSection = (id: SectionId) => {
+    setOpenSection((prev) => (prev === id ? prev : id));
+  };
+
   if (loading) {
     return <LoadingState message={t('pets.loading')} />;
   }
 
-  return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerClassName="px-5 pb-10 pt-2"
-          keyboardShouldPersistTaps="handled"
-        >
-          <View className="mb-4 items-center">
+  const sections: {
+    id: SectionId;
+    title: string;
+    body: ReactNode;
+  }[] = [
+    {
+      id: 'basics',
+      title: t('pets.sectionBasics'),
+      body: (
+        <>
+          <View style={styles.avatarBlock}>
             <PetAvatar
               avatarKey={avatarKey}
               avatarUri={avatarUri}
               species={species}
-              size={88}
+              size={80}
               name={name}
             />
-            <Text className="mt-3 font-body-medium text-sm text-forest-700">
-              {t('pets.avatar')}
-            </Text>
-            <Text className="mt-1 text-center font-body text-xs text-forest-500">
-              {t('pets.avatarHint')}
-            </Text>
+            <Text style={styles.avatarHint}>{t('pets.avatarHint')}</Text>
           </View>
-
-          <View className="mb-3 flex-row flex-wrap justify-center gap-3">
+          <View style={styles.avatarChoices}>
             {avatarChoices.map((option) => {
               const taken =
                 usedKeys.includes(option.key) && option.key !== avatarKey;
@@ -412,38 +515,37 @@ export default function PetFormScreen() {
                     setAvatarUri(null);
                     setAvatarKey(option.key);
                   }}
-                  className={`rounded-full p-1 ${
-                    active
-                      ? 'border-2 border-forest-700'
-                      : 'border-2 border-transparent'
-                  } ${taken ? 'opacity-35' : ''}`}
+                  style={[
+                    styles.avatarChoice,
+                    active && styles.avatarChoiceActive,
+                    taken && styles.avatarChoiceTaken,
+                  ]}
                 >
                   <PetAvatar
                     avatarKey={option.key}
                     species={species}
-                    size={48}
+                    size={44}
                   />
                 </Pressable>
               );
             })}
           </View>
-
           <PrimaryButton
             label={t('pets.avatarPhoto')}
             variant="secondary"
+            size="sm"
             onPress={() => void onPickAvatarPhoto()}
           />
           {avatarUri ? (
-            <View className="mt-2">
+            <View style={styles.avatarClear}>
               <PrimaryButton
                 label={t('pets.avatarClearPhoto')}
                 variant="ghost"
+                size="sm"
                 onPress={() => setAvatarUri(null)}
               />
             </View>
           ) : null}
-
-          <SectionTitle>{t('pets.sectionBasics')}</SectionTitle>
           <TextField
             label={t('pets.name')}
             value={name}
@@ -451,9 +553,7 @@ export default function PetFormScreen() {
             placeholder={t('pets.namePlaceholder')}
             autoCapitalize="words"
           />
-          <Text className="mb-2 font-body-medium text-sm text-forest-700">
-            {t('pets.species')}
-          </Text>
+          <FieldLabel>{t('pets.species')}</FieldLabel>
           <OptionChips
             value={species}
             onChange={(next) => {
@@ -481,9 +581,7 @@ export default function PetFormScreen() {
             placeholder={t('pets.breedPlaceholder')}
             autoCapitalize="words"
           />
-          <Text className="mb-2 font-body-medium text-sm text-forest-700">
-            {t('pets.sex')}
-          </Text>
+          <FieldLabel>{t('pets.sex')}</FieldLabel>
           <OptionChips
             value={sex}
             onChange={setSex}
@@ -501,38 +599,13 @@ export default function PetFormScreen() {
             keyboardType="numbers-and-punctuation"
           />
           <TextField
-            label={t('pets.acquiredDate')}
-            value={acquiredDate}
-            onChangeText={setAcquiredDate}
-            placeholder={t('pets.birthDatePlaceholder')}
-            keyboardType="numbers-and-punctuation"
-          />
-          <TextField
-            label={t('pets.weight')}
-            value={weight}
-            onChangeText={setWeight}
-            placeholder={t('pets.weightPlaceholder')}
-            keyboardType="decimal-pad"
-          />
-          <TextField
-            label={t('pets.idealWeight')}
-            value={idealWeight}
-            onChangeText={setIdealWeight}
-            placeholder={t('pets.weightPlaceholder')}
-            keyboardType="decimal-pad"
-          />
-
-          <SectionTitle>{t('pets.sectionLook')}</SectionTitle>
-          <TextField
             label={t('pets.colorCoat')}
             value={colorCoat}
             onChangeText={setColorCoat}
             placeholder={t('pets.colorCoatPlaceholder')}
             autoCapitalize="sentences"
           />
-          <Text className="mb-2 font-body-medium text-sm text-forest-700">
-            {t('pets.coatType')}
-          </Text>
+          <FieldLabel>{t('pets.coatType')}</FieldLabel>
           <OptionChips
             value={coatType}
             onChange={setCoatType}
@@ -545,9 +618,7 @@ export default function PetFormScreen() {
               { id: 'unknown', label: t('pets.unknown') },
             ]}
           />
-          <Text className="mb-2 font-body-medium text-sm text-forest-700">
-            {t('pets.sizeCategory')}
-          </Text>
+          <FieldLabel>{t('pets.sizeCategory')}</FieldLabel>
           <OptionChips
             value={sizeCategory}
             onChange={setSizeCategory}
@@ -574,11 +645,45 @@ export default function PetFormScreen() {
             placeholder={t('pets.personalityPlaceholder')}
             autoCapitalize="sentences"
           />
-
-          <SectionTitle>{t('pets.sectionHealth')}</SectionTitle>
-          <Text className="mb-2 font-body-medium text-sm text-forest-700">
-            {t('pets.sterilized')}
-          </Text>
+        </>
+      ),
+    },
+    {
+      id: 'health',
+      title: t('pets.sectionHealthWeight'),
+      body: (
+        <>
+          <TextField
+            label={t('pets.weight')}
+            value={weight}
+            onChangeText={setWeight}
+            placeholder={t('pets.weightPlaceholder')}
+            keyboardType="decimal-pad"
+          />
+          <TextField
+            label={t('pets.idealWeight')}
+            value={idealWeight}
+            onChangeText={setIdealWeight}
+            placeholder={t('pets.weightPlaceholder')}
+            keyboardType="decimal-pad"
+          />
+          <FieldLabel>{t('pets.lifeStage')}</FieldLabel>
+          <OptionChips
+            value={lifeStage}
+            onChange={setLifeStage}
+            options={[
+              ...(species === 'dog'
+                ? [{ id: 'puppy' as const, label: t('pets.lifePuppy') }]
+                : []),
+              ...(species === 'cat'
+                ? [{ id: 'kitten' as const, label: t('pets.lifeKitten') }]
+                : []),
+              { id: 'adult', label: t('pets.lifeAdult') },
+              { id: 'senior', label: t('pets.lifeSenior') },
+              { id: 'unknown', label: t('pets.unknown') },
+            ]}
+          />
+          <FieldLabel>{t('pets.sterilized')}</FieldLabel>
           <OptionChips
             value={sterilized}
             onChange={setSterilized}
@@ -612,11 +717,7 @@ export default function PetFormScreen() {
             autoCapitalize="sentences"
             multiline
           />
-
-          <SectionTitle>{t('pets.sectionLifestyle')}</SectionTitle>
-          <Text className="mb-2 font-body-medium text-sm text-forest-700">
-            {t('pets.activity')}
-          </Text>
+          <FieldLabel>{t('pets.activity')}</FieldLabel>
           <OptionChips
             value={activity}
             onChange={setActivity}
@@ -627,80 +728,7 @@ export default function PetFormScreen() {
               { id: 'unknown', label: t('pets.unknown') },
             ]}
           />
-          <Text className="mb-2 font-body-medium text-sm text-forest-700">
-            {t('pets.dietType')}
-          </Text>
-          <OptionChips
-            value={dietType}
-            onChange={setDietType}
-            options={[
-              { id: 'dry', label: t('pets.dietDry') },
-              { id: 'wet', label: t('pets.dietWet') },
-              { id: 'mixed', label: t('pets.dietMixed') },
-              { id: 'raw', label: t('pets.dietRaw') },
-              { id: 'homemade', label: t('pets.dietHomemade') },
-              { id: 'unknown', label: t('pets.unknown') },
-            ]}
-          />
-          <Text className="mb-2 font-body-medium text-sm text-forest-700">
-            {t('pets.lifeStage')}
-          </Text>
-          <OptionChips
-            value={lifeStage}
-            onChange={setLifeStage}
-            options={[
-              ...(species === 'dog'
-                ? [{ id: 'puppy' as const, label: t('pets.lifePuppy') }]
-                : []),
-              ...(species === 'cat'
-                ? [{ id: 'kitten' as const, label: t('pets.lifeKitten') }]
-                : []),
-              { id: 'adult', label: t('pets.lifeAdult') },
-              { id: 'senior', label: t('pets.lifeSenior') },
-              { id: 'unknown', label: t('pets.unknown') },
-            ]}
-          />
-          <TextField
-            label={t('pets.favoriteFood')}
-            value={favoriteFood}
-            onChangeText={setFavoriteFood}
-            placeholder={t('pets.favoriteFoodEmpty')}
-            autoCapitalize="sentences"
-          />
-          {species === 'cat' || species === 'bird' || species === 'other' ? (
-            <>
-              <Text className="mb-2 font-body-medium text-sm text-forest-700">
-                {t('pets.indoorOutdoor')}
-              </Text>
-              <OptionChips
-                value={indoorOutdoor}
-                onChange={setIndoorOutdoor}
-                options={[
-                  { id: 'indoor', label: t('pets.indoor') },
-                  { id: 'outdoor', label: t('pets.outdoor') },
-                  { id: 'both', label: t('pets.both') },
-                  { id: 'unknown', label: t('pets.unknown') },
-                ]}
-              />
-            </>
-          ) : null}
-
-          <SectionTitle>{t('pets.sectionDocs')}</SectionTitle>
-          <TextField
-            label={t('pets.chip')}
-            value={chipCode}
-            onChangeText={setChipCode}
-            placeholder={t('pets.chipPlaceholder')}
-          />
-          <Text className="-mt-2 mb-4 font-body text-xs leading-5 text-forest-500">
-            {t('pets.chipHint')}
-          </Text>
-          <TextField
-            label={t('pets.passport')}
-            value={passport}
-            onChangeText={setPassport}
-            placeholder={t('pets.passportPlaceholder')}
-          />
+          <Text style={styles.hint}>{t('pets.vaccinesSoon')}</Text>
           <TextField
             label={t('pets.vetName')}
             value={vetName}
@@ -713,6 +741,70 @@ export default function PetFormScreen() {
             onChangeText={setVetPhone}
             keyboardType="numbers-and-punctuation"
           />
+        </>
+      ),
+    },
+    {
+      id: 'nutrition',
+      title: t('pets.sectionNutrition'),
+      body: (
+        <>
+          <TextField
+            label={t('pets.favoriteFood')}
+            value={favoriteFood}
+            onChangeText={setFavoriteFood}
+            placeholder={t('pets.favoriteFoodEmpty')}
+            autoCapitalize="sentences"
+          />
+          <FieldLabel>{t('pets.dietType')}</FieldLabel>
+          <OptionChips
+            value={dietType}
+            onChange={setDietType}
+            options={[
+              { id: 'dry', label: t('pets.dietDry') },
+              { id: 'wet', label: t('pets.dietWet') },
+              { id: 'mixed', label: t('pets.dietMixed') },
+              { id: 'raw', label: t('pets.dietRaw') },
+              { id: 'homemade', label: t('pets.dietHomemade') },
+              { id: 'unknown', label: t('pets.unknown') },
+            ]}
+          />
+          {species === 'cat' || species === 'bird' || species === 'other' ? (
+            <>
+              <FieldLabel>{t('pets.indoorOutdoor')}</FieldLabel>
+              <OptionChips
+                value={indoorOutdoor}
+                onChange={setIndoorOutdoor}
+                options={[
+                  { id: 'indoor', label: t('pets.indoor') },
+                  { id: 'outdoor', label: t('pets.outdoor') },
+                  { id: 'both', label: t('pets.both') },
+                  { id: 'unknown', label: t('pets.unknown') },
+                ]}
+              />
+            </>
+          ) : null}
+        </>
+      ),
+    },
+    {
+      id: 'docs',
+      title: t('pets.sectionDocsChip'),
+      body: (
+        <>
+          <TextField
+            label={t('pets.chip')}
+            value={chipCode}
+            onChangeText={setChipCode}
+            placeholder={t('pets.chipPlaceholder')}
+          />
+          <Text style={styles.hint}>{t('pets.chipHint')}</Text>
+          <TextField
+            label={t('pets.passport')}
+            value={passport}
+            onChangeText={setPassport}
+            placeholder={t('pets.passportPlaceholder')}
+          />
           <TextField
             label={t('pets.notes')}
             value={notes}
@@ -721,30 +813,325 @@ export default function PetFormScreen() {
             autoCapitalize="sentences"
             multiline
           />
+        </>
+      ),
+    },
+    {
+      id: 'origin',
+      title: t('pets.sectionOriginShelter'),
+      body: (
+        <>
+          <FieldLabel>{t('pets.origin')}</FieldLabel>
+          <OptionChips
+            value={origin}
+            onChange={setOrigin}
+            options={[
+              { id: 'home', label: t('pets.originHome') },
+              { id: 'shelter', label: t('pets.originShelter') },
+            ]}
+          />
+          <TextField
+            label={t('pets.acquiredDate')}
+            value={acquiredDate}
+            onChangeText={setAcquiredDate}
+            placeholder={t('pets.birthDatePlaceholder')}
+            keyboardType="numbers-and-punctuation"
+          />
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <AppScreen edges={['top', 'bottom']}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View style={styles.topBar}>
+          <Pressable
+            onPress={() => router.back()}
+            hitSlop={8}
+            accessibilityRole="button"
+          >
+            <Text style={styles.topCancel}>{t('common.cancel')}</Text>
+          </Pressable>
+          <Text style={styles.topTitle}>{t('pets.formEditing')}</Text>
+          <Pressable
+            onPress={() => void onSave()}
+            disabled={saving || !name.trim()}
+            hitSlop={8}
+            accessibilityRole="button"
+          >
+            <Text
+              style={[
+                styles.topSave,
+                (saving || !name.trim()) && styles.topSaveDisabled,
+              ]}
+            >
+              {t('common.save')}
+            </Text>
+          </Pressable>
+        </View>
+
+        <View style={styles.progressBlock}>
+          <View style={styles.progressTrack}>
+            <View
+              style={[
+                styles.progressFill,
+                { width: `${(completedCount / 5) * 100}%` },
+              ]}
+            />
+          </View>
+          <Text style={styles.progressText}>
+            {t('pets.sectionProgress', { done: completedCount, total: 5 })}
+          </Text>
+        </View>
+
+        <ScrollView
+          style={styles.flex}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          {sections.map((section) => {
+            const open = openSection === section.id;
+            const done = sectionComplete[section.id];
+            return (
+              <View
+                key={section.id}
+                style={[
+                  styles.accordion,
+                  done ? styles.accordionDone : styles.accordionIdle,
+                  !done && !open && styles.accordionMuted,
+                  open && styles.accordionOpen,
+                ]}
+              >
+                <Pressable
+                  onPress={() => toggleSection(section.id)}
+                  style={styles.accordionHeader}
+                  accessibilityRole="button"
+                >
+                  <View style={styles.accordionTitleRow}>
+                    {done ? (
+                      <Ionicons
+                        name="checkmark"
+                        size={16}
+                        color={brand.success}
+                      />
+                    ) : null}
+                    <Text style={styles.accordionTitle}>{section.title}</Text>
+                  </View>
+                  <Ionicons
+                    name={open ? 'chevron-up' : 'chevron-down'}
+                    size={16}
+                    color={brand.muted}
+                  />
+                </Pressable>
+                {open ? (
+                  <View style={styles.accordionBody}>{section.body}</View>
+                ) : null}
+              </View>
+            );
+          })}
 
           {error ? (
-            <View className="mb-4">
+            <View style={styles.errorWrap}>
               <ErrorState message={error} />
             </View>
           ) : null}
 
-          <PrimaryButton
-            label={t('pets.save')}
-            onPress={onSave}
-            loading={saving}
-            disabled={!name.trim()}
-          />
           {isEdit ? (
-            <View className="mt-3">
+            <View style={styles.deleteWrap}>
               <PrimaryButton
                 label={t('pets.delete')}
                 variant="ghost"
-                onPress={onDelete}
+                onPress={() => void onDelete()}
               />
             </View>
           ) : null}
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 6,
+  },
+  topCancel: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
+    color: brand.muted,
+    minWidth: 72,
+  },
+  topTitle: {
+    fontFamily: fonts.title,
+    fontSize: 18,
+    color: brand.ink,
+  },
+  topSave: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accent,
+    textAlign: 'right',
+    minWidth: 72,
+  },
+  topSaveDisabled: {
+    opacity: 0.4,
+  },
+  progressBlock: {
+    paddingHorizontal: 20,
+    paddingBottom: 12,
+    paddingTop: 6,
+  },
+  progressTrack: {
+    height: 6,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: brand.accent,
+    borderRadius: brand.radius.pill,
+  },
+  progressText: {
+    marginTop: 6,
+    fontFamily: fonts.body,
+    fontSize: 11.5,
+    color: brand.muted,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 32,
+    gap: 10,
+  },
+  accordion: {
+    borderRadius: brand.radius.lg,
+    backgroundColor: brand.surfaceElevated,
+    borderWidth: 2,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  accordionDone: {
+    borderColor: brand.success,
+  },
+  accordionIdle: {
+    borderColor: brand.mistBorder,
+  },
+  accordionMuted: {
+    opacity: 0.6,
+  },
+  accordionOpen: {
+    borderColor: brand.accent,
+    opacity: 1,
+  },
+  accordionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  accordionTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flex: 1,
+    paddingRight: 8,
+  },
+  accordionTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  accordionBody: {
+    marginTop: 10,
+  },
+  avatarBlock: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  avatarHint: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+    textAlign: 'center',
+  },
+  avatarChoices: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 10,
+    marginBottom: 12,
+  },
+  avatarChoice: {
+    borderRadius: brand.radius.pill,
+    padding: 3,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  avatarChoiceActive: {
+    borderColor: brand.accent,
+  },
+  avatarChoiceTaken: {
+    opacity: 0.35,
+  },
+  avatarClear: {
+    marginTop: 6,
+    marginBottom: 4,
+  },
+  fieldLabel: {
+    marginBottom: 8,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  chipsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
+  chip: {
+    borderRadius: brand.radius.lg,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  chipActive: {
+    backgroundColor: brand.accent,
+  },
+  chipIdle: {
+    backgroundColor: brand.accentTint,
+  },
+  chipText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+  },
+  chipTextActive: {
+    color: '#FFFFFF',
+  },
+  chipTextIdle: {
+    color: brand.accentDark,
+  },
+  hint: {
+    marginTop: -8,
+    marginBottom: 14,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 18,
+    color: brand.muted,
+  },
+  errorWrap: {
+    marginTop: 8,
+  },
+  deleteWrap: {
+    marginTop: 8,
+  },
+});

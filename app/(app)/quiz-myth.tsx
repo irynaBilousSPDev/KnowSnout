@@ -7,7 +7,7 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { addQuizXp } from '@/src/services/gamification';
 import { getMythCards } from '@/src/services/quizMocks';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function QuizMythScreen() {
   const cards = useMemo(() => getMythCards(), []);
@@ -113,14 +113,12 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   card: {
     marginBottom: 16,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+    borderRadius: brand.radius.md,
+        backgroundColor: brand.surfaceElevated,
     padding: 18,
   },
   claimLabel: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
@@ -128,7 +126,7 @@ const styles = StyleSheet.create({
   },
   claim: {
     marginTop: 10,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 20,
     lineHeight: 28,
     color: brand.ink,
@@ -137,26 +135,26 @@ const styles = StyleSheet.create({
   half: { flex: 1 },
   ok: {
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 16,
     color: brand.score.good,
   },
   bad: {
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 16,
     color: brand.score.poor,
   },
   explain: {
     marginBottom: 14,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   score: {
     marginBottom: 16,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 22,
     color: brand.ink,
   },

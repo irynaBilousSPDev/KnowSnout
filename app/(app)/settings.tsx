@@ -14,7 +14,7 @@ import {
   type SettingsPrefs,
   type ThemePref,
 } from '@/src/services/settingsPrefs';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 const LANGS: { id: AppLanguage; label: string }[] = [
   { id: 'uk', label: 'Українська' },
@@ -22,6 +22,7 @@ const LANGS: { id: AppLanguage; label: string }[] = [
   { id: 'en', label: 'English' },
 ];
 
+/** HTML kit · Мова / налаштування — soft chips, accent active. */
 export default function SettingsScreen() {
   const [prefs, setPrefs] = useState<SettingsPrefs | null>(null);
 
@@ -86,7 +87,7 @@ export default function SettingsScreen() {
               <Ionicons
                 name="moon-outline"
                 size={22}
-                color={brand.navy}
+                color={brand.accent}
               />
             }
             onPress={() => void toggleTheme()}
@@ -138,21 +139,21 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 16,
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
-    fontSize: 13,
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   hint: {
     marginBottom: 8,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
   chip: {
-    borderRadius: 12,
+    borderRadius: brand.radius.md,
     borderWidth: 1,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
@@ -160,13 +161,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   chipActive: {
-    backgroundColor: brand.navy,
-    borderColor: brand.navy,
+    backgroundColor: brand.accent,
+    borderColor: brand.accent,
   },
   chipText: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.ink,
   },
-  chipTextActive: { color: brand.surface },
+  chipTextActive: { color: '#FFFFFF' },
 });

@@ -9,14 +9,15 @@ import {
 } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { getUserProfile, saveUserProfile } from '@/src/services/userProfile';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Редагування акаунта. */
 export default function EditAccountScreen() {
   const [displayName, setDisplayName] = useState('');
   const [city, setCity] = useState('');
@@ -66,16 +67,16 @@ export default function EditAccountScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('editAccount.title')}
-            subtitle={t('editAccount.subtitle')}
+            lead={t('editAccount.subtitle')}
           />
           <Text style={styles.label}>{t('me.displayName')}</Text>
           <TextInput
             value={displayName}
             onChangeText={setDisplayName}
             placeholder={t('me.displayNamePlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             autoCapitalize="words"
             style={styles.input}
           />
@@ -84,7 +85,7 @@ export default function EditAccountScreen() {
             value={city}
             onChangeText={setCity}
             placeholder={t('me.cityPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             autoCapitalize="words"
             style={styles.input}
           />
@@ -105,18 +106,18 @@ const styles = StyleSheet.create({
   label: {
     marginTop: 12,
     marginBottom: 6,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   input: {
     borderWidth: 1,
     borderColor: brand.mistBorder,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },

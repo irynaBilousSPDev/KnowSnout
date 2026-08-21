@@ -14,7 +14,7 @@ import {
   listFriendRequests,
   type FriendRequest,
 } from '@/src/services/friends';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function FriendRequestsScreen() {
   const [requests, setRequests] = useState<FriendRequest[]>([]);
@@ -84,9 +84,9 @@ export default function FriendRequestsScreen() {
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   block: { marginBottom: 8 },
   row: { flexDirection: 'row', gap: 8, marginTop: -4, marginBottom: 12 },

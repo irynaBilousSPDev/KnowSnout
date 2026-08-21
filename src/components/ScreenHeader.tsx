@@ -13,22 +13,26 @@ type Props = {
   right?: ReactNode;
 };
 
+/** HTML kit screen title — Manrope 22. */
 export function ScreenHeader({
   title,
   subtitle,
-  logo = 'full',
-  showProfile = true,
+  logo = 'none',
+  showProfile = false,
   right,
 }: Props) {
+  const showTop = logo !== 'none' || right || showProfile;
   return (
     <View style={styles.wrap}>
-      <View style={styles.topRow}>
-        <View style={styles.logoCol}>
-          {logo === 'full' ? <BrandLogo variant="full" size="sm" /> : null}
-          {logo === 'icon' ? <BrandLogo variant="icon" size="sm" /> : null}
+      {showTop ? (
+        <View style={styles.topRow}>
+          <View style={styles.logoCol}>
+            {logo === 'full' ? <BrandLogo variant="full" size="sm" /> : null}
+            {logo === 'icon' ? <BrandLogo variant="icon" size="sm" /> : null}
+          </View>
+          {right ?? (showProfile ? <ProfileEntry /> : null)}
         </View>
-        {right ?? (showProfile ? <ProfileEntry /> : null)}
-      </View>
+      ) : null}
       {title ? <Text style={styles.title}>{title}</Text> : null}
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </View>
@@ -36,7 +40,7 @@ export function ScreenHeader({
 }
 
 const styles = StyleSheet.create({
-  wrap: { marginBottom: 4 },
+  wrap: { marginBottom: 12 },
   topRow: {
     marginBottom: 12,
     flexDirection: 'row',
@@ -45,11 +49,10 @@ const styles = StyleSheet.create({
   },
   logoCol: { flex: 1, paddingRight: 12 },
   title: {
-    fontFamily: fonts.display,
-    fontSize: 30,
-    lineHeight: 36,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
-    letterSpacing: -0.4,
   },
   subtitle: {
     marginTop: 6,

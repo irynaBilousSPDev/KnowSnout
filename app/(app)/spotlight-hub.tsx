@@ -11,7 +11,7 @@ import {
   listSpotlightContests,
   type SpotlightContest,
 } from '@/src/services/spotlight';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function SpotlightHubScreen() {
   const [contests, setContests] = useState<SpotlightContest[]>([]);
@@ -49,7 +49,7 @@ export default function SpotlightHubScreen() {
               style={({ pressed }) => [styles.contest, pressed && styles.pressed]}
             >
               <View style={styles.contestIcon}>
-                <Ionicons name="sparkles" size={20} color={brand.rose} />
+                <Ionicons name="sparkles" size={20} color={brand.accent} />
               </View>
               <View style={styles.contestCopy}>
                 <Text style={styles.contestTitle}>{c.title}</Text>
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 22,
     marginBottom: 10,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 12,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
@@ -114,11 +114,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: brand.roseTint,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   contestIcon: {
     marginRight: 12,
@@ -127,26 +130,26 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: brand.roseTint,
+    backgroundColor: brand.accentTint,
   },
   contestCopy: { flex: 1, paddingRight: 8 },
   contestTitle: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 16,
     color: brand.ink,
   },
   contestBrief: {
     marginTop: 4,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 18,
     color: brand.muted,
   },
   contestMeta: {
     marginTop: 6,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 12,
-    color: brand.forest,
+    color: brand.accentDark,
   },
   linkRow: {
     flexDirection: 'row',
@@ -157,8 +160,8 @@ const styles = StyleSheet.create({
     borderBottomColor: brand.mistBorder,
   },
   linkText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 15,
-    color: brand.navy,
+    color: brand.accentDark,
   },
 });

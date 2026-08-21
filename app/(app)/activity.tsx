@@ -8,7 +8,7 @@ import { ListRow } from '@/src/components/ListRow';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { listActivityFeed, type ActivityItem } from '@/src/services/activity';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 function iconFor(kind: ActivityItem['kind']): keyof typeof Ionicons.glyphMap {
   switch (kind) {
@@ -74,8 +74,8 @@ export default function ActivityScreen() {
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

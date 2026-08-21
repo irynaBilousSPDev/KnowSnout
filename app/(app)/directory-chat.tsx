@@ -9,8 +9,8 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -21,8 +21,9 @@ import {
   type DirectoryChatMessage,
 } from '@/src/services/directoryChat';
 import { getDirectoryPlace } from '@/src/services/directories';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Чат з місцем — accent mine bubbles. */
 export default function DirectoryChatScreen() {
   const params = useLocalSearchParams<{ placeId?: string }>();
   const placeId = typeof params.placeId === 'string' ? params.placeId : '';
@@ -89,12 +90,9 @@ export default function DirectoryChatScreen() {
   }
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: brand.surface }}
-      edges={['bottom']}
-    >
+    <AppScreen edges={['bottom']}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={80}
       >
@@ -135,7 +133,7 @@ export default function DirectoryChatScreen() {
             value={draft}
             onChangeText={setDraft}
             placeholder={t('directories.chatPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             multiline
             style={styles.input}
           />
@@ -150,46 +148,47 @@ export default function DirectoryChatScreen() {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: { flex: 1 },
   header: {
-    borderBottomWidth: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: brand.mistBorder,
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
   title: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.title,
     fontSize: 18,
     color: brand.ink,
   },
   hint: {
     marginTop: 2,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   list: { padding: 16, paddingBottom: 24 },
   empty: {
     marginTop: 40,
     textAlign: 'center',
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   bubble: {
     marginBottom: 8,
     maxWidth: '85%',
-    borderRadius: 16,
+    borderRadius: brand.radius.md,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
   bubbleMine: {
     alignSelf: 'flex-end',
-    backgroundColor: brand.navy,
+    backgroundColor: brand.accent,
   },
   bubbleTheirs: {
     alignSelf: 'flex-start',
@@ -198,13 +197,13 @@ const styles = StyleSheet.create({
     borderColor: brand.mistBorder,
   },
   bubbleText: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     color: brand.ink,
   },
-  bubbleTextMine: { color: brand.surface },
+  bubbleTextMine: { color: '#FFFFFF' },
   composer: {
-    borderTopWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: brand.mistBorder,
     paddingHorizontal: 16,
     paddingTop: 12,
@@ -212,20 +211,20 @@ const styles = StyleSheet.create({
   },
   error: {
     marginBottom: 8,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
-    color: brand.score.poor,
+    color: brand.terracotta,
   },
   input: {
     minHeight: 44,
     maxHeight: 112,
-    borderRadius: 16,
+    borderRadius: brand.radius.md,
     borderWidth: 1,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },

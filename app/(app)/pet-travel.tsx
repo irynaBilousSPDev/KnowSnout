@@ -1,14 +1,9 @@
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import {
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import {
@@ -23,9 +18,10 @@ import {
   setTravelItemDone,
   travelProgressCount,
 } from '@/src/services/travel';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 
+/** HTML kit · Документи/подорожі checklist style for travel packs. */
 export default function PetTravelScreen() {
   const params = useLocalSearchParams<{ petId?: string }>();
   const petId = typeof params.petId === 'string' ? params.petId : undefined;
@@ -86,46 +82,34 @@ export default function PetTravelScreen() {
 
   if (error || !pet) {
     return (
-      <SafeAreaView className="flex-1 bg-sand-50">
+      <AppScreen edges={['bottom']}>
         <ErrorState
           message={error ?? t('pets.notFound')}
           onRetry={() => void load()}
         />
-      </SafeAreaView>
+      </AppScreen>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <ScrollView contentContainerClassName="px-5 pb-12 pt-2">
-        <Text className="font-display text-2xl text-forest-900">
-          {t('travel.title')}
-        </Text>
-        <Text className="mt-1 font-body text-sm text-forest-600">
+    <AppScreen edges={['bottom']}>
+      <ScrollView contentContainerStyle={styles.pad}>
+        <Text style={styles.title}>{t('travel.title')}</Text>
+        <Text style={styles.subtitle}>
           {pet.name} · {t('travel.subtitle')}
         </Text>
 
-        <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
-          <Text className="font-body text-xs leading-5 text-forest-700">
-            {t('travel.disclaimer')}
-          </Text>
-        </View>
-
-        <View className="mt-4 flex-row rounded-2xl bg-forest-100 p-1">
+        <View style={styles.seg}>
           {TRAVEL_PACKS.map((p) => {
             const active = packId === p.id;
             return (
               <Pressable
                 key={p.id}
                 onPress={() => setPackId(p.id)}
-                className={`flex-1 items-center rounded-xl py-2.5 ${
-                  active ? 'bg-forest-700' : ''
-                }`}
+                style={[styles.segOpt, active && styles.segOptOn]}
               >
                 <Text
-                  className={`font-body-bold text-xs ${
-                    active ? 'text-sand-50' : 'text-forest-700'
-                  }`}
+                  style={[styles.segOptText, active && styles.segOptTextOn]}
                 >
                   {p.titleUk}
                 </Text>
@@ -134,56 +118,153 @@ export default function PetTravelScreen() {
           })}
         </View>
 
-        <Text className="mt-4 font-body text-sm leading-5 text-forest-600">
-          {pack.subtitleUk}
-        </Text>
-        <Text className="mt-2 font-body-medium text-sm text-forest-800">
-          {t('travel.progress', { done: counts.done, total: counts.total })}
-        </Text>
+        <View style={styles.disclaimer}>
+          <Text style={styles.disclaimerText}>{t('travel.disclaimer')}</Text>
+        </View>
 
-        <View className="mt-4 gap-2">
-          {pack.items.map((item) => {
-            const done = Boolean(progress[item.id]);
-            return (
-              <Pressable
-                key={item.id}
-                onPress={() => void toggle(item.id)}
-                className={`rounded-3xl border px-4 py-4 ${
-                  done
-                    ? 'border-forest-200 bg-forest-100'
-                    : 'border-forest-100 bg-white'
-                }`}
-              >
-                <View className="flex-row items-start">
-                  <View
-                    className={`mt-0.5 mr-3 h-6 w-6 items-center justify-center rounded-full ${
-                      done ? 'bg-forest-700' : 'border border-forest-300'
-                    }`}
-                  >
-                    {done ? (
-                      <Ionicons name="checkmark" size={14} color={brand.surface} />
-                    ) : null}
-                  </View>
-                  <View className="flex-1">
-                    <Text
-                      className={`font-body-bold text-base ${
-                        done ? 'text-forest-700' : 'text-forest-900'
-                      }`}
-                    >
-                      {item.labelUk}
-                    </Text>
-                    {item.tipUk ? (
-                      <Text className="mt-1 font-body text-xs leading-5 text-forest-500">
-                        {item.tipUk}
-                      </Text>
-                    ) : null}
-                  </View>
-                </View>
-              </Pressable>
-            );
-          })}
+        {pack.items.map((item) => {
+          const done = Boolean(progress[item.id]);
+          return (
+            <Pressable
+              key={item.id}
+              onPress={() => void toggle(item.id)}
+              style={[styles.card, !done && styles.cardDim]}
+            >
+              <View style={styles.cardLeft}>
+                {done ? (
+                  <Ionicons
+                    name="checkmark"
+                    size={17}
+                    color={brand.successDark}
+                  />
+                ) : null}
+                <Text style={styles.cardTitle}>{item.labelUk}</Text>
+              </View>
+              <View style={[styles.chip, done ? styles.chipGood : styles.chipNeutral]}>
+                <Text
+                  style={[styles.chipText, done && styles.chipTextGood]}
+                >
+                  {done ? t('travel.chipDone') : t('travel.chipNeeded')}
+                </Text>
+              </View>
+            </Pressable>
+          );
+        })}
+
+        <View style={styles.progressCard}>
+          <Text style={styles.progressText}>
+            {t('travel.progress', {
+              done: counts.done,
+              total: counts.total,
+            })}
+          </Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+    marginBottom: 4,
+  },
+  subtitle: {
+    marginBottom: 14,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  seg: {
+    flexDirection: 'row',
+    backgroundColor: brand.chipTrack,
+    borderRadius: brand.radius.md,
+    padding: 4,
+    marginBottom: 12,
+  },
+  segOpt: {
+    flex: 1,
+    alignItems: 'center',
+    borderRadius: 12,
+    paddingVertical: 10,
+  },
+  segOptOn: { backgroundColor: brand.surfaceElevated },
+  segOptText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  segOptTextOn: { color: brand.ink },
+  disclaimer: {
+    marginBottom: 12,
+    borderRadius: brand.radius.sm,
+    backgroundColor: brand.accentTint,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  disclaimerText: {
+    fontFamily: fonts.body,
+    fontSize: 11,
+    lineHeight: 16,
+    color: brand.accentDark,
+  },
+  card: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  cardDim: { opacity: 0.7 },
+  cardLeft: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    minWidth: 0,
+  },
+  cardTitle: {
+    flex: 1,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  chip: {
+    borderRadius: brand.radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  chipGood: { backgroundColor: brand.successTint },
+  chipNeutral: { backgroundColor: brand.chipTrack },
+  chipText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
+    color: brand.muted,
+  },
+  chipTextGood: { color: brand.successDark },
+  progressCard: {
+    marginTop: 4,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.successTint,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  progressText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.successDark,
+  },
+});

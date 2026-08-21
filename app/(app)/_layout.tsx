@@ -88,7 +88,7 @@ export default function AppLayout() {
       <Stack.Screen
         name="pet-form"
         options={{
-          headerShown: true,
+          headerShown: false,
           title: t('pets.formAddTitle'),
         }}
       />
@@ -208,14 +208,14 @@ export default function AppLayout() {
         name="plant-result"
         options={{
           headerShown: true,
-          title: t('journal.plantDetailTitle'),
+          title: t('plants.resultTitle'),
         }}
       />
       <Stack.Screen
         name="breed-result"
         options={{
           headerShown: true,
-          title: t('journal.breedDetailTitle'),
+          title: t('breed.resultTitle'),
         }}
       />
       <Stack.Screen

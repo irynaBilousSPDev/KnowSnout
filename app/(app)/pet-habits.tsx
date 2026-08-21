@@ -8,10 +8,10 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
-import { ListRow } from '@/src/components/ListRow';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { confirmAction } from '@/src/lib/confirm';
@@ -26,9 +26,10 @@ import {
   type HabitKind,
   type PetHabit,
 } from '@/src/services/petHabits';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 
+/** HTML kit · Звички (добрі й погані) */
 export default function PetHabitsScreen() {
   const params = useLocalSearchParams<{ petId?: string }>();
   const petId = typeof params.petId === 'string' ? params.petId : undefined;
@@ -41,6 +42,7 @@ export default function PetHabitsScreen() {
   const [label, setLabel] = useState('');
   const [kind, setKind] = useState<HabitKind>('good');
   const [saving, setSaving] = useState(false);
+  const [composeOpen, setComposeOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (!petId) {
@@ -79,6 +81,7 @@ export default function PetHabitsScreen() {
       const row = await addHabit({ petId, label, kind });
       setHabits((prev) => [row, ...prev]);
       setLabel('');
+      setComposeOpen(false);
       showToast(t('toast.habitSaved'));
     } catch (err) {
       notify(
@@ -118,70 +121,114 @@ export default function PetHabitsScreen() {
     );
   }
 
+  const good = habits.filter((h) => h.kind === 'good');
+  const work = habits.filter((h) => h.kind === 'bad');
+
   return (
     <AppScreen edges={['bottom']}>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.subtitle}>
-            {pet.name} · {t('habits.subtitle')}
-          </Text>
-
-          <View style={styles.form}>
-            <TextInput
-              value={label}
-              onChangeText={setLabel}
-              placeholder={t('habits.labelPlaceholder')}
-              placeholderTextColor="#9bbba5"
-              style={styles.input}
-            />
-            <View style={styles.kindRow}>
-              {(['good', 'bad'] as const).map((value) => {
-                const active = kind === value;
-                return (
-                  <Pressable
-                    key={value}
-                    onPress={() => setKind(value)}
-                    style={[styles.kindChip, active && styles.kindChipActive]}
-                  >
-                    <Text
-                      style={[
-                        styles.kindLabel,
-                        active && styles.kindLabelActive,
-                      ]}
-                    >
-                      {value === 'good'
-                        ? t('habits.kindGood')
-                        : t('habits.kindBad')}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-            <PrimaryButton
-              label={t('habits.add')}
-              onPress={() => void onAdd()}
-              loading={saving}
-              disabled={!label.trim()}
-            />
+          <View style={styles.headerRow}>
+            <Text style={styles.title}>
+              {t('habits.titleFor', { name: pet.name })}
+            </Text>
+            <Pressable
+              onPress={() => setComposeOpen((v) => !v)}
+              style={styles.addCircle}
+              accessibilityRole="button"
+              accessibilityLabel={t('habits.add')}
+            >
+              <Ionicons name="add" size={22} color={brand.ink} />
+            </Pressable>
           </View>
 
-          {habits.length === 0 ? (
+          {composeOpen ? (
+            <View style={styles.form}>
+              <TextInput
+                value={label}
+                onChangeText={setLabel}
+                placeholder={t('habits.labelPlaceholder')}
+                placeholderTextColor={brand.mutedSoft}
+                style={styles.input}
+              />
+              <View style={styles.kindRow}>
+                {(['good', 'bad'] as const).map((value) => {
+                  const active = kind === value;
+                  return (
+                    <Pressable
+                      key={value}
+                      onPress={() => setKind(value)}
+                      style={[styles.kindChip, active && styles.kindChipActive]}
+                    >
+                      <Text
+                        style={[
+                          styles.kindLabel,
+                          active && styles.kindLabelActive,
+                        ]}
+                      >
+                        {value === 'good'
+                          ? t('habits.kindGood')
+                          : t('habits.kindBad')}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+              <PrimaryButton
+                label={t('habits.add')}
+                onPress={() => void onAdd()}
+                loading={saving}
+                disabled={!label.trim()}
+              />
+            </View>
+          ) : null}
+
+          <Text style={styles.sectionGood}>{t('habits.sectionGood')}</Text>
+          {good.length === 0 ? (
             <Text style={styles.empty}>{t('habits.empty')}</Text>
           ) : (
-            habits.map((habit) => (
-              <ListRow
+            good.map((habit, i) => (
+              <Pressable
                 key={habit.id}
-                title={habit.label}
-                meta={
-                  habit.kind === 'good'
-                    ? t('habits.kindGood')
-                    : t('habits.kindBad')
-                }
-                onPress={() => void onDelete(habit)}
-                showChevron={false}
-              />
+                onLongPress={() => void onDelete(habit)}
+                style={styles.card}
+              >
+                <Text style={styles.cardTitle}>{habit.label}</Text>
+                <View style={[styles.chip, styles.chipGood]}>
+                  <Text style={[styles.chipText, styles.chipTextGood]}>
+                    {i === 0 ? t('habits.freqOften') : t('habits.freqAlways')}
+                  </Text>
+                </View>
+              </Pressable>
             ))
           )}
+
+          <Text style={styles.sectionWork}>{t('habits.sectionWork')}</Text>
+          {work.length === 0 ? (
+            <Text style={styles.empty}>{t('habits.empty')}</Text>
+          ) : (
+            work.map((habit, i) => (
+              <Pressable
+                key={habit.id}
+                onLongPress={() => void onDelete(habit)}
+                style={styles.card}
+              >
+                <Text style={styles.cardTitle}>{habit.label}</Text>
+                <View style={[styles.chip, styles.chipWarn]}>
+                  <Text style={[styles.chipText, styles.chipTextWarn]}>
+                    {i === 0 ? t('habits.freqOften') : t('habits.freqSometimes')}
+                  </Text>
+                </View>
+              </Pressable>
+            ))
+          )}
+
+          <PrimaryButton
+            label={t('habits.addPill')}
+            variant="secondary"
+            onPress={() => setComposeOpen(true)}
+            style={styles.addPill}
+          />
         </View>
       </ScrollView>
     </AppScreen>
@@ -189,57 +236,116 @@ export default function PetHabitsScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40 },
-  subtitle: {
-    marginBottom: 16,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    color: '#5A6B7D',
+  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  title: {
+    flex: 1,
+    fontFamily: fonts.title,
+    fontSize: 19,
+    lineHeight: 24,
+    color: brand.ink,
+  },
+  addCircle: {
+    height: 34,
+    width: 34,
+    borderRadius: 17,
+    backgroundColor: brand.chipTrack,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   form: {
-    marginBottom: 20,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    marginBottom: 18,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
     gap: 10,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   input: {
-    borderRadius: 14,
-    borderWidth: 1,
+    borderRadius: brand.radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: brand.mistBorder,
-    backgroundColor: brand.surface,
+    backgroundColor: brand.canvas,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },
   kindRow: { flexDirection: 'row', gap: 8 },
   kindChip: {
     flex: 1,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surface,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
     paddingVertical: 10,
     alignItems: 'center',
   },
-  kindChipActive: {
-    backgroundColor: brand.navy,
-    borderColor: brand.navy,
-  },
+  kindChipActive: { backgroundColor: brand.accent },
   kindLabel: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.ink,
   },
   kindLabelActive: { color: '#FFFFFF' },
-  empty: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 15,
-    lineHeight: 22,
-    color: '#5A6B7D',
+  sectionGood: {
+    marginBottom: 8,
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.successDark,
   },
+  sectionWork: {
+    marginTop: 16,
+    marginBottom: 8,
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.accentDark,
+  },
+  card: {
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  cardTitle: {
+    flex: 1,
+    fontFamily: fonts.body,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  chip: {
+    borderRadius: brand.radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  chipGood: { backgroundColor: brand.successTint },
+  chipWarn: { backgroundColor: brand.terracottaTint },
+  chipText: { fontFamily: fonts.bodySemi, fontSize: 11 },
+  chipTextGood: { color: brand.successDark },
+  chipTextWarn: { color: brand.terracotta },
+  empty: {
+    marginBottom: 8,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  addPill: { marginTop: 12 },
 });

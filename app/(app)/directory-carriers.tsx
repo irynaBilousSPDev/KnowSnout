@@ -11,16 +11,17 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import {
   listCarrierCities,
   listCarriers,
   type DirectoryPlace,
 } from '@/src/services/directories';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Перевізники. */
 export default function DirectoryCarriersScreen() {
   const params = useLocalSearchParams<{ city?: string }>();
   const initialCity =
@@ -44,16 +45,26 @@ export default function DirectoryCarriersScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('directories.carriersTitle')}
-            subtitle={t('directories.carriersSubtitle')}
+            lead={t('directories.carriersSubtitle')}
           />
+          <View style={styles.warn}>
+            <Ionicons
+              name="information-circle-outline"
+              size={16}
+              color={brand.accentDark}
+            />
+            <Text style={styles.warnText}>
+              {t('directories.carriersSubtitle')}
+            </Text>
+          </View>
           <Text style={styles.label}>{t('directories.cityFilter')}</Text>
           <TextInput
             value={city}
             onChangeText={setCity}
             placeholder={t('directories.cityPlaceholder')}
-            placeholderTextColor="#8AA8A0"
+            placeholderTextColor={brand.mutedSoft}
             style={styles.input}
           />
           <View style={styles.chips}>
@@ -96,11 +107,7 @@ export default function DirectoryCarriersScreen() {
               }`}
               meta={`${place.rating.toFixed(1)} · ${place.reviewCount}`}
               leading={
-                <Ionicons
-                  name="car-outline"
-                  size={22}
-                  color={brand.navy}
-                />
+                <Ionicons name="car-outline" size={22} color={brand.accent} />
               }
               onPress={() =>
                 router.push({
@@ -121,21 +128,36 @@ export default function DirectoryCarriersScreen() {
 
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  warn: {
+    marginBottom: 14,
+    flexDirection: 'row',
+    gap: 8,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
+    padding: 12,
+  },
+  warnText: {
+    flex: 1,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 17,
+    color: brand.accentDark,
+  },
   label: {
     marginBottom: 6,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   input: {
     marginBottom: 10,
     borderWidth: 1,
     borderColor: brand.mistBorder,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },
@@ -146,7 +168,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   chip: {
-    borderRadius: 12,
+    borderRadius: brand.radius.md,
     borderWidth: 1,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
@@ -154,18 +176,18 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   chipActive: {
-    borderColor: brand.navy,
-    backgroundColor: brand.mist,
+    borderColor: brand.accent,
+    backgroundColor: brand.accentTint,
   },
   chipText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
-  chipTextActive: { color: brand.navy },
+  chipTextActive: { color: brand.accentDark },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });

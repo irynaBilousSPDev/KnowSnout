@@ -8,7 +8,7 @@ import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { acceptInviteToken } from '@/src/services/friends';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function FriendInviteAcceptScreen() {
   const [code, setCode] = useState('');
@@ -68,18 +68,16 @@ const styles = StyleSheet.create({
   pad: { flex: 1, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   label: {
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.forest,
   },
   input: {
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+        backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 20,
     letterSpacing: 3,
     color: brand.navy,

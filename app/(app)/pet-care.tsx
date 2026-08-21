@@ -6,14 +6,15 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Calendar from 'expo-calendar';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -26,7 +27,7 @@ import {
 } from '@/src/services/care';
 import { addFeedingLog, hasFedToday } from '@/src/services/feeding';
 import { getPet } from '@/src/services/pets';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { CareDayLog } from '@/src/types/care';
 import type { PetRow } from '@/src/types/pet';
 
@@ -39,35 +40,25 @@ async function addPlayReminderToCalendar(petName: string) {
   const dateIso = start.toISOString().slice(0, 10);
 
   if (Platform.OS === 'web') {
-    await Linking.openURL(
-      googleCalendarUrl({ title, dateIso, details }),
-    );
+    await Linking.openURL(googleCalendarUrl({ title, dateIso, details }));
     return 'google-web' as const;
   }
 
   const perm = await Calendar.requestCalendarPermissionsAsync();
   if (perm.status !== 'granted') {
-    await Linking.openURL(
-      googleCalendarUrl({ title, dateIso, details }),
-    );
+    await Linking.openURL(googleCalendarUrl({ title, dateIso, details }));
     return 'google-web' as const;
   }
 
-  const calendars = await Calendar.getCalendarsAsync(
-    Calendar.EntityTypes.EVENT,
-  );
+  const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
   const writable = calendars.filter((c) => c.allowsModifications);
   const google = writable.find((c) =>
-    `${c.source?.name ?? ''} ${c.title ?? ''}`
-      .toLowerCase()
-      .includes('google'),
+    `${c.source?.name ?? ''} ${c.title ?? ''}`.toLowerCase().includes('google'),
   );
   const calendarId =
     google?.id ?? writable.find((c) => c.isPrimary)?.id ?? writable[0]?.id;
   if (!calendarId) {
-    await Linking.openURL(
-      googleCalendarUrl({ title, dateIso, details }),
-    );
+    await Linking.openURL(googleCalendarUrl({ title, dateIso, details }));
     return 'google-web' as const;
   }
 
@@ -80,47 +71,42 @@ async function addPlayReminderToCalendar(petName: string) {
   return 'device' as const;
 }
 
+function StatusChip({ done }: { done: boolean }) {
+  return (
+    <View style={[styles.chip, done ? styles.chipGood : styles.chipNeutral]}>
+      <Text style={[styles.chipText, done && styles.chipTextGood]}>
+        {done ? t('care.chipDone') : t('care.chipPending')}
+      </Text>
+    </View>
+  );
+}
+
 function CheckRow({
   done,
   title,
-  subtitle,
+  icon,
   onToggle,
 }: {
   done: boolean;
   title: string;
-  subtitle: string;
+  icon: keyof typeof Ionicons.glyphMap;
   onToggle: () => void;
 }) {
   return (
     <Pressable
       onPress={onToggle}
-      className={`mb-3 rounded-3xl border px-4 py-4 ${
-        done ? 'border-forest-200 bg-forest-100' : 'border-forest-100 bg-white'
-      }`}
+      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
     >
-      <View className="flex-row items-start">
-        <View
-          className={`mr-3 mt-0.5 h-7 w-7 items-center justify-center rounded-full ${
-            done ? 'bg-forest-700' : 'border border-forest-300'
-          }`}
-        >
-          {done ? (
-            <Ionicons name="checkmark" size={16} color={brand.surface} />
-          ) : null}
-        </View>
-        <View className="flex-1">
-          <Text className="font-body-bold text-base text-forest-900">
-            {title}
-          </Text>
-          <Text className="mt-1 font-body text-sm leading-5 text-forest-600">
-            {subtitle}
-          </Text>
-        </View>
+      <View style={styles.cardLeft}>
+        <Ionicons name={icon} size={16} color={brand.ink} />
+        <Text style={styles.cardTitle}>{title}</Text>
       </View>
+      <StatusChip done={done} />
     </Pressable>
   );
 }
 
+/** HTML kit · 14 Догляд сьогодні — Вода / Гра / Годування chips. */
 export default function PetCareScreen() {
   const params = useLocalSearchParams<{ petId?: string }>();
   const petId = typeof params.petId === 'string' ? params.petId : undefined;
@@ -215,8 +201,7 @@ export default function PetCareScreen() {
       water_note: log.water_done ? waterNote : log.water_note,
       play_note: log.play_done ? playNote : log.play_note,
       play_minutes: log.play_done ? log.play_minutes ?? 5 : log.play_minutes,
-      feed_note:
-        log.feed_done || fedFromLogs ? feedNote : log.feed_note,
+      feed_note: log.feed_done || fedFromLogs ? feedNote : log.feed_note,
     });
     setLog(next);
     Alert.alert(t('care.saved'));
@@ -278,12 +263,12 @@ export default function PetCareScreen() {
 
   if (error || !pet || !log) {
     return (
-      <SafeAreaView className="flex-1 bg-sand-50">
+      <AppScreen edges={['bottom']}>
         <ErrorState
           message={error ?? t('pets.notFound')}
           onRetry={() => void load()}
         />
-      </SafeAreaView>
+      </AppScreen>
     );
   }
 
@@ -292,33 +277,29 @@ export default function PetCareScreen() {
   const feedDone = progress.feed;
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
-      <ScrollView contentContainerClassName="px-5 pb-12 pt-2">
-        <Text className="font-display text-2xl text-forest-900">
-          {t('care.title')}
-        </Text>
-        <Text className="mt-1 font-body text-sm text-forest-600">
-          {pet.name} · {t('care.subtitle')}
-        </Text>
-
-        <View className="mt-3 rounded-2xl bg-forest-100 px-4 py-3">
-          <Text className="font-body text-xs leading-5 text-forest-700">
-            {t('care.disclaimer')}
+    <AppScreen edges={['bottom']}>
+      <ScrollView keyboardShouldPersistTaps="handled">
+        <View style={styles.pad}>
+          <Text style={styles.title}>{t('care.title')}</Text>
+          <Text style={styles.subtitle}>
+            {pet.name} · {t('care.subtitle')}
           </Text>
-        </View>
 
-        <Text className="mt-4 font-body-medium text-sm text-forest-800">
-          {t('care.progress', {
-            done: progress.done,
-            total: progress.total,
-          })}
-        </Text>
+          <View style={styles.disclaimer}>
+            <Text style={styles.disclaimerText}>{t('care.disclaimer')}</Text>
+          </View>
 
-        <View className="mt-4">
+          <Text style={styles.progress}>
+            {t('care.progress', {
+              done: progress.done,
+              total: progress.total,
+            })}
+          </Text>
+
           <CheckRow
             done={log.water_done}
             title={t('care.waterAction')}
-            subtitle={t('care.waterHint')}
+            icon="water-outline"
             onToggle={() => void toggleWater()}
           />
           {log.water_done ? (
@@ -326,17 +307,15 @@ export default function PetCareScreen() {
               value={waterNote}
               onChangeText={setWaterNote}
               placeholder={t('care.waterNotePlaceholder')}
-              className="mb-3 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-sm text-forest-900"
-              placeholderTextColor="#C8D2C4"
+              placeholderTextColor={brand.mutedSoft}
+              style={styles.note}
             />
           ) : null}
 
           <CheckRow
             done={log.play_done}
             title={isCat ? t('care.playActionCat') : t('care.playAction')}
-            subtitle={
-              isCat ? t('care.playHintCat') : t('care.playHint')
-            }
+            icon="sunny-outline"
             onToggle={() => void togglePlay()}
           />
           {log.play_done ? (
@@ -344,19 +323,15 @@ export default function PetCareScreen() {
               value={playNote}
               onChangeText={setPlayNote}
               placeholder={t('care.playNotePlaceholder')}
-              className="mb-3 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-sm text-forest-900"
-              placeholderTextColor="#C8D2C4"
+              placeholderTextColor={brand.mutedSoft}
+              style={styles.note}
             />
           ) : null}
 
           <CheckRow
             done={feedDone}
             title={t('care.feedAction')}
-            subtitle={
-              pet.favorite_food
-                ? t('care.feedHint')
-                : t('care.feedHintNoFavorite')
-            }
+            icon="nutrition-outline"
             onToggle={() => void toggleFeed()}
           />
           {feedDone ? (
@@ -364,47 +339,144 @@ export default function PetCareScreen() {
               value={feedNote}
               onChangeText={setFeedNote}
               placeholder={t('care.feedNotePlaceholder')}
-              className="mb-3 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-sm text-forest-900"
-              placeholderTextColor="#C8D2C4"
+              placeholderTextColor={brand.mutedSoft}
+              style={styles.note}
             />
           ) : null}
+
           {pet.favorite_food ? (
-            <View className="mb-3">
+            <View style={styles.favBlock}>
               <PrimaryButton
                 label={t('care.feedLogFavorite')}
                 variant="secondary"
                 loading={savingFeed}
                 onPress={() => void onLogFavoriteFeed()}
               />
-              <Text className="mt-2 font-body text-xs text-forest-500">
-                {pet.favorite_food}
-              </Text>
+              <Text style={styles.favMeta}>{pet.favorite_food}</Text>
             </View>
           ) : null}
-        </View>
 
-        <View className="mt-2 gap-3">
-          <PrimaryButton
-            label={t('play.open')}
-            variant="secondary"
-            onPress={() =>
-              router.push({
-                pathname: '/(app)/play-guides',
-                params: { petId: pet.id },
-              })
-            }
-          />
-          <PrimaryButton
-            label={t('care.saveNotes')}
-            variant="secondary"
-            onPress={() => void saveNotes()}
-          />
-          <PrimaryButton
-            label={t('care.addPlayReminder')}
-            onPress={() => void onCalendar()}
-          />
+          <View style={styles.actions}>
+            <PrimaryButton
+              label={t('play.open')}
+              variant="secondary"
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/play-guides',
+                  params: { petId: pet.id },
+                })
+              }
+            />
+            <PrimaryButton
+              label={t('care.saveNotes')}
+              variant="secondary"
+              onPress={() => void saveNotes()}
+            />
+            <PrimaryButton
+              label={t('care.addPlayReminder')}
+              onPress={() => void onCalendar()}
+            />
+          </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+  },
+  subtitle: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  disclaimer: {
+    marginTop: 12,
+    borderRadius: brand.radius.sm,
+    backgroundColor: brand.accentTint,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  disclaimerText: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 17,
+    color: brand.accentDark,
+  },
+  progress: {
+    marginTop: 14,
+    marginBottom: 10,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: brand.label,
+  },
+  card: {
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  pressed: { opacity: 0.9 },
+  cardLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flex: 1,
+    minWidth: 0,
+  },
+  cardTitle: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  chip: {
+    borderRadius: brand.radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  chipGood: { backgroundColor: brand.successTint },
+  chipNeutral: { backgroundColor: brand.chipTrack },
+  chipText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
+    color: brand.muted,
+  },
+  chipTextGood: { color: brand.successDark },
+  note: {
+    marginTop: -4,
+    marginBottom: 12,
+    borderRadius: brand.radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  favBlock: { marginBottom: 12 },
+  favMeta: {
+    marginTop: 8,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  actions: { marginTop: 8, gap: 10 },
+});

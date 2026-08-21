@@ -1,15 +1,24 @@
 import { useFocusEffect, router } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { listDmThreads, type DmThread } from '@/src/services/dm';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Чат — Manrope 22, white r14 soft cards. */
 export default function MessagesScreen() {
   const [threads, setThreads] = useState<DmThread[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,16 +51,15 @@ export default function MessagesScreen() {
       <FlatList
         data={threads}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 20, paddingBottom: 40, flexGrow: 1 }}
+        contentContainerStyle={styles.list}
+        ListHeaderComponent={
+          <HubHero title={t('dm.title')} lead={t('dm.emptyHint')} />
+        }
         ListEmptyComponent={
-          <View className="mt-16 items-center px-6">
-            <Text className="text-center font-body text-forest-600">
-              {t('dm.empty')}
-            </Text>
-            <Text className="mt-2 text-center font-body text-xs text-forest-500">
-              {t('dm.emptyHint')}
-            </Text>
-            <View className="mt-6 w-full">
+          <View style={styles.empty}>
+            <Text style={styles.emptyTitle}>{t('dm.empty')}</Text>
+            <Text style={styles.emptyHint}>{t('dm.emptyHint')}</Text>
+            <View style={styles.emptyBtn}>
               <PrimaryButton
                 label={t('dm.openFeed')}
                 onPress={() => router.push('/(app)/(tabs)/stories')}
@@ -71,7 +79,7 @@ export default function MessagesScreen() {
                 },
               })
             }
-            className="mb-3 flex-row items-center rounded-2xl border border-forest-100 bg-white px-4 py-3 active:opacity-80"
+            style={({ pressed }) => [styles.row, pressed && styles.pressed]}
           >
             <PetAvatar
               avatarKey={item.peer.avatarKey || 'paw'}
@@ -79,21 +87,77 @@ export default function MessagesScreen() {
               size={44}
               name={item.peer.name}
             />
-            <View className="ml-3 flex-1">
-              <Text className="font-body-bold text-sm text-forest-900">
-                {item.peer.name}
-              </Text>
-              <Text
-                numberOfLines={1}
-                className="mt-0.5 font-body text-xs text-forest-500"
-              >
+            <View style={styles.rowCopy}>
+              <Text style={styles.rowTitle}>{item.peer.name}</Text>
+              <Text numberOfLines={1} style={styles.rowMeta}>
                 {item.lastBody || t('dm.noPreview')}
               </Text>
             </View>
-            <Text style={{ color: brand.mistBorder, fontSize: 18 }}>›</Text>
+            <Ionicons
+              name="chevron-forward"
+              size={18}
+              color={brand.mutedSoft}
+            />
           </Pressable>
         )}
       />
     </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  list: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 40,
+    flexGrow: 1,
+  },
+  empty: {
+    marginTop: 48,
+    alignItems: 'center',
+    paddingHorizontal: 8,
+  },
+  emptyTitle: {
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 15,
+    lineHeight: 22,
+    color: brand.muted,
+  },
+  emptyHint: {
+    marginTop: 8,
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 18,
+    color: brand.mutedSoft,
+  },
+  emptyBtn: { marginTop: 24, width: '100%' },
+  row: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  pressed: { opacity: 0.9 },
+  rowCopy: { flex: 1, marginLeft: 12, marginRight: 8 },
+  rowTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  rowMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+});

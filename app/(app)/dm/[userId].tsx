@@ -4,12 +4,13 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -21,8 +22,9 @@ import {
   type DmMessage,
   type DmThread,
 } from '@/src/services/dm';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Чат — розмова. Accent bubbles, soft canvas. */
 export default function DmThreadScreen() {
   const params = useLocalSearchParams<{
     userId?: string;
@@ -88,58 +90,52 @@ export default function DmThreadScreen() {
   };
 
   if (loading) {
-    return <LoadingState message={t('dm.loading')} />;
+    return (
+      <AppScreen>
+        <LoadingState message={t('dm.loading')} />
+      </AppScreen>
+    );
   }
 
   if (error && !thread) {
-    return <ErrorState message={error} onRetry={() => void load()} />;
+    return (
+      <AppScreen>
+        <ErrorState message={error} onRetry={() => void load()} />
+      </AppScreen>
+    );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: brand.surface }} edges={['bottom']}>
+    <AppScreen edges={['top', 'bottom']}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={80}
       >
-        <View className="border-b border-forest-100 px-5 py-3">
-          <Text className="font-display text-xl text-forest-900">{peerName}</Text>
-          <Text className="mt-0.5 font-body text-xs text-forest-500">
-            {t('dm.threadHint')}
-          </Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>{peerName}</Text>
+          <Text style={styles.hint}>{t('dm.threadHint')}</Text>
         </View>
 
         <FlatList
           data={messages}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
+          contentContainerStyle={styles.list}
           ListEmptyComponent={
-            <Text className="mt-10 text-center font-body text-sm text-forest-500">
-              {t('dm.threadEmpty')}
-            </Text>
+            <Text style={styles.empty}>{t('dm.threadEmpty')}</Text>
           }
           renderItem={({ item }) => (
             <View
-              style={{
-                marginBottom: 8,
-                maxWidth: '85%',
-                borderRadius: 16,
-                paddingHorizontal: 14,
-                paddingVertical: 10,
-                alignSelf: item.mine ? 'flex-end' : 'flex-start',
-                backgroundColor: item.mine
-                  ? brand.navy
-                  : brand.surfaceElevated,
-                borderWidth: item.mine ? 0 : 1,
-                borderColor: brand.mistBorder,
-              }}
+              style={[
+                styles.bubble,
+                item.mine ? styles.bubbleMine : styles.bubblePeer,
+              ]}
             >
               <Text
-                style={{
-                  fontFamily: 'Inter_400Regular',
-                  fontSize: 14,
-                  color: item.mine ? brand.surface : brand.ink,
-                }}
+                style={[
+                  styles.bubbleText,
+                  item.mine ? styles.bubbleTextMine : styles.bubbleTextPeer,
+                ]}
               >
                 {item.body}
               </Text>
@@ -147,19 +143,17 @@ export default function DmThreadScreen() {
           )}
         />
 
-        <View className="border-t border-forest-100 px-4 pb-4 pt-3">
-          {error ? (
-            <Text className="mb-2 font-body text-xs text-score-poor">{error}</Text>
-          ) : null}
+        <View style={styles.composer}>
+          {error ? <Text style={styles.error}>{error}</Text> : null}
           <TextInput
             value={draft}
             onChangeText={setDraft}
             placeholder={t('dm.placeholder')}
-            placeholderTextColor="#C8D2C4"
+            placeholderTextColor={brand.mutedSoft}
             multiline
-            className="min-h-[44px] max-h-28 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-base text-forest-900"
+            style={styles.input}
           />
-          <View className="mt-3">
+          <View style={styles.sendBtn}>
             <PrimaryButton
               label={t('dm.send')}
               size="sm"
@@ -169,6 +163,98 @@ export default function DmThreadScreen() {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: brand.mistBorder,
+  },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+  },
+  hint: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  list: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 24,
+    flexGrow: 1,
+  },
+  empty: {
+    marginTop: 40,
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.muted,
+  },
+  bubble: {
+    marginBottom: 8,
+    maxWidth: '85%',
+    borderRadius: brand.radius.md,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  bubbleMine: {
+    alignSelf: 'flex-end',
+    backgroundColor: brand.accent,
+  },
+  bubblePeer: {
+    alignSelf: 'flex-start',
+    backgroundColor: brand.surfaceElevated,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  bubbleText: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  bubbleTextMine: { color: '#FFFFFF' },
+  bubbleTextPeer: { color: brand.ink },
+  composer: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: brand.mistBorder,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 12,
+    backgroundColor: brand.canvas,
+  },
+  error: {
+    marginBottom: 8,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.score.poor,
+  },
+  input: {
+    minHeight: 44,
+    maxHeight: 112,
+    borderRadius: brand.radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+    textAlignVertical: 'top',
+  },
+  sendBtn: { marginTop: 10 },
+});

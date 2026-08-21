@@ -4,9 +4,9 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { listFriends, type FriendUser } from '@/src/services/friends';
@@ -14,8 +14,9 @@ import {
   listBlockedUserIds,
   unblockUser,
 } from '@/src/services/storyModeration';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML kit · Заблоковані. */
 export default function BlockedUsersScreen() {
   const [ids, setIds] = useState<string[]>([]);
   const [friends, setFriends] = useState<FriendUser[]>([]);
@@ -50,9 +51,9 @@ export default function BlockedUsersScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('blocked.title')}
-            subtitle={t('blocked.subtitle')}
+            lead={t('blocked.subtitle')}
           />
           {ids.length === 0 ? (
             <Text style={styles.empty}>{t('blocked.empty')}</Text>
@@ -66,7 +67,7 @@ export default function BlockedUsersScreen() {
                   <Ionicons
                     name="ban-outline"
                     size={22}
-                    color={brand.score.poor}
+                    color={brand.terracotta}
                   />
                 }
                 trailing={
@@ -91,8 +92,8 @@ export default function BlockedUsersScreen() {
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   empty: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
 });
