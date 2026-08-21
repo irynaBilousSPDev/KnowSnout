@@ -20,7 +20,7 @@
     "android": {
       "package": "com.knowsnout.app",
       "adaptiveIcon": {
-        "backgroundColor": "#F7FAF9",
+        "backgroundColor": "#122A4C",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -46,7 +46,7 @@
         "expo-notifications",
         {
           "icon": "./assets/images/icon.png",
-          "color": "#0A7A6E",
+          "color": "#122A4C",
           "defaultChannel": "vaccines"
         }
       ],
@@ -83,7 +83,7 @@
         {
           "image": "./assets/images/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#F7FAF9"
+          "backgroundColor": "#122A4C"
         }
       ]
     ],

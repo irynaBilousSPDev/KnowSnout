@@ -33,7 +33,12 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [x] **Нове:** `20260321236000_pet_vet_logs.sql` (журнал ліків / візитів до вета)
 - [x] **Опційно:** `20260321237000_story_follows.sql` (хмарні підписки Stories; UI вже на local)
 - [x] **Опційно:** `20260321238000_story_moderation.sql` (blocks/reports; UI local)
-- [ ] **Нове:** `20260321239000_dm_threads.sql` (DM threads + messages; UI вже є)
+- [x] **Нове:** `20260321239000_dm_threads.sql` (DM threads + messages; UI вже є) — користувач 2026-08-21
+- [x] **Нове:** `20260321240000_forum_local_cloud.sql` (forum cloud; app wired + local fallback) — користувач 2026-08-21
+- [x] **Нове:** `20260321241000_friends_graph.sql` (friendships / invites; app wired) — користувач 2026-08-21
+- [x] **Нове:** `20260321242000_directories_trust.sql` (places / reviews / fraud; app wired) — користувач 2026-08-21
+- [x] **Нове:** `20260321243000_spotlight_cloud.sql` (spotlight contests; app wired) — користувач 2026-08-21
+- [x] **Нове:** `20260321244000_cloud_seeds_and_votes.sql` (seeds + `cast_spotlight_vote`) — користувач 2026-08-21
 - [ ] Email auth enabled; confirm-email off for MVP
 - [x] Set secret `OPENAI_API_KEY` (користувач — уже в Dashboard)
 - [x] Deploy `analyze-label` function

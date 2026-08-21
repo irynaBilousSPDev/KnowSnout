@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
@@ -13,6 +13,7 @@ import {
   type ScanMode,
 } from '@/src/components/ScanModeToggle';
 import { useAnalyzeLabel } from '@/src/hooks/useAnalyzeLabel';
+import { useToast } from '@/src/hooks/useToast';
 import { t } from '@/src/i18n';
 import { env } from '@/src/lib/env';
 import { persistLocalImage, persistPickerAsset } from '@/src/lib/image';
@@ -29,6 +30,7 @@ import { brand } from '@/src/theme/brand';
 
 export default function ScanFoodScreen() {
   const { loading, error, analyze, setError } = useAnalyzeLabel();
+  const { showAiLoading } = useToast();
   const [mode, setMode] = useState<ScanMode>('barcode');
   const [pickerError, setPickerError] = useState<string | null>(null);
   const [lookupLoading, setLookupLoading] = useState(false);
@@ -38,6 +40,11 @@ export default function ScanFoodScreen() {
   const busy = loading || lookupLoading;
   const barcodeContext = getPendingBarcodeContext();
   const showDevBanners = __DEV__ && (env.useMockAi || env.isDemoMode);
+
+  useEffect(() => {
+    showAiLoading(loading);
+    return () => showAiLoading(false);
+  }, [loading, showAiLoading]);
 
   const goToResult = async (imageUri?: string | null) => {
     setPickerError(null);

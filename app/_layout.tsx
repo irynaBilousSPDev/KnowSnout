@@ -17,6 +17,7 @@ import 'react-native-reanimated';
 import { LoadingState } from '@/src/components/LoadingState';
 import { WebPhoneFrame } from '@/src/components/WebPhoneFrame';
 import { AuthProvider } from '@/src/hooks/useAuth';
+import { ToastProvider } from '@/src/hooks/useToast';
 import { migrateLegacyAuthStorage } from '@/src/services/supabase';
 
 export { ErrorBoundary } from 'expo-router';
@@ -50,22 +51,26 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      {/* Single flex child under #root — avoids blank web layout with sibling StatusBar */}
-      <View style={{ flex: 1, width: '100%', height: '100%' }}>
-        <StatusBar style="dark" />
-        <WebPhoneFrame>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: '#F7FAF9', flex: 1 },
-            }}
-          >
+      <ToastProvider>
+        {/* Single flex child under #root — avoids blank web layout with sibling StatusBar */}
+        <View style={{ flex: 1, width: '100%', height: '100%' }}>
+          <StatusBar style="dark" />
+          <WebPhoneFrame>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: '#F7F1ED', flex: 1 },
+              }}
+            >
             <Stack.Screen name="index" />
+            <Stack.Screen name="spotlight-vote" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="(app)" />
+            <Stack.Screen name="(admin)" />
           </Stack>
-        </WebPhoneFrame>
-      </View>
+          </WebPhoneFrame>
+        </View>
+      </ToastProvider>
     </AuthProvider>
   );
 }

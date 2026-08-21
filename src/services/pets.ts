@@ -63,7 +63,14 @@ async function writeLocalPhotos(photos: PetPhotoRow[]) {
 }
 
 function asSpecies(value: unknown): CompanionSpecies {
-  if (value === 'dog' || value === 'cat' || value === 'other') return value;
+  if (
+    value === 'dog' ||
+    value === 'cat' ||
+    value === 'bird' ||
+    value === 'other'
+  ) {
+    return value;
+  }
   return 'other';
 }
 

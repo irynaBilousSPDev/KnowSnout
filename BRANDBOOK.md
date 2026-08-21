@@ -1,9 +1,11 @@
 # KnowSnout Brand Book
 
-Professional brand guidelines derived from the official logo mark  
-(`assets/brand/logo-icon-transparent.png`). Former name: SnoutScore.
+Professional brand guidelines. Former name: SnoutScore.
 
-**Markets:** Ukraine + Poland · **Product:** pet care trust (food · plants · breed · health · travel)
+**Markets:** Ukraine + Poland · **Product:** pet care trust (food · plants · breed · health · travel · community)
+
+**Design source (2026-08):** UI Kit v2 — `docs/design/KnowSnout-UI-kit-v2-brandbook.pdf`  
+**Active palette:** Variant 12 — **нафтовий синій + лісова зелень + троянда** (поєднання 11 + 04).
 
 ---
 
@@ -31,66 +33,69 @@ The mark is a snout + signal waves: *we read the signal so you don’t have to g
 ## 2. Logo system
 
 ### 2.1 Primary lockup (in-app)
-Horizontal: **same icon mark + wordmark “KnowSnout” in DM Sans Bold**  
-Implemented in `src/components/BrandLogo.tsx` (icon asset + text — no need to redraw the mark).  
-Optional later: export a polished PNG lockup for stores / ads.
+Horizontal: **icon mark + wordmark “KnowSnout”** in brand navy (or forest on health contexts).  
+Implemented in `src/components/BrandLogo.tsx`.  
+Logo should be **recolored to the theme**, not pasted as the old lime/teal gradient on top of the new palette.
 
 ### 2.2 App icon / mark
-Icon alone (gradient snout + waves).  
-File: `assets/brand/logo-icon-transparent.png` (and `assets/images/icon.png` for stores)  
-Use: app icon, favicon, watermark, avatar, empty-state mark.
+Icon alone (snout + waves). Tile corner radius ≈ **30%** of side; mark ≈ **70%** of tile. Soft short shadow.  
+Header icon ≈ 44px · App icon ≥ 64px.  
+Files: `assets/brand/*`, `assets/images/icon.png`
 
 ### 2.3 Clear space
-Keep empty margin ≥ **½ icon height** on all sides.  
-Do not crop waves, nose, or jowls.
+Keep empty margin ≥ **½ icon height** on all sides.
 
-### 2.4 Minimum sizes
-| Use | Min width |
+### 2.4 Don’ts
+- Don’t keep the old lime→teal gradient as the default product chrome
+- Don’t mix rose tint and green tint in the same UI block
+- Don’t stretch / rotate / outline the mark
+- Don’t place the mark on busy photo without a soft scrim
+
+### 2.5 Mono / tile variants (from kit)
+| Tile | Mark |
 |--|--|
-| Full lockup (digital) | 140 px |
-| Icon only | 28 px |
-| Print lockup | 30 mm |
-
-### 2.5 Don’ts
-- Don’t recolor the gradient mark (except approved mono)
-- Don’t add drop shadows / glow / outline to the logo
-- Don’t stretch or rotate
-- Don’t place on busy photo without a solid or soft scrim
-- Don’t rewrite the wordmark in another font in official materials
-
-### 2.6 Mono versions (when needed)
-- On dark: white wordmark + single-color mark `#00E0C7`
-- On light: ink wordmark `#111B2F` + full-color mark preferred
+| White | Navy `#122A4C` |
+| Green tint `#E3E9DF` | Forest `#2F5233` |
+| Rose tint `#F4DADF` | Rose `#E8879A` |
+| Navy `#122A4C` | White |
+| Forest `#2F5233` | White |
+| Deep `#0C1C33` | Rose `#E8879A` |
 
 ---
 
-## 3. Color
+## 3. Color — Variant 12 (active)
 
-Sampled from logo files (2026-07).
+Sampled from kit brandbook PDF (2026-08-21).
 
 | Token | Hex | Role |
 |--|--|--|
-| **Snout Lime** | `#72ED2F` | Gradient start, energy, success accents |
-| **Snout Teal** | `#00E0C7` | Gradient end, primary interactive |
-| **Snout Ink** | `#111B2F` | Wordmark, primary text |
-| **Surface** | `#F7FAF9` | App background |
+| **Нафтовий (navy)** | `#122A4C` | Structure, nav, headers, primary actions |
+| **Глибокий (navyDeep)** | `#0C1C33` | Ink / deepest text & bars |
+| **Лісова зелень (forest)** | `#2F5233` | Safe / healthy / success / “good” scores |
+| **Троянда (rose)** | `#E8879A` | Emotional accent, active details, secondary CTA glow |
+| **Рожевий тінт** | `#F4DADF` | Soft rose fills (don’t mix with green tint in one block) |
+| **Зелений тінт** | `#E3E9DF` | Soft success / mist fills |
+| **Тло (surface)** | `#F7F1ED` | App background |
 | **Surface elevated** | `#FFFFFF` | Cards / sheets |
-| **Mist** | `#DFF7F1` | Soft chips, secondary fills |
 | **Score poor** | `#C45C3E` | Low food score |
 | **Score fair** | `#C4922A` | Mid score |
-| **Score good** | `#0A9B7A` | High score (brand-aligned green) |
+| **Score good** | `#2F5233` | High score (= forest) |
+
+### Roles (from kit)
+- **Blue (navy / deep):** navigation, headers, primary actions  
+- **Green (forest):** everything “good / safe / normal”  
+- **Rose:** button accent / active / emotional details  
+- **Tints:** never mix rose tint + green tint in one block  
 
 ### Gradients
-Official mark gradient (top-left → bottom-right):
+Prefer navy → forest for brand moments:
 
-`linear-gradient(135deg, #72ED2F 0%, #00E0C7 100%)`
-
-In product UI use the gradient sparingly: logo, score ring accents, splash — **not** full-screen purple-style washes.
+`linear-gradient(135deg, #122A4C 0%, #2F5233 100%)`
 
 ### Contrast
-Body text on Surface: Ink `#111B2F`.  
-Primary buttons: Teal fill `#00A894`–`#0A7A6E` with white label (AA).  
-Never put Lime text on white at small sizes.
+Body text: navyDeep `#0C1C33` on surface `#F7F1ED`.  
+Primary buttons: navy fill + white label (AA).  
+Rose accents on white: large enough or pair with tint backgrounds.
 
 ---
 
@@ -98,30 +103,30 @@ Never put Lime text on white at small sizes.
 
 | Role | Face | Notes |
 |--|--|--|
-| **Wordmark** | Geometric sans (in logo file) | Never recreate in UI copy |
-| **UI body / UI titles** | DM Sans | Already in app |
-| **Optional marketing display** | Fraunces | Landing only; prefer logo + DM Sans in-product |
-
-Hierarchy: one strong title, one short support line. Avoid dense newspaper layouts.
+| **Wordmark** | Geometric sans (in logo) | Don’t recreate in random fonts |
+| **UI body / titles (current app)** | DM Sans | Keep until kit font pass |
+| **Kit display (optional later)** | Caprasimo (titles) + Figtree (body) | From UI Kit overview — not required for structure ship |
+| **Optional marketing** | Fraunces | Landing only |
 
 ---
 
 ## 5. UI principles (product)
 
-1. **Brand first** on entry screens — full lockup, not tiny nav text.  
-2. First viewport: brand + one job (scan / sign in). No dashboard clutter.  
-3. Cards only when they wrap an interaction (pet row, scan row).  
-4. Motion: short, purposeful (tab switch, score appear) — not decorative noise.  
-5. Photography: real pet food / pets; no stock collage in hero.
+1. **Brand first** on entry screens — lockup in theme colors.  
+2. First viewport: brand + one job. No dashboard clutter.  
+3. Cards only when they wrap an interaction.  
+4. Motion: short, purposeful.  
+5. Photography: real pets / food; no stock collage in hero.
 
 ### Component mapping
 | Element | Treatment |
 |--|--|
-| Primary button | Teal fill, rounded-2xl, white label |
-| Secondary | Mist fill, ink label |
-| Ghost | Transparent, teal/ink label |
-| Tab active | Teal / ink |
-| Score gauge | Tone colors + optional teal ring |
+| Primary button | Navy `#122A4C`, rounded-2xl, white label |
+| Secondary | White / elevated, mist border, ink label |
+| Accent / active chip | Rose or rose tint |
+| Success / safe | Forest + forest tint |
+| Tab active | Navy |
+| Score good | Forest |
 
 ---
 
@@ -130,7 +135,7 @@ Hierarchy: one strong title, one short support line. Avoid dense newspaper layou
 - Direct, calm, Ukrainian in UI.  
 - No “miracle detox” claims.  
 - Vaccines / borders: *інформаційно; уточнюй у ветлікаря / перевізника.*  
-- Species labels: Собака / Кіт / Інше.
+- Species: Собака / Кіт / Інше (+ multi-species later).
 
 ---
 
@@ -138,18 +143,20 @@ Hierarchy: one strong title, one short support line. Avoid dense newspaper layou
 
 | Asset | Source |
 |--|--|
-| App icon | `logo-icon.png` (export 1024²) |
-| Splash | icon centered on `#F7FAF9` |
+| App icon | Export 1024² from navy/forest tile variants |
+| Splash | icon on `#F7F1ED` |
 | Favicon | icon crop |
-| Feature graphic | full lockup + tagline |
+| Feature graphic | lockup + tagline |
 
 ---
 
 ## 8. Implementation in this repo
 
-- Tokens: `src/theme/brand.ts` + `tailwind.config.js`  
+- Tokens: [`src/theme/brand.ts`](src/theme/brand.ts) + `tailwind.config.js`  
+- Docs PDF: [`docs/design/KnowSnout-UI-kit-v2-brandbook.pdf`](docs/design/KnowSnout-UI-kit-v2-brandbook.pdf)  
 - Component: `src/components/BrandLogo.tsx`  
-- Assets: `assets/brand/*` (source) and `assets/images/brand-logo-*.png` (bundled)
-- App icon / splash paths updated in `app.json` where applicable  
+- Assets: `assets/brand/*` — **Variant 12 navy/forest/rose** (regenerated via `scripts/recolor_brand_assets.py`; tiles in `assets/brand/tiles/`)  
 
-When in doubt: **trust the logo files**, not approximations.
+Legacy `brand.teal*` keys remain as aliases → navy/forest so call sites don’t break mid-migrate.
+
+When in doubt: **trust the kit brandbook PDF (Variant 12)**.

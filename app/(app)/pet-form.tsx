@@ -470,6 +470,7 @@ export default function PetFormScreen() {
             options={[
               { id: 'dog', label: t('pets.speciesDog') },
               { id: 'cat', label: t('pets.speciesCat') },
+              { id: 'bird', label: t('pets.speciesBird') },
               { id: 'other', label: t('pets.speciesOther') },
             ]}
           />
@@ -648,10 +649,10 @@ export default function PetFormScreen() {
             value={lifeStage}
             onChange={setLifeStage}
             options={[
-              ...(species !== 'cat'
+              ...(species === 'dog'
                 ? [{ id: 'puppy' as const, label: t('pets.lifePuppy') }]
                 : []),
-              ...(species !== 'dog'
+              ...(species === 'cat'
                 ? [{ id: 'kitten' as const, label: t('pets.lifeKitten') }]
                 : []),
               { id: 'adult', label: t('pets.lifeAdult') },
@@ -666,7 +667,7 @@ export default function PetFormScreen() {
             placeholder={t('pets.favoriteFoodEmpty')}
             autoCapitalize="sentences"
           />
-          {species === 'cat' || species === 'other' ? (
+          {species === 'cat' || species === 'bird' || species === 'other' ? (
             <>
               <Text className="mb-2 font-body-medium text-sm text-forest-700">
                 {t('pets.indoorOutdoor')}

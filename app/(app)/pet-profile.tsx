@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/src/components/ErrorState';
+import { ListRow } from '@/src/components/ListRow';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -640,6 +641,39 @@ export default function PetProfileScreen() {
               }
             />
           </View>
+        </Section>
+
+        <Section title={t('habits.title')}>
+          <ListRow
+            title={t('habits.open')}
+            subtitle={t('habits.subtitle')}
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/pet-habits',
+                params: { petId: pet.id },
+              } as never)
+            }
+          />
+          <ListRow
+            title={t('calendar.open')}
+            subtitle={t('calendar.subtitle')}
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/pet-calendar',
+                params: { petId: pet.id },
+              } as never)
+            }
+          />
+          <ListRow
+            title={t('travelWizard.open')}
+            subtitle={t('travelWizard.subtitle')}
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/pet-travel-wizard',
+                params: { petId: pet.id },
+              } as never)
+            }
+          />
         </Section>
 
         <View className="mt-4 rounded-3xl bg-white px-5 py-5">

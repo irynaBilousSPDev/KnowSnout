@@ -13,6 +13,7 @@ import {
   createStoryPost,
   deleteStoryPost,
   formatLikedBy,
+  formatStoryTags,
   formatStoryTimeAgo,
   listStoryFeed,
   toggleStoryLike,
@@ -30,8 +31,13 @@ import {
 } from '@/src/services/storyModeration';
 import { getCareStreak, type CareStreakState } from '@/src/services/careStreak';
 import { listPets } from '@/src/services/pets';
+import { listFriends, type FriendUser } from '@/src/services/friends';
 import { getCurrentUser } from '@/src/services/auth';
 import { confirmAction } from '@/src/lib/confirm';
+import {
+  getSettingsPrefs,
+  type ThemePref,
+} from '@/src/services/settingsPrefs';
 import type {
   StoryFeedFilter,
   StoryPost,
@@ -56,6 +62,14 @@ import {
 } from 'react-native';
 import { notify } from '@/src/lib/notify';
 
+const STORIES_DARK = {
+  bg: brand.navyDeep,
+  card: '#152A45',
+  border: '#2A4060',
+  text: brand.surface,
+  muted: '#9AA8B8',
+} as const;
+
 type AuthorCard = {
   userId: string;
   author: string;
@@ -68,9 +82,44 @@ type AuthorCard = {
 
 type ViewMode = 'list' | 'grid';
 
+function StoryTagsRow({ post }: { post: StoryPost }) {
+  const tags = formatStoryTags(post);
+  if (tags.length === 0) return null;
+  return (
+    <View style={tagStyles.row}>
+      {tags.map((label) => (
+        <View key={label} style={tagStyles.chip}>
+          <Text style={tagStyles.chipText}>{label}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+const tagStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 8,
+  },
+  chip: {
+    borderRadius: 12,
+    backgroundColor: brand.roseTint,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  chipText: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 11,
+    color: brand.navy,
+  },
+});
+
 function StoryPostCard({
   post,
   compact,
+  dark,
   onToggleLike,
   onShare,
   onOpenComments,
@@ -79,6 +128,7 @@ function StoryPostCard({
 }: {
   post: StoryPost;
   compact?: boolean;
+  dark?: boolean;
   onToggleLike: (post: StoryPost) => void;
   onShare: (post: StoryPost) => void;
   onOpenComments: (post: StoryPost) => void;
@@ -87,10 +137,18 @@ function StoryPostCard({
 }) {
   const timeAgo = formatStoryTimeAgo(post.createdAt);
   const likedBy = formatLikedBy(post.likes, post.liked);
+  const darkCard = dark
+    ? { backgroundColor: STORIES_DARK.card, borderColor: STORIES_DARK.border }
+    : undefined;
+  const darkTitle = dark ? { color: STORIES_DARK.text } : undefined;
+  const darkMuted = dark ? { color: STORIES_DARK.muted } : undefined;
 
   if (compact) {
     return (
-      <View className="mb-3 overflow-hidden rounded-2xl border border-forest-100 bg-white">
+      <View
+        className="mb-3 overflow-hidden rounded-2xl border border-forest-100 bg-white"
+        style={darkCard}
+      >
         <Pressable onPress={() => onOpenComments(post)}>
           <View style={styles.compactMedia}>
             {post.imageUri ? (
@@ -111,11 +169,19 @@ function StoryPostCard({
         </Pressable>
         <View className="px-2.5 py-2">
           <Pressable onPress={() => onOpenAuthor(post)}>
-            <Text numberOfLines={1} className="font-body-bold text-[11px] text-forest-900">
+            <Text
+              numberOfLines={1}
+              className="font-body-bold text-[11px] text-forest-900"
+              style={darkTitle}
+            >
               {post.author}
             </Text>
           </Pressable>
-          <Text numberOfLines={2} className="mt-0.5 font-body text-xs text-forest-800">
+          <Text
+            numberOfLines={2}
+            className="mt-0.5 font-body text-xs text-forest-800"
+            style={darkMuted}
+          >
             {post.caption}
           </Text>
           <View className="mt-1.5 flex-row items-center gap-3">
@@ -128,7 +194,10 @@ function StoryPostCard({
                 size={16}
                 color={post.liked ? brand.score.poor : brand.tealPressed}
               />
-              <Text className="font-body text-[11px] text-forest-500">
+              <Text
+                className="font-body text-[11px] text-forest-500"
+                style={darkMuted}
+              >
                 {post.likes}
               </Text>
             </Pressable>
@@ -141,7 +210,10 @@ function StoryPostCard({
                 size={15}
                 color={brand.tealPressed}
               />
-              <Text className="font-body text-[11px] text-forest-500">
+              <Text
+                className="font-body text-[11px] text-forest-500"
+                style={darkMuted}
+              >
                 {post.commentsCount}
               </Text>
             </Pressable>
@@ -165,7 +237,10 @@ function StoryPostCard({
   }
 
   return (
-    <View className="mb-5 overflow-hidden rounded-3xl border border-forest-100 bg-white">
+    <View
+      className="mb-5 overflow-hidden rounded-3xl border border-forest-100 bg-white"
+      style={darkCard}
+    >
       <Pressable
         onPress={() => onOpenAuthor(post)}
         className="flex-row items-center px-4 py-3 active:opacity-80"
@@ -177,17 +252,27 @@ function StoryPostCard({
           name={post.petName}
         />
         <View className="ml-3 flex-1">
-          <Text className="font-body-bold text-sm text-forest-900">
+          <Text
+            className="font-body-bold text-sm text-forest-900"
+            style={darkTitle}
+          >
             {post.author}
           </Text>
-          <Text className="font-body text-xs text-forest-500">
+          <Text
+            className="font-body text-xs text-forest-500"
+            style={darkMuted}
+          >
             {post.petName}
             {post.privacy === 'private'
               ? ` · ${t('stories.privacyPrivate')}`
               : ''}
           </Text>
         </View>
-        <Ionicons name="chevron-forward" size={16} color="#7A9A92" />
+        <Ionicons
+          name="chevron-forward"
+          size={16}
+          color={dark ? STORIES_DARK.muted : '#7A9A92'}
+        />
       </Pressable>
 
       <View style={styles.listMedia}>
@@ -205,15 +290,24 @@ function StoryPostCard({
               size={96}
               name={post.petName}
             />
-            <Text className="mt-3 text-center font-body text-sm text-forest-600">
+            <Text
+              className="mt-3 text-center font-body text-sm text-forest-600"
+              style={darkMuted}
+            >
               {post.caption}
             </Text>
           </View>
         )}
       </View>
+      <View style={styles.tagsUnderImage}>
+        <StoryTagsRow post={post} />
+      </View>
 
       <View className="px-4 py-3">
-        <Text className="font-body text-xs uppercase tracking-wide text-forest-500">
+        <Text
+          className="font-body text-xs uppercase tracking-wide text-forest-500"
+          style={darkMuted}
+        >
           {timeAgo}
         </Text>
         <View className="mt-3 flex-row items-center gap-5">
@@ -263,16 +357,32 @@ function StoryPostCard({
           ) : null}
         </View>
         <View className="mt-3 flex-row items-center">
-          <Ionicons name="heart" size={14} color={brand.ink} />
-          <Text className="ml-2 flex-1 font-body text-sm text-forest-800">
+          <Ionicons
+            name="heart"
+            size={14}
+            color={dark ? STORIES_DARK.text : brand.ink}
+          />
+          <Text
+            className="ml-2 flex-1 font-body text-sm text-forest-800"
+            style={darkTitle}
+          >
             {likedBy}
           </Text>
         </View>
-        <Text className="mt-2 font-body text-sm text-forest-700">
-          <Text className="font-body-bold">{post.author}</Text> {post.caption}
+        <Text
+          className="mt-2 font-body text-sm text-forest-700"
+          style={darkMuted}
+        >
+          <Text className="font-body-bold" style={darkTitle}>
+            {post.author}
+          </Text>{' '}
+          {post.caption}
         </Text>
         <Pressable onPress={() => onOpenComments(post)}>
-          <Text className="mt-1 font-body text-xs text-forest-500">
+          <Text
+            className="mt-1 font-body text-xs text-forest-500"
+            style={darkMuted}
+          >
             {post.likes} {t('stories.likes')}
             {post.commentsCount > 0
               ? ` · ${t('stories.commentsCount', { count: String(post.commentsCount) })}`
@@ -299,6 +409,9 @@ export default function StoriesScreen() {
   const [privacy, setPrivacy] = useState<StoryPrivacy>('public');
   const [species, setSpecies] = useState<StorySpecies>('cat');
   const [petId, setPetId] = useState<string | null>(null);
+  const [taggedPetIds, setTaggedPetIds] = useState<string[]>([]);
+  const [taggedFriendIds, setTaggedFriendIds] = useState<string[]>([]);
+  const [friends, setFriends] = useState<FriendUser[]>([]);
   const [sharePost, setSharePost] = useState<StoryPost | null>(null);
   const [authorCard, setAuthorCard] = useState<AuthorCard | null>(null);
   const [authorFollowing, setAuthorFollowing] = useState(false);
@@ -307,10 +420,14 @@ export default function StoriesScreen() {
   const [reportOpen, setReportOpen] = useState(false);
   const [composeError, setComposeError] = useState<string | null>(null);
   const [careStreak, setCareStreak] = useState<CareStreakState | null>(null);
+  const [theme, setTheme] = useState<ThemePref>('light');
+  const dark = theme === 'dark';
 
   const closeCompose = () => {
     setComposeOpen(false);
     setComposeError(null);
+    setTaggedPetIds([]);
+    setTaggedFriendIds([]);
   };
 
   const load = useCallback(
@@ -320,12 +437,14 @@ export default function StoriesScreen() {
       setError(null);
       try {
         void syncLocalFollowsToCloud();
-        const [feed, nextPets] = await Promise.all([
+        const [feed, nextPets, nextFriends] = await Promise.all([
           listStoryFeed(filter),
           listPets().catch(() => [] as PetRow[]),
+          listFriends().catch(() => [] as FriendUser[]),
         ]);
         setPosts(feed);
         setPets(nextPets);
+        setFriends(nextFriends);
       } catch (err) {
         setError(err instanceof Error ? err.message : t('stories.loadError'));
       } finally {
@@ -339,6 +458,7 @@ export default function StoriesScreen() {
   useFocusEffect(
     useCallback(() => {
       void load();
+      void getSettingsPrefs().then((prefs) => setTheme(prefs.theme));
     }, [load]),
   );
 
@@ -370,8 +490,22 @@ export default function StoriesScreen() {
       setPetId(null);
       setSpecies('cat');
     }
+    setTaggedPetIds([]);
+    setTaggedFriendIds([]);
     setComposeError(null);
     setComposeOpen(true);
+  };
+
+  const toggleTaggedPet = (id: string) => {
+    setTaggedPetIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
+  const toggleTaggedFriend = (id: string) => {
+    setTaggedFriendIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
   };
 
   const publish = async () => {
@@ -388,6 +522,12 @@ export default function StoriesScreen() {
     setPublishing(true);
     try {
       const pet = pets.find((p) => p.id === petId) ?? null;
+      const taggedPetNames = taggedPetIds
+        .map((id) => pets.find((p) => p.id === id)?.name)
+        .filter((n): n is string => Boolean(n));
+      const taggedFriendNames = taggedFriendIds
+        .map((id) => friends.find((f) => f.id === id)?.name)
+        .filter((n): n is string => Boolean(n));
       await createStoryPost({
         caption: text,
         imageUri,
@@ -396,6 +536,10 @@ export default function StoriesScreen() {
         petId: pet?.id ?? null,
         petName: pet?.name ?? null,
         avatarKey: pet?.avatar_key ?? null,
+        taggedPetIds,
+        taggedFriendIds,
+        taggedPetNames,
+        taggedFriendNames,
       });
       setCaption('');
       setImageUri(null);
@@ -542,7 +686,7 @@ export default function StoriesScreen() {
   ];
 
   const feedHeader = (
-    <View style={styles.feedHeader}>
+    <View style={[styles.feedHeader, dark && styles.feedHeaderDark]}>
       <ScreenHeader logo="icon" showProfile />
       <View style={styles.actionsRow}>
         <View style={styles.actionsPrimary}>
@@ -554,15 +698,15 @@ export default function StoriesScreen() {
         </View>
         <Pressable
           onPress={() => router.push('/(app)/contests')}
-          style={styles.contestsBtn}
+          style={[styles.contestsBtn, dark && styles.contestsBtnDark]}
           accessibilityRole="button"
           accessibilityLabel={t('contests.open')}
         >
-          <Ionicons name="trophy-outline" size={18} color={brand.tealPressed} />
+          <Ionicons name="trophy-outline" size={18} color={brand.rose} />
         </Pressable>
         <Pressable
           onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
-          style={styles.contestsBtn}
+          style={[styles.contestsBtn, dark && styles.contestsBtnDark]}
           accessibilityRole="button"
           accessibilityLabel={
             viewMode === 'list' ? t('stories.viewGrid') : t('stories.viewList')
@@ -571,10 +715,61 @@ export default function StoriesScreen() {
           <Ionicons
             name={viewMode === 'list' ? 'grid-outline' : 'list'}
             size={18}
-            color={brand.tealPressed}
+            color={brand.rose}
           />
         </Pressable>
       </View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.quickRow}
+      >
+        {(
+          [
+            {
+              href: '/(app)/friends',
+              icon: 'people-outline' as const,
+              label: t('stories.openFriends'),
+            },
+            {
+              href: '/(app)/messages',
+              icon: 'chatbubble-ellipses-outline' as const,
+              label: t('stories.openMessages'),
+            },
+            {
+              href: '/(app)/spotlight-hub',
+              icon: 'sparkles-outline' as const,
+              label: t('stories.openSpotlight'),
+            },
+            {
+              href: '/(app)/search',
+              icon: 'search-outline' as const,
+              label: t('stories.openSearch'),
+            },
+            {
+              href: '/(app)/activity',
+              icon: 'notifications-outline' as const,
+              label: t('stories.openActivity'),
+            },
+          ] as const
+        ).map((item) => (
+          <Pressable
+            key={item.href}
+            onPress={() => router.push(item.href as never)}
+            style={[styles.quickChip, dark && styles.quickChipDark]}
+            accessibilityRole="button"
+            accessibilityLabel={item.label}
+          >
+            <Ionicons name={item.icon} size={16} color={brand.rose} />
+            <Text
+              style={[styles.quickChipText, dark && styles.quickChipTextDark]}
+            >
+              {item.label}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
 
       <ScrollView
         horizontal
@@ -587,11 +782,16 @@ export default function StoriesScreen() {
             <Pressable
               key={f.id}
               onPress={() => setFilter(f.id)}
-              style={[styles.filterChip, active && styles.filterChipActive]}
+              style={[
+                styles.filterChip,
+                dark && styles.filterChipDark,
+                active && styles.filterChipActive,
+              ]}
             >
               <Text
                 style={[
                   styles.filterChipText,
+                  dark && styles.filterChipTextDark,
                   active && styles.filterChipTextActive,
                 ]}
               >
@@ -606,6 +806,7 @@ export default function StoriesScreen() {
 
   return (
     <AppScreen>
+      <View style={[styles.flex, dark && styles.darkScreen]}>
       {loading ? (
         <View style={styles.flex}>
           {feedHeader}
@@ -634,12 +835,12 @@ export default function StoriesScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor={brand.tealDeep}
+              tintColor={dark ? brand.rose : brand.tealDeep}
             />
           }
           ListEmptyComponent={
             <View style={styles.emptyWrap}>
-              <Text style={styles.emptyText}>
+              <Text style={[styles.emptyText, dark && styles.emptyTextDark]}>
                 {filter === 'mine'
                   ? t('stories.emptyMine')
                   : filter === 'following'
@@ -663,6 +864,7 @@ export default function StoriesScreen() {
               <StoryPostCard
                 post={item}
                 compact={viewMode === 'grid'}
+                dark={dark}
                 onToggleLike={(p) => void onToggleLike(p)}
                 onShare={setSharePost}
                 onOpenComments={openComments}
@@ -816,6 +1018,76 @@ export default function StoriesScreen() {
               </View>
 
               <Text className="mt-4 font-body-medium text-sm text-forest-700">
+                {t('stories.tagPets')}
+              </Text>
+              {pets.length === 0 ? (
+                <Text className="mt-2 font-body text-xs text-forest-500">
+                  {t('stories.tagPetsEmpty')}
+                </Text>
+              ) : (
+                <View className="mt-2 flex-row flex-wrap gap-2">
+                  {pets.map((p) => {
+                    const active = taggedPetIds.includes(p.id);
+                    return (
+                      <Pressable
+                        key={p.id}
+                        onPress={() => toggleTaggedPet(p.id)}
+                        className={`rounded-2xl px-4 py-2.5 ${
+                          active ? 'bg-rose-400' : 'bg-forest-100'
+                        }`}
+                        style={
+                          active
+                            ? { backgroundColor: brand.rose }
+                            : undefined
+                        }
+                      >
+                        <Text
+                          className={`font-body-bold text-sm ${
+                            active ? 'text-white' : 'text-forest-800'
+                          }`}
+                          style={active ? { color: '#fff' } : undefined}
+                        >
+                          {p.name}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              )}
+
+              <Text className="mt-4 font-body-medium text-sm text-forest-700">
+                {t('stories.tagFriends')}
+              </Text>
+              {friends.length === 0 ? (
+                <Text className="mt-2 font-body text-xs text-forest-500">
+                  {t('stories.tagFriendsEmpty')}
+                </Text>
+              ) : (
+                <View className="mt-2 flex-row flex-wrap gap-2">
+                  {friends.map((f) => {
+                    const active = taggedFriendIds.includes(f.id);
+                    return (
+                      <Pressable
+                        key={f.id}
+                        onPress={() => toggleTaggedFriend(f.id)}
+                        className="rounded-2xl px-4 py-2.5"
+                        style={{
+                          backgroundColor: active ? brand.navy : brand.mist,
+                        }}
+                      >
+                        <Text
+                          className="font-body-bold text-sm"
+                          style={{ color: active ? '#fff' : brand.ink }}
+                        >
+                          {f.name}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              )}
+
+              <Text className="mt-4 font-body-medium text-sm text-forest-700">
                 {t('stories.caption')}
               </Text>
               <TextInput
@@ -924,6 +1196,18 @@ export default function StoriesScreen() {
                   ) : (
                     <>
                       <PrimaryButton
+                        label={t('profile.open')}
+                        variant="secondary"
+                        onPress={() => {
+                          const card = authorCard;
+                          setAuthorCard(null);
+                          router.push({
+                            pathname: '/(app)/user-profile',
+                            params: { userId: card.userId },
+                          } as never);
+                        }}
+                      />
+                      <PrimaryButton
                         label={
                           authorFollowing
                             ? t('stories.unfollow')
@@ -1024,16 +1308,23 @@ export default function StoriesScreen() {
             : ''
         }
       />
+      </View>
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  darkScreen: {
+    backgroundColor: STORIES_DARK.bg,
+  },
   feedHeader: {
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 8,
+  },
+  feedHeaderDark: {
+    backgroundColor: STORIES_DARK.bg,
   },
   actionsRow: {
     flexDirection: 'row',
@@ -1052,6 +1343,39 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: brand.mistBorder,
   },
+  contestsBtnDark: {
+    backgroundColor: STORIES_DARK.card,
+    borderColor: STORIES_DARK.border,
+  },
+  quickRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingTop: 10,
+  },
+  quickChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: brand.surfaceElevated,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+  },
+  quickChipDark: {
+    backgroundColor: STORIES_DARK.card,
+    borderColor: STORIES_DARK.border,
+  },
+  quickChipText: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 12,
+    color: brand.tealPressed,
+  },
+  quickChipTextDark: {
+    color: brand.rose,
+  },
   filterRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1067,6 +1391,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: brand.mistBorder,
   },
+  filterChipDark: {
+    backgroundColor: STORIES_DARK.card,
+    borderColor: STORIES_DARK.border,
+  },
   filterChipActive: {
     backgroundColor: brand.tealPressed,
     borderColor: brand.tealPressed,
@@ -1075,6 +1403,9 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
     color: brand.tealPressed,
+  },
+  filterChipTextDark: {
+    color: STORIES_DARK.muted,
   },
   filterChipTextActive: {
     fontFamily: 'DMSans_700Bold',
@@ -1108,6 +1439,9 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: '#5A7A72',
   },
+  emptyTextDark: {
+    color: STORIES_DARK.muted,
+  },
   emptyBtn: {
     marginTop: 16,
     width: '100%',
@@ -1126,6 +1460,10 @@ const styles = StyleSheet.create({
     backgroundColor: brand.mist,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  tagsUnderImage: {
+    paddingHorizontal: 16,
+    paddingBottom: 4,
   },
   fillImage: {
     width: '100%',

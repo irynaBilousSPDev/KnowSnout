@@ -18,7 +18,7 @@ function TabIcon({
       <Ionicons
         name={name}
         size={22}
-        color={focused ? brand.tealPressed : '#7FD9C9'}
+        color={focused ? brand.navy : '#8A9BB0'}
       />
     </View>
   );
@@ -53,8 +53,8 @@ export default function TabsLayout() {
         tabBarItemStyle: {
           paddingTop: 2,
         },
-        tabBarActiveTintColor: brand.tealPressed,
-        tabBarInactiveTintColor: '#7FD9C9',
+        tabBarActiveTintColor: brand.navy,
+        tabBarInactiveTintColor: '#8A9BB0',
       }}
     >
       <Tabs.Screen
@@ -70,32 +70,14 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="history"
+        name="pets"
         options={{
-          title: t('tabs.history'),
+          title: t('tabs.pets'),
           tabBarIcon: ({ focused }) => (
-            <TabIcon
-              name={focused ? 'journal' : 'journal-outline'}
-              focused={focused}
-            />
+            <TabIcon name={focused ? 'paw' : 'paw-outline'} focused={focused} />
           ),
           tabBarLabel: ({ focused }) => (
-            <TabLabel label={t('tabs.history')} focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="quiz"
-        options={{
-          title: t('tabs.quiz'),
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              name={focused ? 'help-circle' : 'help-circle-outline'}
-              focused={focused}
-            />
-          ),
-          tabBarLabel: ({ focused }) => (
-            <TabLabel label={t('tabs.quiz')} focused={focused} />
+            <TabLabel label={t('tabs.pets')} focused={focused} />
           ),
         }}
       />
@@ -115,23 +97,39 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="pets"
+        name="community"
         options={{
-          title: t('tabs.pets'),
+          title: t('tabs.community'),
           tabBarIcon: ({ focused }) => (
-            <TabIcon name={focused ? 'paw' : 'paw-outline'} focused={focused} />
+            <TabIcon
+              name={focused ? 'people' : 'people-outline'}
+              focused={focused}
+            />
           ),
           tabBarLabel: ({ focused }) => (
-            <TabLabel label={t('tabs.pets')} focused={focused} />
+            <TabLabel label={t('tabs.community')} focused={focused} />
           ),
         }}
       />
       <Tabs.Screen
-        name="me"
+        name="directories"
         options={{
-          href: null,
+          title: t('tabs.directories'),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              name={focused ? 'map' : 'map-outline'}
+              focused={focused}
+            />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <TabLabel label={t('tabs.directories')} focused={focused} />
+          ),
         }}
       />
+      {/* Nested under Перевір / Спільнота — not bottom tabs */}
+      <Tabs.Screen name="history" options={{ href: null }} />
+      <Tabs.Screen name="quiz" options={{ href: null }} />
+      <Tabs.Screen name="me" options={{ href: null }} />
     </Tabs>
   );
 }
@@ -148,16 +146,16 @@ const styles = StyleSheet.create({
     minHeight: 32,
   },
   iconWrapFocused: {
-    backgroundColor: brand.mist,
+    backgroundColor: brand.forestTint,
   },
   label: {
     fontFamily: 'DMSans_500Medium',
     fontSize: 10,
     lineHeight: 12,
-    color: '#7FD9C9',
+    color: '#8A9BB0',
     textAlign: 'center',
   },
   labelFocused: {
-    color: brand.tealPressed,
+    color: brand.navy,
   },
 });

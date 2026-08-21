@@ -125,6 +125,7 @@ export function matchFoodToPet(
     food.species &&
     food.species !== 'unknown' &&
     pet.species !== 'other' &&
+    pet.species !== 'bird' &&
     food.species !== pet.species
   ) {
     hits.push({

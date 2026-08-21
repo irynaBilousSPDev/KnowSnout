@@ -1,6 +1,6 @@
 import type { CompanionSpecies } from '@/src/types/pet';
 
-export type PlayPackId = 'dog' | 'cat' | 'other';
+export type PlayPackId = 'dog' | 'cat' | 'bird' | 'other';
 
 export type PlayGuideCard = {
   id: string;
@@ -107,6 +107,39 @@ export const PLAY_PACKS: PlayPack[] = [
     ],
   },
   {
+    id: 'bird',
+    titleUk: 'Папуга / птах',
+    subtitleUk: 'Соціалізація, іграшки та безпека клітки',
+    cards: [
+      {
+        id: 'bird-forage',
+        titleUk: 'Пошук ласощів (foraging)',
+        bodyUk:
+          'Сховай кілька зернин або шматочків овочів у папері / картонній коробочці без клею. Це займає дзьоб і голову краще за вільне «годування з миски».',
+        toysUk: ['Папір без чорнила', 'Картонні трубочки', 'Фуражні іграшки для папуг'],
+      },
+      {
+        id: 'bird-talk',
+        titleUk: 'Коротка «розмова»',
+        bodyUk:
+          '5–10 хвилин спокійної уваги біля клітки або на руці (якщо птах звик): голос, повторення слів, тиша після. Не кричи й не змушуй сідати.',
+      },
+      {
+        id: 'bird-toys',
+        titleUk: 'Іграшки для дзьоба',
+        bodyUk:
+          'Ротуй 2–3 іграшки на тиждень: дерево, мотузка з натуральних волокон, дзвіночок без дрібних деталей. Стеж, щоб не ковтав шматки.',
+        toysUk: ['Дерев’яні намистини', 'Мотузка з бавовни', 'Дзвіночок без відкручуваних частин'],
+      },
+      {
+        id: 'bird-safety',
+        titleUk: 'Безпека',
+        bodyUk:
+          'Не тримай біля відкритих вікон без сітки, Teflon/аерозолів і рослин, токсичних для птахів. Питання раціону й ветеринарії — лише у пташиного вета.',
+      },
+    ],
+  },
+  {
     id: 'other',
     titleUk: 'Інші улюбленці',
     subtitleUk: 'Загальне збагачення середовища',
@@ -127,7 +160,7 @@ export const PLAY_PACKS: PlayPack[] = [
         id: 'other-vet',
         titleUk: 'Уточни у вета / фахівця',
         bodyUk:
-          'Для кроликів, птахів, гризунів ігри й іграшки дуже різні. Цей блок — лише загальна ідея; схема збагачення — у ветеринара або поведінкового спеціаліста.',
+          'Для кроликів, гризунів ігри й іграшки дуже різні. Цей блок — лише загальна ідея; схема збагачення — у ветеринара або поведінкового спеціаліста.',
       },
     ],
   },
@@ -136,6 +169,7 @@ export const PLAY_PACKS: PlayPack[] = [
 export function playPackForSpecies(species: CompanionSpecies): PlayPack {
   if (species === 'dog') return PLAY_PACKS.find((p) => p.id === 'dog')!;
   if (species === 'cat') return PLAY_PACKS.find((p) => p.id === 'cat')!;
+  if (species === 'bird') return PLAY_PACKS.find((p) => p.id === 'bird')!;
   return PLAY_PACKS.find((p) => p.id === 'other')!;
 }
 

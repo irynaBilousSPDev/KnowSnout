@@ -33,6 +33,22 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 | **Журнал** | Inner tabs: Корм · Рослини · Породи |
 | Улюбленці / Стрічка | unchanged |
 
+### P0d — IA: UI Kit v2 tabs (2026-08-21) — **STRUCTURE SHIPPED (mock-first)**
+
+| Tab | Role |
+|--|--|
+| **Перевір** | Hub + journal/compare/onboarding links (journal tab hidden) |
+| **Улюбленці** | Profiles + care depth |
+| **Стрічка** | Stories + Spotlight/friends entry points |
+| **Спільнота** | Quiz + forum + blog hubs |
+| **Довідники** | Module F trust directory |
+| **Адмінка** | `/(admin)` test shell (Wave 7) |
+
+Roadmap: `docs/IMPLEMENTATION_ROADMAP.md` · Design PDFs: `docs/design/` · Agent rule: `.cursor/rules/kit-slice.mdc`  
+**Creative brief synced 2026-08-21:** `CREATIVE_BRIEF.md` §0 — contradictions resolved (tabs + Variant 12); vision P3–P6 / Care C* explicitly retained as horizon (not dropped by PDF map).
+
+Visual: **Variant 12** active in `BRANDBOOK.md` / `src/theme/brand.ts`. Paid APIs remain mock where not live.
+
 ### P1c — Breed from photo / name (do not lose)
 
 | Step | Approach |

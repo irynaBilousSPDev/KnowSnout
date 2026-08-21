@@ -57,16 +57,16 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#111B2F',
+    backgroundColor: '#0C1C33',
     paddingVertical: 24,
     paddingHorizontal: 16,
   },
   phone: {
     borderRadius: 36,
     overflow: 'hidden',
-    backgroundColor: '#F7FAF9',
+    backgroundColor: '#F7F1ED',
     borderWidth: 10,
-    borderColor: '#0a1220',
+    borderColor: '#0C1C33',
     ...Platform.select({
       web: {
         boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   notchBar: {
     height: NOTCH,
-    backgroundColor: '#F7FAF9',
+    backgroundColor: '#F7F1ED',
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingBottom: 4,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     width: 96,
     height: 8,
     borderRadius: 999,
-    backgroundColor: '#111B2F',
+    backgroundColor: '#0C1C33',
   },
   content: {
     width: '100%',

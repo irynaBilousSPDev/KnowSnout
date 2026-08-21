@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ListRow } from '@/src/components/ListRow';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -379,6 +380,32 @@ export default function MyDataScreen() {
             <Text className="mt-2 font-body text-sm leading-5 text-forest-600">
               {t('me.privacyBody')}
             </Text>
+          </View>
+
+          <View className="mt-4 rounded-3xl border border-forest-100 bg-white px-5 py-5">
+            <Text className="mb-2 font-body-bold text-lg text-forest-900">
+              {t('me.systemSection')}
+            </Text>
+            <ListRow
+              title={t('settings.title')}
+              subtitle={t('me.linkSettings')}
+              onPress={() => router.push('/(app)/settings' as never)}
+            />
+            <ListRow
+              title={t('notifications.title')}
+              subtitle={t('me.linkNotifications')}
+              onPress={() => router.push('/(app)/notifications' as never)}
+            />
+            <ListRow
+              title={t('subscription.title')}
+              subtitle={t('me.linkSubscription')}
+              onPress={() => router.push('/(app)/subscription' as never)}
+            />
+            <ListRow
+              title={t('editAccount.title')}
+              subtitle={t('me.linkEditAccount')}
+              onPress={() => router.push('/(app)/edit-account' as never)}
+            />
           </View>
 
           <View className="mt-4 gap-3">

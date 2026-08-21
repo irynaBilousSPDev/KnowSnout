@@ -27,6 +27,7 @@ import type { CompanionSpecies, PetRow } from '@/src/types/pet';
 function speciesLabel(species: CompanionSpecies) {
   if (species === 'dog') return t('pets.speciesDog');
   if (species === 'cat') return t('pets.speciesCat');
+  if (species === 'bird') return t('pets.speciesBird');
   return t('pets.speciesOther');
 }
 
@@ -181,9 +182,9 @@ export default function PetsScreen() {
               showChevron={false}
               onPress={() =>
                 router.push({
-                  pathname: '/(app)/pet-profile',
-                  params: { id: item.id },
-                })
+                  pathname: '/(app)/pet-hub',
+                  params: { petId: item.id },
+                } as never)
               }
             />
           )}

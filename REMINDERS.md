@@ -24,7 +24,12 @@
 | зроблено (користувач, 2026-07-27) | `20260321235000_pet_life_stage.sql` | `pets.life_stage` для матчу корму |
 | зроблено (користувач, 2026-07-27) | `20260321237000_story_follows.sql` | хмарні підписки Stories (UI поки local) |
 | зроблено (користувач, 2026-07-27) | `20260321238000_story_moderation.sql` | blocks/reports (UI local) |
-| **запустити** | `20260321239000_dm_threads.sql` | DM threads + messages |
+| зроблено (користувач, 2026-08-21) | `20260321239000_dm_threads.sql` | DM threads + messages |
+| зроблено (користувач, 2026-08-21) | `20260321240000_forum_local_cloud.sql` | forum cloud |
+| зроблено (користувач, 2026-08-21) | `20260321241000_friends_graph.sql` | friends graph |
+| зроблено (користувач, 2026-08-21) | `20260321242000_directories_trust.sql` | directories trust |
+| зроблено (користувач, 2026-08-21) | `20260321243000_spotlight_cloud.sql` | spotlight |
+| зроблено (користувач, 2026-08-21) | `20260321244000_cloud_seeds_and_votes.sql` | seeds + vote RPC |
 
 ## Архітектура вкладок (зафіксовано)
 
@@ -66,7 +71,7 @@
 |--|--|
 | SnoutStories follows / автор-картка / care streak | ✅ cloud follows + care streak (self) |
 | Модерація (report / block) | ✅ cloud + local cache |
-| Chat / DM (легкий) | ✅ UI + local · SQL `20260321239000_dm_threads.sql` |
+| Chat / DM (легкий) | ✅ UI + cloud SQL (2026-08-21) |
 | Конкурси: день / тиждень / місяць / рік (глибше) | ✅ теми + вхід зі Stories (local) |
 | Share у соцмережі (розширити) | ✅ Telegram + copy deep link |
 
@@ -92,4 +97,4 @@
 - Нічого не «губимо бо пізно».
 - **Каркас спочатку:** UI + mock / Edge stubs; реальні API (OpenAI, Allegro, Plant ID…) підключаємо пізніше, коли знадобиться.
 
-Останнє оновлення: 2026-07-27 — зафіксовано must-have **Форум** + **Блог** + P6 усі companion animals; раніше: P2 DM / follows / moderation / share.
+Останнє оновлення: 2026-08-21 — SQL 390–440 прогнано в Supabase; forum/friends/directories/spotlight cloud ready.

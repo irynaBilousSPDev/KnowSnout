@@ -100,6 +100,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="pet-hub"
+        options={{
+          headerShown: true,
+          title: t('petHub.title'),
+        }}
+      />
+      <Stack.Screen
         name="my-data"
         options={{
           headerShown: true,
@@ -210,6 +217,233 @@ export default function AppLayout() {
           headerShown: true,
           title: t('journal.breedDetailTitle'),
         }}
+      />
+      <Stack.Screen
+        name="onboarding"
+        options={{
+          headerShown: true,
+          title: t('onboarding.title'),
+        }}
+      />
+      <Stack.Screen
+        name="compare-food"
+        options={{
+          headerShown: true,
+          title: t('compare.title'),
+        }}
+      />
+      <Stack.Screen
+        name="pet-habits"
+        options={{
+          headerShown: true,
+          title: t('habits.title'),
+        }}
+      />
+      <Stack.Screen
+        name="pet-calendar"
+        options={{
+          headerShown: true,
+          title: t('calendar.title'),
+        }}
+      />
+      <Stack.Screen
+        name="pet-travel-wizard"
+        options={{
+          headerShown: true,
+          title: t('travelWizard.title'),
+        }}
+      />
+      <Stack.Screen
+        name="spotlight-hub"
+        options={{ headerShown: true, title: t('spotlight.title') }}
+      />
+      <Stack.Screen
+        name="spotlight-rules"
+        options={{ headerShown: true, title: t('spotlight.rulesTitle') }}
+      />
+      <Stack.Screen
+        name="spotlight-apply"
+        options={{ headerShown: true, title: t('spotlight.applyTitle') }}
+      />
+      <Stack.Screen
+        name="spotlight-ranking"
+        options={{ headerShown: true, title: t('spotlight.rankingTitle') }}
+      />
+      <Stack.Screen
+        name="spotlight-winners"
+        options={{ headerShown: true, title: t('spotlight.winnersTitle') }}
+      />
+      <Stack.Screen
+        name="spotlight-won"
+        options={{ headerShown: true, title: t('spotlight.wonTitle') }}
+      />
+      <Stack.Screen
+        name="spotlight-guest-vote"
+        options={{ headerShown: true, title: t('spotlight.guestVoteTitle') }}
+      />
+      <Stack.Screen
+        name="friends"
+        options={{ headerShown: true, title: t('friends.title') }}
+      />
+      <Stack.Screen
+        name="friend-requests"
+        options={{ headerShown: true, title: t('friends.requestsTitle') }}
+      />
+      <Stack.Screen
+        name="friend-search"
+        options={{ headerShown: true, title: t('friends.searchTitle') }}
+      />
+      <Stack.Screen
+        name="friend-invite"
+        options={{ headerShown: true, title: t('friends.inviteTitle') }}
+      />
+      <Stack.Screen
+        name="friend-invite-accept"
+        options={{ headerShown: true, title: t('friends.inviteAcceptTitle') }}
+      />
+      <Stack.Screen
+        name="user-profile"
+        options={{ headerShown: true, title: t('profile.title') }}
+      />
+      <Stack.Screen
+        name="walk-plan"
+        options={{ headerShown: true, title: t('walks.title') }}
+      />
+      <Stack.Screen
+        name="activity"
+        options={{ headerShown: true, title: t('activity.title') }}
+      />
+      <Stack.Screen
+        name="search"
+        options={{ headerShown: true, title: t('search.title') }}
+      />
+      <Stack.Screen
+        name="quiz-zoom"
+        options={{ headerShown: true, title: t('quizZoom.title') }}
+      />
+      <Stack.Screen
+        name="quiz-heavier"
+        options={{ headerShown: true, title: t('quizHeavier.title') }}
+      />
+      <Stack.Screen
+        name="quiz-myth"
+        options={{ headerShown: true, title: t('quizMyth.title') }}
+      />
+      <Stack.Screen
+        name="quiz-leaderboard"
+        options={{ headerShown: true, title: t('leaderboard.title') }}
+      />
+      <Stack.Screen
+        name="achievements"
+        options={{ headerShown: true, title: t('achievements.title') }}
+      />
+      <Stack.Screen
+        name="forum"
+        options={{ headerShown: true, title: t('forum.title') }}
+      />
+      <Stack.Screen
+        name="forum-category"
+        options={{ headerShown: true, title: t('forum.categoryTitle') }}
+      />
+      <Stack.Screen
+        name="forum-thread"
+        options={{ headerShown: true, title: t('forum.threadTitle') }}
+      />
+      <Stack.Screen
+        name="forum-new"
+        options={{ headerShown: true, title: t('forum.newTitle') }}
+      />
+      <Stack.Screen
+        name="forum-rules"
+        options={{ headerShown: true, title: t('forum.rulesTitle') }}
+      />
+      <Stack.Screen
+        name="forum-search"
+        options={{ headerShown: true, title: t('forum.searchTitle') }}
+      />
+      <Stack.Screen
+        name="forum-author"
+        options={{ headerShown: true, title: t('forum.authorTitle') }}
+      />
+      <Stack.Screen
+        name="forum-notifications"
+        options={{ headerShown: true, title: t('forum.notificationsTitle') }}
+      />
+      <Stack.Screen
+        name="blog"
+        options={{ headerShown: true, title: t('blog.title') }}
+      />
+      <Stack.Screen
+        name="blog-article"
+        options={{ headerShown: true, title: t('blog.title') }}
+      />
+      <Stack.Screen
+        name="blog-bookmarks"
+        options={{ headerShown: true, title: t('blog.bookmarksTitle') }}
+      />
+      <Stack.Screen
+        name="notifications"
+        options={{ headerShown: true, title: t('notifications.title') }}
+      />
+      <Stack.Screen
+        name="help"
+        options={{ headerShown: true, title: t('help.title') }}
+      />
+      <Stack.Screen
+        name="help-article"
+        options={{ headerShown: true, title: t('help.title') }}
+      />
+      <Stack.Screen
+        name="support"
+        options={{ headerShown: true, title: t('support.title') }}
+      />
+      <Stack.Screen
+        name="settings"
+        options={{ headerShown: true, title: t('settings.title') }}
+      />
+      <Stack.Screen
+        name="subscription"
+        options={{ headerShown: true, title: t('subscription.title') }}
+      />
+      <Stack.Screen
+        name="edit-account"
+        options={{ headerShown: true, title: t('editAccount.title') }}
+      />
+      <Stack.Screen
+        name="blocked-users"
+        options={{ headerShown: true, title: t('blocked.title') }}
+      />
+      <Stack.Screen
+        name="delete-account"
+        options={{ headerShown: true, title: t('deleteAccount.title') }}
+      />
+      <Stack.Screen
+        name="privacy"
+        options={{ headerShown: true, title: t('privacy.title') }}
+      />
+      <Stack.Screen
+        name="directory-list"
+        options={{ headerShown: true, title: t('directories.listTitle') }}
+      />
+      <Stack.Screen
+        name="directory-carriers"
+        options={{ headerShown: true, title: t('directories.carriersTitle') }}
+      />
+      <Stack.Screen
+        name="directory-detail"
+        options={{ headerShown: true, title: t('directories.detailTitle') }}
+      />
+      <Stack.Screen
+        name="directory-chat"
+        options={{ headerShown: true, title: t('directories.chatTitle') }}
+      />
+      <Stack.Screen
+        name="directory-review"
+        options={{ headerShown: true, title: t('directories.reviewTitle') }}
+      />
+      <Stack.Screen
+        name="directory-report"
+        options={{ headerShown: true, title: t('directories.reportTitle') }}
       />
     </Stack>
   );

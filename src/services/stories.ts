@@ -42,6 +42,10 @@ const SEED_POSTS: StoryPost[] = [
     mine: false,
     privacy: 'public',
     petId: null,
+    taggedPetIds: [],
+    taggedFriendIds: ['fu-1'],
+    taggedPetNames: [],
+    taggedFriendNames: ['Ірина К.'],
   },
   {
     id: 'seed-2',
@@ -291,6 +295,18 @@ function mapCloudRow(
     mine: Boolean(myUserId && userId === myUserId),
     privacy,
     petId: row.pet_id ? String(row.pet_id) : null,
+    taggedPetIds: Array.isArray(row.tagged_pet_ids)
+      ? (row.tagged_pet_ids as string[]).map(String)
+      : [],
+    taggedFriendIds: Array.isArray(row.tagged_friend_ids)
+      ? (row.tagged_friend_ids as string[]).map(String)
+      : [],
+    taggedPetNames: Array.isArray(row.tagged_pet_names)
+      ? (row.tagged_pet_names as string[]).map(String)
+      : [],
+    taggedFriendNames: Array.isArray(row.tagged_friend_names)
+      ? (row.tagged_friend_names as string[]).map(String)
+      : [],
   };
 }
 
@@ -442,6 +458,10 @@ function localPost(input: {
   privacy: StoryPrivacy;
   petId: string | null;
   now: string;
+  taggedPetIds?: string[];
+  taggedFriendIds?: string[];
+  taggedPetNames?: string[];
+  taggedFriendNames?: string[];
 }): StoryPost {
   return {
     ...input,
@@ -450,6 +470,10 @@ function localPost(input: {
     liked: false,
     commentsCount: 0,
     mine: true,
+    taggedPetIds: input.taggedPetIds ?? [],
+    taggedFriendIds: input.taggedFriendIds ?? [],
+    taggedPetNames: input.taggedPetNames ?? [],
+    taggedFriendNames: input.taggedFriendNames ?? [],
   };
 }
 
@@ -461,6 +485,10 @@ export async function createStoryPost(input: {
   petId?: string | null;
   petName?: string | null;
   avatarKey?: string | null;
+  taggedPetIds?: string[];
+  taggedFriendIds?: string[];
+  taggedPetNames?: string[];
+  taggedFriendNames?: string[];
 }): Promise<StoryPost> {
   const caption = input.caption.trim();
   if (!caption) throw new Error('CAPTION_REQUIRED');
@@ -479,6 +507,10 @@ export async function createStoryPost(input: {
     input.avatarKey ||
     (input.species === 'dog' ? 'dog-1' : 'cat-1');
   const now = new Date().toISOString();
+  const taggedPetIds = input.taggedPetIds ?? [];
+  const taggedFriendIds = input.taggedFriendIds ?? [];
+  const taggedPetNames = input.taggedPetNames ?? [];
+  const taggedFriendNames = input.taggedFriendNames ?? [];
 
   if (env.isDemoMode || !supabase || !user) {
     const post = localPost({
@@ -494,6 +526,10 @@ export async function createStoryPost(input: {
       privacy: input.privacy,
       petId: input.petId ?? null,
       now,
+      taggedPetIds,
+      taggedFriendIds,
+      taggedPetNames,
+      taggedFriendNames,
     });
     const prev = await readLocal();
     await writeLocal([post, ...prev].slice(0, 50));
@@ -519,6 +555,10 @@ export async function createStoryPost(input: {
       privacy: input.privacy,
       petId: input.petId ?? null,
       now,
+      taggedPetIds,
+      taggedFriendIds,
+      taggedPetNames,
+      taggedFriendNames,
     });
     const prev = await readLocal();
     await writeLocal([post, ...prev].slice(0, 50));
@@ -558,6 +598,10 @@ export async function createStoryPost(input: {
         privacy: input.privacy,
         petId: input.petId ?? null,
         now,
+        taggedPetIds,
+        taggedFriendIds,
+        taggedPetNames,
+        taggedFriendNames,
       });
       const prev = await readLocal();
       await writeLocal([post, ...prev].slice(0, 50));
@@ -566,7 +610,7 @@ export async function createStoryPost(input: {
     throw new Error(friendlyDbError(error?.message) || 'Failed to publish');
   }
 
-  return mapCloudRow(
+  const mapped = mapCloudRow(
     data as Record<string, unknown>,
     0,
     false,
@@ -574,6 +618,13 @@ export async function createStoryPost(input: {
     user.id,
     localImage,
   );
+  return {
+    ...mapped,
+    taggedPetIds,
+    taggedFriendIds,
+    taggedPetNames,
+    taggedFriendNames,
+  };
 }
 
 export async function deleteStoryPost(post: StoryPost): Promise<void> {
@@ -877,4 +928,26 @@ export async function deleteStoryComment(comment: StoryComment): Promise<void> {
     .eq('id', comment.id)
     .eq('user_id', user.id);
   if (error) throw new Error(friendlyDbError(error.message));
+}
+
+export async function listStoryPostsByUser(
+  userId: string,
+): Promise<StoryPost[]> {
+  if (!userId) return [];
+  const feed = await listStoryFeed('all');
+  const mine = await listStoryFeed('mine');
+  const all = [...feed, ...mine];
+  const seen = new Set<string>();
+  return all.filter((p) => {
+    if (p.userId !== userId) return false;
+    if (seen.has(p.id)) return false;
+    seen.add(p.id);
+    return true;
+  });
+}
+
+export function formatStoryTags(post: StoryPost): string[] {
+  const pets = post.taggedPetNames?.filter(Boolean) ?? [];
+  const friends = post.taggedFriendNames?.filter(Boolean) ?? [];
+  return [...pets.map((n) => `🐾 ${n}`), ...friends.map((n) => `@${n.replace(/^@/, '')}`)];
 }

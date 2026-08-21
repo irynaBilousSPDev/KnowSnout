@@ -67,7 +67,7 @@ export function PrimaryButton({
       >
         {loading ? (
           <ActivityIndicator
-            color={variant === 'primary' ? brand.surface : brand.tealPressed}
+            color={variant === 'primary' ? '#FFFFFF' : brand.navy}
           />
         ) : (
           <Text
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   sizeMd: { minHeight: 50, paddingHorizontal: 18, paddingVertical: 13 },
   sizeLg: { minHeight: 54, paddingHorizontal: 20, paddingVertical: 15 },
   sizeSm: { minHeight: 42, paddingHorizontal: 14, paddingVertical: 10 },
-  primary: { backgroundColor: brand.tealPressed },
+  primary: { backgroundColor: brand.navy },
   secondary: {
     backgroundColor: brand.surfaceElevated,
     borderWidth: 1,
@@ -126,6 +126,6 @@ const styles = StyleSheet.create({
   labelSm: { fontSize: 13 },
   labelPrimary: { color: '#FFFFFF' },
   labelSecondary: { color: brand.ink },
-  labelGhost: { color: brand.tealPressed },
+  labelGhost: { color: brand.navy },
   labelDanger: { color: brand.score.poor },
 });

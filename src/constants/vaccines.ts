@@ -53,7 +53,7 @@ export const VACCINE_CATALOG: VaccineCatalogItem[] = [
   {
     key: 'other',
     labelUk: 'Інше (своя назва)',
-    species: ['dog', 'cat', 'other'],
+    species: ['dog', 'cat', 'bird', 'other'],
   },
 ];
 

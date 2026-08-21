@@ -6,34 +6,38 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Mapped to SnoutScore brand (lime → teal → ink). See BRANDBOOK.md
+        // UI Kit v2 Variant 12 — see BRANDBOOK.md
         forest: {
-          50: '#f3fbf9',
-          100: '#dff7f1',
-          200: '#b7ebe0',
-          300: '#7fd9c9',
-          400: '#3fc4b0',
-          500: '#00b39f',
-          600: '#00a894',
-          700: '#0a7a6e',
-          800: '#16324a',
-          900: '#111b2f',
+          50: '#F7F1ED',
+          100: '#E3E9DF',
+          200: '#C8D2C4',
+          300: '#8FA894',
+          400: '#5A7A5E',
+          500: '#2F5233',
+          600: '#244028',
+          700: '#1B301F',
+          800: '#122A4C',
+          900: '#0C1C33',
         },
         sand: {
-          50: '#f7faf9',
-          100: '#eef5f3',
-          200: '#d9e8e4',
-          300: '#b8d4cd',
+          50: '#F7F1ED',
+          100: '#F4DADF',
+          200: '#E3E9DF',
+          300: '#C8D2C4',
         },
         snout: {
-          lime: '#72ED2F',
-          teal: '#00E0C7',
-          ink: '#111B2F',
+          navy: '#122A4C',
+          forest: '#2F5233',
+          rose: '#E8879A',
+          ink: '#0C1C33',
+          // legacy aliases
+          lime: '#2F5233',
+          teal: '#2F5233',
         },
         score: {
           poor: '#c45c3e',
           fair: '#c4922a',
-          good: '#0a9b7a',
+          good: '#2F5233',
         },
       },
       fontFamily: {

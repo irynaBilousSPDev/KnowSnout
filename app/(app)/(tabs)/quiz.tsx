@@ -23,11 +23,12 @@ import { prefetchWikiQuizData } from '@/src/services/wikidataQuiz';
 import { brand } from '@/src/theme/brand';
 
 type QuizCategoryCard = {
-  id: 'breed' | 'breed_origin' | 'animal_group' | 'animals_trivia';
+  id: string;
   icon: keyof typeof Ionicons.glyphMap;
   titleKey: string;
   bodyKey: string;
   href: string;
+  tracked?: boolean;
 };
 
 const CATEGORIES: QuizCategoryCard[] = [
@@ -37,6 +38,7 @@ const CATEGORIES: QuizCategoryCard[] = [
     titleKey: 'quizHub.breedTitle',
     bodyKey: 'quizHub.breedBody',
     href: '/(app)/breed-quiz',
+    tracked: true,
   },
   {
     id: 'breed_origin',
@@ -44,6 +46,7 @@ const CATEGORIES: QuizCategoryCard[] = [
     titleKey: 'quizHub.originTitle',
     bodyKey: 'quizHub.originBody',
     href: '/(app)/wiki-quiz?category=breed_origin',
+    tracked: true,
   },
   {
     id: 'animal_group',
@@ -51,6 +54,7 @@ const CATEGORIES: QuizCategoryCard[] = [
     titleKey: 'quizHub.groupTitle',
     bodyKey: 'quizHub.groupBody',
     href: '/(app)/wiki-quiz?category=animal_group',
+    tracked: true,
   },
   {
     id: 'animals_trivia',
@@ -58,6 +62,28 @@ const CATEGORIES: QuizCategoryCard[] = [
     titleKey: 'quizHub.triviaTitle',
     bodyKey: 'quizHub.triviaBody',
     href: '/(app)/trivia-quiz',
+    tracked: true,
+  },
+  {
+    id: 'zoom',
+    icon: 'scan-outline',
+    titleKey: 'quizHub.zoomTitle',
+    bodyKey: 'quizHub.zoomBody',
+    href: '/(app)/quiz-zoom',
+  },
+  {
+    id: 'heavier',
+    icon: 'school-outline',
+    titleKey: 'quizHub.heavierTitle',
+    bodyKey: 'quizHub.heavierBody',
+    href: '/(app)/quiz-heavier',
+  },
+  {
+    id: 'myth',
+    icon: 'swap-horizontal-outline',
+    titleKey: 'quizHub.mythTitle',
+    bodyKey: 'quizHub.mythBody',
+    href: '/(app)/quiz-myth',
   },
 ];
 
@@ -142,7 +168,10 @@ export default function QuizHubScreen() {
         <Text style={styles.lead}>{t('quizHub.lead')}</Text>
 
         {CATEGORIES.map((cat) => {
-          const c = stats.byCategory[cat.id];
+          const c =
+            cat.tracked && cat.id in stats.byCategory
+              ? stats.byCategory[cat.id as keyof typeof stats.byCategory]
+              : null;
           return (
             <Pressable
               key={cat.id}
@@ -156,7 +185,7 @@ export default function QuizHubScreen() {
                 <View style={styles.cardCopy}>
                   <Text style={styles.cardTitle}>{t(cat.titleKey)}</Text>
                   <Text style={styles.cardBody}>{t(cat.bodyKey)}</Text>
-                  {c.games > 0 ? (
+                  {c && c.games > 0 ? (
                     <Text style={styles.cardStats}>
                       {t('quiz.categoryStatsShort', {
                         avg: c.averagePercent,

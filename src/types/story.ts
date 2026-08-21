@@ -21,6 +21,12 @@ export type StoryPost = {
   mine?: boolean;
   privacy: StoryPrivacy;
   petId?: string | null;
+  /** Optional photo tags */
+  taggedPetIds?: string[];
+  taggedFriendIds?: string[];
+  /** Display snapshots filled at create time */
+  taggedPetNames?: string[];
+  taggedFriendNames?: string[];
 };
 
 export type StoryComment = {

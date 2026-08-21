@@ -1,4 +1,4 @@
-export type CompanionSpecies = 'dog' | 'cat' | 'other';
+export type CompanionSpecies = 'dog' | 'cat' | 'bird' | 'other';
 
 export type PetSex = 'female' | 'male' | 'unknown';
 

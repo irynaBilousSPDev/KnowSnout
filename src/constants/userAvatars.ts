@@ -19,14 +19,14 @@ export type UserAvatarOption = {
 
 /** Face-only human marks (same spirit as pet snout avatars). */
 export const USER_AVATAR_OPTIONS: UserAvatarOption[] = [
-  { key: 'woman-1', emoji: '👩', bg: '#00E0C7', gender: 'woman' },
-  { key: 'woman-2', emoji: '👱‍♀️', bg: '#72ED2F', gender: 'woman' },
-  { key: 'woman-3', emoji: '👩‍🦰', bg: '#B7EBE0', gender: 'woman' },
-  { key: 'man-1', emoji: '👨', bg: '#00E0C7', gender: 'man' },
-  { key: 'man-2', emoji: '👱‍♂️', bg: '#72ED2F', gender: 'man' },
-  { key: 'man-3', emoji: '🧔', bg: '#7FD9C9', gender: 'man' },
-  { key: 'person-1', emoji: '🙂', bg: '#DFF7F1', gender: 'unspecified' },
-  { key: 'person-2', emoji: '😊', bg: '#B7EBE0', gender: 'unspecified' },
+  { key: 'woman-1', emoji: '👩', bg: '#122A4C', gender: 'woman' },
+  { key: 'woman-2', emoji: '👱‍♀️', bg: '#2F5233', gender: 'woman' },
+  { key: 'woman-3', emoji: '👩‍🦰', bg: '#E8879A', gender: 'woman' },
+  { key: 'man-1', emoji: '👨', bg: '#122A4C', gender: 'man' },
+  { key: 'man-2', emoji: '👱‍♂️', bg: '#2F5233', gender: 'man' },
+  { key: 'man-3', emoji: '🧔', bg: '#E8879A', gender: 'man' },
+  { key: 'person-1', emoji: '🙂', bg: '#E3E9DF', gender: 'unspecified' },
+  { key: 'person-2', emoji: '😊', bg: '#F4DADF', gender: 'unspecified' },
 ];
 
 export function userAvatarsForGender(gender: UserGender): UserAvatarOption[] {

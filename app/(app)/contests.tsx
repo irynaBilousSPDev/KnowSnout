@@ -237,6 +237,14 @@ export default function ContestsScreen() {
             <Text className="mt-1 font-body text-sm leading-5 text-forest-600">
               {spotlight.briefUk}
             </Text>
+            <View className="mt-3">
+              <PrimaryButton
+                label={t('spotlight.title')}
+                size="sm"
+                variant="secondary"
+                onPress={() => router.push('/(app)/spotlight-hub' as never)}
+              />
+            </View>
           </View>
         ) : null}
       </View>
