@@ -1,22 +1,22 @@
 # KnowSnout — UI Kit v2 implementation roadmap
 
-Source: `docs/design/*.pdf` · Structure first · Visual/brand later · Mock APIs OK  
+Source: `docs/design/*.pdf` · Organic PDF visual active · Variant 12 colors later  
 Admin = Wave 7 (last).
 
-## Visual pass (Variant 12 · 2026-08-21)
+## Visual pass (Organic PDF · 2026-08-21)
 
 | Module | visual |
 |--|--|
-| Design system (tokens, ListRow, HubHero, auth shell) | done |
-| Вхід і Перевір | done |
-| Улюбленці | done |
-| Стрічка / Spotlight / friends | done |
-| Спільнота (quiz / forum / blog) | done |
-| Профіль і службові | done |
-| Довідники | done |
-| Адмінка | done |
+| Design system (tokens, fonts Caprasimo/Figtree, ListRow, HubHero, auth shell) | organic |
+| Вхід і Перевір | organic |
+| Улюбленці | organic |
+| Стрічка / Spotlight / friends | organic |
+| Спільнота (quiz / forum / blog) | organic |
+| Профіль і службові | organic |
+| Довідники | organic |
+| Адмінка | organic |
 
-Status: `done` | `stub` | `missing`
+Status: `organic` | `stub` | `missing` · Variant 12 remap = later
 
 ## Navigation (Wave 0)
 

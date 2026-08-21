@@ -2,11 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 const SEEN_KEY = 'knowsnout.onboarding.seen';
 
@@ -20,6 +21,7 @@ async function markSeen() {
   await AsyncStorage.setItem(SEEN_KEY, 'true');
 }
 
+/** PDF onboarding 1–3: skip, dashed illustration, Caprasimo title, sage pill CTA. */
 export default function OnboardingScreen() {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
@@ -48,30 +50,33 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <AppScreen edges={['bottom']}>
+    <AppScreen edges={['top', 'bottom']}>
       <View style={styles.pad}>
         <View style={styles.topRow}>
           <Text style={styles.kicker}>
-            {step + 1} / {STEPS.length}
+            {step + 1}/{STEPS.length}
           </Text>
           <Pressable
             onPress={() => void finish()}
             disabled={saving}
-            style={({ pressed }) => pressed && styles.pressed}
             accessibilityRole="button"
           >
             <Text style={styles.skip}>{t('onboarding.skip')}</Text>
           </Pressable>
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.title}>{t(current.titleKey)}</Text>
-          <Text style={styles.body}>{t(current.bodyKey)}</Text>
+        <View style={styles.illustration}>
+          <Ionicons name="image-outline" size={36} color={brand.mutedSoft} />
+          <Text style={styles.illustrationLabel}>{t('check.illustration')}</Text>
+          <Text style={styles.browse}>{t('check.browseFiles')}</Text>
         </View>
+
+        <Text style={styles.title}>{t(current.titleKey)}</Text>
+        <Text style={styles.body}>{t(current.bodyKey)}</Text>
 
         <View style={styles.dots}>{dots}</View>
 
-        <View style={styles.actions}>
+        <View style={styles.footer}>
           {last ? (
             <PrimaryButton
               label={t('onboarding.done')}
@@ -84,15 +89,6 @@ export default function OnboardingScreen() {
               onPress={() => setStep((s) => Math.min(s + 1, STEPS.length - 1))}
             />
           )}
-          {step > 0 ? (
-            <View style={styles.backWrap}>
-              <PrimaryButton
-                label={t('common.back')}
-                variant="ghost"
-                onPress={() => setStep((s) => Math.max(0, s - 1))}
-              />
-            </View>
-          ) : null}
         </View>
       </View>
     </AppScreen>
@@ -102,68 +98,87 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   pad: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingHorizontal: 24,
+    paddingTop: 12,
     paddingBottom: 24,
   },
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    marginBottom: 28,
   },
   kicker: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
-    color: '#8A9AAB',
+    color: brand.mutedSoft,
   },
   skip: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 14,
-    color: brand.navy,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 15,
+    color: brand.muted,
   },
-  pressed: { opacity: 0.75 },
-  card: {
-    flex: 1,
-    justifyContent: 'center',
-    borderRadius: 24,
-    borderWidth: 1,
+  illustration: {
+    alignSelf: 'center',
+    height: 200,
+    width: 200,
+    borderRadius: 100,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 22,
-    paddingVertical: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 28,
+  },
+  illustrationLabel: {
+    marginTop: 8,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  browse: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.sage,
+    textDecorationLine: 'underline',
   },
   title: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: fonts.display,
     fontSize: 28,
     lineHeight: 34,
     color: brand.ink,
-    letterSpacing: -0.4,
+    textAlign: 'center',
+    marginBottom: 10,
   },
   body: {
-    marginTop: 14,
-    fontFamily: 'DMSans_400Regular',
-    fontSize: 16,
-    lineHeight: 24,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    lineHeight: 22,
     color: brand.muted,
+    textAlign: 'center',
+    paddingHorizontal: 8,
   },
   dots: {
-    marginTop: 20,
-    marginBottom: 16,
+    marginTop: 28,
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 8,
+    alignItems: 'center',
+    gap: 6,
   },
   dot: {
-    height: 8,
     width: 8,
+    height: 8,
     borderRadius: 4,
-    backgroundColor: brand.mistBorder,
+    backgroundColor: brand.creamDeep,
   },
   dotActive: {
-    width: 22,
-    backgroundColor: brand.navy,
+    width: 28,
+    backgroundColor: brand.sage,
   },
-  actions: { gap: 8 },
-  backWrap: { marginTop: 4 },
+  footer: {
+    marginTop: 'auto',
+    paddingTop: 24,
+  },
 });

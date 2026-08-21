@@ -2,18 +2,17 @@ import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BrandLogo } from '@/src/components/BrandLogo';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   title: string;
   lead?: string;
-  /** Show brand lockup above title */
   brandMark?: boolean;
   right?: ReactNode;
   stats?: ReactNode;
 };
 
-/** Tab-hub first viewport: brand + one title + short lead + optional stats. */
+/** PDF hub hero: Caprasimo title + Figtree lead. */
 export function HubHero({
   title,
   lead,
@@ -45,15 +44,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 28,
-    lineHeight: 34,
+    fontFamily: fonts.display,
+    fontSize: 34,
+    lineHeight: 40,
     color: brand.ink,
     letterSpacing: -0.4,
   },
   lead: {
-    marginTop: 6,
-    fontFamily: 'DMSans_400Regular',
+    marginTop: 8,
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 22,
     color: brand.muted,

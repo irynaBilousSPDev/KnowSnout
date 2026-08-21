@@ -6,9 +6,9 @@ import { AppScreen } from '@/src/components/AppScreen';
 import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { DIRECTORY_CATEGORIES } from '@/src/services/directories';
 import { t } from '@/src/i18n';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
-/** PDF F1 Хаб довідників — equal category tiles. */
+/** PDF F1 — equal category tiles on cream. */
 const ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   vets: 'medkit-outline',
   breeders: 'ribbon-outline',
@@ -43,16 +43,13 @@ export default function DirectoriesHubScreen() {
                     params: { category: cat.id },
                   } as never);
                 }}
-                style={({ pressed }) => [
-                  styles.tile,
-                  pressed && styles.pressed,
-                ]}
+                style={({ pressed }) => [styles.tile, pressed && styles.pressed]}
               >
                 <View style={styles.tileIcon}>
                   <Ionicons
                     name={ICONS[cat.id] ?? 'location-outline'}
                     size={22}
-                    color={brand.navy}
+                    color={brand.sage}
                   />
                 </View>
                 <Text style={styles.tileTitle} numberOfLines={2}>
@@ -66,7 +63,11 @@ export default function DirectoriesHubScreen() {
             onPress={() => router.push('/(app)/directory-report' as never)}
             style={styles.reportLink}
           >
-            <Ionicons name="warning-outline" size={18} color={brand.rose} />
+            <Ionicons
+              name="warning-outline"
+              size={18}
+              color={brand.terracotta}
+            />
             <Text style={styles.reportText}>{t('directories.reportFraud')}</Text>
           </Pressable>
         </View>
@@ -84,14 +85,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 32,
+    fontFamily: fonts.display,
+    fontSize: 34,
     color: brand.ink,
-    letterSpacing: -0.5,
   },
   lead: {
     marginBottom: 18,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 22,
     color: brand.muted,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     width: '47.5%',
     flexGrow: 1,
     minHeight: 112,
-    borderRadius: 20,
+    borderRadius: brand.radius.lg,
     borderWidth: 1,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
@@ -119,10 +119,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: brand.mist,
+    backgroundColor: brand.sageTint,
   },
   tileTitle: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 15,
     color: brand.ink,
   },
@@ -134,8 +134,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   reportText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 14,
-    color: brand.rose,
+    color: brand.terracotta,
   },
 });

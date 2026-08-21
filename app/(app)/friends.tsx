@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   quickText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 11,
     textAlign: 'center',
     color: brand.navy,
@@ -145,21 +145,21 @@ const styles = StyleSheet.create({
     borderBottomColor: brand.mistBorder,
   },
   linkText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 14,
     color: brand.navy,
   },
   section: {
     marginTop: 22,
     marginBottom: 10,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 12,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
     color: brand.mutedSoft,
   },
   empty: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     color: brand.muted,
   },

@@ -33,7 +33,7 @@
 |--|--|--|--|
 | **Bottom tabs** | Перевір · Журнал · Квіз · Стрічка · Улюбленці | Перевір · Улюбленці · Стрічка · **Спільнота** · **Довідники** | **Кіт / мапа.** Журнал — nested під Перевір. Квіз+форум+блог — у **Спільноті**. |
 | **Палітра** | Lime `#72ED2F` + Teal `#00E0C7` | Brandbook Variant 12: нафтовий + ліс + троянда | **Variant 12** (`BRANDBOOK.md`). Старий lime/teal — legacy. |
-| **Organic / Caprasimo** | — | У «ключові екрани» згадано terracotta/sage + Caprasimo/Figtree | **Колір:** Variant 12 брендбук. **Шрифти Caprasimo/Figtree** — опційний later pass; зараз DM Sans. |
+| **Organic / Caprasimo** | — | У «ключові екрани» terracotta/sage + Caprasimo/Figtree | **ACTIVE visual:** Organic PDF (cream + sage CTA + Caprasimo/Figtree). Variant 12 color remap — later pass. |
 | **Серця Stories** | «teal KnowSnout» | Троянда = емоційний акцент | Серця / емоційні акценти → **rose**; success/safe → **forest**; primary CTA → **navy**. |
 | **Форум / блог** | «на горизонті» | Повноцінний модуль у **Спільноті** | У бріфі — **обов’язкові модулі IA**; глибина бекенду — поетапно (mock → cloud). |
 | **Порівняти 2 корми** | горизонт | Є в мапі «Вхід і Перевір» | У бріфі — **в scope Перевір**, не «загубити». |

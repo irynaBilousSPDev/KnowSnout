@@ -162,13 +162,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   title: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 18,
     color: brand.ink,
   },
   hint: {
     marginTop: 2,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 12,
     color: '#5A6B7D',
   },
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   empty: {
     marginTop: 40,
     textAlign: 'center',
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     color: '#5A6B7D',
   },
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     borderColor: brand.mistBorder,
   },
   bubbleText: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     color: brand.ink,
   },
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
   error: {
     marginBottom: 8,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 12,
     color: brand.score.poor,
   },
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 15,
     color: brand.ink,
   },

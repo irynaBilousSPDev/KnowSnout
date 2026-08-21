@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
   message: {
     marginTop: 16,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 15,
     color: brand.muted,
   },

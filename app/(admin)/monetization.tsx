@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   hint: {
     marginTop: 8,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 13,
     color: '#5A6B7D',
   },

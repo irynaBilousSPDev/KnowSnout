@@ -27,7 +27,7 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 
 ### P0c — IA: «Перевір» hub + journal (2026-07-21) — **SHIPPED UI**
 
-**PDF structure source of truth:** `docs/PDF_APP_STRUCTURE.md` (from Design-Setup map). Tabs: **Перевір · Улюбленці · Стрічка · Спільнота · Довідники**; default landing = Перевір. Check hub = Нещодавно + stats + Корм/Рослини/Порода/Порівняти. Profile = header, not a tab.
+**Visual truth (active):** Organic PDF kit (cream/sage, Caprasimo+Figtree) — Variant 12 colors later.\n\n**PDF structure source of truth:** `docs/PDF_APP_STRUCTURE.md` (from Design-Setup map). Tabs: **Перевір · Улюбленці · Стрічка · Спільнота · Довідники**; default landing = Перевір. Check hub = Нещодавно + stats + Корм/Рослини/Порода/Порівняти. Profile = header, not a tab.
 
 | Tab | Role |
 |--|--|

@@ -4,9 +4,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { t } from '@/src/i18n';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
-/** PDF Design-Setup modules 01→02→03→04→06; default landing = Перевір. */
+/** PDF Design-Setup: Перевір · Улюбленці · Стрічка · Спільнота · Довідники */
 export const unstable_settings = {
   initialRouteName: 'index',
 };
@@ -23,7 +23,7 @@ function TabIcon({
       <Ionicons
         name={name}
         size={22}
-        color={focused ? brand.forest : '#8A9BB0'}
+        color={focused ? brand.sage : brand.mutedSoft}
       />
     </View>
   );
@@ -60,8 +60,8 @@ export default function TabsLayout() {
           shadowOpacity: 0,
         },
         tabBarItemStyle: { paddingTop: 2 },
-        tabBarActiveTintColor: brand.forest,
-        tabBarInactiveTintColor: '#8A9BB0',
+        tabBarActiveTintColor: brand.sage,
+        tabBarInactiveTintColor: brand.mutedSoft,
       }}
     >
       <Tabs.Screen
@@ -70,7 +70,7 @@ export default function TabsLayout() {
           title: t('tabs.scan'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name={focused ? 'scan' : 'scan-outline'}
+              name={focused ? 'search' : 'search-outline'}
               focused={focused}
             />
           ),
@@ -112,7 +112,7 @@ export default function TabsLayout() {
           title: t('tabs.community'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name={focused ? 'people' : 'people-outline'}
+              name={focused ? 'chatbubbles' : 'chatbubbles-outline'}
               focused={focused}
             />
           ),
@@ -127,7 +127,7 @@ export default function TabsLayout() {
           title: t('tabs.directories'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name={focused ? 'map' : 'map-outline'}
+              name={focused ? 'book' : 'book-outline'}
               focused={focused}
             />
           ),
@@ -155,16 +155,17 @@ const styles = StyleSheet.create({
     minHeight: 32,
   },
   iconWrapFocused: {
-    backgroundColor: brand.forestTint,
+    backgroundColor: brand.sageTint,
   },
   label: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 10,
     lineHeight: 12,
-    color: '#8A9BB0',
+    color: brand.mutedSoft,
     textAlign: 'center',
   },
   labelFocused: {
-    color: brand.forest,
+    color: brand.sage,
+    fontFamily: fonts.bodyBold,
   },
 });

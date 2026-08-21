@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   prompt: {
     marginBottom: 14,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 18,
     lineHeight: 26,
     color: brand.ink,
@@ -127,20 +127,20 @@ const styles = StyleSheet.create({
   choiceOk: { borderColor: brand.score.good, backgroundColor: '#E8F8F2' },
   choiceBad: { borderColor: brand.score.poor, backgroundColor: '#FBEDEA' },
   choiceText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 15,
     color: brand.ink,
   },
   explain: {
     marginVertical: 12,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     lineHeight: 20,
     color: '#5A6B7D',
   },
   score: {
     marginBottom: 16,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 22,
     color: brand.ink,
   },

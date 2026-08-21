@@ -8,7 +8,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'md' | 'lg' | 'sm';
@@ -24,10 +24,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 };
 
-/**
- * Styles live on an inner View — NativeWind on iOS sometimes drops
- * StyleSheet backgroundColor when applied directly to Pressable.
- */
+/** Organic PDF CTA — sage pill (primary), soft bordered (secondary). */
 export function PrimaryButton({
   label,
   onPress,
@@ -67,7 +64,7 @@ export function PrimaryButton({
       >
         {loading ? (
           <ActivityIndicator
-            color={variant === 'primary' ? '#FFFFFF' : brand.navy}
+            color={variant === 'primary' ? '#FFFFFF' : brand.sage}
           />
         ) : (
           <Text
@@ -93,16 +90,16 @@ const styles = StyleSheet.create({
   base: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 16,
+    borderRadius: brand.radius.pill,
     width: '100%',
   },
-  sizeMd: { minHeight: 50, paddingHorizontal: 18, paddingVertical: 13 },
-  sizeLg: { minHeight: 54, paddingHorizontal: 20, paddingVertical: 15 },
-  sizeSm: { minHeight: 42, paddingHorizontal: 14, paddingVertical: 10 },
-  primary: { backgroundColor: brand.navy },
+  sizeMd: { minHeight: 52, paddingHorizontal: 20, paddingVertical: 14 },
+  sizeLg: { minHeight: 56, paddingHorizontal: 22, paddingVertical: 16 },
+  sizeSm: { minHeight: 42, paddingHorizontal: 16, paddingVertical: 10 },
+  primary: { backgroundColor: brand.sage },
   secondary: {
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: brand.mistBorder,
   },
   ghost: {
@@ -111,14 +108,14 @@ const styles = StyleSheet.create({
     borderColor: brand.mistBorder,
   },
   danger: {
-    backgroundColor: 'rgba(196, 92, 62, 0.08)',
+    backgroundColor: brand.terracottaTint,
     borderWidth: 1,
-    borderColor: 'rgba(196, 92, 62, 0.22)',
+    borderColor: 'rgba(196, 92, 62, 0.28)',
   },
   dimmed: { opacity: 0.5 },
-  pressed: { opacity: 0.88 },
+  pressed: { opacity: 0.9 },
   label: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 15,
     letterSpacing: 0.15,
     color: brand.ink,
@@ -126,6 +123,6 @@ const styles = StyleSheet.create({
   labelSm: { fontSize: 13 },
   labelPrimary: { color: '#FFFFFF' },
   labelSecondary: { color: brand.ink },
-  labelGhost: { color: brand.navy },
-  labelDanger: { color: brand.score.poor },
+  labelGhost: { color: brand.sage },
+  labelDanger: { color: brand.terracotta },
 });

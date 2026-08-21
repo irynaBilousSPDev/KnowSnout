@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   body: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 15,
     lineHeight: 22,
     color: brand.ink,

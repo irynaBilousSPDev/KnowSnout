@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export type SegmentOption<T extends string> = {
   id: T;
@@ -13,7 +13,7 @@ type Props<T extends string> = {
   onChange: (id: T) => void;
 };
 
-/** Minimal segmented control. */
+/** PDF segmented control — sage active pill on soft track. */
 export function SegmentedControl<T extends string>({
   options,
   value,
@@ -47,29 +47,29 @@ export function SegmentedControl<T extends string>({
 const styles = StyleSheet.create({
   track: {
     flexDirection: 'row',
-    padding: 3,
-    borderRadius: 14,
-    backgroundColor: brand.mist,
+    padding: 4,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.creamDeep,
     gap: 2,
   },
   item: {
     flex: 1,
-    minHeight: 40,
+    minHeight: 42,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 11,
-    paddingHorizontal: 6,
+    borderRadius: brand.radius.pill,
+    paddingHorizontal: 8,
     paddingVertical: 8,
   },
   itemActive: {
-    backgroundColor: brand.surfaceElevated,
+    backgroundColor: brand.sage,
   },
   label: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 12,
-    color: brand.navy,
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.muted,
   },
   labelActive: {
-    color: brand.ink,
+    color: '#FFFFFF',
   },
 });

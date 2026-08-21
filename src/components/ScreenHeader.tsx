@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { BrandLogo } from '@/src/components/BrandLogo';
 import { ProfileEntry } from '@/src/components/ProfileEntry';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   title?: string;
@@ -45,15 +45,15 @@ const styles = StyleSheet.create({
   },
   logoCol: { flex: 1, paddingRight: 12 },
   title: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 28,
-    lineHeight: 34,
+    fontFamily: fonts.display,
+    fontSize: 30,
+    lineHeight: 36,
     color: brand.ink,
     letterSpacing: -0.4,
   },
   subtitle: {
-    marginTop: 4,
-    fontFamily: 'DMSans_400Regular',
+    marginTop: 6,
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
     color: brand.muted,

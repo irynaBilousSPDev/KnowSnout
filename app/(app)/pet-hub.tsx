@@ -293,12 +293,12 @@ const styles = StyleSheet.create({
   },
   chipText: {
     flexShrink: 1,
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 13,
     color: brand.ink,
   },
   chipTextActive: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     color: brand.navy,
   },
   birdNote: {
@@ -311,14 +311,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   birdNoteText: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 13,
     lineHeight: 18,
     color: brand.ink,
   },
   meta: {
     marginBottom: 12,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 13,
     color: brand.muted,
   },

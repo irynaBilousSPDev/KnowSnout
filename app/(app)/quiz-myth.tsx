@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     padding: 18,
   },
   claimLabel: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   claim: {
     marginTop: 10,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 20,
     lineHeight: 28,
     color: brand.ink,
@@ -137,26 +137,26 @@ const styles = StyleSheet.create({
   half: { flex: 1 },
   ok: {
     marginBottom: 8,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 16,
     color: brand.score.good,
   },
   bad: {
     marginBottom: 8,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 16,
     color: brand.score.poor,
   },
   explain: {
     marginBottom: 14,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     lineHeight: 20,
     color: '#5A6B7D',
   },
   score: {
     marginBottom: 16,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 22,
     color: brand.ink,
   },

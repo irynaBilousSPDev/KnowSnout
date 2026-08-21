@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     borderColor: brand.navyDeep,
   },
   toastText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 14,
     lineHeight: 20,
     color: brand.surface,
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   networkText: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 14,
     color: brand.surface,
   },
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   networkBtnText: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 13,
     color: brand.score.poor,
   },
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   networkBtnGhostText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 13,
     color: brand.surface,
   },
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   aiText: {
     marginTop: 16,
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 16,
     color: brand.surface,
     textAlign: 'center',

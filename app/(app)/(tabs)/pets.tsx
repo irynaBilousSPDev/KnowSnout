@@ -1,7 +1,6 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Pressable,
   RefreshControl,
@@ -13,16 +12,14 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
-import { HubHero } from '@/src/components/HubHero';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { Section } from '@/src/components/Section';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
 import { deletePet, listPets } from '@/src/services/pets';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { CompanionSpecies, PetRow } from '@/src/types/pet';
 
 function speciesLabel(species: CompanionSpecies) {
@@ -39,6 +36,7 @@ function petMeta(pet: PetRow) {
   return parts.join(' · ');
 }
 
+/** PDF 12 · Список тварин — Caprasimo title, + circle, white cards, chevron. */
 export default function PetsScreen() {
   const [pets, setPets] = useState<PetRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,13 +80,7 @@ export default function PetsScreen() {
       await deletePet(pet.id);
       setPets((prev) => prev.filter((p) => p.id !== pet.id));
     } catch (err) {
-      const message =
-        err instanceof Error && err.message === 'NOT_OWNED'
-          ? t('pets.deleteNotOwned')
-          : err instanceof Error
-            ? err.message
-            : t('common.error');
-      Alert.alert(t('pets.deleteFailed'), message);
+      setError(err instanceof Error ? err.message : t('common.error'));
     } finally {
       setDeletingId(null);
     }
@@ -101,24 +93,20 @@ export default function PetsScreen() {
   return (
     <AppScreen>
       <View style={styles.header}>
-        <HubHero
-          brandMark
-          title={t('pets.title')}
-          lead={t('pets.subtitle')}
-          right={<ProfileEntry />}
-        />
-        <PrimaryButton
-          label={t('pets.add')}
-          size="lg"
-          onPress={() => router.push('/(app)/pet-form')}
-        />
-        <Pressable
-          onPress={() => router.push('/(app)/care-hub')}
-          style={styles.careLink}
-        >
-          <Text style={styles.careLinkText}>{t('care.hubOpen')}</Text>
-          <Ionicons name="chevron-forward" size={16} color={brand.navy} />
-        </Pressable>
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>{t('pets.title')}</Text>
+          <View style={styles.headerActions}>
+            <ProfileEntry />
+            <Pressable
+              onPress={() => router.push('/(app)/pet-form')}
+              style={styles.addCircle}
+              accessibilityRole="button"
+              accessibilityLabel={t('pets.add')}
+            >
+              <Ionicons name="add" size={22} color={brand.ink} />
+            </Pressable>
+          </View>
+        </View>
       </View>
 
       {error ? (
@@ -132,13 +120,21 @@ export default function PetsScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor={brand.navy}
+              tintColor={brand.sage}
             />
           }
           ListEmptyComponent={
             <Section tone="mist" title={t('pets.emptyTitle')}>
               <Text style={styles.emptyBody}>{t('pets.emptyBody')}</Text>
             </Section>
+          }
+          ListFooterComponent={
+            <Pressable
+              onPress={() => router.push('/(app)/pet-form')}
+              style={styles.addPill}
+            >
+              <Text style={styles.addPillText}>+ {t('pets.add')}</Text>
+            </Pressable>
           }
           renderItem={({ item }) => (
             <Pressable
@@ -148,50 +144,25 @@ export default function PetsScreen() {
                   params: { petId: item.id },
                 } as never)
               }
+              onLongPress={() => void onDelete(item)}
               style={({ pressed }) => [styles.petCard, pressed && styles.pressed]}
             >
               <PetAvatar
                 avatarKey={item.avatar_key}
                 avatarUri={item.avatar_uri}
                 species={item.species}
-                size={64}
+                size={56}
                 name={item.name}
               />
               <View style={styles.petCopy}>
                 <Text style={styles.petName}>{item.name}</Text>
                 <Text style={styles.petMeta}>{petMeta(item)}</Text>
-                {item.favorite_food ? (
-                  <Text style={styles.petFav} numberOfLines={1}>
-                    {t('pets.favoriteFood')}: {item.favorite_food}
-                  </Text>
-                ) : null}
               </View>
-              <View style={styles.petActions}>
-                <Pressable
-                  accessibilityLabel={t('pets.edit')}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/(app)/pet-form',
-                      params: { id: item.id },
-                    })
-                  }
-                  hitSlop={8}
-                >
-                  <Ionicons name="create-outline" size={20} color={brand.navy} />
-                </Pressable>
-                <Pressable
-                  accessibilityLabel={t('pets.delete')}
-                  disabled={deletingId === item.id}
-                  onPress={() => void onDelete(item)}
-                  hitSlop={8}
-                >
-                  <Ionicons
-                    name="trash-outline"
-                    size={20}
-                    color={brand.score.poor}
-                  />
-                </Pressable>
-              </View>
+              <Ionicons
+                name="chevron-forward"
+                size={18}
+                color={brand.mutedSoft}
+              />
             </Pressable>
           )}
         />
@@ -206,18 +177,29 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 8,
   },
-  careLink: {
-    marginTop: 12,
-    marginBottom: 4,
+  headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: 4,
+    justifyContent: 'space-between',
   },
-  careLinkText: {
-    fontFamily: 'DMSans_500Medium',
-    fontSize: 14,
-    color: brand.navy,
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  title: {
+    fontFamily: fonts.display,
+    fontSize: 34,
+    lineHeight: 40,
+    color: brand.ink,
+  },
+  addCircle: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   list: {
     paddingHorizontal: 20,
@@ -225,7 +207,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   emptyBody: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
     color: brand.muted,
@@ -234,34 +216,44 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: brand.radius.lg,
     borderWidth: 1,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
+    shadowColor: '#1A2332',
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
   },
   pressed: { opacity: 0.9 },
   petCopy: { flex: 1, marginLeft: 12, minWidth: 0 },
   petName: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 17,
     color: brand.ink,
   },
   petMeta: {
     marginTop: 3,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     color: brand.muted,
   },
-  petFav: {
+  addPill: {
     marginTop: 4,
-    fontFamily: 'DMSans_400Regular',
-    fontSize: 12,
-    color: brand.forest,
-  },
-  petActions: {
-    marginLeft: 8,
-    gap: 12,
+    marginBottom: 16,
+    minHeight: 48,
+    borderRadius: brand.radius.pill,
+    borderWidth: 1.5,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addPillText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
   },
 });

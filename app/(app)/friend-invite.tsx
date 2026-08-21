@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   pad: { flex: 1, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   hint: {
     marginBottom: 16,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     lineHeight: 20,
     color: brand.forest,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   codeLabel: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 12,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
@@ -127,14 +127,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   code: {
-    fontFamily: 'Fraunces_700Bold',
+    fontFamily: 'Caprasimo_400Regular',
     fontSize: 36,
     letterSpacing: 4,
     color: brand.navy,
   },
   link: {
     marginTop: 14,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 13,
     color: brand.ink,
     textAlign: 'center',

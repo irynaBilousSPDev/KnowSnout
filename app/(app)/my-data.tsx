@@ -10,8 +10,8 @@ import {
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AppScreen } from '@/src/components/AppScreen';
 import { ListRow } from '@/src/components/ListRow';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
@@ -160,7 +160,7 @@ export default function MyDataScreen() {
   const shownName = profile.display_name?.trim() || null;
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
+    <AppScreen edges={['bottom']}>
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -430,6 +430,6 @@ export default function MyDataScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 type Tone = 'elevated' | 'mist' | 'plain';
 
@@ -48,7 +48,7 @@ export function Section({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: 16,
+    borderRadius: brand.radius.lg,
     paddingHorizontal: 16,
     paddingVertical: 16,
   },
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     borderColor: brand.mistBorder,
   },
   mist: {
-    backgroundColor: brand.mist,
+    backgroundColor: brand.sageTint,
   },
   plain: {
     backgroundColor: 'transparent',
@@ -73,13 +73,13 @@ const styles = StyleSheet.create({
   },
   headerText: { flex: 1 },
   title: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 16,
     color: brand.ink,
   },
   subtitle: {
     marginTop: 4,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 18,
     color: brand.muted,

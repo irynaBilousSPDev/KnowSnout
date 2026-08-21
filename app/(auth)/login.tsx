@@ -103,12 +103,12 @@ const styles = StyleSheet.create({
   },
   linkMuted: {
     textAlign: 'center',
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     color: '#5A6B7D',
   },
   linkStrong: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     color: brand.navy,
   },
   errorBox: {
@@ -122,14 +122,14 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(196, 92, 62, 0.25)',
   },
   errorText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 13,
     lineHeight: 18,
     color: brand.score.poor,
   },
   demoHint: {
     marginTop: 8,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 12,
     lineHeight: 18,
     color: '#5A6B7D',

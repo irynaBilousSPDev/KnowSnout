@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 22,
     marginBottom: 10,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 12,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
@@ -131,20 +131,20 @@ const styles = StyleSheet.create({
   },
   contestCopy: { flex: 1, paddingRight: 8 },
   contestTitle: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 16,
     color: brand.ink,
   },
   contestBrief: {
     marginTop: 4,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 13,
     lineHeight: 18,
     color: brand.muted,
   },
   contestMeta: {
     marginTop: 6,
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 12,
     color: brand.forest,
   },
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     borderBottomColor: brand.mistBorder,
   },
   linkText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 15,
     color: brand.navy,
   },

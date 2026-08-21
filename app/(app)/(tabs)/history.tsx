@@ -520,15 +520,15 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   title: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 32,
+    fontFamily: 'Caprasimo_400Regular',
+    fontSize: 34,
     color: brand.ink,
-    letterSpacing: -0.5,
+    letterSpacing: -0.3,
   },
   segment: {
     flexDirection: 'row',
     borderRadius: 999,
-    backgroundColor: brand.mist,
+    backgroundColor: brand.creamDeep,
     padding: 4,
     marginBottom: 12,
   },
@@ -539,16 +539,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   segBtnActive: {
-    backgroundColor: brand.surfaceElevated,
+    backgroundColor: brand.sage,
   },
   segText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 13,
     color: brand.muted,
   },
   segTextActive: {
-    fontFamily: 'DMSans_700Bold',
-    color: brand.ink,
+    fontFamily: 'Figtree_700Bold',
+    color: '#FFFFFF',
   },
   chipRow: { flexDirection: 'row', gap: 8, paddingBottom: 8 },
   chip: {
@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
     borderColor: brand.forest,
   },
   chipText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 13,
     color: brand.muted,
   },
@@ -602,13 +602,13 @@ const styles = StyleSheet.create({
   },
   cardCopy: { flex: 1, paddingRight: 8 },
   cardTitle: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 15,
     color: brand.ink,
   },
   cardMeta: {
     marginTop: 4,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 12,
     color: brand.muted,
   },
@@ -632,14 +632,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
-  badgeText: { fontFamily: 'DMSans_700Bold', fontSize: 14 },
+  badgeText: { fontFamily: 'Figtree_700Bold', fontSize: 14 },
   badgeMutedText: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 13,
     color: brand.muted,
   },
   emptyBody: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     lineHeight: 20,
     color: brand.muted,
@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
   swipeHint: {
     marginTop: 8,
     textAlign: 'center',
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 12,
     color: brand.mutedSoft,
   },

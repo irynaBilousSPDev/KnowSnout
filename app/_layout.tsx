@@ -1,11 +1,12 @@
 import '../global.css';
 
+import { Caprasimo_400Regular } from '@expo-google-fonts/caprasimo';
 import {
-  DMSans_400Regular,
-  DMSans_500Medium,
-  DMSans_700Bold,
-} from '@expo-google-fonts/dm-sans';
-import { Fraunces_700Bold } from '@expo-google-fonts/fraunces';
+  Figtree_400Regular,
+  Figtree_500Medium,
+  Figtree_600SemiBold,
+  Figtree_700Bold,
+} from '@expo-google-fonts/figtree';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -19,6 +20,7 @@ import { WebPhoneFrame } from '@/src/components/WebPhoneFrame';
 import { AuthProvider } from '@/src/hooks/useAuth';
 import { ToastProvider } from '@/src/hooks/useToast';
 import { migrateLegacyAuthStorage } from '@/src/services/supabase';
+import { brand } from '@/src/theme/brand';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -26,10 +28,11 @@ SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    Fraunces_700Bold,
-    DMSans_400Regular,
-    DMSans_500Medium,
-    DMSans_700Bold,
+    Caprasimo_400Regular,
+    Figtree_400Regular,
+    Figtree_500Medium,
+    Figtree_600SemiBold,
+    Figtree_700Bold,
   });
 
   useEffect(() => {
@@ -52,22 +55,21 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <ToastProvider>
-        {/* Single flex child under #root — avoids blank web layout with sibling StatusBar */}
         <View style={{ flex: 1, width: '100%', height: '100%' }}>
           <StatusBar style="dark" />
           <WebPhoneFrame>
             <Stack
               screenOptions={{
                 headerShown: false,
-                contentStyle: { backgroundColor: '#F7F1ED', flex: 1 },
+                contentStyle: { backgroundColor: brand.surface, flex: 1 },
               }}
             >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="spotlight-vote" options={{ headerShown: false }} />
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(app)" />
-            <Stack.Screen name="(admin)" />
-          </Stack>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="spotlight-vote" options={{ headerShown: false }} />
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="(app)" />
+              <Stack.Screen name="(admin)" />
+            </Stack>
           </WebPhoneFrame>
         </View>
       </ToastProvider>

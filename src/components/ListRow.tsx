@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   title: string;
@@ -12,10 +12,10 @@ type Props = {
   trailing?: ReactNode;
   onPress?: () => void;
   showChevron?: boolean;
-  /** Elevated card (default) vs flat divider row for quieter lists */
   variant?: 'card' | 'flat';
 };
 
+/** PDF list row — white elevated card, soft radius, chevron. */
 export function ListRow({
   title,
   subtitle,
@@ -46,7 +46,7 @@ export function ListRow({
       </View>
       {trailing ? <View style={styles.trailing}>{trailing}</View> : null}
       {onPress && showChevron && !trailing ? (
-        <Ionicons name="chevron-forward" size={18} color={brand.mistBorder} />
+        <Ionicons name="chevron-forward" size={18} color={brand.mutedSoft} />
       ) : null}
     </View>
   );
@@ -70,13 +70,18 @@ export function ListRow({
 
 const styles = StyleSheet.create({
   shell: {
-    borderRadius: 16,
+    borderRadius: brand.radius.lg,
     backgroundColor: brand.surfaceElevated,
     borderWidth: 1,
     borderColor: brand.mistBorder,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 14,
     marginBottom: 10,
+    shadowColor: '#1A2332',
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
   },
   shellFlat: {
     borderRadius: 0,
@@ -87,27 +92,27 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     marginBottom: 0,
   },
-  pressed: { opacity: 0.85 },
+  pressed: { opacity: 0.88 },
   row: { flexDirection: 'row', alignItems: 'center' },
   leading: { marginRight: 12 },
   textCol: { flex: 1, minWidth: 0 },
   title: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 15,
     color: brand.ink,
   },
   subtitle: {
-    marginTop: 2,
-    fontFamily: 'DMSans_400Regular',
+    marginTop: 3,
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 18,
     color: brand.muted,
   },
   meta: {
     marginTop: 3,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fonts.bodyMedium,
     fontSize: 12,
-    color: brand.navy,
+    color: brand.sage,
   },
   trailing: {
     marginLeft: 8,

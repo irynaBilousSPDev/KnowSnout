@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   xpLabel: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
@@ -80,14 +80,14 @@ const styles = StyleSheet.create({
   },
   xpValue: {
     marginTop: 6,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 32,
     color: brand.ink,
   },
   section: {
     marginTop: 16,
     marginBottom: 8,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',

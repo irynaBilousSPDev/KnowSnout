@@ -42,6 +42,7 @@ const uk: Dict = {
   'auth.registerHeadline': 'Твій спокійний старт',
   'auth.registerSubtitle':
     'Зберігай скани, історії мордочок і турботу в одному місці.',
+  'auth.legalAgree': 'Реєструючись, ви погоджуєтесь з умовами і приватністю',
   'auth.register': 'Створити акаунт',
   'auth.registerError': 'Не вдалося зареєструватися',
   'auth.haveAccount': 'Вже є акаунт?',
@@ -61,6 +62,7 @@ const uk: Dict = {
 
   'check.lead': 'Що хочеш перевірити зараз?',
   'check.recent': 'Нещодавно',
+  'check.illustration': 'Ілюстрація',
   'check.browseFiles': 'або файли',
   'check.statChecks': 'Перевірок',
   'check.statSafe': 'Безпечно',
@@ -98,7 +100,7 @@ const uk: Dict = {
   'onboarding.title': 'Ласкаво просимо',
   'onboarding.skip': 'Пропустити',
   'onboarding.next': 'Далі',
-  'onboarding.done': 'Почати',
+  'onboarding.done': 'Розпочати',
   'onboarding.step1Title': 'Перевіряй корм і рослини',
   'onboarding.step1Body':
     'Штрихкод, етикетка чи фото рослини — і ти бачиш зрозумілу оцінку для собаки чи кота.',

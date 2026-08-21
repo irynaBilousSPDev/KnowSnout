@@ -4,8 +4,9 @@ Professional brand guidelines. Former name: SnoutScore.
 
 **Markets:** Ukraine + Poland · **Product:** pet care trust (food · plants · breed · health · travel · community)
 
-**Design source (2026-08):** UI Kit v2 — `docs/design/KnowSnout-UI-kit-v2-brandbook.pdf`  
-**Active palette:** Variant 12 — **нафтовий синій + лісова зелень + троянда** (поєднання 11 + 04).
+**Design source (2026-08):** UI Kit v2 PDF mocks under `docs/design/`  
+**Active visual (Organic first):** cream surface + sage CTA + Caprasimo/Figtree — see `src/theme/brand.ts`.  
+**Deferred:** Brandbook Variant 12 (navy/forest/rose) color remap after layout fidelity.
 
 ---
 

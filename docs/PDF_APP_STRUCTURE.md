@@ -3,6 +3,9 @@
 Derived from `docs/design/KnowSnout-UI-Design-Setup.pdf` + module PDFs.  
 **Do not invent alternate IA.** Profile is header (`ProfileEntry` → Мої дані), not a bottom tab.
 
+**Active visual:** Organic PDF (cream + sage CTA + Caprasimo/Figtree) in `src/theme/brand.ts`.  
+Variant 12 color remap — later. Refs: `docs/design/refs/` (generate via `scripts/extract_pdf_refs.py`).
+
 ## Bottom tabs (mobile)
 
 Order matches product modules 01→02→03→04→06:

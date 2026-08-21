@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surface,
   },
   hint: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     color: '#D8E8E2',
   },
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     textAlign: 'center',
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     color: '#D8E8E2',
   },

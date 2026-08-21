@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   body: {
     marginTop: 16,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 15,
     lineHeight: 24,
     color: brand.ink,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 22,
     marginBottom: 8,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
@@ -143,13 +143,13 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   author: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 13,
     color: brand.navy,
   },
   commentBody: {
     marginTop: 4,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     color: brand.ink,
   },
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 15,
     color: brand.ink,
   },

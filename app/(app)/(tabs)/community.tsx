@@ -5,9 +5,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { t } from '@/src/i18n';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
-/** PDF 04 Спільнота: Квіз-хаб · Форум · Блог (+ рейтинг / досягнення / акаунт) */
+/** PDF 04 Спільнота hub — Caprasimo title, sage/terracotta pillars. */
 const PRIMARY = [
   {
     key: 'quiz',
@@ -15,7 +15,7 @@ const PRIMARY = [
     bodyKey: 'community.quizHubBody',
     icon: 'help-circle-outline' as const,
     href: '/(app)/(tabs)/quiz',
-    color: brand.navy,
+    color: brand.sage,
   },
   {
     key: 'forum',
@@ -23,7 +23,7 @@ const PRIMARY = [
     bodyKey: 'community.forumBody',
     icon: 'chatbubbles-outline' as const,
     href: '/(app)/forum',
-    color: brand.forest,
+    color: brand.sageDeep,
   },
   {
     key: 'blog',
@@ -31,23 +31,14 @@ const PRIMARY = [
     bodyKey: 'community.blogBody',
     icon: 'newspaper-outline' as const,
     href: '/(app)/blog',
-    color: brand.rose,
+    color: brand.terracotta,
   },
 ];
 
 const SECONDARY = [
-  {
-    titleKey: 'community.leaderboard',
-    href: '/(app)/quiz-leaderboard',
-  },
-  {
-    titleKey: 'community.achievements',
-    href: '/(app)/achievements',
-  },
-  {
-    titleKey: 'me.title',
-    href: '/(app)/my-data',
-  },
+  { titleKey: 'community.leaderboard', href: '/(app)/quiz-leaderboard' },
+  { titleKey: 'community.achievements', href: '/(app)/achievements' },
+  { titleKey: 'me.title', href: '/(app)/my-data' },
 ];
 
 export default function CommunityHubScreen() {
@@ -65,10 +56,7 @@ export default function CommunityHubScreen() {
             <Pressable
               key={p.key}
               onPress={() => router.push(p.href as never)}
-              style={({ pressed }) => [
-                styles.card,
-                pressed && styles.pressed,
-              ]}
+              style={({ pressed }) => [styles.card, pressed && styles.pressed]}
             >
               <View style={[styles.icon, { backgroundColor: p.color }]}>
                 <Ionicons name={p.icon} size={22} color="#FFFFFF" />
@@ -80,7 +68,7 @@ export default function CommunityHubScreen() {
               <Ionicons
                 name="chevron-forward"
                 size={20}
-                color={brand.mistBorder}
+                color={brand.mutedSoft}
               />
             </Pressable>
           ))}
@@ -115,14 +103,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 32,
+    fontFamily: fonts.display,
+    fontSize: 34,
     color: brand.ink,
-    letterSpacing: -0.5,
   },
   lead: {
     marginBottom: 16,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 22,
     color: brand.muted,
@@ -131,7 +118,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: brand.radius.lg,
     borderWidth: 1,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
@@ -149,13 +136,13 @@ const styles = StyleSheet.create({
   },
   copy: { flex: 1, paddingRight: 8 },
   cardTitle: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 17,
     color: brand.ink,
   },
   cardBody: {
     marginTop: 4,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 18,
     color: brand.muted,
@@ -163,7 +150,7 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 18,
     marginBottom: 6,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 12,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
@@ -178,8 +165,8 @@ const styles = StyleSheet.create({
     borderBottomColor: brand.mistBorder,
   },
   linkText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 15,
-    color: brand.navy,
+    color: brand.sage,
   },
 });

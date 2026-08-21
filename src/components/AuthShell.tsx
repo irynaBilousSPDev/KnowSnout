@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BrandLogo } from '@/src/components/BrandLogo';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   headline: string;
@@ -20,7 +20,7 @@ type Props = {
   badge?: string | null;
 };
 
-/** Minimal auth layout: logo, copy, form, sticky footer CTA. */
+/** Organic auth shell — cream, Caprasimo headline, sage footer CTA slot. */
 export function AuthShell({
   headline,
   subtitle,
@@ -64,7 +64,7 @@ export function AuthShell({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: brand.surface,
+    backgroundColor: brand.cream,
   },
   safe: { flex: 1 },
   flex: { flex: 1 },
@@ -75,16 +75,16 @@ const styles = StyleSheet.create({
   },
   logo: { alignSelf: 'flex-start' },
   headline: {
-    marginTop: 20,
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 26,
-    lineHeight: 32,
+    marginTop: 22,
+    fontFamily: fonts.display,
+    fontSize: 30,
+    lineHeight: 36,
     color: brand.ink,
     letterSpacing: -0.3,
   },
   subtitle: {
-    marginTop: 8,
-    fontFamily: 'DMSans_400Regular',
+    marginTop: 10,
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 22,
     color: brand.muted,
@@ -92,15 +92,15 @@ const styles = StyleSheet.create({
   badge: {
     alignSelf: 'flex-start',
     marginTop: 14,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 12,
-    backgroundColor: brand.forestTint,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.sageTint,
   },
   badgeText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 12,
-    color: brand.forest,
+    color: brand.sageDeep,
   },
   form: { marginTop: 24 },
   footer: {
@@ -109,6 +109,6 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === 'ios' ? 8 : 16,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: brand.mistBorder,
-    backgroundColor: brand.surface,
+    backgroundColor: brand.cream,
   },
 });

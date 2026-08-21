@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40 },
   subtitle: {
     marginBottom: 14,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     color: '#5A6B7D',
   },
@@ -238,12 +238,12 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surface,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 15,
     color: brand.ink,
   },
   empty: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 15,
     lineHeight: 22,
     color: '#5A6B7D',

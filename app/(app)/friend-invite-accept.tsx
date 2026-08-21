@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   pad: { flex: 1, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   label: {
     marginBottom: 8,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 13,
     color: brand.forest,
   },
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     fontSize: 20,
     letterSpacing: 3,
     color: brand.navy,

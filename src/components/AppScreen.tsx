@@ -7,14 +7,18 @@ import { brand } from '@/src/theme/brand';
 type Props = {
   children: ReactNode;
   edges?: ('top' | 'right' | 'bottom' | 'left')[];
-  /** Kept for API compat — ignored in minimal mode */
+  /** Soft cream atmosphere (default on) */
   atmosphere?: boolean;
 };
 
-/** Minimal screen shell — flat brand surface. */
-export function AppScreen({ children, edges = ['top'] }: Props) {
+/** Organic PDF screen shell — warm cream surface. */
+export function AppScreen({
+  children,
+  edges = ['top'],
+  atmosphere = true,
+}: Props) {
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, atmosphere && styles.atmosphere]}>
       <SafeAreaView style={styles.safe} edges={edges}>
         {children}
       </SafeAreaView>
@@ -26,6 +30,9 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: brand.surface,
+  },
+  atmosphere: {
+    backgroundColor: brand.cream,
   },
   safe: {
     flex: 1,

@@ -111,7 +111,7 @@ const tagStyles = StyleSheet.create({
     paddingVertical: 4,
   },
   chipText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 11,
     color: brand.navy,
   },
@@ -807,7 +807,7 @@ export default function StoriesScreen() {
             accessibilityRole="button"
             accessibilityLabel={item.label}
           >
-            <Ionicons name={item.icon} size={16} color={brand.rose} />
+            <Ionicons name={item.icon} size={16} color={brand.sage} />
             <Text
               style={[styles.quickChipText, dark && styles.quickChipTextDark]}
             >
@@ -1392,7 +1392,7 @@ const styles = StyleSheet.create({
     borderColor: STORIES_DARK.border,
   },
   moduleChipText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 12,
     color: brand.ink,
   },
@@ -1441,7 +1441,7 @@ const styles = StyleSheet.create({
     borderColor: STORIES_DARK.border,
   },
   quickChipText: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'Figtree_500Medium',
     fontSize: 12,
     color: brand.navy,
   },
@@ -1472,7 +1472,7 @@ const styles = StyleSheet.create({
     borderColor: brand.navy,
   },
   filterChipText: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 13,
     color: brand.navy,
   },
@@ -1480,7 +1480,7 @@ const styles = StyleSheet.create({
     color: STORIES_DARK.muted,
   },
   filterChipTextActive: {
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'Figtree_700Bold',
     color: brand.surface,
   },
   listContent: {
@@ -1506,7 +1506,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'Figtree_400Regular',
     fontSize: 14,
     lineHeight: 20,
     color: '#5A6B7D',

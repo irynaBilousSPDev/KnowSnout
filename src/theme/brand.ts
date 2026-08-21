@@ -1,48 +1,89 @@
-/** KnowSnout tokens — UI Kit v2 Brandbook Variant 12 (нафтовий + ліс + троянда).
- * Source PDF: docs/design/KnowSnout-UI-kit-v2-brandbook.pdf
- * See BRANDBOOK.md
+/**
+ * KnowSnout tokens — Organic PDF kit (active).
+ * Source: docs/design/KnowSnout-UI-kit-v2-*.pdf + docs/design/refs/
+ * Variant 12 (navy/forest/rose) deferred — see `v12` below for later remap.
  */
 
-export const brand = {
-  /** Primary structure / nav / headers / primary actions */
+export const fonts = {
+  display: 'Caprasimo_400Regular',
+  body: 'Figtree_400Regular',
+  bodyMedium: 'Figtree_500Medium',
+  bodySemi: 'Figtree_600SemiBold',
+  bodyBold: 'Figtree_700Bold',
+  /** Fallbacks if Caprasimo/Figtree fail to load */
+  displayFallback: 'Caprasimo_400Regular',
+  bodyFallback: 'Figtree_400Regular',
+} as const;
+
+/** Deferred Brandbook Variant 12 — do not use as active chrome yet. */
+export const v12 = {
   navy: '#122A4C',
   navyDeep: '#0C1C33',
-  /** Safe / healthy / success */
   forest: '#2F5233',
-  /** Emotional accent — active chips, heart accents, secondary CTAs */
   rose: '#E8879A',
   roseTint: '#F4DADF',
   forestTint: '#E3E9DF',
-
-  ink: '#0C1C33',
-  /** Secondary body / hints — navy-neutral (never mint) */
-  muted: '#5A6B7D',
-  mutedSoft: '#8A9AAB',
   surface: '#F7F1ED',
+} as const;
+
+/**
+ * Active Organic palette sampled from PDF phone mocks.
+ * Primary CTA = deep sage/teal; warm cream surface; terracotta accent.
+ */
+export const brand = {
+  /** Primary CTA / active tab / links (PDF sage-teal) */
+  sage: '#0A6B5C',
+  sageDeep: '#084F44',
+  sageTint: '#D8EBE6',
+  /** Emotional / danger-adjacent accent */
+  terracotta: '#C45C3E',
+  terracottaTint: '#F3E0D8',
+  /** Warm page background */
+  cream: '#F3EDE4',
+  creamDeep: '#E8DFD2',
+
+  ink: '#1A2332',
+  muted: '#6B7280',
+  mutedSoft: '#9AA3AD',
+  surface: '#F3EDE4',
   surfaceElevated: '#FFFFFF',
-  mist: '#E3E9DF',
-  mistBorder: '#C8D2C4',
-  roseMist: '#F4DADF',
+  mist: '#D8EBE6',
+  mistBorder: '#D0D5CC',
+  roseMist: '#F3E0D8',
 
   score: {
     poor: '#C45C3E',
     fair: '#C4922A',
-    good: '#2F5233',
+    good: '#0A6B5C',
   },
 
   gradient: {
-    start: '#122A4C',
-    end: '#2F5233',
+    start: '#0A6B5C',
+    end: '#084F44',
     angleDeg: 135,
   },
 
   /**
-   * Legacy aliases (old teal/lime era) — mapped to Variant 12.
-   * Prefer navy / forest / muted in new code.
+   * Compatibility aliases — existing screens use navy/forest/rose.
+   * Mapped onto Organic so the whole app shifts without per-file rewrites.
    */
-  lime: '#2F5233',
-  teal: '#2F5233',
-  tealDeep: '#244028',
-  /** @deprecated use brand.navy */
-  tealPressed: '#122A4C',
+  navy: '#0A6B5C',
+  navyDeep: '#084F44',
+  forest: '#0A6B5C',
+  forestTint: '#D8EBE6',
+  rose: '#C45C3E',
+  roseTint: '#F3E0D8',
+  lime: '#0A6B5C',
+  teal: '#0A6B5C',
+  tealDeep: '#084F44',
+  tealPressed: '#084F44',
+
+  /** Corner radii from PDF (soft, pill CTAs) */
+  radius: {
+    sm: 12,
+    md: 16,
+    lg: 22,
+    xl: 28,
+    pill: 999,
+  },
 } as const;
