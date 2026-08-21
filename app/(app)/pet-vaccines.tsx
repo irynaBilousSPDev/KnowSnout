@@ -50,7 +50,7 @@ function statusColor(status: VaccineDueStatus) {
   if (status === 'overdue') return brand.score.poor;
   if (status === 'soon') return brand.score.fair;
   if (status === 'ok') return brand.score.good;
-  return brand.tealDeep;
+  return brand.forest;
 }
 
 function displayName(row: PetVaccineRow) {

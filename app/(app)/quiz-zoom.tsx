@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   zoomBody: {
     marginTop: 8,

@@ -11,10 +11,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { listPets } from '@/src/services/pets';
 import { brand } from '@/src/theme/brand';
@@ -79,10 +79,7 @@ export default function PetHubScreen() {
     return (
       <AppScreen>
         <View style={styles.pad}>
-          <ScreenHeader
-            title={t('petHub.title')}
-            subtitle={t('petHub.empty')}
-          />
+          <HubHero title={t('petHub.title')} lead={t('petHub.empty')} />
         </View>
       </AppScreen>
     );
@@ -99,9 +96,9 @@ export default function PetHubScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('petHub.title')}
-            subtitle={
+            lead={
               isBird
                 ? t('petHub.birdSubtitle', { name: pet.name })
                 : t('petHub.subtitle', { name: pet.name })
@@ -159,7 +156,7 @@ export default function PetHubScreen() {
               isBird ? t('petHub.careBird') : t('care.cardHint')
             }
             leading={
-              <Ionicons name="water-outline" size={22} color={brand.tealPressed} />
+              <Ionicons name="water-outline" size={22} color={brand.navy} />
             }
             onPress={() => go('/(app)/pet-care')}
           />
@@ -167,7 +164,7 @@ export default function PetHubScreen() {
             title={t('pets.profileTitle')}
             subtitle={t('petHub.profileHint')}
             leading={
-              <Ionicons name="paw-outline" size={22} color={brand.tealPressed} />
+              <Ionicons name="paw-outline" size={22} color={brand.navy} />
             }
             onPress={() =>
               router.push({
@@ -183,7 +180,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="medkit-outline"
                 size={22}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
             }
             onPress={() => go('/(app)/pet-vaccines')}
@@ -195,7 +192,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="clipboard-outline"
                 size={22}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
             }
             onPress={() => go('/(app)/pet-vet-log')}
@@ -209,7 +206,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="game-controller-outline"
                 size={22}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
             }
             onPress={() => go('/(app)/play-guides')}
@@ -221,7 +218,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="sparkles-outline"
                 size={22}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
             }
             onPress={() => go('/(app)/pet-habits')}
@@ -233,7 +230,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="calendar-outline"
                 size={22}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
             }
             onPress={() => go('/(app)/pet-calendar')}
@@ -247,7 +244,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="airplane-outline"
                 size={22}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
             }
             onPress={() => go('/(app)/pet-travel')}
@@ -259,7 +256,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="document-text-outline"
                 size={22}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
             }
             onPress={() => go('/(app)/pet-passport')}
@@ -323,6 +320,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: '#5A7A72',
+    color: brand.muted,
   },
 });

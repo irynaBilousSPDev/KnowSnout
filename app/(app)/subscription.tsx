@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   gap: { height: 12 },
 });

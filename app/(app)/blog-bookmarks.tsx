@@ -43,7 +43,7 @@ export default function BlogBookmarksScreen() {
               title={a.title}
               subtitle={a.excerpt}
               leading={
-                <Ionicons name="bookmark" size={22} color={brand.tealPressed} />
+                <Ionicons name="bookmark" size={22} color={brand.navy} />
               }
               onPress={() =>
                 router.push({
@@ -67,6 +67,6 @@ const styles = StyleSheet.create({
   empty: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

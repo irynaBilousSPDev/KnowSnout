@@ -45,16 +45,17 @@ const styles = StyleSheet.create({
   },
   logoCol: { flex: 1, paddingRight: 12 },
   title: {
-    fontFamily: 'Fraunces_700Bold',
+    fontFamily: 'DMSans_700Bold',
     fontSize: 28,
     lineHeight: 34,
     color: brand.ink,
+    letterSpacing: -0.4,
   },
   subtitle: {
     marginTop: 4,
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A7A72',
+    color: brand.muted,
   },
 });

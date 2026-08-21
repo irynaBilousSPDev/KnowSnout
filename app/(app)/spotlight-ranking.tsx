@@ -60,7 +60,7 @@ export default function SpotlightRankingScreen() {
                 subtitle={e.caption}
                 meta={`${e.author} · ${e.votes} ${t('spotlight.votes')}`}
                 leading={
-                  <Ionicons name="heart-outline" size={22} color={brand.tealPressed} />
+                  <Ionicons name="heart-outline" size={22} color={brand.navy} />
                 }
                 trailing={
                   <PrimaryButton
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   gap: { height: 12 },
 });

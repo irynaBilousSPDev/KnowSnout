@@ -38,7 +38,7 @@ export function AuthTextField({
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#8AA8A1"
+        placeholderTextColor={brand.mutedSoft}
         secureTextEntry={secureTextEntry}
         autoCapitalize={autoCapitalize}
         keyboardType={keyboardType}
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontFamily: 'DMSans_500Medium',
     fontSize: 13,
-    color: brand.tealPressed,
+    color: brand.navy,
     letterSpacing: 0.2,
   },
   input: {

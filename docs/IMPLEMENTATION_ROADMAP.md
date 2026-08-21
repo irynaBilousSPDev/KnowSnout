@@ -3,6 +3,19 @@
 Source: `docs/design/*.pdf` · Structure first · Visual/brand later · Mock APIs OK  
 Admin = Wave 7 (last).
 
+## Visual pass (Variant 12 · 2026-08-21)
+
+| Module | visual |
+|--|--|
+| Design system (tokens, ListRow, HubHero, auth shell) | done |
+| Вхід і Перевір | done |
+| Улюбленці | done |
+| Стрічка / Spotlight / friends | done |
+| Спільнота (quiz / forum / blog) | done |
+| Профіль і службові | done |
+| Довідники | done |
+| Адмінка | done |
+
 Status: `done` | `stub` | `missing`
 
 ## Navigation (Wave 0)
@@ -90,10 +103,10 @@ Status: `done` | `stub` | `missing`
 
 | Migration | Status | Notes |
 |--|--|--|
-| `20260321240000_forum_local_cloud.sql` | stub | forum tables RLS — run later |
-| `20260321241000_friends_graph.sql` | stub | friendships / invites — run later |
-| `20260321242000_directories_trust.sql` | stub | places / reviews / fraud — run later |
-| `20260321243000_spotlight_cloud.sql` | stub | contests / entries / votes — run later |
+| `20260321240000_forum_local_cloud.sql` | done | applied 2026-08-21 |
+| `20260321241000_friends_graph.sql` | done | applied 2026-08-21 |
+| `20260321242000_directories_trust.sql` | done | applied 2026-08-21 |
+| `20260321243000_spotlight_cloud.sql` | done | applied 2026-08-21 |
 
 ## Gap close 2026-08-21 (was missing / stub)
 

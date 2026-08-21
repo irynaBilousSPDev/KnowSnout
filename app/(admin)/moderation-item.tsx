@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontFamily: 'DMSans_500Medium',
     fontSize: 13,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   gap: { height: 16 },
   gapSm: { height: 10 },

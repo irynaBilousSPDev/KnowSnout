@@ -15,6 +15,9 @@ export const brand = {
   forestTint: '#E3E9DF',
 
   ink: '#0C1C33',
+  /** Secondary body / hints — navy-neutral (never mint) */
+  muted: '#5A6B7D',
+  mutedSoft: '#8A9AAB',
   surface: '#F7F1ED',
   surfaceElevated: '#FFFFFF',
   mist: '#E3E9DF',
@@ -34,12 +37,12 @@ export const brand = {
   },
 
   /**
-   * Legacy aliases (old teal/lime era) — mapped to Variant 12 so existing
-   * `brand.teal*` call sites keep working during the visual migrate.
+   * Legacy aliases (old teal/lime era) — mapped to Variant 12.
+   * Prefer navy / forest / muted in new code.
    */
   lime: '#2F5233',
   teal: '#2F5233',
   tealDeep: '#244028',
-  /** Primary pressed / interactive — navy per brandbook */
+  /** @deprecated use brand.navy */
   tealPressed: '#122A4C',
 } as const;

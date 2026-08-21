@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   authorLinkText: {
     fontFamily: 'DMSans_500Medium',
     fontSize: 13,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   post: {
     marginBottom: 10,
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   author: {
     fontFamily: 'DMSans_700Bold',
     fontSize: 14,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   body: {
     marginTop: 6,
@@ -163,14 +163,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontFamily: 'DMSans_400Regular',
     fontSize: 12,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   label: {
     marginTop: 16,
     marginBottom: 6,
     fontFamily: 'DMSans_700Bold',
     fontSize: 13,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   input: {
     borderRadius: 14,

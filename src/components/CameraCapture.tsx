@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 4,
     borderColor: brand.surface,
-    backgroundColor: brand.tealDeep,
+    backgroundColor: brand.forest,
   },
   shutterDim: { opacity: 0.5 },
   shutterInner: {

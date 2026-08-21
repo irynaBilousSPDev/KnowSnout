@@ -105,11 +105,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   linkStrong: {
     fontFamily: 'DMSans_700Bold',
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   errorBox: {
     marginTop: 4,
@@ -132,6 +132,6 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 12,
     lineHeight: 18,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

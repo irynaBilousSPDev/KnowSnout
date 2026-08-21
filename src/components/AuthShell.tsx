@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   logo: { alignSelf: 'flex-start' },
   headline: {
     marginTop: 20,
-    fontFamily: 'Fraunces_700Bold',
+    fontFamily: 'DMSans_700Bold',
     fontSize: 26,
     lineHeight: 32,
     color: brand.ink,
@@ -87,20 +87,20 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 15,
     lineHeight: 22,
-    color: '#3A5A54',
+    color: brand.muted,
   },
   badge: {
     alignSelf: 'flex-start',
     marginTop: 14,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 999,
-    backgroundColor: brand.mist,
+    borderRadius: 12,
+    backgroundColor: brand.forestTint,
   },
   badgeText: {
     fontFamily: 'DMSans_500Medium',
     fontSize: 12,
-    color: brand.tealPressed,
+    color: brand.forest,
   },
   form: { marginTop: 24 },
   footer: {

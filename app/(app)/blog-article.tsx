@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   comment: {
     marginBottom: 10,
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   author: {
     fontFamily: 'DMSans_700Bold',
     fontSize: 13,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   commentBody: {
     marginTop: 4,

@@ -1,5 +1,6 @@
 import { AppScreen } from '@/src/components/AppScreen';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { HubHero } from '@/src/components/HubHero';
+import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { SharePhotoSheet } from '@/src/components/SharePhotoSheet';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
@@ -146,7 +147,7 @@ function StoryPostCard({
   if (compact) {
     return (
       <View
-        className="mb-3 overflow-hidden rounded-2xl border border-forest-100 bg-white"
+        className="mb-3 overflow-hidden rounded-2xl border border-sand-300 bg-white"
         style={darkCard}
       >
         <Pressable onPress={() => onOpenComments(post)}>
@@ -171,7 +172,7 @@ function StoryPostCard({
           <Pressable onPress={() => onOpenAuthor(post)}>
             <Text
               numberOfLines={1}
-              className="font-body-bold text-[11px] text-forest-900"
+              className="font-body-bold text-[11px] text-snout-ink"
               style={darkTitle}
             >
               {post.author}
@@ -179,7 +180,7 @@ function StoryPostCard({
           </Pressable>
           <Text
             numberOfLines={2}
-            className="mt-0.5 font-body text-xs text-forest-800"
+            className="mt-0.5 font-body text-xs text-snout-ink"
             style={darkMuted}
           >
             {post.caption}
@@ -192,10 +193,10 @@ function StoryPostCard({
               <Ionicons
                 name={post.liked ? 'heart' : 'heart-outline'}
                 size={16}
-                color={post.liked ? brand.score.poor : brand.tealPressed}
+                color={post.liked ? brand.rose : brand.muted}
               />
               <Text
-                className="font-body text-[11px] text-forest-500"
+                className="font-body text-[11px] text-snout-muted"
                 style={darkMuted}
               >
                 {post.likes}
@@ -208,10 +209,10 @@ function StoryPostCard({
               <Ionicons
                 name="chatbubble-outline"
                 size={15}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
               <Text
-                className="font-body text-[11px] text-forest-500"
+                className="font-body text-[11px] text-snout-muted"
                 style={darkMuted}
               >
                 {post.commentsCount}
@@ -238,7 +239,7 @@ function StoryPostCard({
 
   return (
     <View
-      className="mb-5 overflow-hidden rounded-3xl border border-forest-100 bg-white"
+      className="mb-5 overflow-hidden rounded-3xl border border-sand-300 bg-white"
       style={darkCard}
     >
       <Pressable
@@ -253,13 +254,13 @@ function StoryPostCard({
         />
         <View className="ml-3 flex-1">
           <Text
-            className="font-body-bold text-sm text-forest-900"
+            className="font-body-bold text-sm text-snout-ink"
             style={darkTitle}
           >
             {post.author}
           </Text>
           <Text
-            className="font-body text-xs text-forest-500"
+            className="font-body text-xs text-snout-muted"
             style={darkMuted}
           >
             {post.petName}
@@ -271,7 +272,7 @@ function StoryPostCard({
         <Ionicons
           name="chevron-forward"
           size={16}
-          color={dark ? STORIES_DARK.muted : '#7A9A92'}
+          color={dark ? STORIES_DARK.muted : '#8A9AAB'}
         />
       </Pressable>
 
@@ -291,7 +292,7 @@ function StoryPostCard({
               name={post.petName}
             />
             <Text
-              className="mt-3 text-center font-body text-sm text-forest-600"
+              className="mt-3 text-center font-body text-sm text-snout-muted"
               style={darkMuted}
             >
               {post.caption}
@@ -305,7 +306,7 @@ function StoryPostCard({
 
       <View className="px-4 py-3">
         <Text
-          className="font-body text-xs uppercase tracking-wide text-forest-500"
+          className="font-body text-xs uppercase tracking-wide text-snout-muted"
           style={darkMuted}
         >
           {timeAgo}
@@ -318,7 +319,7 @@ function StoryPostCard({
             <Ionicons
               name={post.liked ? 'heart' : 'heart-outline'}
               size={26}
-              color={post.liked ? brand.score.poor : brand.tealPressed}
+              color={post.liked ? brand.rose : brand.muted}
             />
           </Pressable>
           <Pressable
@@ -328,7 +329,7 @@ function StoryPostCard({
             <Ionicons
               name="chatbubble-outline"
               size={24}
-              color={brand.tealPressed}
+              color={brand.navy}
             />
           </Pressable>
           <Pressable
@@ -338,7 +339,7 @@ function StoryPostCard({
             <Ionicons
               name="share-outline"
               size={24}
-              color={brand.tealPressed}
+              color={brand.navy}
             />
           </Pressable>
           {post.mine && onDelete ? (
@@ -363,14 +364,14 @@ function StoryPostCard({
             color={dark ? STORIES_DARK.text : brand.ink}
           />
           <Text
-            className="ml-2 flex-1 font-body text-sm text-forest-800"
+            className="ml-2 flex-1 font-body text-sm text-snout-ink"
             style={darkTitle}
           >
             {likedBy}
           </Text>
         </View>
         <Text
-          className="mt-2 font-body text-sm text-forest-700"
+          className="mt-2 font-body text-sm text-snout-navy"
           style={darkMuted}
         >
           <Text className="font-body-bold" style={darkTitle}>
@@ -380,7 +381,7 @@ function StoryPostCard({
         </Text>
         <Pressable onPress={() => onOpenComments(post)}>
           <Text
-            className="mt-1 font-body text-xs text-forest-500"
+            className="mt-1 font-body text-xs text-snout-muted"
             style={darkMuted}
           >
             {post.likes} {t('stories.likes')}
@@ -687,7 +688,12 @@ export default function StoriesScreen() {
 
   const feedHeader = (
     <View style={[styles.feedHeader, dark && styles.feedHeaderDark]}>
-      <ScreenHeader logo="icon" showProfile />
+      <HubHero
+        brandMark
+        title={t('tabs.stories')}
+        lead={t('stories.tagline')}
+        right={<ProfileEntry />}
+      />
       <View style={styles.actionsRow}>
         <View style={styles.actionsPrimary}>
           <PrimaryButton
@@ -835,7 +841,7 @@ export default function StoriesScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor={dark ? brand.rose : brand.tealDeep}
+              tintColor={dark ? brand.rose : brand.forest}
             />
           }
           ListEmptyComponent={
@@ -891,14 +897,14 @@ export default function StoriesScreen() {
           />
           <View className="max-h-[90%] rounded-t-3xl bg-sand-50 px-5 pb-10 pt-5">
             <View className="mb-2 flex-row items-center justify-between">
-              <Text className="font-display text-2xl text-forest-900">
+              <Text className="font-display text-2xl text-snout-ink">
                 {t('stories.composeTitle')}
               </Text>
               <Pressable
                 onPress={closeCompose}
                 accessibilityRole="button"
                 accessibilityLabel={t('common.close')}
-                className="h-10 w-10 items-center justify-center rounded-full bg-forest-100"
+                className="h-10 w-10 items-center justify-center rounded-full bg-sand-200"
               >
                 <Ionicons name="close" size={22} color={brand.ink} />
               </Pressable>
@@ -922,7 +928,7 @@ export default function StoriesScreen() {
 
               {pets.length > 0 ? (
                 <>
-                  <Text className="mt-4 font-body-medium text-sm text-forest-700">
+                  <Text className="mt-4 font-body-medium text-sm text-snout-navy">
                     {t('stories.pickPet')}
                   </Text>
                   <View className="mt-2 flex-row flex-wrap gap-2">
@@ -942,12 +948,12 @@ export default function StoriesScreen() {
                               }
                             }}
                             className={`rounded-2xl px-4 py-2.5 ${
-                              active ? 'bg-forest-700' : 'bg-forest-100'
+                              active ? 'bg-forest-700' : 'bg-sand-200'
                             }`}
                           >
                             <Text
                               className={`font-body-bold text-sm ${
-                                active ? 'text-sand-50' : 'text-forest-800'
+                                active ? 'text-sand-50' : 'text-snout-ink'
                               }`}
                             >
                               {p.name}
@@ -959,7 +965,7 @@ export default function StoriesScreen() {
                 </>
               ) : (
                 <>
-                  <Text className="mt-4 font-body-medium text-sm text-forest-700">
+                  <Text className="mt-4 font-body-medium text-sm text-snout-navy">
                     {t('stories.species')}
                   </Text>
                   <View className="mt-2 flex-row gap-2">
@@ -968,12 +974,12 @@ export default function StoriesScreen() {
                         key={s}
                         onPress={() => setSpecies(s)}
                         className={`flex-1 items-center rounded-2xl py-3 ${
-                          species === s ? 'bg-forest-700' : 'bg-forest-100'
+                          species === s ? 'bg-forest-700' : 'bg-sand-200'
                         }`}
                       >
                         <Text
                           className={`font-body-bold text-sm ${
-                            species === s ? 'text-sand-50' : 'text-forest-800'
+                            species === s ? 'text-sand-50' : 'text-snout-ink'
                           }`}
                         >
                           {s === 'cat'
@@ -986,7 +992,7 @@ export default function StoriesScreen() {
                 </>
               )}
 
-              <Text className="mt-4 font-body-medium text-sm text-forest-700">
+              <Text className="mt-4 font-body-medium text-sm text-snout-navy">
                 {t('stories.privacy')}
               </Text>
               <View className="mt-2 flex-row gap-2">
@@ -1003,12 +1009,12 @@ export default function StoriesScreen() {
                     key={item.id}
                     onPress={() => setPrivacy(item.id)}
                     className={`flex-1 items-center rounded-2xl py-3 ${
-                      privacy === item.id ? 'bg-forest-700' : 'bg-forest-100'
+                      privacy === item.id ? 'bg-forest-700' : 'bg-sand-200'
                     }`}
                   >
                     <Text
                       className={`text-center font-body-bold text-xs ${
-                        privacy === item.id ? 'text-sand-50' : 'text-forest-800'
+                        privacy === item.id ? 'text-sand-50' : 'text-snout-ink'
                       }`}
                     >
                       {item.label}
@@ -1017,11 +1023,11 @@ export default function StoriesScreen() {
                 ))}
               </View>
 
-              <Text className="mt-4 font-body-medium text-sm text-forest-700">
+              <Text className="mt-4 font-body-medium text-sm text-snout-navy">
                 {t('stories.tagPets')}
               </Text>
               {pets.length === 0 ? (
-                <Text className="mt-2 font-body text-xs text-forest-500">
+                <Text className="mt-2 font-body text-xs text-snout-muted">
                   {t('stories.tagPetsEmpty')}
                 </Text>
               ) : (
@@ -1033,7 +1039,7 @@ export default function StoriesScreen() {
                         key={p.id}
                         onPress={() => toggleTaggedPet(p.id)}
                         className={`rounded-2xl px-4 py-2.5 ${
-                          active ? 'bg-rose-400' : 'bg-forest-100'
+                          active ? 'bg-rose-400' : 'bg-sand-200'
                         }`}
                         style={
                           active
@@ -1043,7 +1049,7 @@ export default function StoriesScreen() {
                       >
                         <Text
                           className={`font-body-bold text-sm ${
-                            active ? 'text-white' : 'text-forest-800'
+                            active ? 'text-white' : 'text-snout-ink'
                           }`}
                           style={active ? { color: '#fff' } : undefined}
                         >
@@ -1055,11 +1061,11 @@ export default function StoriesScreen() {
                 </View>
               )}
 
-              <Text className="mt-4 font-body-medium text-sm text-forest-700">
+              <Text className="mt-4 font-body-medium text-sm text-snout-navy">
                 {t('stories.tagFriends')}
               </Text>
               {friends.length === 0 ? (
-                <Text className="mt-2 font-body text-xs text-forest-500">
+                <Text className="mt-2 font-body text-xs text-snout-muted">
                   {t('stories.tagFriendsEmpty')}
                 </Text>
               ) : (
@@ -1087,7 +1093,7 @@ export default function StoriesScreen() {
                 </View>
               )}
 
-              <Text className="mt-4 font-body-medium text-sm text-forest-700">
+              <Text className="mt-4 font-body-medium text-sm text-snout-navy">
                 {t('stories.caption')}
               </Text>
               <TextInput
@@ -1098,8 +1104,8 @@ export default function StoriesScreen() {
                 }}
                 placeholder={t('stories.captionPlaceholder')}
                 multiline
-                className="mt-2 min-h-[96px] rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-base text-forest-900"
-                placeholderTextColor="#7FD9C9"
+                className="mt-2 min-h-[96px] rounded-2xl border border-sand-300 bg-white px-4 py-3 font-body text-base text-snout-ink"
+                placeholderTextColor="#C8D2C4"
               />
 
               {composeError ? (
@@ -1149,25 +1155,25 @@ export default function StoriesScreen() {
                     name={authorCard.petName}
                   />
                   <View className="ml-3 flex-1">
-                    <Text className="font-display text-2xl text-forest-900">
+                    <Text className="font-display text-2xl text-snout-ink">
                       {authorCard.author}
                     </Text>
-                    <Text className="mt-1 font-body text-sm text-forest-600">
+                    <Text className="mt-1 font-body text-sm text-snout-muted">
                       {t('stories.authorPet', { name: authorCard.petName })}
                     </Text>
                   </View>
                 </View>
-                <Text className="mt-4 font-body text-xs leading-5 text-forest-500">
+                <Text className="mt-4 font-body text-xs leading-5 text-snout-muted">
                   {t('stories.authorHint')}
                 </Text>
                 {authorCard.mine && careStreak ? (
                   <View className="mt-3 rounded-2xl bg-mist px-4 py-3">
-                    <Text className="font-body-bold text-sm text-forest-900">
+                    <Text className="font-body-bold text-sm text-snout-ink">
                       {t('stories.careStreakTitle', {
                         count: careStreak.currentStreak,
                       })}
                     </Text>
-                    <Text className="mt-1 font-body text-xs text-forest-600">
+                    <Text className="mt-1 font-body text-xs text-snout-muted">
                       {t('stories.careStreakBest', {
                         count: careStreak.bestStreak,
                       })}
@@ -1177,7 +1183,7 @@ export default function StoriesScreen() {
                 <View className="mt-5 gap-3">
                   {authorCard.mine ? (
                     <>
-                      <Text className="text-center font-body text-sm text-forest-600">
+                      <Text className="text-center font-body text-sm text-snout-muted">
                         {t('stories.authorSelf')}
                       </Text>
                       {authorCard.postId ? (
@@ -1235,7 +1241,7 @@ export default function StoriesScreen() {
                       />
                       {reportOpen ? (
                         <View className="gap-2">
-                          <Text className="font-body-medium text-sm text-forest-700">
+                          <Text className="font-body-medium text-sm text-snout-navy">
                             {t('stories.reportPick')}
                           </Text>
                           {(
@@ -1371,7 +1377,7 @@ const styles = StyleSheet.create({
   quickChipText: {
     fontFamily: 'DMSans_500Medium',
     fontSize: 12,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   quickChipTextDark: {
     color: brand.rose,
@@ -1396,13 +1402,13 @@ const styles = StyleSheet.create({
     borderColor: STORIES_DARK.border,
   },
   filterChipActive: {
-    backgroundColor: brand.tealPressed,
-    borderColor: brand.tealPressed,
+    backgroundColor: brand.navy,
+    borderColor: brand.navy,
   },
   filterChipText: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   filterChipTextDark: {
     color: STORIES_DARK.muted,
@@ -1437,7 +1443,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   emptyTextDark: {
     color: STORIES_DARK.muted,

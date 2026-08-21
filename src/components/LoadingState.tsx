@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { brand } from '@/src/theme/brand';
 
@@ -8,9 +8,25 @@ type Props = {
 
 export function LoadingState({ message = 'Loading…' }: Props) {
   return (
-    <View className="flex-1 items-center justify-center bg-sand-50 px-6">
-      <ActivityIndicator size="large" color={brand.tealDeep} />
-      <Text className="mt-4 font-body text-base text-forest-700">{message}</Text>
+    <View style={styles.wrap}>
+      <ActivityIndicator size="large" color={brand.navy} />
+      <Text style={styles.message}>{message}</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  wrap: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: brand.surface,
+    paddingHorizontal: 24,
+  },
+  message: {
+    marginTop: 16,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 15,
+    color: brand.muted,
+  },
+});

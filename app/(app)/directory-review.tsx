@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     fontFamily: 'DMSans_500Medium',
     fontSize: 13,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   row: { flexDirection: 'row', gap: 8, marginBottom: 4 },
   chip: {
@@ -110,8 +110,8 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
   },
   chipActive: {
-    backgroundColor: brand.tealPressed,
-    borderColor: brand.tealPressed,
+    backgroundColor: brand.navy,
+    borderColor: brand.navy,
   },
   chipText: {
     fontFamily: 'DMSans_700Bold',

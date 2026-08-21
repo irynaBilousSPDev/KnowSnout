@@ -73,7 +73,7 @@ export default function DirectoryListScreen() {
                 <Ionicons
                   name="location-outline"
                   size={22}
-                  color={brand.tealPressed}
+                  color={brand.navy}
                 />
               }
               onPress={() =>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     fontFamily: 'DMSans_500Medium',
     fontSize: 13,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   input: {
     marginBottom: 14,
@@ -116,6 +116,6 @@ const styles = StyleSheet.create({
   empty: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

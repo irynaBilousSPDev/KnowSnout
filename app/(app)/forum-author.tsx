@@ -66,7 +66,7 @@ export default function ForumAuthorScreen() {
                   <Ionicons
                     name="chatbubble-ellipses-outline"
                     size={22}
-                    color={brand.tealPressed}
+                    color={brand.navy}
                   />
                 }
                 onPress={() =>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   section: {
     marginBottom: 8,
@@ -102,6 +102,6 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

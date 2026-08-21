@@ -4,8 +4,8 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import {
   getSettingsPrefs,
@@ -47,9 +47,9 @@ export default function SettingsScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
+          <HubHero
             title={t('settings.title')}
-            subtitle={t('settings.subtitle')}
+            lead={t('settings.subtitle')}
           />
 
           <Text style={styles.section}>{t('settings.language')}</Text>
@@ -86,7 +86,7 @@ export default function SettingsScreen() {
               <Ionicons
                 name="moon-outline"
                 size={22}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
             }
             onPress={() => void toggleTheme()}
@@ -142,13 +142,13 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   hint: {
     marginBottom: 8,
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
   chip: {
@@ -160,8 +160,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   chipActive: {
-    backgroundColor: brand.tealPressed,
-    borderColor: brand.tealPressed,
+    backgroundColor: brand.navy,
+    borderColor: brand.navy,
   },
   chipText: {
     fontFamily: 'DMSans_700Bold',

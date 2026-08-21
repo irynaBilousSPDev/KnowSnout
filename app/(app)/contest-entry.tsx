@@ -211,7 +211,7 @@ export default function ContestEntryScreen() {
               <Ionicons
                 name={hearted ? 'heart' : 'heart-outline'}
                 size={26}
-                color={hearted ? brand.score.poor : brand.tealPressed}
+                color={hearted ? brand.score.poor : brand.navy}
               />
               <Text className="font-body-medium text-sm text-forest-800">
                 {entry.hearts} {t('contests.hearts')}
@@ -224,7 +224,7 @@ export default function ContestEntryScreen() {
               <Ionicons
                 name="share-outline"
                 size={24}
-                color={brand.tealPressed}
+                color={brand.navy}
               />
               <Text className="font-body-medium text-sm text-forest-800">
                 {t('share.button')}

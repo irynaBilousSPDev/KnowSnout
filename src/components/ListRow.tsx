@@ -12,6 +12,8 @@ type Props = {
   trailing?: ReactNode;
   onPress?: () => void;
   showChevron?: boolean;
+  /** Elevated card (default) vs flat divider row for quieter lists */
+  variant?: 'card' | 'flat';
 };
 
 export function ListRow({
@@ -22,6 +24,7 @@ export function ListRow({
   trailing,
   onPress,
   showChevron = true,
+  variant = 'card',
 }: Props) {
   const body = (
     <View style={styles.row}>
@@ -43,19 +46,21 @@ export function ListRow({
       </View>
       {trailing ? <View style={styles.trailing}>{trailing}</View> : null}
       {onPress && showChevron && !trailing ? (
-        <Ionicons name="chevron-forward" size={18} color="#B7EBE0" />
+        <Ionicons name="chevron-forward" size={18} color={brand.mistBorder} />
       ) : null}
     </View>
   );
 
+  const shellStyle = variant === 'flat' ? styles.shellFlat : styles.shell;
+
   if (!onPress) {
-    return <View style={styles.shell}>{body}</View>;
+    return <View style={shellStyle}>{body}</View>;
   }
 
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.shell, pressed && styles.pressed]}
+      style={({ pressed }) => [shellStyle, pressed && styles.pressed]}
       accessibilityRole="button"
     >
       {body}
@@ -73,6 +78,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 10,
   },
+  shellFlat: {
+    borderRadius: 0,
+    backgroundColor: 'transparent',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: brand.mistBorder,
+    paddingHorizontal: 4,
+    paddingVertical: 14,
+    marginBottom: 0,
+  },
   pressed: { opacity: 0.85 },
   row: { flexDirection: 'row', alignItems: 'center' },
   leading: { marginRight: 12 },
@@ -87,13 +101,13 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
     lineHeight: 18,
-    color: '#5A7A72',
+    color: brand.muted,
   },
   meta: {
     marginTop: 3,
     fontFamily: 'DMSans_400Regular',
     fontSize: 12,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   trailing: {
     marginLeft: 8,

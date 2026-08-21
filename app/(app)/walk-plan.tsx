@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     fontFamily: 'DMSans_700Bold',
     fontSize: 13,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   chip: {
     marginBottom: 8,
@@ -181,14 +181,14 @@ const styles = StyleSheet.create({
   },
   chipActive: {
     backgroundColor: brand.mist,
-    borderColor: brand.tealPressed,
+    borderColor: brand.navy,
   },
   chipText: {
     fontFamily: 'DMSans_500Medium',
     fontSize: 15,
     color: brand.ink,
   },
-  chipTextActive: { color: brand.tealPressed },
+  chipTextActive: { color: brand.navy },
   input: {
     borderRadius: 14,
     borderWidth: 1,
@@ -207,12 +207,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   empty: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   gap: { height: 12 },
 });

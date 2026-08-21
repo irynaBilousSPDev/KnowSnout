@@ -52,7 +52,7 @@ export default function NotificationsScreen() {
                 <Ionicons
                   name={iconFor(item.kind)}
                   size={22}
-                  color={brand.tealPressed}
+                  color={brand.navy}
                 />
               }
               showChevron={false}
@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
   empty: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

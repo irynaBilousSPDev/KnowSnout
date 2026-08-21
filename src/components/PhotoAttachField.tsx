@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: 'DMSans_500Medium',
     fontSize: 14,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   preview: {
     marginTop: 8,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   row: {
     marginTop: 12,

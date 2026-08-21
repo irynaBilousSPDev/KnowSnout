@@ -4,9 +4,9 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import {
   listBlogArticles,
@@ -30,7 +30,7 @@ export default function BlogScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader title={t('blog.title')} subtitle={t('blog.subtitle')} />
+          <HubHero title={t('blog.title')} lead={t('blog.subtitle')} />
           <PrimaryButton
             label={t('blog.bookmarks')}
             variant="secondary"
@@ -73,7 +73,7 @@ export default function BlogScreen() {
               subtitle={a.excerpt}
               meta={t('blog.readMin', { n: a.readMinutes })}
               leading={
-                <Ionicons name="newspaper-outline" size={22} color={brand.tealPressed} />
+                <Ionicons name="newspaper-outline" size={22} color={brand.navy} />
               }
               onPress={() =>
                 router.push({
@@ -105,13 +105,13 @@ const styles = StyleSheet.create({
     borderColor: brand.mistBorder,
   },
   chipActive: {
-    backgroundColor: brand.tealPressed,
-    borderColor: brand.tealPressed,
+    backgroundColor: brand.navy,
+    borderColor: brand.navy,
   },
   chipText: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   chipTextActive: { color: '#fff' },
 });

@@ -49,7 +49,7 @@ export default function GlobalSearchScreen() {
                     title={h.title}
                     subtitle={h.subtitle}
                     leading={
-                      <Ionicons name={sec.icon} size={22} color={brand.tealPressed} />
+                      <Ionicons name={sec.icon} size={22} color={brand.navy} />
                     }
                     showChevron={false}
                   />
@@ -87,12 +87,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   empty: {
     marginTop: 16,
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

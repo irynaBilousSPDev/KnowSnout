@@ -26,7 +26,7 @@ export default function SpotlightWinnersScreen() {
               subtitle={w.contestTitle}
               meta={`${w.author} · ${w.votes} ${t('spotlight.votes')}`}
               leading={
-                <Ionicons name="trophy-outline" size={22} color={brand.tealPressed} />
+                <Ionicons name="trophy-outline" size={22} color={brand.navy} />
               }
             />
           ))}
@@ -44,6 +44,6 @@ const styles = StyleSheet.create({
   empty: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

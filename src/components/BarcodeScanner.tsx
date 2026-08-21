@@ -62,7 +62,7 @@ export function BarcodeScanner({
         value={manualCode}
         onChangeText={setManualCode}
         placeholder={Platform.OS === 'web' ? 'e.g. 3017620422003' : '590...'}
-        placeholderTextColor="#7A9A92"
+        placeholderTextColor="#8A9AAB"
         autoCapitalize="none"
         autoCorrect={false}
         keyboardType="number-pad"
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     minHeight: 48,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#3A5A54',
+    borderColor: '#5A6B7D',
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     fontFamily: 'DMSans_400Regular',

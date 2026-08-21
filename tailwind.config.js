@@ -30,6 +30,9 @@ module.exports = {
           forest: '#2F5233',
           rose: '#E8879A',
           ink: '#0C1C33',
+          muted: '#5A6B7D',
+          soft: '#8A9AAB',
+          surface: '#F7F1ED',
           // legacy aliases
           lime: '#2F5233',
           teal: '#2F5233',

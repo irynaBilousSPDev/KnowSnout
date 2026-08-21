@@ -128,7 +128,7 @@ export default function DmThreadScreen() {
                 paddingVertical: 10,
                 alignSelf: item.mine ? 'flex-end' : 'flex-start',
                 backgroundColor: item.mine
-                  ? brand.tealPressed
+                  ? brand.navy
                   : brand.surfaceElevated,
                 borderWidth: item.mine ? 0 : 1,
                 borderColor: brand.mistBorder,
@@ -155,7 +155,7 @@ export default function DmThreadScreen() {
             value={draft}
             onChangeText={setDraft}
             placeholder={t('dm.placeholder')}
-            placeholderTextColor="#7FD9C9"
+            placeholderTextColor="#C8D2C4"
             multiline
             className="min-h-[44px] max-h-28 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-base text-forest-900"
           />

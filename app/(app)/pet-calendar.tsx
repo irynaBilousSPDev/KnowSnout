@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   syncBtn: { marginBottom: 10 },
   form: {
@@ -246,6 +246,6 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 15,
     lineHeight: 22,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

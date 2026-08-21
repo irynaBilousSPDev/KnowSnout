@@ -74,7 +74,7 @@ export default function ForumNotificationsScreen() {
                   <Ionicons
                     name={n.read ? 'mail-open-outline' : 'mail-unread-outline'}
                     size={22}
-                    color={n.read ? '#5A7A72' : brand.rose}
+                    color={n.read ? '#5A6B7D' : brand.rose}
                   />
                 }
                 onPress={() => void open(n)}
@@ -93,6 +93,6 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

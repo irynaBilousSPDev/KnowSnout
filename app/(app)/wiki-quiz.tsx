@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   metaRow: {
     marginTop: 16,
@@ -276,14 +276,14 @@ const styles = StyleSheet.create({
   meta: {
     fontFamily: 'DMSans_700Bold',
     fontSize: 14,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   loading: { alignItems: 'center', paddingVertical: 64 },
   loadingText: {
     marginTop: 12,
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   card: {
     borderRadius: 24,
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   choiceCorrect: {
-    borderColor: brand.tealPressed,
+    borderColor: brand.navy,
     backgroundColor: brand.mist,
   },
   choiceWrong: {
@@ -339,20 +339,20 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   trust: {
     marginTop: 12,
     fontFamily: 'DMSans_400Regular',
     fontSize: 12,
     lineHeight: 18,
-    color: '#7A9A92',
+    color: '#8A9AAB',
   },
   linkWrap: { marginTop: 12 },
   link: {
     fontFamily: 'DMSans_700Bold',
     fontSize: 14,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   nextWrap: { marginTop: 16 },
   sessionTitle: {
@@ -366,14 +366,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'DMSans_400Regular',
     fontSize: 16,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   sessionMeta: {
     marginTop: 8,
     textAlign: 'center',
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#7A9A92',
+    color: '#8A9AAB',
   },
   gap: { marginTop: 24, gap: 12 },
 });

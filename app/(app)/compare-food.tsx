@@ -180,12 +180,12 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   muted: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#7A9A92',
+    color: '#8A9AAB',
   },
   empty: {
     borderRadius: 20,
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 15,
     lineHeight: 22,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   emptyBtn: { marginTop: 14 },
   compareRow: {
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 0.3,
     textTransform: 'uppercase',
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   colCard: {
     borderRadius: 16,
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 12,
     lineHeight: 17,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   pickBox: {
     minHeight: 140,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   pickText: {
     fontFamily: 'DMSans_700Bold',
     fontSize: 14,
-    color: brand.tealPressed,
+    color: brand.navy,
     textAlign: 'center',
   },
   pressed: { opacity: 0.85 },
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     marginTop: 72,
     fontFamily: 'DMSans_700Bold',
     fontSize: 11,
-    color: '#7A9A92',
+    color: '#8A9AAB',
   },
   repick: { marginTop: 8 },
   resultBanner: {
@@ -285,6 +285,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

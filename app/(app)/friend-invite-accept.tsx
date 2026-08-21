@@ -48,7 +48,7 @@ export default function FriendInviteAcceptScreen() {
           autoCapitalize="characters"
           autoCorrect={false}
           placeholder={t('friends.inviteCodePlaceholder')}
-          placeholderTextColor="#7A9A92"
+          placeholderTextColor="#8A9AAB"
           style={styles.input}
           maxLength={16}
         />

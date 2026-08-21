@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
     lineHeight: 18,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   empty: {
     marginTop: 12,
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   cardMeta: {
     marginTop: 6,

@@ -48,7 +48,7 @@ export default function ForumSearchScreen() {
               subtitle={th.preview}
               meta={th.author}
               leading={
-                <Ionicons name="search-outline" size={22} color={brand.tealPressed} />
+                <Ionicons name="search-outline" size={22} color={brand.navy} />
               }
               onPress={() =>
                 router.push({
@@ -84,6 +84,6 @@ const styles = StyleSheet.create({
   empty: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

@@ -29,6 +29,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

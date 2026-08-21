@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: 'DMSans_700Bold',
     fontSize: 12,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   labelActive: {
     color: brand.ink,

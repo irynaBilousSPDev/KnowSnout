@@ -82,6 +82,6 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
     lineHeight: 18,
-    color: '#5A7A72',
+    color: brand.muted,
   },
 });

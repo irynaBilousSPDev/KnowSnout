@@ -115,12 +115,12 @@ const styles = StyleSheet.create({
   kicker: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: '#7A9A92',
+    color: '#8A9AAB',
   },
   skip: {
     fontFamily: 'DMSans_700Bold',
     fontSize: 14,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   pressed: { opacity: 0.75 },
   card: {
@@ -134,17 +134,18 @@ const styles = StyleSheet.create({
     paddingVertical: 28,
   },
   title: {
-    fontFamily: 'Fraunces_700Bold',
+    fontFamily: 'DMSans_700Bold',
     fontSize: 28,
     lineHeight: 34,
     color: brand.ink,
+    letterSpacing: -0.4,
   },
   body: {
     marginTop: 14,
     fontFamily: 'DMSans_400Regular',
     fontSize: 16,
     lineHeight: 24,
-    color: '#3A5A54',
+    color: brand.muted,
   },
   dots: {
     marginTop: 20,
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
   },
   dotActive: {
     width: 22,
-    backgroundColor: brand.tealPressed,
+    backgroundColor: brand.navy,
   },
   actions: { gap: 8 },
   backWrap: { marginTop: 4 },

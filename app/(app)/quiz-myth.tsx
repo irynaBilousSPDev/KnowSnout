@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   claim: {
     marginTop: 10,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   score: {
     marginBottom: 16,

@@ -195,7 +195,7 @@ export default function UserProfileScreen() {
                   <Ionicons
                     name="image-outline"
                     size={22}
-                    color={brand.tealPressed}
+                    color={brand.navy}
                   />
                 }
                 onPress={() =>
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   actions: { marginBottom: 8 },
   gap: { height: 10 },

@@ -49,7 +49,7 @@ export default function AchievementsScreen() {
                 <Ionicons
                   name={b.unlocked ? 'ribbon' : 'lock-closed-outline'}
                   size={22}
-                  color={b.unlocked ? brand.tealPressed : '#8AA8A0'}
+                  color={b.unlocked ? brand.navy : '#8AA8A0'}
                 />
               }
               showChevron={false}
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   xpValue: {
     marginTop: 6,
@@ -91,6 +91,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

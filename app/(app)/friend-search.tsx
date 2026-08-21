@@ -58,7 +58,7 @@ export default function FriendSearchScreen() {
               subtitle={u.bio}
               meta={u.handle}
               leading={
-                <Ionicons name="search-outline" size={22} color={brand.tealPressed} />
+                <Ionicons name="search-outline" size={22} color={brand.navy} />
               }
               trailing={
                 <PrimaryButton
@@ -106,6 +106,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

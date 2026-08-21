@@ -52,7 +52,7 @@ export default function ForumCategoryScreen() {
               subtitle={th.preview}
               meta={`${th.author} · ${t('forum.replies', { count: th.replies })}`}
               leading={
-                <Ionicons name="document-text-outline" size={22} color={brand.tealPressed} />
+                <Ionicons name="document-text-outline" size={22} color={brand.navy} />
               }
               onPress={() =>
                 router.push({
@@ -77,6 +77,6 @@ const styles = StyleSheet.create({
   empty: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

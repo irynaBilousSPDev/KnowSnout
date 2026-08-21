@@ -4,8 +4,8 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import {
   emptyQuizStats,
@@ -109,9 +109,9 @@ export default function QuizHubScreen() {
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.scroll}>
-        <ScreenHeader
+        <HubHero
           title={t('quizHub.title')}
-          subtitle={t('quizHub.subtitle')}
+          lead={t('quizHub.subtitle')}
         />
 
         <View style={styles.dailyCard}>
@@ -180,7 +180,7 @@ export default function QuizHubScreen() {
             >
               <View style={styles.card}>
                 <View style={styles.cardIcon}>
-                  <Ionicons name={cat.icon} size={26} color={brand.tealPressed} />
+                  <Ionicons name={cat.icon} size={26} color={brand.navy} />
                 </View>
                 <View style={styles.cardCopy}>
                   <Text style={styles.cardTitle}>{t(cat.titleKey)}</Text>
@@ -194,7 +194,7 @@ export default function QuizHubScreen() {
                     </Text>
                   ) : null}
                 </View>
-                <Ionicons name="chevron-forward" size={20} color="#7FD9C9" />
+                <Ionicons name="chevron-forward" size={20} color="#C8D2C4" />
               </View>
             </Pressable>
           );
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   dailyTitle: {
     marginTop: 6,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   streakRow: {
     marginTop: 12,
@@ -256,13 +256,13 @@ const styles = StyleSheet.create({
   streakBest: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   doneToday: {
     marginTop: 8,
     fontFamily: 'DMSans_500Medium',
     fontSize: 13,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   ratingCard: {
     marginBottom: 16,
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
   ratingLabel: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   ratingValue: {
     marginTop: 4,
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   ratingBtn: {
     marginTop: 14,
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 15,
     lineHeight: 22,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   card: {
     marginBottom: 12,
@@ -337,19 +337,19 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
     lineHeight: 18,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   cardStats: {
     marginTop: 6,
     fontFamily: 'DMSans_500Medium',
     fontSize: 12,
-    color: brand.tealPressed,
+    color: brand.navy,
   },
   hint: {
     marginTop: 8,
     fontFamily: 'DMSans_400Regular',
     fontSize: 12,
     lineHeight: 18,
-    color: '#7A9A92',
+    color: '#8A9AAB',
   },
 });

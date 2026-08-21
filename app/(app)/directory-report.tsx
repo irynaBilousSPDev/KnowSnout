@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     fontFamily: 'DMSans_500Medium',
     fontSize: 13,
-    color: '#3A5A54',
+    color: '#5A6B7D',
   },
   input: {
     borderWidth: 1,

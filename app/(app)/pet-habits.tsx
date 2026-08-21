@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   form: {
     marginBottom: 20,
@@ -227,8 +227,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   kindChipActive: {
-    backgroundColor: brand.tealPressed,
-    borderColor: brand.tealPressed,
+    backgroundColor: brand.navy,
+    borderColor: brand.navy,
   },
   kindLabel: {
     fontFamily: 'DMSans_700Bold',
@@ -240,6 +240,6 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 15,
     lineHeight: 22,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

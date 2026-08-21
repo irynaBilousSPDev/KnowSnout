@@ -307,7 +307,7 @@ export default function ContestsScreen() {
                       <Ionicons
                         name="share-outline"
                         size={18}
-                        color={brand.tealPressed}
+                        color={brand.navy}
                       />
                       <Text className="font-body-medium text-sm text-forest-700">
                         {t('share.button')}
@@ -394,7 +394,7 @@ export default function ContestsScreen() {
                 <Ionicons
                   name="share-outline"
                   size={20}
-                  color={brand.tealPressed}
+                  color={brand.navy}
                 />
               </Pressable>
               <Pressable
@@ -408,7 +408,7 @@ export default function ContestsScreen() {
                   name={hearted.has(item.id) ? 'heart' : 'heart-outline'}
                   size={22}
                   color={
-                    hearted.has(item.id) ? brand.score.poor : brand.tealPressed
+                    hearted.has(item.id) ? brand.score.poor : brand.navy
                   }
                 />
                 <Text className="mt-0.5 font-body text-[11px] text-forest-600">
@@ -593,7 +593,7 @@ export default function ContestsScreen() {
                     onChangeText={setPetName}
                     placeholder={t('contests.petNamePlaceholder')}
                     className="mt-2 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-base text-forest-900"
-                    placeholderTextColor="#7FD9C9"
+                    placeholderTextColor="#C8D2C4"
                   />
                 </>
               ) : null}
@@ -606,7 +606,7 @@ export default function ContestsScreen() {
                 onChangeText={setCaption}
                 placeholder={t('contests.captionPlaceholder')}
                 className="mt-2 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-base text-forest-900"
-                placeholderTextColor="#7FD9C9"
+                placeholderTextColor="#C8D2C4"
               />
               <View className="mt-5 gap-3">
                 <PrimaryButton

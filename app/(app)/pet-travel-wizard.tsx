@@ -242,13 +242,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   stepMeta: {
     marginBottom: 16,
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
-    color: '#7A9A92',
+    color: '#8A9AAB',
   },
   stepTitle: {
     marginBottom: 14,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   optionActive: {
-    borderColor: brand.tealPressed,
+    borderColor: brand.navy,
     backgroundColor: brand.mist,
   },
   optionLabel: {
@@ -274,12 +274,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: brand.ink,
   },
-  optionLabelActive: { color: brand.tealPressed },
+  optionLabelActive: { color: brand.navy },
   fieldLabel: {
     marginBottom: 8,
     fontFamily: 'DMSans_700Bold',
     fontSize: 13,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   input: {
     borderRadius: 14,
@@ -313,6 +313,6 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
     lineHeight: 19,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
 });

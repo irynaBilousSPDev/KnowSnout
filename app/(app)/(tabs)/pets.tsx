@@ -3,20 +3,21 @@ import { useCallback, useState } from 'react';
 import {
   Alert,
   FlatList,
+  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
-import { IconButton } from '@/src/components/IconButton';
-import { ListRow } from '@/src/components/ListRow';
+import { HubHero } from '@/src/components/HubHero';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { Section } from '@/src/components/Section';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
@@ -100,25 +101,24 @@ export default function PetsScreen() {
   return (
     <AppScreen>
       <View style={styles.header}>
-        <ScreenHeader
+        <HubHero
+          brandMark
           title={t('pets.title')}
-          subtitle={t('pets.subtitle')}
+          lead={t('pets.subtitle')}
+          right={<ProfileEntry />}
         />
-        <View style={styles.cta}>
-          <PrimaryButton
-            label={t('care.hubOpen')}
-            size="lg"
-            variant="secondary"
-            onPress={() => router.push('/(app)/care-hub')}
-          />
-        </View>
-        <View style={styles.cta}>
-          <PrimaryButton
-            label={t('pets.add')}
-            size="lg"
-            onPress={() => router.push('/(app)/pet-form')}
-          />
-        </View>
+        <PrimaryButton
+          label={t('pets.add')}
+          size="lg"
+          onPress={() => router.push('/(app)/pet-form')}
+        />
+        <Pressable
+          onPress={() => router.push('/(app)/care-hub')}
+          style={styles.careLink}
+        >
+          <Text style={styles.careLinkText}>{t('care.hubOpen')}</Text>
+          <Ionicons name="chevron-forward" size={16} color={brand.navy} />
+        </Pressable>
       </View>
 
       {error ? (
@@ -132,7 +132,7 @@ export default function PetsScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor={brand.tealDeep}
+              tintColor={brand.navy}
             />
           }
           ListEmptyComponent={
@@ -141,52 +141,58 @@ export default function PetsScreen() {
             </Section>
           }
           renderItem={({ item }) => (
-            <ListRow
-              title={item.name}
-              subtitle={petMeta(item)}
-              meta={
-                item.favorite_food
-                  ? `${t('pets.favoriteFood')}: ${item.favorite_food}`
-                  : null
-              }
-              leading={
-                <PetAvatar
-                  avatarKey={item.avatar_key}
-                  avatarUri={item.avatar_uri}
-                  species={item.species}
-                  size={56}
-                  name={item.name}
-                />
-              }
-              trailing={
-                <View style={styles.actions}>
-                  <IconButton
-                    name="create-outline"
-                    accessibilityLabel={t('pets.edit')}
-                    onPress={() =>
-                      router.push({
-                        pathname: '/(app)/pet-form',
-                        params: { id: item.id },
-                      })
-                    }
-                  />
-                  <IconButton
-                    name="trash-outline"
-                    color={brand.score.poor}
-                    accessibilityLabel={t('pets.delete')}
-                    disabled={deletingId === item.id}
-                    onPress={() => void onDelete(item)}
-                  />
-                </View>
-              }
-              showChevron={false}
+            <Pressable
               onPress={() =>
                 router.push({
                   pathname: '/(app)/pet-hub',
                   params: { petId: item.id },
                 } as never)
               }
-            />
+              style={({ pressed }) => [styles.petCard, pressed && styles.pressed]}
+            >
+              <PetAvatar
+                avatarKey={item.avatar_key}
+                avatarUri={item.avatar_uri}
+                species={item.species}
+                size={64}
+                name={item.name}
+              />
+              <View style={styles.petCopy}>
+                <Text style={styles.petName}>{item.name}</Text>
+                <Text style={styles.petMeta}>{petMeta(item)}</Text>
+                {item.favorite_food ? (
+                  <Text style={styles.petFav} numberOfLines={1}>
+                    {t('pets.favoriteFood')}: {item.favorite_food}
+                  </Text>
+                ) : null}
+              </View>
+              <View style={styles.petActions}>
+                <Pressable
+                  accessibilityLabel={t('pets.edit')}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/(app)/pet-form',
+                      params: { id: item.id },
+                    })
+                  }
+                  hitSlop={8}
+                >
+                  <Ionicons name="create-outline" size={20} color={brand.navy} />
+                </Pressable>
+                <Pressable
+                  accessibilityLabel={t('pets.delete')}
+                  disabled={deletingId === item.id}
+                  onPress={() => void onDelete(item)}
+                  hitSlop={8}
+                >
+                  <Ionicons
+                    name="trash-outline"
+                    size={20}
+                    color={brand.score.poor}
+                  />
+                </Pressable>
+              </View>
+            </Pressable>
           )}
         />
       )}
@@ -200,21 +206,62 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 8,
   },
-  cta: {
+  careLink: {
     marginTop: 12,
+    marginBottom: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 4,
+  },
+  careLinkText: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 14,
+    color: brand.navy,
   },
   list: {
     paddingHorizontal: 20,
     paddingBottom: 40,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 8,
+    flexGrow: 1,
   },
   emptyBody: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A7A72',
+    color: brand.muted,
+  },
+  petCard: {
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    padding: 14,
+  },
+  pressed: { opacity: 0.9 },
+  petCopy: { flex: 1, marginLeft: 12, minWidth: 0 },
+  petName: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 17,
+    color: brand.ink,
+  },
+  petMeta: {
+    marginTop: 3,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 13,
+    color: brand.muted,
+  },
+  petFav: {
+    marginTop: 4,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 12,
+    color: brand.forest,
+  },
+  petActions: {
+    marginLeft: 8,
+    gap: 12,
+    alignItems: 'center',
   },
 });

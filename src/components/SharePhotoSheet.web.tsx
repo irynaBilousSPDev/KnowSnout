@@ -180,9 +180,9 @@ function ActionRow({
     >
       <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-mist">
         {busy ? (
-          <ActivityIndicator color={brand.tealPressed} />
+          <ActivityIndicator color={brand.navy} />
         ) : (
-          <Ionicons name={icon} size={22} color={brand.tealPressed} />
+          <Ionicons name={icon} size={22} color={brand.navy} />
         )}
       </View>
       <View className="flex-1">

@@ -2,9 +2,10 @@ import { router } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
+import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
+import { brand } from '@/src/theme/brand';
 
 const LINKS: { href: string; titleKey: string; bodyKey: string }[] = [
   {
@@ -46,10 +47,7 @@ export default function AdminDashboardScreen() {
     <AppScreen edges={['bottom']}>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
-            title={t('admin.title')}
-            subtitle={t('admin.subtitle')}
-          />
+          <HubHero title={t('admin.title')} lead={t('admin.subtitle')} />
           <Text style={styles.hint}>{t('admin.softGate')}</Text>
           {LINKS.map((link) => (
             <ListRow
@@ -72,6 +70,6 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
     lineHeight: 18,
-    color: '#5A7A72',
+    color: brand.muted,
   },
 });

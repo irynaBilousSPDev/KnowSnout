@@ -1,7 +1,8 @@
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
+import { brand } from '@/src/theme/brand';
 
 type Props = {
   title?: string;
@@ -15,16 +16,37 @@ export function ErrorState({
   onRetry,
 }: Props) {
   return (
-    <View className="items-center justify-center px-6 py-8">
-      <Text className="font-display text-xl text-forest-900">{title}</Text>
-      <Text className="mt-2 text-center font-body text-base leading-6 text-forest-600">
-        {message}
-      </Text>
+    <View style={styles.wrap}>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.message}>{message}</Text>
       {onRetry ? (
-        <View className="mt-5 w-full max-w-xs">
+        <View style={styles.btn}>
           <PrimaryButton label={t('common.tryAgain')} onPress={onRetry} />
         </View>
       ) : null}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  wrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+  },
+  title: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 20,
+    color: brand.ink,
+  },
+  message: {
+    marginTop: 8,
+    textAlign: 'center',
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 15,
+    lineHeight: 22,
+    color: brand.muted,
+  },
+  btn: { marginTop: 20, width: '100%', maxWidth: 280 },
+});

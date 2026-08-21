@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontFamily: 'DMSans_400Regular',
     fontSize: 12,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   list: { padding: 16, paddingBottom: 24 },
   empty: {
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#5A7A72',
+    color: '#5A6B7D',
   },
   bubble: {
     marginBottom: 8,
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   },
   bubbleMine: {
     alignSelf: 'flex-end',
-    backgroundColor: brand.tealPressed,
+    backgroundColor: brand.navy,
   },
   bubbleTheirs: {
     alignSelf: 'flex-start',

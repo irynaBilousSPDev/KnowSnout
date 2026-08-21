@@ -27,7 +27,7 @@ export default function HelpScreen() {
                 <Ionicons
                   name="help-circle-outline"
                   size={22}
-                  color={brand.tealPressed}
+                  color={brand.navy}
                 />
               }
               onPress={() =>

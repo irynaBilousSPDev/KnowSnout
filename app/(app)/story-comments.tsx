@@ -246,7 +246,7 @@ export default function StoryCommentsScreen() {
             placeholder={t('stories.commentPlaceholder')}
             multiline
             className="min-h-[72px] rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-base text-forest-900"
-            placeholderTextColor="#7FD9C9"
+            placeholderTextColor="#C8D2C4"
           />
           <View className="mt-3">
             <PrimaryButton

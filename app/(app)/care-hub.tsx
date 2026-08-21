@@ -95,7 +95,7 @@ export default function CareHubScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor={brand.tealDeep}
+              tintColor={brand.forest}
             />
           }
           ListHeaderComponent={
@@ -164,7 +164,7 @@ export default function CareHubScreen() {
                     </Text>
                   ) : null}
                 </View>
-                <Ionicons name="chevron-forward" size={18} color="#5A7A72" />
+                <Ionicons name="chevron-forward" size={18} color="#5A6B7D" />
               </Pressable>
             );
           }}

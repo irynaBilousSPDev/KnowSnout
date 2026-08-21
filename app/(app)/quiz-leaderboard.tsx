@@ -29,7 +29,7 @@ export default function QuizLeaderboardScreen() {
                 <Ionicons
                   name={row.rank <= 3 ? 'trophy' : 'medal-outline'}
                   size={22}
-                  color={brand.tealPressed}
+                  color={brand.navy}
                 />
               }
               showChevron={false}

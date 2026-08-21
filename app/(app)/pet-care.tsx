@@ -327,7 +327,7 @@ export default function PetCareScreen() {
               onChangeText={setWaterNote}
               placeholder={t('care.waterNotePlaceholder')}
               className="mb-3 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-sm text-forest-900"
-              placeholderTextColor="#7FD9C9"
+              placeholderTextColor="#C8D2C4"
             />
           ) : null}
 
@@ -345,7 +345,7 @@ export default function PetCareScreen() {
               onChangeText={setPlayNote}
               placeholder={t('care.playNotePlaceholder')}
               className="mb-3 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-sm text-forest-900"
-              placeholderTextColor="#7FD9C9"
+              placeholderTextColor="#C8D2C4"
             />
           ) : null}
 
@@ -365,7 +365,7 @@ export default function PetCareScreen() {
               onChangeText={setFeedNote}
               placeholder={t('care.feedNotePlaceholder')}
               className="mb-3 rounded-2xl border border-forest-200 bg-white px-4 py-3 font-body text-sm text-forest-900"
-              placeholderTextColor="#7FD9C9"
+              placeholderTextColor="#C8D2C4"
             />
           ) : null}
           {pet.favorite_food ? (
