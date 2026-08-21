@@ -6,37 +6,33 @@ import {
   Image,
   Pressable,
   RefreshControl,
+  ScrollView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
-import { IconButton } from '@/src/components/IconButton';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
-import { SegmentedControl } from '@/src/components/SegmentedControl';
+import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { Section } from '@/src/components/Section';
-import {
-  getScoreTone,
-  SCORE_COLORS,
-} from '@/src/constants/analysis';
+import { getScoreTone, SCORE_COLORS } from '@/src/constants/analysis';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
 import { isNativeSafeImageUri } from '@/src/lib/image';
 import { setPendingAnalysis } from '@/src/lib/resultStore';
 import {
-  listBreedHistory,
   deleteBreedHistoryItem,
+  listBreedHistory,
   type BreedHistoryItem,
 } from '@/src/services/breedId';
 import { resolveCheckImageUrl } from '@/src/services/checkImages';
 import { listPets } from '@/src/services/pets';
 import {
-  listPlantHistory,
   deletePlantHistoryItem,
-  plantLevelTone,
+  listPlantHistory,
   type PlantHistoryItem,
 } from '@/src/services/plants';
 import { deleteScan, listScans } from '@/src/services/scans';
@@ -45,35 +41,22 @@ import type { PetRow } from '@/src/types/pet';
 import type { PetSpecies, ScanRow } from '@/src/types/scan';
 import type { PlantToxicityLevel } from '@/src/types/plant';
 
-type JournalKind = 'food' | 'plant' | 'breed';
-type FoodFilter = 'all' | PetSpecies;
+type Mode = 'new' | 'history';
+type KindFilter = 'all' | 'food' | 'plant' | 'breed';
+type SpeciesFilter = 'all' | 'dog' | 'cat' | 'bird';
 
-async function withResolvedPhotoUri<T extends { photo_uri?: string | null }>(
-  item: T,
-): Promise<T> {
-  if (!item.photo_uri) return item;
-  const url = await resolveCheckImageUrl(item.photo_uri);
-  return { ...item, photo_uri: url ?? item.photo_uri };
-}
+type HistoryRow =
+  | { type: 'food'; item: ScanRow }
+  | { type: 'plant'; item: PlantHistoryItem }
+  | { type: 'breed'; item: BreedHistoryItem };
 
-async function withResolvedBreedPhoto(
-  item: BreedHistoryItem,
-): Promise<BreedHistoryItem> {
-  if (!item.photoUri) return item;
-  const url = await resolveCheckImageUrl(item.photoUri);
-  return { ...item, photoUri: url ?? item.photoUri };
-}
-
-async function withResolvedScanImage(item: ScanRow): Promise<ScanRow> {
-  if (!item.image_path) return item;
-  const url = await resolveCheckImageUrl(item.image_path);
-  return { ...item, image_path: url ?? item.image_path };
-}
-
-function speciesLabel(species?: PetSpecies | null) {
-  if (species === 'dog') return t('history.speciesDog');
-  if (species === 'cat') return t('history.speciesCat');
-  return null;
+function timeAgo(iso: string): string {
+  const ms = Date.now() - new Date(iso).getTime();
+  const days = Math.max(0, Math.floor(ms / (24 * 60 * 60 * 1000)));
+  if (days <= 1) return t('check.agoDays', { count: Math.max(1, days || 1) });
+  if (days < 7) return t('check.agoDays', { count: days });
+  if (days < 14) return t('check.agoWeek');
+  return t('check.agoWeeks', { count: Math.round(days / 7) });
 }
 
 function plantLevelLabel(level: string) {
@@ -89,51 +72,44 @@ function plantLevelLabel(level: string) {
   }
 }
 
-function JournalThumb({
-  uri,
-  large,
-}: {
-  uri?: string | null;
-  large?: boolean;
-}) {
-  if (!uri || !isNativeSafeImageUri(uri)) return null;
+function Thumb({ uri }: { uri?: string | null }) {
+  if (uri && isNativeSafeImageUri(uri)) {
+    return (
+      <Image source={{ uri }} style={styles.thumbImage} resizeMode="cover" />
+    );
+  }
   return (
-    <Image
-      source={{ uri }}
-      className={
-        large
-          ? 'mb-3 h-40 w-full rounded-2xl bg-forest-100'
-          : 'mr-3 h-16 w-16 rounded-xl bg-forest-100'
-      }
-      resizeMode="cover"
-      accessibilityIgnoresInvertColors
-    />
+    <View style={styles.thumbDash}>
+      <Text style={styles.thumbDashIcon}>▢</Text>
+    </View>
   );
 }
 
-function petsForScan(scan: ScanRow, pets: PetRow[]) {
-  return pets.filter((pet) => {
-    if (!pet.favorite_food && !pet.favorite_product_id) return false;
-    if (
-      pet.favorite_product_id &&
-      scan.product_id &&
-      pet.favorite_product_id === scan.product_id
-    ) {
-      return true;
-    }
-    return (
-      Boolean(pet.favorite_food) &&
-      pet.favorite_food!.toLowerCase() === scan.product_name.toLowerCase()
-    );
-  });
-}
-
-async function listPlantChecks(): Promise<PlantHistoryItem[]> {
-  return listPlantHistory();
+function Chip({
+  label,
+  active,
+  onPress,
+}: {
+  label: string;
+  active: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={[styles.chip, active && styles.chipActive]}
+    >
+      <Text style={[styles.chipText, active && styles.chipTextActive]}>
+        {label}
+      </Text>
+    </Pressable>
+  );
 }
 
 export default function JournalScreen() {
-  const [kind, setKind] = useState<JournalKind>('food');
+  const [mode, setMode] = useState<Mode>('history');
+  const [kind, setKind] = useState<KindFilter>('all');
+  const [species, setSpecies] = useState<SpeciesFilter>('dog');
   const [scans, setScans] = useState<ScanRow[]>([]);
   const [plants, setPlants] = useState<PlantHistoryItem[]>([]);
   const [breeds, setBreeds] = useState<BreedHistoryItem[]>([]);
@@ -141,7 +117,6 @@ export default function JournalScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [foodFilter, setFoodFilter] = useState<FoodFilter>('all');
 
   const load = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -151,13 +126,31 @@ export default function JournalScreen() {
       const [scanData, petData, plantData, breedData] = await Promise.all([
         listScans(),
         listPets(),
-        listPlantChecks(),
+        listPlantHistory(),
         listBreedHistory(),
       ]);
       const [scansResolved, plantsResolved, breedsResolved] = await Promise.all([
-        Promise.all(scanData.map(withResolvedScanImage)),
-        Promise.all(plantData.map(withResolvedPhotoUri)),
-        Promise.all(breedData.map(withResolvedBreedPhoto)),
+        Promise.all(
+          scanData.map(async (s) => {
+            if (!s.image_path) return s;
+            const url = await resolveCheckImageUrl(s.image_path);
+            return { ...s, image_path: url ?? s.image_path };
+          }),
+        ),
+        Promise.all(
+          plantData.map(async (p) => {
+            if (!p.photo_uri) return p;
+            const url = await resolveCheckImageUrl(p.photo_uri);
+            return { ...p, photo_uri: url ?? p.photo_uri };
+          }),
+        ),
+        Promise.all(
+          breedData.map(async (b) => {
+            if (!b.photoUri) return b;
+            const url = await resolveCheckImageUrl(b.photoUri);
+            return { ...b, photoUri: url ?? b.photoUri };
+          }),
+        ),
       ]);
       setScans(scansResolved);
       setPets(petData);
@@ -177,23 +170,76 @@ export default function JournalScreen() {
     }, [load]),
   );
 
-  const filteredFood = useMemo(() => {
-    if (foodFilter === 'all') return scans;
-    return scans.filter((s) => (s.species ?? 'unknown') === foodFilter);
-  }, [scans, foodFilter]);
+  const rows = useMemo(() => {
+    const out: HistoryRow[] = [];
+    if (kind === 'all' || kind === 'food') {
+      for (const item of scans) {
+        if (species === 'all') out.push({ type: 'food', item });
+        else if (species === 'bird') continue;
+        else if ((item.species ?? 'unknown') === species || !item.species) {
+          out.push({ type: 'food', item });
+        }
+      }
+    }
+    if (kind === 'all' || kind === 'plant') {
+      for (const item of plants) {
+        if (species === 'all' || species === 'bird') {
+          out.push({ type: 'plant', item });
+        } else if (item.for_species === species) {
+          out.push({ type: 'plant', item });
+        }
+      }
+    }
+    if (kind === 'all' || kind === 'breed') {
+      for (const item of breeds) {
+        if (species === 'all') out.push({ type: 'breed', item });
+        else if (species === 'bird') continue;
+        else if (item.species === species) out.push({ type: 'breed', item });
+      }
+    }
+    return out.sort((a, b) => {
+      const da =
+        a.type === 'food'
+          ? a.item.created_at
+          : a.type === 'plant'
+            ? a.item.created_at
+            : a.item.createdAt;
+      const db =
+        b.type === 'food'
+          ? b.item.created_at
+          : b.type === 'plant'
+            ? b.item.created_at
+            : b.item.createdAt;
+      return db.localeCompare(da);
+    });
+  }, [scans, plants, breeds, kind, species]);
 
-  const onDeleteFood = async (scan: ScanRow) => {
+  const onDelete = async (row: HistoryRow) => {
+    const name =
+      row.type === 'food'
+        ? row.item.product_name
+        : row.type === 'plant'
+          ? (row.item.name_uk ?? row.item.query_text ?? t('plants.title'))
+          : (row.item.breedNameUk ?? row.item.breedName);
     const ok = await confirmAction({
       title: t('history.deleteTitle'),
-      message: t('history.deleteMessage', { name: scan.product_name }),
+      message: t('history.deleteMessage', { name }),
       confirmLabel: t('history.delete'),
       cancelLabel: t('common.cancel'),
       destructive: true,
     });
     if (!ok) return;
     try {
-      await deleteScan(scan.id);
-      setScans((prev) => prev.filter((s) => s.id !== scan.id));
+      if (row.type === 'food') {
+        await deleteScan(row.item.id);
+        setScans((prev) => prev.filter((s) => s.id !== row.item.id));
+      } else if (row.type === 'plant') {
+        await deletePlantHistoryItem(row.item.id);
+        setPlants((prev) => prev.filter((p) => p.id !== row.item.id));
+      } else {
+        await deleteBreedHistoryItem(row.item.id);
+        setBreeds((prev) => prev.filter((b) => b.id !== row.item.id));
+      }
     } catch (err) {
       Alert.alert(
         t('history.deleteFailed'),
@@ -202,98 +248,107 @@ export default function JournalScreen() {
     }
   };
 
-  const onDeletePlant = async (item: PlantHistoryItem) => {
-    const name = item.name_uk ?? item.query_text ?? t('plants.title');
-    const ok = await confirmAction({
-      title: t('history.deleteTitle'),
-      message: t('history.deleteMessage', { name }),
-      confirmLabel: t('history.delete'),
-      cancelLabel: t('common.cancel'),
-      destructive: true,
-    });
-    if (!ok) return;
-    await deletePlantHistoryItem(item.id);
-    setPlants((prev) => prev.filter((p) => p.id !== item.id));
-  };
-
-  const onDeleteBreed = async (item: BreedHistoryItem) => {
-    const name = item.breedNameUk ?? item.breedName;
-    const ok = await confirmAction({
-      title: t('history.deleteTitle'),
-      message: t('history.deleteMessage', { name }),
-      confirmLabel: t('history.delete'),
-      cancelLabel: t('common.cancel'),
-      destructive: true,
-    });
-    if (!ok) return;
-    await deleteBreedHistoryItem(item.id);
-    setBreeds((prev) => prev.filter((b) => b.id !== item.id));
-  };
-
-  if (loading) {
-    return <LoadingState message={t('history.loading')} />;
-  }
-
-  const kindOptions: { id: JournalKind; label: string }[] = [
-    { id: 'food', label: t('journal.kindFood') },
-    { id: 'plant', label: t('journal.kindPlant') },
-    { id: 'breed', label: t('journal.kindBreed') },
-  ];
-
-  const foodFilters: { id: FoodFilter; label: string }[] = [
-    { id: 'all', label: t('history.filterAll') },
-    { id: 'dog', label: t('history.filterDog') },
-    { id: 'cat', label: t('history.filterCat') },
-    { id: 'unknown', label: t('history.filterOther') },
-  ];
+  if (loading) return <LoadingState message={t('history.loading')} />;
 
   return (
     <AppScreen>
-      <View className="px-5 pb-2 pt-4">
-        <ScreenHeader
-          title={t('history.title')}
-          subtitle={t('history.subtitle')}
-        />
-
-        <View style={{ marginTop: 16 }}>
-          <SegmentedControl
-            value={kind}
-            onChange={setKind}
-            options={kindOptions}
-          />
+      <View style={styles.header}>
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>{t('tabs.scan')}</Text>
+          <ProfileEntry />
         </View>
 
-        {kind === 'food' ? (
-          <View style={{ marginTop: 10 }}>
-            <SegmentedControl
-              value={foodFilter}
-              onChange={setFoodFilter}
-              options={foodFilters}
+        <View style={styles.segment}>
+          <Pressable
+            onPress={() => {
+              setMode('new');
+              router.replace('/(app)/(tabs)');
+            }}
+            style={[styles.segBtn, mode === 'new' && styles.segBtnActive]}
+          >
+            <Text
+              style={[styles.segText, mode === 'new' && styles.segTextActive]}
+            >
+              {t('check.tabNew')}
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setMode('history')}
+            style={[styles.segBtn, mode === 'history' && styles.segBtnActive]}
+          >
+            <Text
+              style={[
+                styles.segText,
+                mode === 'history' && styles.segTextActive,
+              ]}
+            >
+              {t('check.tabHistory')}
+            </Text>
+          </Pressable>
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipRow}
+        >
+          {(
+            [
+              ['dog', t('history.filterDog')],
+              ['cat', t('history.filterCat')],
+              ['bird', t('check.filterBird')],
+              ['all', t('check.filterAllSpecies')],
+            ] as const
+          ).map(([id, label]) => (
+            <Chip
+              key={id}
+              label={label}
+              active={species === id}
+              onPress={() => setSpecies(id)}
             />
-          </View>
-        ) : null}
+          ))}
+        </ScrollView>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipRow}
+        >
+          {(
+            [
+              ['food', t('journal.kindFood')],
+              ['plant', t('journal.kindPlant')],
+              ['breed', t('journal.kindBreed')],
+              ['all', t('history.filterAll')],
+            ] as const
+          ).map(([id, label]) => (
+            <Chip
+              key={id}
+              label={label}
+              active={kind === id}
+              onPress={() => setKind(id)}
+            />
+          ))}
+        </ScrollView>
       </View>
 
       {error ? (
         <ErrorState message={error} onRetry={() => void load()} />
-      ) : kind === 'food' ? (
+      ) : (
         <FlatList
-          data={filteredFood}
-          keyExtractor={(item) => item.id}
-          contentContainerClassName="px-5 pb-10"
+          data={rows}
+          keyExtractor={(row) => `${row.type}-${row.item.id}`}
+          contentContainerStyle={styles.list}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor="#00A894"
+              tintColor={brand.forest}
             />
           }
           ListEmptyComponent={
             <Section tone="mist" title={t('history.emptyTitle')}>
-              <Text className="font-body text-sm leading-5 text-forest-600">
-                {t('history.emptyBody')}
-              </Text>
-              <View className="mt-3">
+              <Text style={styles.emptyBody}>{t('history.emptyBody')}</Text>
+              <View style={{ marginTop: 12 }}>
                 <PrimaryButton
                   label={t('journal.goFood')}
                   variant="secondary"
@@ -302,13 +357,20 @@ export default function JournalScreen() {
               </View>
             </Section>
           }
-          renderItem={({ item }) => {
-            const tone = getScoreTone(item.score);
-            const color = SCORE_COLORS[tone];
-            const label = speciesLabel(item.species);
-            const fans = petsForScan(item, pets);
-            return (
-              <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
+          ListFooterComponent={
+            rows.length > 0 ? (
+              <Text style={styles.swipeHint}>{t('check.swipeDelete')}</Text>
+            ) : null
+          }
+          renderItem={({ item: row }) => {
+            if (row.type === 'food') {
+              const item = row.item;
+              const tone = getScoreTone(item.score);
+              const color = SCORE_COLORS[tone];
+              const petName =
+                pets.find((p) => p.favorite_product_id === item.product_id)
+                  ?.name ?? pets[0]?.name;
+              return (
                 <Pressable
                   onPress={() => {
                     setPendingAnalysis({
@@ -328,80 +390,38 @@ export default function JournalScreen() {
                     });
                     router.push('/(app)/result');
                   }}
-                  className="flex-row items-center justify-between active:opacity-80"
+                  onLongPress={() => void onDelete(row)}
+                  style={({ pressed }) => [
+                    styles.card,
+                    pressed && styles.pressed,
+                  ]}
                 >
-                  <JournalThumb uri={item.image_path} />
-                  <View className="flex-1 pr-3">
-                    <Text className="font-body-bold text-base text-forest-900">
+                  <Thumb uri={item.image_path} />
+                  <View style={styles.cardCopy}>
+                    <Text style={styles.cardTitle} numberOfLines={1}>
                       {item.product_name}
                     </Text>
-                    <Text className="mt-1 font-body text-xs text-forest-500">
-                      {label ? `${label} · ` : ''}
-                      {new Date(item.created_at).toLocaleString('uk-UA')}
+                    <Text style={styles.cardMeta}>
+                      {petName
+                        ? t('check.foodForPet', { name: petName })
+                        : t('journal.kindFood')}
+                      {' · '}
+                      {timeAgo(item.created_at)}
                     </Text>
-                    {fans.length > 0 ? (
-                      <Text className="mt-2 font-body-medium text-xs text-forest-700">
-                        {t('history.favoriteFor', {
-                          names: fans.map((p) => p.name).join(', '),
-                        })}
-                      </Text>
-                    ) : null}
                   </View>
                   <View
-                    className="h-12 w-12 items-center justify-center rounded-full"
-                    style={{ backgroundColor: `${color}22` }}
+                    style={[styles.badge, { backgroundColor: `${color}22` }]}
                   >
-                    <Text className="font-body-bold text-base" style={{ color }}>
-                      {item.score}
+                    <Text style={[styles.badgeText, { color }]}>
+                      {(item.score / 20).toFixed(1)}
                     </Text>
                   </View>
                 </Pressable>
-                <View className="mt-2 flex-row justify-end">
-                  <IconButton
-                    name="trash-outline"
-                    color={brand.score.poor}
-                    accessibilityLabel={t('history.delete')}
-                    onPress={() => void onDeleteFood(item)}
-                  />
-                </View>
-              </View>
-            );
-          }}
-        />
-      ) : kind === 'plant' ? (
-        <FlatList
-          data={plants}
-          keyExtractor={(item) => item.id}
-          contentContainerClassName="px-5 pb-10"
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => void load(true)}
-              tintColor="#00A894"
-            />
-          }
-          ListEmptyComponent={
-            <Section tone="mist" title={t('journal.plantsEmptyTitle')}>
-              <Text className="font-body text-sm leading-5 text-forest-600">
-                {t('journal.plantsEmptyBody')}
-              </Text>
-              <View className="mt-3">
-                <PrimaryButton
-                  label={t('journal.goPlant')}
-                  variant="secondary"
-                  onPress={() => router.push('/(app)/plant-safety')}
-                />
-              </View>
-            </Section>
-          }
-          renderItem={({ item }) => {
-            const tone = plantLevelTone(
-              (['safe', 'mild', 'toxic', 'unknown'].includes(item.level)
-                ? item.level
-                : 'unknown') as PlantToxicityLevel,
-            );
-            return (
-              <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
+              );
+            }
+            if (row.type === 'plant') {
+              const item = row.item;
+              return (
                 <Pressable
                   onPress={() =>
                     router.push({
@@ -409,72 +429,52 @@ export default function JournalScreen() {
                       params: { id: item.id },
                     })
                   }
-                  className="flex-row items-center active:opacity-80"
+                  onLongPress={() => void onDelete(row)}
+                  style={({ pressed }) => [
+                    styles.card,
+                    pressed && styles.pressed,
+                  ]}
                 >
-                  <JournalThumb uri={item.photo_uri} />
-                  <View className="flex-1 pr-2">
-                    <Text className="font-body-bold text-base text-forest-900">
+                  <Thumb uri={item.photo_uri} />
+                  <View style={styles.cardCopy}>
+                    <Text style={styles.cardTitle} numberOfLines={1}>
                       {item.name_uk ?? item.query_text ?? t('plants.title')}
                     </Text>
-                    <Text className="mt-1 font-body text-xs text-forest-500">
-                      {item.for_species === 'cat'
-                        ? t('plants.speciesCat')
-                        : t('plants.speciesDog')}
-                      {' · '}
-                      {new Date(item.created_at).toLocaleString('uk-UA')}
+                    <Text style={styles.cardMeta}>
+                      {t('check.kindPlant')} · {timeAgo(item.created_at)}
                     </Text>
                   </View>
                   <View
-                    className={`max-w-[42%] rounded-full border px-2.5 py-1 ${tone.bg} ${tone.border}`}
+                    style={[
+                      styles.badgeWide,
+                      {
+                        backgroundColor:
+                          item.level === 'safe'
+                            ? brand.forestTint
+                            : brand.roseTint,
+                      },
+                    ]}
                   >
                     <Text
-                      className={`text-center font-body-bold text-[11px] ${tone.text}`}
-                      numberOfLines={2}
+                      style={[
+                        styles.badgeText,
+                        {
+                          color:
+                            item.level === 'safe'
+                              ? brand.forest
+                              : brand.score.poor,
+                        },
+                      ]}
+                      numberOfLines={1}
                     >
                       {plantLevelLabel(item.level)}
                     </Text>
                   </View>
                 </Pressable>
-                <View className="mt-2 flex-row justify-end">
-                  <IconButton
-                    name="trash-outline"
-                    color={brand.score.poor}
-                    accessibilityLabel={t('history.delete')}
-                    onPress={() => void onDeletePlant(item)}
-                  />
-                </View>
-              </View>
-            );
-          }}
-        />
-      ) : (
-        <FlatList
-          data={breeds}
-          keyExtractor={(item) => item.id}
-          contentContainerClassName="px-5 pb-10"
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => void load(true)}
-              tintColor="#00A894"
-            />
-          }
-          ListEmptyComponent={
-            <Section tone="mist" title={t('journal.breedsEmptyTitle')}>
-              <Text className="font-body text-sm leading-5 text-forest-600">
-                {t('journal.breedsEmptyBody')}
-              </Text>
-              <View className="mt-3">
-                <PrimaryButton
-                  label={t('journal.goBreed')}
-                  variant="secondary"
-                  onPress={() => router.push('/(app)/breed-scan')}
-                />
-              </View>
-            </Section>
-          }
-          renderItem={({ item }) => (
-            <View className="mb-3 rounded-2xl border border-forest-100 bg-white px-4 py-4">
+              );
+            }
+            const item = row.item;
+            return (
               <Pressable
                 onPress={() =>
                   router.push({
@@ -482,39 +482,173 @@ export default function JournalScreen() {
                     params: { id: item.id },
                   })
                 }
-                className="flex-row items-center active:opacity-80"
+                onLongPress={() => void onDelete(row)}
+                style={({ pressed }) => [
+                  styles.card,
+                  pressed && styles.pressed,
+                ]}
               >
-                <JournalThumb uri={item.photoUri} />
-                <View className="flex-1 pr-2">
-                  <Text className="font-body-bold text-base text-forest-900">
+                <Thumb uri={item.photoUri} />
+                <View style={styles.cardCopy}>
+                  <Text style={styles.cardTitle} numberOfLines={1}>
                     {item.breedNameUk ?? item.breedName}
                   </Text>
-                  <Text className="mt-1 font-body text-xs text-forest-500">
-                    {item.species === 'cat'
-                      ? t('breed.speciesCat')
-                      : t('breed.speciesDog')}
-                    {' · '}
-                    {new Date(item.createdAt).toLocaleString('uk-UA')}
+                  <Text style={styles.cardMeta}>
+                    {t('check.kindBreed')} · {timeAgo(item.createdAt)}
                   </Text>
                 </View>
-                <View className="rounded-full border border-forest-200 bg-forest-100 px-2.5 py-1">
-                  <Text className="font-body-bold text-[11px] text-forest-800">
-                    ~{Math.round(item.confidence * 100)}%
+                <View style={styles.badgeMuted}>
+                  <Text style={styles.badgeMutedText}>
+                    {Math.round(item.confidence * 100)}%
                   </Text>
                 </View>
               </Pressable>
-              <View className="mt-2 flex-row justify-end">
-                <IconButton
-                  name="trash-outline"
-                  color={brand.score.poor}
-                  accessibilityLabel={t('history.delete')}
-                  onPress={() => void onDeleteBreed(item)}
-                />
-              </View>
-            </View>
-          )}
+            );
+          }}
         />
       )}
     </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  title: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 32,
+    color: brand.ink,
+    letterSpacing: -0.5,
+  },
+  segment: {
+    flexDirection: 'row',
+    borderRadius: 999,
+    backgroundColor: brand.mist,
+    padding: 4,
+    marginBottom: 12,
+  },
+  segBtn: {
+    flex: 1,
+    borderRadius: 999,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  segBtnActive: {
+    backgroundColor: brand.surfaceElevated,
+  },
+  segText: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 13,
+    color: brand.muted,
+  },
+  segTextActive: {
+    fontFamily: 'DMSans_700Bold',
+    color: brand.ink,
+  },
+  chipRow: { flexDirection: 'row', gap: 8, paddingBottom: 8 },
+  chip: {
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  chipActive: {
+    backgroundColor: brand.forest,
+    borderColor: brand.forest,
+  },
+  chipText: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 13,
+    color: brand.muted,
+  },
+  chipTextActive: { color: '#FFFFFF' },
+  list: { paddingHorizontal: 20, paddingBottom: 40, flexGrow: 1 },
+  card: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    padding: 12,
+  },
+  pressed: { opacity: 0.9 },
+  thumbDash: {
+    height: 56,
+    width: 56,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  thumbDashIcon: { color: brand.mutedSoft, fontSize: 18 },
+  thumbImage: {
+    height: 56,
+    width: 56,
+    borderRadius: 12,
+    marginRight: 12,
+    backgroundColor: brand.mist,
+  },
+  cardCopy: { flex: 1, paddingRight: 8 },
+  cardTitle: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 15,
+    color: brand.ink,
+  },
+  cardMeta: {
+    marginTop: 4,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 12,
+    color: brand.muted,
+  },
+  badge: {
+    minWidth: 44,
+    height: 36,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
+  badgeWide: {
+    maxWidth: 96,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  badgeMuted: {
+    borderRadius: 12,
+    backgroundColor: brand.mist,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  badgeText: { fontFamily: 'DMSans_700Bold', fontSize: 14 },
+  badgeMutedText: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 13,
+    color: brand.muted,
+  },
+  emptyBody: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 14,
+    lineHeight: 20,
+    color: brand.muted,
+  },
+  swipeHint: {
+    marginTop: 8,
+    textAlign: 'center',
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+});

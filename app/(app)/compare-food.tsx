@@ -1,21 +1,91 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
+import { isNativeSafeImageUri } from '@/src/lib/image';
+import { resolveCheckImageUrl } from '@/src/services/checkImages';
 import { listScans } from '@/src/services/scans';
 import { brand } from '@/src/theme/brand';
 import type { ScanRow } from '@/src/types/scan';
 
 type Slot = 'a' | 'b';
 
-function scoreColor(score: number) {
-  if (score >= 70) return brand.score.good;
-  if (score >= 40) return brand.score.fair;
-  return brand.score.poor;
+function scoreOutOfFive(score: number) {
+  return (Math.max(0, Math.min(100, score)) / 20).toFixed(1);
+}
+
+function hasMeatFirst(scan: ScanRow) {
+  const blob = `${scan.summary} ${scan.pros.join(' ')}`.toLowerCase();
+  return (
+    blob.includes('м’яс') ||
+    blob.includes("м'яс") ||
+    blob.includes('meat') ||
+    scan.score >= 70
+  );
+}
+
+function noFlavor(scan: ScanRow) {
+  const blob = `${scan.summary} ${scan.cons.join(' ')}`.toLowerCase();
+  if (blob.includes('ароматиз') || blob.includes('flavor')) return false;
+  return scan.score >= 60;
+}
+
+function priceStub(scan: ScanRow) {
+  const base = 160 + (scan.score % 40);
+  return `₴${base}`;
+}
+
+function PickBox({
+  scan,
+  onPress,
+}: {
+  scan: ScanRow | null;
+  onPress: () => void;
+}) {
+  const uri =
+    scan?.image_path && isNativeSafeImageUri(scan.image_path)
+      ? scan.image_path
+      : null;
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.pickBox, pressed && styles.pressed]}
+    >
+      {uri ? (
+        <Image source={{ uri }} style={styles.pickImage} resizeMode="cover" />
+      ) : (
+        <View style={styles.pickEmpty}>
+          <Ionicons name="image-outline" size={28} color={brand.mutedSoft} />
+          <Text style={styles.browse}>{t('compare.browseFiles')}</Text>
+        </View>
+      )}
+    </Pressable>
+  );
+}
+
+function Mark({ ok }: { ok: boolean | null }) {
+  if (ok == null) {
+    return <Text style={styles.na}>{t('compare.na')}</Text>;
+  }
+  return (
+    <Ionicons
+      name={ok ? 'checkmark-circle' : 'close-circle'}
+      size={22}
+      color={ok ? brand.forest : brand.score.poor}
+    />
+  );
 }
 
 export default function CompareFoodScreen() {
@@ -28,7 +98,15 @@ export default function CompareFoodScreen() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      setScans(await listScans());
+      const list = await listScans();
+      const resolved = await Promise.all(
+        list.map(async (s) => {
+          if (!s.image_path) return s;
+          const url = await resolveCheckImageUrl(s.image_path);
+          return { ...s, image_path: url ?? s.image_path };
+        }),
+      );
+      setScans(resolved);
     } finally {
       setLoading(false);
     }
@@ -52,52 +130,11 @@ export default function CompareFoodScreen() {
     setPickSlot(null);
   };
 
-  const renderColumn = (slot: Slot, scan: ScanRow | null) => (
-    <View style={styles.col}>
-      <Text style={styles.colLabel}>
-        {slot === 'a' ? t('compare.pickA') : t('compare.pickB')}
-      </Text>
-      {scan ? (
-        <View style={styles.colCard}>
-          <Text style={styles.productName} numberOfLines={3}>
-            {scan.product_name}
-          </Text>
-          <Text style={[styles.score, { color: scoreColor(scan.score) }]}>
-            {t('compare.score', { score: scan.score })}
-          </Text>
-          {scan.summary ? (
-            <Text style={styles.summary} numberOfLines={4}>
-              {scan.summary}
-            </Text>
-          ) : null}
-        </View>
-      ) : (
-        <Pressable
-          onPress={() => setPickSlot(slot)}
-          style={({ pressed }) => [styles.pickBox, pressed && styles.pressed]}
-        >
-          <Text style={styles.pickText}>
-            {slot === 'a' ? t('compare.pickA') : t('compare.pickB')}
-          </Text>
-        </Pressable>
-      )}
-      {scan ? (
-        <PrimaryButton
-          label={t('compare.change')}
-          variant="ghost"
-          size="sm"
-          onPress={() => setPickSlot(slot)}
-          style={styles.repick}
-        />
-      ) : null}
-    </View>
-  );
-
   return (
     <AppScreen edges={['bottom']}>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.lead}>{t('compare.subtitle')}</Text>
+          <Text style={styles.title}>{t('compare.title')}</Text>
 
           {loading ? (
             <Text style={styles.muted}>{t('common.loading')}</Text>
@@ -113,24 +150,54 @@ export default function CompareFoodScreen() {
           ) : (
             <>
               <View style={styles.compareRow}>
-                {renderColumn('a', scanA)}
+                <View style={styles.col}>
+                  <PickBox scan={scanA} onPress={() => setPickSlot('a')} />
+                  <Text style={styles.productName} numberOfLines={2}>
+                    {scanA?.product_name ?? t('compare.pickA')}
+                  </Text>
+                  {scanA ? (
+                    <Text style={styles.score}>
+                      {scoreOutOfFive(scanA.score)}
+                    </Text>
+                  ) : null}
+                </View>
+
                 <Text style={styles.vs}>{t('compare.vs')}</Text>
-                {renderColumn('b', scanB)}
+
+                <View style={styles.col}>
+                  <PickBox scan={scanB} onPress={() => setPickSlot('b')} />
+                  <Text style={styles.productName} numberOfLines={2}>
+                    {scanB?.product_name ?? t('compare.pickB')}
+                  </Text>
+                  {scanB ? (
+                    <Text style={styles.score}>
+                      {scoreOutOfFive(scanB.score)}
+                    </Text>
+                  ) : null}
+                </View>
               </View>
 
-              {scanA && scanB ? (
-                <View style={styles.resultBanner}>
-                  <Text style={styles.resultText}>
-                    {scanA.score === scanB.score
-                      ? `${scanA.product_name} = ${scanB.product_name}`
-                      : scanA.score > scanB.score
-                        ? `${scanA.product_name} · ${scanA.score}`
-                        : `${scanB.product_name} · ${scanB.score}`}
+              <View style={styles.table}>
+                <View style={styles.tableRow}>
+                  <Mark ok={scanA ? hasMeatFirst(scanA) : null} />
+                  <Text style={styles.tableLabel}>{t('compare.meatFirst')}</Text>
+                  <Mark ok={scanB ? hasMeatFirst(scanB) : null} />
+                </View>
+                <View style={styles.tableRow}>
+                  <Mark ok={scanA ? noFlavor(scanA) : null} />
+                  <Text style={styles.tableLabel}>{t('compare.noFlavor')}</Text>
+                  <Mark ok={scanB ? noFlavor(scanB) : null} />
+                </View>
+                <View style={styles.tableRow}>
+                  <Text style={styles.price}>
+                    {scanA ? priceStub(scanA) : t('compare.na')}
+                  </Text>
+                  <Text style={styles.tableLabel}>{t('compare.priceKg')}</Text>
+                  <Text style={styles.price}>
+                    {scanB ? priceStub(scanB) : t('compare.na')}
                   </Text>
                 </View>
-              ) : scans.length < 2 ? (
-                <Text style={styles.muted}>{t('compare.needTwo')}</Text>
-              ) : null}
+              </View>
 
               {(scanA || scanB) && (
                 <PrimaryButton
@@ -154,7 +221,7 @@ export default function CompareFoodScreen() {
                     <ListRow
                       key={scan.id}
                       title={scan.product_name}
-                      meta={t('compare.score', { score: scan.score })}
+                      meta={scoreOutOfFive(scan.score)}
                       onPress={() => onPick(scan)}
                     />
                   ))}
@@ -175,17 +242,17 @@ export default function CompareFoodScreen() {
 
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40 },
-  lead: {
-    marginBottom: 16,
-    fontFamily: 'DMSans_400Regular',
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#5A6B7D',
+  title: {
+    marginBottom: 18,
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 28,
+    color: brand.ink,
+    letterSpacing: -0.4,
   },
   muted: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 14,
-    color: '#8A9AAB',
+    color: brand.mutedSoft,
   },
   empty: {
     borderRadius: 20,
@@ -198,7 +265,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans_400Regular',
     fontSize: 15,
     lineHeight: 22,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   emptyBtn: { marginTop: 14 },
   compareRow: {
@@ -206,78 +273,89 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 8,
   },
-  col: { flex: 1, minWidth: 0 },
-  colLabel: {
-    marginBottom: 8,
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 12,
-    letterSpacing: 0.3,
-    textTransform: 'uppercase',
-    color: '#5A6B7D',
-  },
-  colCard: {
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
-    padding: 12,
-    minHeight: 140,
-  },
-  productName: {
-    fontFamily: 'DMSans_700Bold',
-    fontSize: 15,
-    color: brand.ink,
-  },
-  score: {
-    marginTop: 10,
-    fontFamily: 'Fraunces_700Bold',
-    fontSize: 22,
-  },
-  summary: {
-    marginTop: 8,
-    fontFamily: 'DMSans_400Regular',
-    fontSize: 12,
-    lineHeight: 17,
-    color: '#5A6B7D',
-  },
+  col: { flex: 1, minWidth: 0, alignItems: 'center' },
   pickBox: {
-    minHeight: 140,
-    borderRadius: 16,
-    borderWidth: 1,
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: 18,
+    borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
+    overflow: 'hidden',
+  },
+  pickImage: { width: '100%', height: '100%' },
+  pickEmpty: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 12,
   },
-  pickText: {
+  browse: {
+    marginTop: 6,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 11,
+    color: brand.mutedSoft,
+  },
+  productName: {
+    marginTop: 10,
     fontFamily: 'DMSans_700Bold',
     fontSize: 14,
-    color: brand.navy,
+    color: brand.ink,
     textAlign: 'center',
   },
-  pressed: { opacity: 0.85 },
-  vs: {
-    marginTop: 72,
+  score: {
+    marginTop: 4,
     fontFamily: 'DMSans_700Bold',
-    fontSize: 11,
-    color: '#8A9AAB',
+    fontSize: 20,
+    color: brand.forest,
   },
-  repick: { marginTop: 8 },
-  resultBanner: {
-    marginTop: 16,
-    borderRadius: 14,
-    backgroundColor: brand.mist,
+  vs: {
+    marginTop: 56,
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 13,
+    color: brand.mutedSoft,
+  },
+  pressed: { opacity: 0.88 },
+  table: {
+    marginTop: 20,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingVertical: 6,
     paddingHorizontal: 14,
-    paddingVertical: 12,
   },
-  resultText: {
+  tableRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: brand.mistBorder,
+  },
+  tableLabel: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 13,
+    color: brand.muted,
+    paddingHorizontal: 8,
+  },
+  price: {
+    minWidth: 52,
+    textAlign: 'center',
     fontFamily: 'DMSans_700Bold',
     fontSize: 14,
     color: brand.ink,
   },
-  clearBtn: { marginTop: 12 },
+  na: {
+    minWidth: 22,
+    textAlign: 'center',
+    fontFamily: 'DMSans_700Bold',
+    color: brand.mutedSoft,
+  },
+  clearBtn: { marginTop: 14 },
   picker: { marginTop: 20 },
   section: {
     marginBottom: 8,
@@ -285,6 +363,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: '#5A6B7D',
+    color: brand.mutedSoft,
   },
 });

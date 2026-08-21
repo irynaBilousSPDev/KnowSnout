@@ -18,7 +18,7 @@ function TabIcon({
       <Ionicons
         name={name}
         size={22}
-        color={focused ? brand.navy : '#8A9BB0'}
+        color={focused ? brand.forest : '#8A9BB0'}
       />
     </View>
   );
@@ -26,12 +26,16 @@ function TabIcon({
 
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
   return (
-    <Text style={[styles.label, focused && styles.labelFocused]} numberOfLines={1}>
+    <Text
+      style={[styles.label, focused && styles.labelFocused]}
+      numberOfLines={1}
+    >
       {label}
     </Text>
   );
 }
 
+/** PDF order: Стрічка · Перевір · Улюбленці · Спільнота · Довідники */
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const bottom = Math.max(insets.bottom, 8);
@@ -50,19 +54,35 @@ export default function TabsLayout() {
           elevation: 0,
           shadowOpacity: 0,
         },
-        tabBarItemStyle: {
-          paddingTop: 2,
-        },
-        tabBarActiveTintColor: brand.navy,
+        tabBarItemStyle: { paddingTop: 2 },
+        tabBarActiveTintColor: brand.forest,
         tabBarInactiveTintColor: '#8A9BB0',
       }}
     >
+      <Tabs.Screen
+        name="stories"
+        options={{
+          title: t('tabs.stories'),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              name={focused ? 'images' : 'images-outline'}
+              focused={focused}
+            />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <TabLabel label={t('tabs.stories')} focused={focused} />
+          ),
+        }}
+      />
       <Tabs.Screen
         name="index"
         options={{
           title: t('tabs.scan'),
           tabBarIcon: ({ focused }) => (
-            <TabIcon name={focused ? 'scan' : 'scan-outline'} focused={focused} />
+            <TabIcon
+              name={focused ? 'scan' : 'scan-outline'}
+              focused={focused}
+            />
           ),
           tabBarLabel: ({ focused }) => (
             <TabLabel label={t('tabs.scan')} focused={focused} />
@@ -78,21 +98,6 @@ export default function TabsLayout() {
           ),
           tabBarLabel: ({ focused }) => (
             <TabLabel label={t('tabs.pets')} focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="stories"
-        options={{
-          title: t('tabs.stories'),
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              name={focused ? 'images' : 'images-outline'}
-              focused={focused}
-            />
-          ),
-          tabBarLabel: ({ focused }) => (
-            <TabLabel label={t('tabs.stories')} focused={focused} />
           ),
         }}
       />
@@ -126,7 +131,6 @@ export default function TabsLayout() {
           ),
         }}
       />
-      {/* Nested under Перевір / Спільнота — not bottom tabs */}
       <Tabs.Screen name="history" options={{ href: null }} />
       <Tabs.Screen name="quiz" options={{ href: null }} />
       <Tabs.Screen name="me" options={{ href: null }} />
@@ -156,6 +160,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   labelFocused: {
-    color: brand.navy,
+    color: brand.forest,
   },
 });

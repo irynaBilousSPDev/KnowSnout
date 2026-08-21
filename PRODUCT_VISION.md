@@ -27,6 +27,8 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 
 ### P0c — IA: «Перевір» hub + journal (2026-07-21) — **SHIPPED UI**
 
+**Visual truth (2026-08-21 PDF mock):** hub = title + «Нещодавно» dashed strip + 3 stats + 4 action cards (Корм / Рослини / Порода / Порівняти); History = Нова|Історія segment + species/kind chips; tabs order **Стрічка · Перевір · Улюбленці · Спільнота · Довідники** (Перевір center, forest active).
+
 | Tab | Role |
 |--|--|
 | **Перевір** | Hub: **Корм** · **Рослина** · **Порода** |
