@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#F4F3F1;font-family:'Inter',system-ui,sans-serif;color:#152233}
+    h1,h2{font-family:'Manrope',sans-serif}
+    .wrap{max-width:1200px;margin:0 auto;padding:60px 44px 100px}
+    .kicker{font:700 11px/1.4 'Inter',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#5B6B75}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;margin-top:34px}
+    .scheme{border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:18px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .scheme-name{font:800 19px 'Manrope',sans-serif}
+    .swrow{display:flex;gap:8px}
+    .sw{flex:1;height:36px;border-radius:8px}
+    .btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  </style>
+</helmet>
+<div class="wrap">
+  <div class="kicker">KnowSnout · Колірні схеми на вибір</div>
+  <h1 style="font-size:34px;margin:8px 0 6px">50 палітр, кожна зі своїми кнопками</h1>
+  <p style="max-width:640px;color:#5B6B75;font-size:14px;line-height:1.6">Кожна картка — самостійна гіпотеза кольору, шрифтового характеру логотипу й фактури фону, а не лише перефарбовані кнопки. Обери номер(и) — розів'ю обраний(і) далі в повну систему.</p>
+
+  <div class="grid">
+
+    <div class="scheme" style="background:#EAF7F3;background-image:radial-gradient(circle at 90% -10%, #EAF7F322 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#0A4A3E">1 · Смарагд (поточний KnowSnout)</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#0A4A3E">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#0E6E5D"></div><div class="sw" style="background:#39E07A"></div><div class="sw" style="background:#9FD8CB"></div><div class="sw" style="background:#152233"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#0E6E5D;color:#fff;border-radius:14px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif;box-shadow:0 4px 14px rgba(14,110,93,.3)">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#0A4A3E;border:2px solid #0E6E5D;border-radius:14px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#FBF3EE;background-image:repeating-linear-gradient(135deg, #FBF3EE14 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#7A3618">2 · Тепла глина</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#7A3618">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#B5482E"></div><div class="sw" style="background:#C9A227"></div><div class="sw" style="background:#F0E4D3"></div><div class="sw" style="background:#241C16"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#B5482E;color:#FBF3EE;border-radius:4px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#B5482E;border-bottom:2.5px solid #B5482E;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#FBF3EF;background-image:radial-gradient(#FBF3EF20 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#6B2246">3 · Ягода з золотом</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#6B2246">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#8C2F5C"></div><div class="sw" style="background:#D9A441"></div><div class="sw" style="background:#F6E2D9"></div><div class="sw" style="background:#2B1E22"></div></div>
+      <div class="btnrow">
+        <div style="height:48px;padding:0 26px;background:linear-gradient(120deg,#8C2F5C,#B8467A);color:#fff;border-radius:999px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:48px;width:48px;background:#F6E2D9;color:#8C2F5C;border-radius:999px;display:flex;align-items:center;justify-content:center;font:700 16px 'Inter',sans-serif">✕</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F5F2E9;background-image:linear-gradient(200deg, transparent 60%, #2F523318 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#1F3A22">4 · Лісова зелень</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#1F3A22;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#2F5233"></div><div class="sw" style="background:#D98A3D"></div><div class="sw" style="background:#E9E3D2"></div><div class="sw" style="background:#232B24"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#2F5233;color:#F5F2E9;border-radius:8px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%)">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#2F5233;border:1.5px solid #E4DFCF;border-radius:8px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F3F1F7;background-image:repeating-radial-gradient(circle at 100% 100%, #F3F1F718 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#453A6B">5 · Індиго з персиком</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#453A6B;border-bottom:2px solid #453A6B;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#5B4E8C"></div><div class="sw" style="background:#E8A97D"></div><div class="sw" style="background:#E7E2F0"></div><div class="sw" style="background:#251E33"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#5B4E8C;color:#fff;border-radius:14px;display:flex;align-items:center;gap:8px;font:600 13.5px 'Inter',sans-serif;position:relative">Зберегти<span style="position:absolute;top:-4px;right:-4px;width:9px;height:9px;border-radius:999px;background:#E8A97D"></span></div>
+        <div style="height:46px;padding:0 22px;background:#E7E2F0;color:#453A6B;border-radius:14px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#FBF8F1;background-image:radial-gradient(circle at 90% -10%, #FBF8F122 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#9C6D00">6 · Бурштин мінімал</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#9C6D00">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#C68A00"></div><div class="sw" style="background:#1B1912"></div><div class="sw" style="background:#F1EADA"></div></div>
+      <div class="btnrow">
+        <div style="height:48px;padding:0 28px;background:#C68A00;color:#fff;border-radius:999px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:48px;padding:0 26px;background:transparent;color:#1B1912;border:2px dashed #C68A00;border-radius:999px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EDF3F6;background-image:repeating-linear-gradient(135deg, #EDF3F614 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#0E4A66">7 · Кобальт з коралом</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#0E4A66">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#1470A3"></div><div class="sw" style="background:#F2704B"></div><div class="sw" style="background:#D7E8F1"></div><div class="sw" style="background:#0B2536"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#0B2536;color:#F2704B;border-radius:10px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif;border:1.5px solid #F2704B">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#1470A3;color:#fff;border-radius:10px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F6F1EA;background-image:radial-gradient(#F6F1EA20 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#5C4A1E">8 · Шавлія з іржею</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#5C4A1E">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#7C8A5E"></div><div class="sw" style="background:#B8562F"></div><div class="sw" style="background:#EDE6D6"></div><div class="sw" style="background:#2A2620"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#7C8A5E;color:#fff;border-radius:6px 20px 6px 20px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#B8562F;border:1.5px solid #EDE6D6;border-radius:6px 20px 6px 20px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+
+    <div class="scheme" style="background:#EEF0EC;background-image:linear-gradient(200deg, transparent 60%, #46543F18 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#33422E">9 · Шифер з лаймом</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#33422E;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#46543F"></div><div class="sw" style="background:#C7E05A"></div><div class="sw" style="background:#DDE3D5"></div><div class="sw" style="background:#1B2317"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#46543F;color:#C7E05A;border-radius:12px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif;box-shadow:inset 0 0 0 2px #C7E05A">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#C7E05A;color:#1B2317;border-radius:999px 12px 999px 12px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#1B1E23;background-image:repeating-radial-gradient(circle at 100% 100%, #1B1E2318 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#8FF0D8">10 · Вугілля з м&apos;ятою (темна)</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#8FF0D8;border-bottom:2px solid #8FF0D8;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#2BC9A6"></div><div class="sw" style="background:#3A3F47"></div><div class="sw" style="background:#F2F1EC"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#2BC9A6;color:#101317;border-radius:10px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#2A2E34;color:#8FF0D8;border-radius:10px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif;box-shadow:0 2px 0 #101317">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#FBF0EE;background-image:radial-gradient(circle at 90% -10%, #FBF0EE22 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#122A4C">11 · Троянда з нафтовим синім</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#122A4C">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#122A4C"></div><div class="sw" style="background:#E8879A"></div><div class="sw" style="background:#F4DADF"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 12px 0 24px;background:#122A4C;color:#fff;border-radius:999px;display:flex;align-items:center;gap:10px;font:600 13.5px 'Inter',sans-serif">Зберегти<span style="width:24px;height:24px;border-radius:999px;background:#E8879A;display:flex;align-items:center;justify-content:center;font-size:12px">→</span></div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#122A4C;border:1.5px solid #E8879A;border-radius:999px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F6F0E3;background-image:repeating-linear-gradient(135deg, #F6F0E314 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#5C3A5E">12 · Гірчиця зі сливою</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#5C3A5E">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#D9A02E"></div><div class="sw" style="background:#5C3A5E"></div><div class="sw" style="background:#EDE1C4"></div><div class="sw" style="background:#241823"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#5C3A5E;color:#D9A02E;border-radius:4px 16px 4px 16px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#D9A02E;color:#241823;border-radius:4px 16px 4px 16px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F1EDE4;background-image:radial-gradient(#F1EDE420 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#0E4A46">13 · Пісок з петролем</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#0E4A46">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#0E4A46"></div><div class="sw" style="background:#E4B77A"></div><div class="sw" style="background:#E6DEC9"></div></div>
+      <div class="btnrow">
+        <div style="height:44px;padding:0 24px;background:#0E4A46;color:#E4B77A;border-radius:22px 6px 22px 6px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:44px;padding:0 22px;background:transparent;color:#0E4A46;border-bottom:3px solid #E4B77A;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F5EEE6;background-image:linear-gradient(200deg, transparent 60%, #B5652E18 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#6B3A1E">14 · Мідь з чорнилом</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#6B3A1E;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#B5652E"></div><div class="sw" style="background:#1C2430"></div><div class="sw" style="background:#EADFCB"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#1C2430;color:#fff;border-radius:10px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif;box-shadow:0 3px 0 #B5652E">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#EADFCB;color:#6B3A1E;border-radius:10px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+
+    <div class="scheme" style="background:#F0E9F2;background-image:repeating-radial-gradient(circle at 100% 100%, #F0E9F218 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#5A2E5C">15 · Орхідея з графітом</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#5A2E5C;border-bottom:2px solid #5A2E5C;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#8A3E8C"></div><div class="sw" style="background:#3A3742"></div><div class="sw" style="background:#E4D3E6"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#8A3E8C;color:#fff;border-radius:16px 4px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#3A3742;border:1.5px solid #8A3E8C;border-radius:16px 4px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EAF0EC;background-image:radial-gradient(circle at 90% -10%, #EAF0EC22 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#1E4A34">16 · М&apos;ята з какао</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#1E4A34">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#2E7D5B"></div><div class="sw" style="background:#6B4A3A"></div><div class="sw" style="background:#D7E7DC"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#2E7D5B;color:#fff;border-radius:999px;display:flex;align-items:center;gap:8px;font:600 13.5px 'Inter',sans-serif">Зберегти<span style="width:6px;height:6px;border-radius:999px;background:#6B4A3A"></span></div>
+        <div style="height:46px;padding:0 22px;background:#6B4A3A;color:#D7E7DC;border-radius:999px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+
+    <div class="scheme" style="background:#FDECEA;background-image:repeating-linear-gradient(135deg, #FDECEA14 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#8C2A20">17 · Тон помідора з крейдою</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8C2A20">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#C6432F"></div><div class="sw" style="background:#F3E7C9"></div><div class="sw" style="background:#F6D2CB"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#C6432F;color:#F3E7C9;border-radius:12px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#C6432F;border:2px dotted #C6432F;border-radius:12px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EAEFF3;background-image:radial-gradient(#EAEFF320 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#1E3A52">18 · Голубина сталь з мідянкою</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#1E3A52">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#3E6280"></div><div class="sw" style="background:#C97A4A"></div><div class="sw" style="background:#D6E0E8"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#3E6280;color:#fff;border-radius:8px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif;border-bottom:3px solid #C97A4A">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#C97A4A;color:#fff;border-radius:8px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F6EFE4;background-image:linear-gradient(200deg, transparent 60%, #A9762E18 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#5C4A26">19 · Карамель з чорнилом</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#5C4A26;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#A9762E"></div><div class="sw" style="background:#20242B"></div><div class="sw" style="background:#EFE2C9"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#20242B;color:#A9762E;border-radius:999px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif;box-shadow:0 0 0 2px #A9762E">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#A9762E;color:#20242B;border-radius:999px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EDF2E9;background-image:repeating-radial-gradient(circle at 100% 100%, #EDF2E918 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#3B4F2A">20 · Оливка з рожевим кварцом</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#3B4F2A;border-bottom:2px solid #3B4F2A;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#5F7A3E"></div><div class="sw" style="background:#E2A8AE"></div><div class="sw" style="background:#DCE6D2"></div></div>
+      <div class="btnrow">
+        <div style="height:44px;padding:0 24px;background:#5F7A3E;color:#fff;border-radius:22px 4px 22px 4px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:44px;padding:0 22px;background:#E2A8AE;color:#3B4F2A;border-radius:4px 22px 4px 22px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#232323;background-image:radial-gradient(circle at 90% -10%, #23232322 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#F2C744">21 · Нуар з жовтим сигналом (темна)</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#F2C744">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#F2C744"></div><div class="sw" style="background:#3A3A3A"></div><div class="sw" style="background:#F4F1E8"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#F2C744;color:#161616;border-radius:6px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#F2C744;border:1.5px solid #4A4A4A;border-radius:6px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F1EAE0;background-image:repeating-linear-gradient(135deg, #F1EAE014 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#4A3C2A">22 · Льон з бордо</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#4A3C2A">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#6E2A34"></div><div class="sw" style="background:#C9BBA0"></div><div class="sw" style="background:#E6DCC8"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#6E2A34;color:#E6DCC8;border-radius:10px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#6E2A34;border-top:2px solid #6E2A34;border-bottom:2px solid #6E2A34;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#E8F1F2;background-image:radial-gradient(#E8F1F220 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#1C5359">23 · Бірюза з піском</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#1C5359">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#1C8A93"></div><div class="sw" style="background:#E8C88A"></div><div class="sw" style="background:#D2E7E9"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#1C8A93;color:#fff;border-radius:999px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif;box-shadow:0 5px 0 #12626A">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#E8C88A;color:#1C5359;border-radius:999px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F5EEEE;background-image:linear-gradient(200deg, transparent 60%, #6B3B3218 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#5C3030">24 · Какао з фісташкою</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#5C3030;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#6B3B32"></div><div class="sw" style="background:#9BAE6E"></div><div class="sw" style="background:#EADEDA"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#6B3B32;color:#fff;border-radius:14px 14px 0 14px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#9BAE6E;color:#3A4522;border-radius:14px 14px 14px 0;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EFF0F5;background-image:repeating-radial-gradient(circle at 100% 100%, #EFF0F518 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#2E3268">25 · Барвінок з лимоном</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#2E3268;border-bottom:2px solid #2E3268;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#4B4FA0"></div><div class="sw" style="background:#E9D25C"></div><div class="sw" style="background:#DBDCEE"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#4B4FA0;color:#E9D25C;border-radius:16px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#E9D25C;color:#2E3268;border-radius:16px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F6EDE7;background-image:radial-gradient(circle at 90% -10%, #F6EDE722 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#7A3B1E">26 · Абрикос з димчастим синім</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#7A3B1E">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#D9773F"></div><div class="sw" style="background:#495A6B"></div><div class="sw" style="background:#EFDDCF"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#D9773F;color:#fff;border-radius:999px 6px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#495A6B;color:#fff;border-radius:6px 999px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EDEDE8;background-image:repeating-linear-gradient(135deg, #EDEDE814 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#33362E">27 · Графіт з неоновим лаймом</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#33362E">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#2A2D26"></div><div class="sw" style="background:#D4F04E"></div><div class="sw" style="background:#DADAD2"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#2A2D26;color:#D4F04E;border-radius:4px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#D4F04E;color:#2A2D26;border-radius:4px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F7F0F0;background-image:radial-gradient(#F7F0F020 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#7A2E3A">28 · Малина з ваніллю</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#7A2E3A">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#B0334A"></div><div class="sw" style="background:#EFD9A8"></div><div class="sw" style="background:#F0DADE"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#B0334A;color:#EFD9A8;border-radius:22px;display:flex;align-items:center;gap:8px;font:600 13.5px 'Inter',sans-serif">Зберегти<span style="font-size:16px">›</span></div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#B0334A;border:1.5px solid #EFD9A8;border-radius:22px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+
+    <div class="scheme" style="background:#EAF2ED;background-image:linear-gradient(200deg, transparent 60%, #1F7A5C18 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#1E4A3A">29 · Смарагдовий чай з горіхом</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#1E4A3A;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#1F7A5C"></div><div class="sw" style="background:#8C6A4E"></div><div class="sw" style="background:#D2E5DA"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#1F7A5C;color:#fff;border-radius:12px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#8C6A4E;color:#fff;border-radius:12px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F6EEF2;background-image:repeating-radial-gradient(circle at 100% 100%, #F6EEF218 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#6B2A52">30 · Фуксія з димчастим лавандовим</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#6B2A52;border-bottom:2px solid #6B2A52;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#A83C7A"></div><div class="sw" style="background:#6E6693"></div><div class="sw" style="background:#EDDDE6"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#A83C7A;color:#fff;border-radius:8px 20px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#6E6693;border:1.5px solid #6E6693;border-radius:8px 20px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EFF2E8;background-image:radial-gradient(circle at 90% -10%, #EFF2E822 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#3E4A22">31 · Оливкова хакі з ржавим</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#3E4A22">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#6B7A3E"></div><div class="sw" style="background:#A85030"></div><div class="sw" style="background:#DDE3CC"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#6B7A3E;color:#fff;border-radius:10px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif;box-shadow:0 4px 0 #4E5A2C">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#A85030;color:#fff;border-radius:10px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#2A1F2E;background-image:repeating-linear-gradient(135deg, #2A1F2E14 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#E8A6D8">32 · Аметист з димом (темна)</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#E8A6D8">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#B85FA0"></div><div class="sw" style="background:#463B4E"></div><div class="sw" style="background:#F0E4EC"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#B85FA0;color:#241B28;border-radius:14px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#E8A6D8;border:1.5px solid #5A4C64;border-radius:14px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F5EFE6;background-image:radial-gradient(#F5EFE620 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#6B4A20">33 · Тютюновий з небесним</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#6B4A20">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#8A5A28"></div><div class="sw" style="background:#4E88AE"></div><div class="sw" style="background:#EBDFCC"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#8A5A28;color:#fff;border-radius:6px 6px 0 6px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#4E88AE;color:#fff;border-radius:6px 6px 6px 0;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EDF1F3;background-image:linear-gradient(200deg, transparent 60%, #3E759018 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#2A4A5C">34 · Крижаний блакитний з медовим</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#2A4A5C;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#3E7590"></div><div class="sw" style="background:#E2A83E"></div><div class="sw" style="background:#D6E4EA"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#3E7590;color:#fff;border-radius:999px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#E2A83E;color:#2A2010;border-radius:999px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F5EBEA;background-image:repeating-radial-gradient(circle at 100% 100%, #F5EBEA18 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#7A2E24">35 · Цегляний з шавлією</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#7A2E24;border-bottom:2px solid #7A2E24;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#A8442E"></div><div class="sw" style="background:#7A9270"></div><div class="sw" style="background:#EBD9D5"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#A8442E;color:#fff;border-radius:16px 16px 16px 0;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#7A9270;color:#fff;border-radius:16px 16px 0 16px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EEF0F6;background-image:radial-gradient(circle at 90% -10%, #EEF0F622 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#293868">36 · Сапфір з абрикосовим</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#293868">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#2E4A8C"></div><div class="sw" style="background:#E29456"></div><div class="sw" style="background:#DDE2F0"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#2E4A8C;color:#fff;border-radius:8px;display:flex;align-items:center;gap:8px;font:600 13.5px 'Inter',sans-serif">Зберегти<span style="width:8px;height:8px;border-radius:999px;background:#E29456"></span></div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#2E4A8C;border:2px solid #E29456;border-radius:8px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F2EEE4;background-image:repeating-linear-gradient(135deg, #F2EEE414 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#4A4222">37 · Пісочний хакі з бордовим</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#4A4222">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#9A8C4E"></div><div class="sw" style="background:#6E2436"></div><div class="sw" style="background:#E8E2CC"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#6E2436;color:#E8E2CC;border-radius:20px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#9A8C4E;color:#2A2410;border-radius:20px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EAF0F0;background-image:radial-gradient(#EAF0F020 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#1E4A48">38 · Глибокий бірюзовий з кораловим</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#1E4A48">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#1E6E68"></div><div class="sw" style="background:#E06B52"></div><div class="sw" style="background:#D2E3E2"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#1E6E68;color:#fff;border-radius:4px 18px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#E06B52;color:#fff;border-radius:18px 4px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F6F0EA;background-image:linear-gradient(200deg, transparent 60%, #6E4A2E18 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#5C3E28">39 · Кава з лимонним щербетом</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#5C3E28;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#6E4A2E"></div><div class="sw" style="background:#E8D25C"></div><div class="sw" style="background:#EDE2D0"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#6E4A2E;color:#E8D25C;border-radius:14px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#E8D25C;color:#4A3418;border-radius:14px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EEF1EC;background-image:repeating-radial-gradient(circle at 100% 100%, #EEF1EC18 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#2E4A2C">40 · Мох з рожевим піском</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#2E4A2C;border-bottom:2px solid #2E4A2C;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#3E6E3A"></div><div class="sw" style="background:#E0A8A0"></div><div class="sw" style="background:#DBE5D6"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#3E6E3A;color:#fff;border-radius:999px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif;box-shadow:0 0 0 3px #DBE5D6,0 0 0 5px #3E6E3A">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#E0A8A0;color:#4A2420;border-radius:999px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#221E2A;background-image:radial-gradient(circle at 90% -10%, #221E2A22 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#8EE0D0">41 · Опівнічний з м&apos;ятним неоном (темна)</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#8EE0D0">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#3EC9A8"></div><div class="sw" style="background:#3A3448"></div><div class="sw" style="background:#EDEAE4"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#3EC9A8;color:#161821;border-radius:10px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#8EE0D0;border:1.5px solid #4A4458;border-radius:10px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F6EDE9;background-image:repeating-linear-gradient(135deg, #F6EDE914 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#7A3E28">42 · Теракота з голубим яйцем малинівки</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#7A3E28">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#B0603A"></div><div class="sw" style="background:#5A9AA8"></div><div class="sw" style="background:#EEDCD1"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#B0603A;color:#fff;border-radius:12px 12px 0 0;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#5A9AA8;color:#fff;border-radius:0 0 12px 12px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EEF0E6;background-image:radial-gradient(#EEF0E620 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#3E4A1E">43 · Полин з іржавою мідянкою</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#3E4A1E">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#7A8A48"></div><div class="sw" style="background:#B0562E"></div><div class="sw" style="background:#DCE2C8"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#7A8A48;color:#fff;border-radius:22px 22px 4px 4px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#B0562E;border:1.5px solid #B0562E;border-radius:4px 4px 22px 22px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F3EEF4;background-image:linear-gradient(200deg, transparent 60%, #7E4E9E18 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#4A2E5C">44 · Бузковий з чорнильно-синім</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#4A2E5C;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#7E4E9E"></div><div class="sw" style="background:#243258"></div><div class="sw" style="background:#E4D8ED"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#243258;color:#fff;border-radius:16px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#7E4E9E;color:#fff;border-radius:16px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F5F0E8;background-image:repeating-radial-gradient(circle at 100% 100%, #F5F0E818 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#5C4E1E">45 · Вершкове масло з насиченим синім</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#5C4E1E;border-bottom:2px solid #5C4E1E;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#E0B84E"></div><div class="sw" style="background:#20385C"></div><div class="sw" style="background:#EDE6D2"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#20385C;color:#E0B84E;border-radius:8px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#E0B84E;color:#20385C;border-radius:8px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EEF1F0;background-image:radial-gradient(circle at 90% -10%, #EEF1F022 0%, transparent 55%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#1E4A3E">46 · Сосновий з рожевим грейпфрутом</div>
+      <div style="font:800 15px 'Manrope',sans-serif;letter-spacing:-.02em;color:#1E4A3E">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#2E6E58"></div><div class="sw" style="background:#E0708A"></div><div class="sw" style="background:#D8E5DF"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#2E6E58;color:#fff;border-radius:999px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;width:46px;background:#E0708A;color:#fff;border-radius:999px;display:flex;align-items:center;justify-content:center;font:700 15px 'Inter',sans-serif">✕</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F6EEE4;background-image:repeating-linear-gradient(135deg, #F6EEE414 0 8px, transparent 8px 20px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#6B4A1E">47 · Кориця з бірюзовим інеєм</div>
+      <div style="font:600 13px 'Inter',sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#6B4A1E">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#A8622E"></div><div class="sw" style="background:#3E8A94"></div><div class="sw" style="background:#EFE0CC"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#A8622E;color:#fff;border-radius:10px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif;box-shadow:3px 3px 0 #3E8A94">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:transparent;color:#A8622E;border:1.5px solid #A8622E;border-radius:10px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EFF0EA;background-image:radial-gradient(#EFF0EA20 2px, transparent 2.5px);background-size:16px 16px;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#3E4222">48 · Трава з димчастою сливою</div>
+      <div style="font:800 16px 'Manrope',sans-serif;font-style:italic;letter-spacing:-.01em;color:#3E4222">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#6E823E"></div><div class="sw" style="background:#5A4258"></div><div class="sw" style="background:#DEE2D2"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#6E823E;color:#fff;border-radius:6px 20px 6px 20px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#5A4258;color:#fff;border-radius:20px 6px 20px 6px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#F5EEF0;background-image:linear-gradient(200deg, transparent 60%, #9E3A5E18 100%);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#6B2E4A">49 · Малиновий джем з вершковим</div>
+      <div style="font:700 14px 'Inter',sans-serif;letter-spacing:.02em;color:#6B2E4A;text-decoration:underline;text-underline-offset:4px">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#9E3A5E"></div><div class="sw" style="background:#E8D9B8"></div><div class="sw" style="background:#EEDBE2"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#9E3A5E;color:#E8D9B8;border-radius:20px 4px 20px 4px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#E8D9B8;color:#5C2A3E;border-radius:4px 20px 4px 20px;display:flex;align-items:center;font:600 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+    <div class="scheme" style="background:#EAEDF2;background-image:repeating-radial-gradient(circle at 100% 100%, #EAEDF218 0 3px, transparent 3px 14px);background-size:auto;position:relative;overflow:hidden">
+      <div class="scheme-name" style="color:#243258">50 · Денім з іржаво-помаранчевим</div>
+      <div style="font:800 14px 'Manrope',sans-serif;letter-spacing:.06em;color:#243258;border-bottom:2px solid #243258;padding-bottom:2px;display:inline-block">KnowSnout</div>
+      <div class="swrow"><div class="sw" style="background:#3A5488"></div><div class="sw" style="background:#C9662E"></div><div class="sw" style="background:#D4DAE8"></div></div>
+      <div class="btnrow">
+        <div style="height:46px;padding:0 24px;background:#3A5488;color:#fff;border-radius:12px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Зберегти</div>
+        <div style="height:46px;padding:0 22px;background:#C9662E;color:#fff;border-radius:12px;display:flex;align-items:center;font:700 13.5px 'Inter',sans-serif">Скасувати</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

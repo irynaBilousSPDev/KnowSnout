@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 16,
     marginBottom: 8,
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 13,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
   hint: {
     marginBottom: 8,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 13,
     color: '#5A6B7D',
   },
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     borderColor: brand.navy,
   },
   chipText: {
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 13,
     color: brand.ink,
   },

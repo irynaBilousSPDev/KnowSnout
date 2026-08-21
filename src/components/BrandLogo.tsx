@@ -68,10 +68,10 @@ export function BrandLogo({ variant = 'full', size = 'md', style }: Props) {
       {mark}
       <Text
         style={{
-          color: brand.sageDeep,
+          color: brand.accentDark,
           fontSize: dims.fontSize,
           letterSpacing: dims.tracking,
-          fontFamily: 'Caprasimo_400Regular',
+          fontFamily: 'Manrope_700Bold',
           includeFontPadding: false,
         }}
       >

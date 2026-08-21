@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   label: {
     marginBottom: 6,
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 13,
     color: '#5A6B7D',
   },
@@ -109,12 +109,12 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 15,
     color: brand.ink,
   },
   empty: {
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 14,
     color: '#5A6B7D',
   },

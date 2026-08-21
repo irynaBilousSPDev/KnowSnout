@@ -105,17 +105,17 @@ const styles = StyleSheet.create({
   },
   linkMuted: {
     textAlign: 'center',
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 14,
     color: '#5A6B7D',
   },
   linkStrong: {
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     color: brand.sage,
   },
   legal: {
     marginTop: 8,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 12,
     lineHeight: 18,
     color: brand.muted,
@@ -131,14 +131,14 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(196, 92, 62, 0.25)',
   },
   errorText: {
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 13,
     lineHeight: 18,
     color: brand.score.poor,
   },
   demoHint: {
     marginTop: 8,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 12,
     lineHeight: 18,
     color: '#5A6B7D',

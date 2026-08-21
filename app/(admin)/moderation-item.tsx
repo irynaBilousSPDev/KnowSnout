@@ -102,14 +102,14 @@ export default function AdminModerationItemScreen() {
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   body: {
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 15,
     lineHeight: 22,
     color: brand.ink,
   },
   meta: {
     marginTop: 10,
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 13,
     color: brand.navy,
   },

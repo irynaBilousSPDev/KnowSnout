@@ -255,7 +255,20 @@ export default function CheckHubScreen() {
             </View>
           </View>
 
-          {ACTIONS.map((action) => (
+          {ACTIONS.map((action) => {
+            const iconBg =
+              action.kind === 'food'
+                ? brand.accentTint
+                : action.kind === 'plant'
+                  ? brand.successTint
+                  : brand.chipTrack;
+            const iconColor =
+              action.kind === 'food'
+                ? brand.accentDark
+                : action.kind === 'plant'
+                  ? brand.successDark
+                  : brand.ink;
+            return (
             <Pressable
               key={action.kind}
               onPress={() => router.push(action.href as never)}
@@ -264,8 +277,8 @@ export default function CheckHubScreen() {
                 pressed && styles.pressed,
               ]}
             >
-              <View style={styles.actionIcon}>
-                <Ionicons name={action.icon} size={24} color={brand.forest} />
+              <View style={[styles.actionIcon, { backgroundColor: iconBg }]}>
+                <Ionicons name={action.icon} size={22} color={iconColor} />
               </View>
               <View style={styles.actionCopy}>
                 <Text style={styles.actionTitle}>{t(action.titleKey)}</Text>
@@ -273,18 +286,19 @@ export default function CheckHubScreen() {
               </View>
               <Ionicons
                 name="chevron-forward"
-                size={20}
-                color={brand.mistBorder}
+                size={18}
+                color={brand.mutedSoft}
               />
             </Pressable>
-          ))}
+            );
+          })}
 
           <Pressable
             onPress={() => router.push('/(app)/(tabs)/history')}
             style={styles.historyLink}
           >
             <Text style={styles.historyLinkText}>{t('check.tabHistory')}</Text>
-            <Ionicons name="chevron-forward" size={16} color={brand.forest} />
+            <Ionicons name="chevron-forward" size={16} color={brand.accentDark} />
           </Pressable>
         </View>
       </ScrollView>
@@ -302,19 +316,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 18,
+    marginBottom: 14,
   },
   title: {
-    fontFamily: 'Caprasimo_400Regular',
-    fontSize: 34,
-    lineHeight: 40,
+    fontFamily: 'Manrope_700Bold',
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
-    letterSpacing: -0.4,
   },
   recentHeading: {
     marginBottom: 10,
-    fontFamily: 'Figtree_700Bold',
-    fontSize: 15,
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 14,
     color: brand.ink,
   },
   recentRow: {
@@ -324,126 +337,131 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   recentCard: {
-    width: 88,
+    width: 64,
   },
   recentPlaceholder: {
-    height: 88,
-    width: 88,
-    borderRadius: 16,
+    height: 64,
+    width: 64,
+    borderRadius: 14,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+    borderColor: brand.mutedSoft,
+    backgroundColor: brand.chipTrack,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
   },
   recentImage: {
-    height: 88,
-    width: 88,
-    borderRadius: 16,
-    backgroundColor: brand.mist,
+    height: 64,
+    width: 64,
+    borderRadius: 14,
+    backgroundColor: brand.chipTrack,
   },
   browse: {
-    marginTop: 4,
-    fontFamily: 'Figtree_400Regular',
-    fontSize: 10,
+    marginTop: 2,
+    fontFamily: 'Inter_400Regular',
+    fontSize: 9,
     color: brand.mutedSoft,
     textAlign: 'center',
   },
   recentLabel: {
     marginTop: 6,
-    fontFamily: 'Figtree_500Medium',
-    fontSize: 12,
+    fontFamily: 'Inter_500Medium',
+    fontSize: 11,
     color: brand.muted,
     textAlign: 'center',
   },
   addCard: {
-    height: 88,
-    width: 88,
-    borderRadius: 16,
+    height: 64,
+    width: 64,
+    borderRadius: 14,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+    borderColor: brand.mutedSoft,
+    backgroundColor: brand.chipTrack,
     alignItems: 'center',
     justifyContent: 'center',
   },
   statsRow: {
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: 14,
+    marginBottom: 6,
     flexDirection: 'row',
     gap: 8,
   },
   statCard: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: 14,
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
     paddingVertical: 12,
     paddingHorizontal: 8,
     alignItems: 'center',
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   statValue: {
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Manrope_700Bold',
     fontSize: 18,
-    color: brand.ink,
+    color: brand.accentDark,
   },
   statLabel: {
     marginTop: 2,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 11,
     color: brand.muted,
     textAlign: 'center',
   },
   statSafe: {
-    color: brand.forest,
+    color: brand.successDark,
   },
   actionCard: {
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: 14,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
-    paddingVertical: 16,
+    paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   actionIcon: {
     marginRight: 12,
-    height: 48,
-    width: 48,
-    borderRadius: 16,
+    height: 52,
+    width: 52,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: brand.forestTint,
   },
   actionCopy: { flex: 1, paddingRight: 8 },
   actionTitle: {
-    fontFamily: 'Figtree_700Bold',
-    fontSize: 17,
+    fontFamily: 'Inter_700Bold',
+    fontSize: 15,
     color: brand.ink,
   },
   actionBody: {
-    marginTop: 4,
-    fontFamily: 'Figtree_400Regular',
-    fontSize: 13,
-    lineHeight: 18,
+    marginTop: 3,
+    fontFamily: 'Inter_400Regular',
+    fontSize: 12,
+    lineHeight: 17,
     color: brand.muted,
   },
   pressed: { opacity: 0.88 },
   historyLink: {
-    marginTop: 18,
+    marginTop: 16,
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: 4,
   },
   historyLinkText: {
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_600SemiBold',
     fontSize: 14,
-    color: brand.forest,
+    color: brand.accentDark,
   },
 });

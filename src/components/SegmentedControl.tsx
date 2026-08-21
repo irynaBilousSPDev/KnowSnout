@@ -13,7 +13,7 @@ type Props<T extends string> = {
   onChange: (id: T) => void;
 };
 
-/** PDF segmented control — sage active pill on soft track. */
+/** HTML kit segment — track #EAE7E2, active white pill + accent text. */
 export function SegmentedControl<T extends string>({
   options,
   value,
@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 4,
     borderRadius: brand.radius.pill,
-    backgroundColor: brand.creamDeep,
+    backgroundColor: brand.chipTrack,
     gap: 2,
   },
   item: {
     flex: 1,
-    minHeight: 42,
+    minHeight: 40,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: brand.radius.pill,
@@ -62,14 +62,20 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   itemActive: {
-    backgroundColor: brand.sage,
+    backgroundColor: brand.surfaceElevated,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   label: {
-    fontFamily: fonts.bodyBold,
+    fontFamily: fonts.bodySemi,
     fontSize: 13,
     color: brand.muted,
   },
   labelActive: {
-    color: '#FFFFFF',
+    color: brand.accentDark,
+    fontFamily: fonts.bodyBold,
   },
 });

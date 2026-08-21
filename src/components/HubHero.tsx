@@ -12,7 +12,7 @@ type Props = {
   stats?: ReactNode;
 };
 
-/** PDF hub hero: Caprasimo title + Figtree lead. */
+/** HTML kit hub title — Manrope 22–28. */
 export function HubHero({
   title,
   lead,
@@ -36,26 +36,25 @@ export function HubHero({
 }
 
 const styles = StyleSheet.create({
-  wrap: { marginBottom: 20 },
+  wrap: { marginBottom: 16 },
   topRow: {
-    marginBottom: 14,
+    marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   title: {
-    fontFamily: fonts.display,
-    fontSize: 34,
-    lineHeight: 40,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
-    letterSpacing: -0.4,
   },
   lead: {
-    marginTop: 8,
+    marginTop: 6,
     fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
     color: brand.muted,
   },
-  stats: { marginTop: 14 },
+  stats: { marginTop: 12 },
 });

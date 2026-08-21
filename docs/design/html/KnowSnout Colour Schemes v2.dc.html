@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#F4F3F1;font-family:'Inter',system-ui,sans-serif;color:#152233}
+    .wrap{max-width:1280px;margin:0 auto;padding:60px 44px 100px}
+    .kicker{font:700 11px/1.4 'Inter',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#5B6B75}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:34px}
+    .card{border-radius:20px;padding:0;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);position:relative}
+    .num{position:absolute;top:16px;left:16px;font:800 11px/1 'Inter',sans-serif;letter-spacing:.08em;opacity:.6;z-index:2}
+  </style>
+</helmet>
+<div class="wrap">
+  <div class="kicker">KnowSnout · Новий підхід до колірних гіпотез</div>
+  <h1 style="font-size:34px;font-family:'Manrope',sans-serif;font-weight:800;margin:8px 0 6px">12 брендових моментів замість 12 палітр</h1>
+  <p style="max-width:680px;color:#5B6B75;font-size:14px;line-height:1.6">Кожна картка — не ряд кольорових квадратів, а маленька композиція: реальний фрагмент інтерфейсу (бейдж тварини, прогрес перевірки, картка знахідки), де кожна схема показує себе через форму, ритм і фактуру — не тільки колір. Обери номер(и).</p>
+
+  <div class="grid">
+
+    <div class="card" style="background:#0E3B2E">
+      <div class="num" style="color:#8FE6C4">01 · МОХ &amp; МІДЬ</div>
+      <div style="padding:54px 22px 24px;display:flex;flex-direction:column;align-items:center;gap:14px">
+        <div style="width:84px;height:84px;border-radius:999px;background:radial-gradient(circle at 32% 28%,#2A6E52,#0E3B2E);border:3px solid #C97A4A;display:flex;align-items:center;justify-content:center;font:800 26px 'Fraunces',serif;color:#C97A4A">🐾</div>
+        <div style="font:700 15px 'Manrope',sans-serif;color:#EFE6D8">Перевірку пройдено</div>
+        <div style="width:100%;height:6px;background:#1C5540;border-radius:999px;overflow:hidden"><div style="width:70%;height:100%;background:#C97A4A"></div></div>
+        <div style="font:600 11px 'Inter',sans-serif;color:#8FE6C4;letter-spacing:.06em">3/4 ІНГРЕДІЄНТИ БЕЗПЕЧНІ</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#FBEFE0">
+      <div class="num" style="color:#8C4A1E">02 · ПІСОК &amp; ЧОРНИЛО, РУКОПИСНИЙ АКЦЕНТ</div>
+      <div style="padding:54px 24px 26px;display:flex;flex-direction:column;gap:12px">
+        <div style="font:italic 500 22px 'Fraunces',serif;color:#241C16">«Рекс любить моркву»</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span style="padding:6px 14px;background:#241C16;color:#FBEFE0;border-radius:999px;font:700 11px 'Inter',sans-serif">Собака</span>
+          <span style="padding:6px 14px;background:transparent;border:1.5px solid #8C4A1E;color:#8C4A1E;border-radius:999px;font:700 11px 'Inter',sans-serif">4 роки</span>
+        </div>
+        <div style="height:1px;background:repeating-linear-gradient(90deg,#8C4A1E 0 6px,transparent 6px 12px);margin-top:4px"></div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#161421">
+      <div class="num" style="color:#F2C744">03 · НІЧНИЙ РЕЖИМ, СИГНАЛЬНИЙ ЖОВТИЙ</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:38px;height:38px;border-radius:10px;background:#F2C744;display:flex;align-items:center;justify-content:center;font:800 14px 'Manrope',sans-serif;color:#161421">86</div>
+          <div>
+            <div style="font:700 13px 'Manrope',sans-serif;color:#fff">Індекс довіри</div>
+            <div style="font:500 11px 'Inter',sans-serif;color:#7A7A88">на основі 4 джерел</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <div style="flex:1;height:28px;background:#F2C744;border-radius:6px"></div>
+          <div style="flex:1;height:28px;background:#2A2836;border-radius:6px"></div>
+          <div style="flex:1;height:28px;background:#2A2836;border-radius:6px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#F0EDF6">
+      <div class="num" style="color:#5A4E8C">04 · ГЕОМЕТРИЧНИЙ ІНДИГО</div>
+      <div style="padding:54px 24px 26px;display:flex;flex-direction:column;gap:12px;position:relative">
+        <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:#E8A97D;border-radius:30% 70% 60% 40%/50% 40% 60% 50%;opacity:.5"></div>
+        <div style="font:800 20px 'Manrope',sans-serif;color:#3A2E63;z-index:1">Кеша</div>
+        <div style="font:500 12px 'Inter',sans-serif;color:#5A4E8C;z-index:1">Папуга · розмах крил 24 см</div>
+        <div style="display:flex;gap:6px;z-index:1">
+          <div style="width:28px;height:28px;border-radius:8px;background:#5A4E8C"></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#E8A97D"></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#3A2E63"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#F6F1E7;border:1px solid #E4D9BF">
+      <div class="num" style="color:#6B5A1E">05 · РУКОПИСНА ЕТИКЕТКА (ЛУПА)</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;align-items:flex-start;gap:10px">
+        <div style="width:60px;height:60px;border-radius:999px;border:4px double #6B5A1E;display:flex;align-items:center;justify-content:center;font:800 22px 'Fraunces',serif;color:#6B5A1E">B</div>
+        <div style="font:700 13px 'Manrope',sans-serif;color:#3A3018">Склад підтверджено</div>
+        <div style="font:500 11.5px 'Inter',sans-serif;color:#6B5A1E">Курка, рис, олія лосося</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#20342E">
+      <div class="num" style="color:#C7E05A">06 · ШИФЕР &amp; ЛАЙМ, СКАНЕР-ЛІНІЯ</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden">
+        <div style="position:absolute;left:0;right:0;top:40%;height:2px;background:#C7E05A;box-shadow:0 0 12px #C7E05A"></div>
+        <div style="width:70px;height:70px;border-radius:14px;background:#16241F;border:2px solid #C7E05A;margin:0 auto;display:flex;align-items:center;justify-content:center;font:800 24px 'Manrope',sans-serif;color:#C7E05A">📷</div>
+        <div style="text-align:center;font:700 12px 'Inter',sans-serif;color:#C7E05A;letter-spacing:.08em">СКАНУВАННЯ...</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#FBEAE6">
+      <div class="num" style="color:#8C2A20">07 · ПОМІДОР &amp; КРЕЙДА, ПОПЕРЕДЖЕННЯ</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:34px;height:34px;border-radius:999px;background:#C6432F;display:flex;align-items:center;justify-content:center;color:#fff;font:800 16px 'Inter',sans-serif">!</div>
+          <div style="font:700 14px 'Manrope',sans-serif;color:#6E1E14">Токсично для кота</div>
+        </div>
+        <div style="font:500 12px 'Inter',sans-serif;color:#8C2A20;line-height:1.5">Монстера містить оксалати кальцію. Тримайте поза досяжністю.</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#EAF0F0">
+      <div class="num" style="color:#1C5359">08 · БІРЮЗА, КОЛЬОРОВІ КРАПКИ КАЛЕНДАРЯ</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:12px">
+        <div style="font:700 13px 'Manrope',sans-serif;color:#1C5359">Календар щеплень</div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+          <div style="width:100%;aspect-ratio:1;border-radius:6px;background:#D2E7E9"></div>
+          <div style="width:100%;aspect-ratio:1;border-radius:6px;background:#1C8A93"></div>
+          <div style="width:100%;aspect-ratio:1;border-radius:6px;background:#D2E7E9"></div>
+          <div style="width:100%;aspect-ratio:1;border-radius:6px;background:#D2E7E9"></div>
+          <div style="width:100%;aspect-ratio:1;border-radius:6px;background:#E8C88A"></div>
+          <div style="width:100%;aspect-ratio:1;border-radius:6px;background:#D2E7E9"></div>
+          <div style="width:100%;aspect-ratio:1;border-radius:6px;background:#1C8A93"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#2A1F2E">
+      <div class="num" style="color:#E8A6D8">09 · АМЕТИСТ, ФОРУМ-СТРІЧКА</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="width:30px;height:30px;border-radius:999px;background:#B85FA0"></div>
+          <div style="font:600 12px 'Inter',sans-serif;color:#E8A6D8">Марта · 2 год тому</div>
+        </div>
+        <div style="font:500 13px 'Inter',sans-serif;color:#F0E4EC;line-height:1.5">Хтось знає безпечний корм для стерилізованих котів?</div>
+        <div style="display:flex;gap:14px;font:600 11px 'Inter',sans-serif;color:#B85FA0"><span>♥ 12</span><span>💬 4</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#F5EFE6">
+      <div class="num" style="color:#6B4A20">10 · КОРИЦЯ, ПОДОРОЖНІЙ ШТАМП</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;align-items:center;gap:12px">
+        <div style="width:76px;height:76px;border-radius:999px;border:3px dashed #A8622E;display:flex;align-items:center;justify-content:center;transform:rotate(-8deg);font:800 12px 'Inter',sans-serif;color:#A8622E;letter-spacing:.04em;text-align:center;line-height:1.3">ГОТОВО<br>ДО ПОЛЬЩІ</div>
+        <div style="font:600 12px 'Inter',sans-serif;color:#6B4A20">Паспорт тварини · 6/6</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#EEF0E6">
+      <div class="num" style="color:#3E4A1E">11 · ПОЛИН, ІГРАШКА-БЕЙДЖ</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:10px">
+          <div style="width:50px;height:50px;border-radius:16px 4px 16px 4px;background:#7A8A48;display:flex;align-items:center;justify-content:center;font-size:20px">🧸</div>
+          <div>
+            <div style="font:700 13px 'Manrope',sans-serif;color:#2A3212">Канат для жування</div>
+            <div style="font:500 11px 'Inter',sans-serif;color:#5A6A38">Великі породи · середня активність</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#1B1E23">
+      <div class="num" style="color:#2BC9A6">12 · ВУГІЛЛЯ &amp; М&apos;ЯТА, СТРІК-ЛІЧИЛЬНИК</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;align-items:center;gap:10px">
+        <div style="font:800 40px 'Manrope',sans-serif;color:#2BC9A6">7</div>
+        <div style="font:600 11px 'Inter',sans-serif;color:#8FF0D8;letter-spacing:.1em">ДНІВ ПОСПІЛЬ</div>
+        <div style="display:flex;gap:4px">
+          <div style="width:8px;height:8px;border-radius:999px;background:#2BC9A6"></div><div style="width:8px;height:8px;border-radius:999px;background:#2BC9A6"></div><div style="width:8px;height:8px;border-radius:999px;background:#2BC9A6"></div><div style="width:8px;height:8px;border-radius:999px;background:#3A3F47"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card" style="background:#E8F1E4">
+      <div class="num" style="color:#2A5C34">13 · САЖА ЗЕЛЕНЬ, ХАРЧОВИЙ ЕТИКЕТ-ШТАМП</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;align-items:center;gap:10px">
+        <div style="width:64px;height:64px;border-radius:50% 50% 50% 4px;background:#3E7A46;display:flex;align-items:center;justify-content:center;font:800 22px 'Manrope',sans-serif;color:#E8F1E4;transform:rotate(-4deg)">✓</div>
+        <div style="font:700 12.5px 'Manrope',sans-serif;color:#1E4022">Схвалено ветеринаром</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#241826">
+      <div class="num" style="color:#F0A85E">14 · ПІВНІЧНЕ СЯЙВО, ЖИВИЙ ГРАДІЄНТ</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:-40% -20% auto auto;width:180px;height:180px;background:radial-gradient(circle,#F0A85E55,transparent 70%);filter:blur(2px)"></div>
+        <div style="font:800 17px 'Manrope',sans-serif;color:#fff;z-index:1">Плюс-підписка</div>
+        <div style="font:500 12px 'Inter',sans-serif;color:#E0B896;z-index:1">Безлімітні AI-скани · нагадування</div>
+        <div style="align-self:flex-start;padding:8px 18px;background:#F0A85E;color:#241826;border-radius:999px;font:800 12px 'Inter',sans-serif;z-index:1">Спробувати</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#F6EDE0">
+      <div class="num" style="color:#8C5A1E">15 · ХЛІБНА СКОРИНКА, ПОДВІЙНА РАМКА</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:10px">
+        <div style="border:1.5px solid #8C5A1E;padding:3px">
+          <div style="border:1.5px solid #8C5A1E;padding:12px;display:flex;flex-direction:column;gap:6px">
+            <div style="font:700 13px 'Manrope',sans-serif;color:#4A3110">Притулок «Тепла лапа»</div>
+            <div style="font:500 11px 'Inter',sans-serif;color:#8C5A1E">12 тварин шукають дім</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#0F1F2E">
+      <div class="num" style="color:#5FC2E8">16 · ГЛИБИНА ОКЕАНУ, ХВИЛЯ-ЛІНІЯ</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:14px;position:relative">
+        <svg style="position:absolute;bottom:0;left:0;width:100%;height:44px;opacity:.5" viewBox="0 0 300 44" preserveAspectRatio="none"><path d="M0 30 Q40 6 80 26 T160 22 T240 30 T300 14 V44 H0 Z" fill="#1C4A66"/></svg>
+        <div style="font:700 14px 'Manrope',sans-serif;color:#fff;z-index:1">Не забудьте про воду в дорозі</div>
+        <div style="font:500 12px 'Inter',sans-serif;color:#5FC2E8;z-index:1">Порада від спільноти · 8 голосів</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#FBE9EF">
+      <div class="num" style="color:#9A2C55">17 · КОМПОТ ІЗ ЯГІД, М&apos;ЯКА ТІНЬ</div>
+      <div style="padding:54px 22px 26px;display:flex;align-items:center;gap:12px">
+        <div style="width:56px;height:56px;border-radius:999px;background:#fff;box-shadow:0 8px 20px -6px #9A2C5566;display:flex;align-items:center;justify-content:center;font-size:24px">🐹</div>
+        <div>
+          <div style="font:700 13px 'Manrope',sans-serif;color:#6B1E3C">Хом'як Стьопа</div>
+          <div style="font:500 11px 'Inter',sans-serif;color:#9A2C55">Профіль оновлено щойно</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#EDEAE0">
+      <div class="num" style="color:#4A4630">18 · ПАПІР &amp; ШТАМП-ПЕЧАТКА, АРХІВНИЙ ТОН</div>
+      <div style="padding:54px 22px 26px;display:flex;flex-direction:column;gap:10px">
+        <div style="font:600 italic 15px 'Fraunces',serif;color:#3A3722">«Перевірено громадою — 214 разів»</div>
+        <div style="width:40px;height:2px;background:#8A7A3E"></div>
+        <div style="font:600 11px 'Inter',sans-serif;color:#8A7A3E;letter-spacing:.08em">ДЖЕРЕЛО: ALLEGRO API</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

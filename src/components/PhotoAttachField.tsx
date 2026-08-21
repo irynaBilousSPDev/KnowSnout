@@ -147,7 +147,7 @@ export function PhotoAttachField({
 
 const styles = StyleSheet.create({
   label: {
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 14,
     color: brand.navy,
   },
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 14,
     color: '#5A6B7D',
   },

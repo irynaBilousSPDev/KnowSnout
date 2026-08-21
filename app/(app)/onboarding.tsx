@@ -21,7 +21,7 @@ async function markSeen() {
   await AsyncStorage.setItem(SEEN_KEY, 'true');
 }
 
-/** PDF onboarding 1–3: skip, dashed illustration, Caprasimo title, sage pill CTA. */
+/** HTML onboarding 1–3: skip, 220 circle, Manrope H2, teal page dots. */
 export default function OnboardingScreen() {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
@@ -53,14 +53,8 @@ export default function OnboardingScreen() {
     <AppScreen edges={['top', 'bottom']}>
       <View style={styles.pad}>
         <View style={styles.topRow}>
-          <Text style={styles.kicker}>
-            {step + 1}/{STEPS.length}
-          </Text>
-          <Pressable
-            onPress={() => void finish()}
-            disabled={saving}
-            accessibilityRole="button"
-          >
+          <View />
+          <Pressable onPress={() => void finish()} disabled={saving}>
             <Text style={styles.skip}>{t('onboarding.skip')}</Text>
           </Pressable>
         </View>
@@ -68,7 +62,6 @@ export default function OnboardingScreen() {
         <View style={styles.illustration}>
           <Ionicons name="image-outline" size={36} color={brand.mutedSoft} />
           <Text style={styles.illustrationLabel}>{t('check.illustration')}</Text>
-          <Text style={styles.browse}>{t('check.browseFiles')}</Text>
         </View>
 
         <Text style={styles.title}>{t(current.titleKey)}</Text>
@@ -98,38 +91,32 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   pad: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 12,
+    paddingHorizontal: 20,
+    paddingTop: 8,
     paddingBottom: 24,
   },
   topRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 28,
+    justifyContent: 'flex-end',
+    marginBottom: 24,
   },
-  kicker: {
-    fontFamily: fonts.body,
+  skip: {
+    fontFamily: fonts.bodySemi,
     fontSize: 13,
     color: brand.mutedSoft,
   },
-  skip: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 15,
-    color: brand.muted,
-  },
   illustration: {
     alignSelf: 'center',
-    height: 200,
-    width: 200,
-    borderRadius: 100,
+    height: 220,
+    width: 220,
+    borderRadius: 110,
     borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 28,
+    marginBottom: 24,
   },
   illustrationLabel: {
     marginTop: 8,
@@ -137,17 +124,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: brand.muted,
   },
-  browse: {
-    marginTop: 4,
-    fontFamily: fonts.body,
-    fontSize: 11,
-    color: brand.sage,
-    textDecorationLine: 'underline',
-  },
   title: {
-    fontFamily: fonts.display,
-    fontSize: 28,
-    lineHeight: 34,
+    fontFamily: fonts.title,
+    fontSize: 24,
+    lineHeight: 30,
     color: brand.ink,
     textAlign: 'center',
     marginBottom: 10,
@@ -171,11 +151,11 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: brand.creamDeep,
+    backgroundColor: brand.mistBorder,
   },
   dotActive: {
     width: 28,
-    backgroundColor: brand.sage,
+    backgroundColor: brand.accent,
   },
   footer: {
     marginTop: 'auto',

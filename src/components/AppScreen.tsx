@@ -7,18 +7,16 @@ import { brand } from '@/src/theme/brand';
 type Props = {
   children: ReactNode;
   edges?: ('top' | 'right' | 'bottom' | 'left')[];
-  /** Soft cream atmosphere (default on) */
   atmosphere?: boolean;
 };
 
-/** Organic PDF screen shell — warm cream surface. */
+/** HTML kit screen shell — warm stone canvas #F4F3F1. */
 export function AppScreen({
   children,
   edges = ['top'],
-  atmosphere = true,
 }: Props) {
   return (
-    <View style={[styles.root, atmosphere && styles.atmosphere]}>
+    <View style={styles.root}>
       <SafeAreaView style={styles.safe} edges={edges}>
         {children}
       </SafeAreaView>
@@ -29,10 +27,7 @@ export function AppScreen({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: brand.surface,
-  },
-  atmosphere: {
-    backgroundColor: brand.cream,
+    backgroundColor: brand.canvas,
   },
   safe: {
     flex: 1,

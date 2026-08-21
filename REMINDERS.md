@@ -98,3 +98,13 @@
 - **Каркас спочатку:** UI + mock / Edge stubs; реальні API (OpenAI, Allegro, Plant ID…) підключаємо пізніше, коли знадобиться.
 
 Останнє оновлення: 2026-08-21 — SQL 390–440 прогнано в Supabase; forum/friends/directories/spotlight cloud ready.
+
+## Дизайн (P0v)
+- **Не робити «як у PDF» навмання** — чекаємо HTML (`.dc.html`) від користувача.
+- Коли зʼявляться файли → класти в `docs/design/html/` і перемальовувати екрани 1:1 з HTML.
+- Поки що: IA/маршрути ок; візуал з PDF raster = незадовільний для користувача (зафіксовано 2026-08-21).
+## Дизайн (P0v)
+- **HTML comps READY:** docs/design/html/ (з Downloads «KnowSnout UI Design Setup»).
+- Правда = .dc.html модулів (Вхід і Перевір / Улюбленці / Стрічка / Спільнота / Профіль / Довідники / Адмінка).
+- PDF більше не використовувати як візуальну правду.
+- IN PROGRESS (2026-08-21): HTML kit tokens + hubs (Manrope/Inter, teal). Nested screens inherit brand.

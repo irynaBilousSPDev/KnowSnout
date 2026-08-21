@@ -65,7 +65,7 @@ export default function BlogBookmarksScreen() {
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
   empty: {
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 14,
     color: '#5A6B7D',
   },

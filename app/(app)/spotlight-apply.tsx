@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   label: {
     marginTop: 14,
     marginBottom: 6,
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 13,
     color: '#5A6B7D',
   },
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     borderColor: brand.navy,
   },
   chipText: {
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 15,
     color: brand.ink,
   },
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 15,
     color: brand.ink,
   },

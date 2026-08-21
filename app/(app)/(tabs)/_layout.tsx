@@ -6,7 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** PDF Design-Setup: Перевір · Улюбленці · Стрічка · Спільнота · Довідники */
+/** HTML kit tab order: Стрічка · Перевір · Улюбленці · Спільнота · Довідники */
 export const unstable_settings = {
   initialRouteName: 'index',
 };
@@ -19,13 +19,11 @@ function TabIcon({
   focused: boolean;
 }) {
   return (
-    <View style={[styles.iconWrap, focused && styles.iconWrapFocused]}>
-      <Ionicons
-        name={name}
-        size={22}
-        color={focused ? brand.sage : brand.mutedSoft}
-      />
-    </View>
+    <Ionicons
+      name={name}
+      size={18}
+      color={focused ? brand.accentDark : brand.mutedSoft}
+    />
   );
 }
 
@@ -42,7 +40,7 @@ function TabLabel({ label, focused }: { label: string; focused: boolean }) {
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
-  const bottom = Math.max(insets.bottom, 8);
+  const bottom = Math.max(insets.bottom, 6);
 
   return (
     <Tabs
@@ -51,19 +49,34 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: brand.surfaceElevated,
-          borderTopColor: brand.mistBorder,
+          borderTopColor: brand.chipTrack,
           borderTopWidth: StyleSheet.hairlineWidth,
-          height: 58 + bottom,
+          height: 56 + bottom,
           paddingBottom: bottom,
-          paddingTop: 8,
+          paddingTop: 10,
           elevation: 0,
           shadowOpacity: 0,
         },
-        tabBarItemStyle: { paddingTop: 2 },
-        tabBarActiveTintColor: brand.sage,
+        tabBarItemStyle: { paddingTop: 0 },
+        tabBarActiveTintColor: brand.accentDark,
         tabBarInactiveTintColor: brand.mutedSoft,
       }}
     >
+      <Tabs.Screen
+        name="stories"
+        options={{
+          title: t('tabs.stories'),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              name={focused ? 'home' : 'home-outline'}
+              focused={focused}
+            />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <TabLabel label={t('tabs.stories')} focused={focused} />
+          ),
+        }}
+      />
       <Tabs.Screen
         name="index"
         options={{
@@ -92,27 +105,12 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="stories"
-        options={{
-          title: t('tabs.stories'),
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              name={focused ? 'images' : 'images-outline'}
-              focused={focused}
-            />
-          ),
-          tabBarLabel: ({ focused }) => (
-            <TabLabel label={t('tabs.stories')} focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="community"
         options={{
           title: t('tabs.community'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name={focused ? 'chatbubbles' : 'chatbubbles-outline'}
+              name={focused ? 'chatbubble' : 'chatbubble-outline'}
               focused={focused}
             />
           ),
@@ -127,7 +125,7 @@ export default function TabsLayout() {
           title: t('tabs.directories'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name={focused ? 'book' : 'book-outline'}
+              name={focused ? 'person-circle' : 'person-circle-outline'}
               focused={focused}
             />
           ),
@@ -144,28 +142,15 @@ export default function TabsLayout() {
 }
 
 const styles = StyleSheet.create({
-  iconWrap: {
-    marginBottom: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    minWidth: 44,
-    minHeight: 32,
-  },
-  iconWrapFocused: {
-    backgroundColor: brand.sageTint,
-  },
   label: {
-    fontFamily: fonts.bodyMedium,
+    fontFamily: fonts.bodySemi,
     fontSize: 10,
     lineHeight: 12,
     color: brand.mutedSoft,
     textAlign: 'center',
+    marginTop: 3,
   },
   labelFocused: {
-    color: brand.sage,
-    fontFamily: fonts.bodyBold,
+    color: brand.accentDark,
   },
 });

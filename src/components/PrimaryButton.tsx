@@ -24,7 +24,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 };
 
-/** Organic PDF CTA — sage pill (primary), soft bordered (secondary). */
+/** HTML kit CTA — pill, accent teal, h~46–48. */
 export function PrimaryButton({
   label,
   onPress,
@@ -64,7 +64,7 @@ export function PrimaryButton({
       >
         {loading ? (
           <ActivityIndicator
-            color={variant === 'primary' ? '#FFFFFF' : brand.sage}
+            color={variant === 'primary' ? '#FFFFFF' : brand.accent}
           />
         ) : (
           <Text
@@ -93,13 +93,13 @@ const styles = StyleSheet.create({
     borderRadius: brand.radius.pill,
     width: '100%',
   },
-  sizeMd: { minHeight: 52, paddingHorizontal: 20, paddingVertical: 14 },
-  sizeLg: { minHeight: 56, paddingHorizontal: 22, paddingVertical: 16 },
-  sizeSm: { minHeight: 42, paddingHorizontal: 16, paddingVertical: 10 },
-  primary: { backgroundColor: brand.sage },
+  sizeMd: { minHeight: 46, paddingHorizontal: 18, paddingVertical: 12 },
+  sizeLg: { minHeight: 48, paddingHorizontal: 20, paddingVertical: 14 },
+  sizeSm: { minHeight: 40, paddingHorizontal: 14, paddingVertical: 8 },
+  primary: { backgroundColor: brand.accent },
   secondary: {
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: brand.mistBorder,
   },
   ghost: {
@@ -115,14 +115,14 @@ const styles = StyleSheet.create({
   dimmed: { opacity: 0.5 },
   pressed: { opacity: 0.9 },
   label: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 15,
-    letterSpacing: 0.15,
+    fontFamily: fonts.title,
+    fontSize: 14,
+    letterSpacing: 0.1,
     color: brand.ink,
   },
   labelSm: { fontSize: 13 },
   labelPrimary: { color: '#FFFFFF' },
   labelSecondary: { color: brand.ink },
-  labelGhost: { color: brand.sage },
+  labelGhost: { color: brand.accentDark },
   labelDanger: { color: brand.terracotta },
 });

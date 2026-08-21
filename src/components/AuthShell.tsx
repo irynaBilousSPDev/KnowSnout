@@ -20,7 +20,7 @@ type Props = {
   badge?: string | null;
 };
 
-/** Organic auth shell — cream, Caprasimo headline, sage footer CTA slot. */
+/** HTML kit auth — stone canvas, Manrope headline. */
 export function AuthShell({
   headline,
   subtitle,
@@ -53,7 +53,6 @@ export function AuthShell({
             ) : null}
             <View style={styles.form}>{children}</View>
           </ScrollView>
-
           <View style={styles.footer}>{footer}</View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -62,53 +61,49 @@ export function AuthShell({
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: brand.cream,
-  },
+  root: { flex: 1, backgroundColor: brand.canvas },
   safe: { flex: 1 },
   flex: { flex: 1 },
   scrollContent: {
-    paddingHorizontal: 24,
-    paddingTop: 28,
+    paddingHorizontal: 20,
+    paddingTop: 24,
     paddingBottom: 16,
   },
   logo: { alignSelf: 'flex-start' },
   headline: {
-    marginTop: 22,
-    fontFamily: fonts.display,
-    fontSize: 30,
-    lineHeight: 36,
+    marginTop: 20,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
-    letterSpacing: -0.3,
   },
   subtitle: {
-    marginTop: 10,
+    marginTop: 8,
     fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
     color: brand.muted,
   },
   badge: {
     alignSelf: 'flex-start',
-    marginTop: 14,
+    marginTop: 12,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: brand.radius.pill,
-    backgroundColor: brand.sageTint,
+    backgroundColor: brand.accentTint,
   },
   badgeText: {
-    fontFamily: fonts.bodyMedium,
+    fontFamily: fonts.bodySemi,
     fontSize: 12,
-    color: brand.sageDeep,
+    color: brand.accentDark,
   },
-  form: { marginTop: 24 },
+  form: { marginTop: 20 },
   footer: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     paddingTop: 12,
     paddingBottom: Platform.OS === 'ios' ? 8 : 16,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: brand.mistBorder,
-    backgroundColor: brand.cream,
+    backgroundColor: brand.canvas,
   },
 });

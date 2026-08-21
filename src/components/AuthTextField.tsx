@@ -19,7 +19,7 @@ type Props = {
   onSubmitEditing?: () => void;
 };
 
-/** Auth-focused field with reliable StyleSheet (visible borders on all platforms). */
+/** HTML kit auth field — Inter label, pill input. */
 export function AuthTextField({
   label,
   value,
@@ -52,26 +52,24 @@ export function AuthTextField({
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    marginBottom: 14,
-  },
+  wrap: { marginBottom: 12 },
   label: {
     marginBottom: 8,
-    fontFamily: 'Figtree_600SemiBold',
-    fontSize: 13,
-    color: brand.ink,
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 12,
+    color: brand.label,
     letterSpacing: 0.2,
   },
   input: {
     borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderColor: 'rgba(21,34,51,0.12)',
     backgroundColor: brand.surfaceElevated,
-    borderRadius: brand.radius.md,
+    borderRadius: brand.radius.pill,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    fontFamily: 'Figtree_400Regular',
-    fontSize: 16,
+    fontFamily: 'Inter_400Regular',
+    fontSize: 15,
     color: brand.ink,
-    minHeight: 52,
+    minHeight: 48,
   },
 });

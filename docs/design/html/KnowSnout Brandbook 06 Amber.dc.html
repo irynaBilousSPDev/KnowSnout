@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#FBF8F1; --ink:#1B1912; --accent:#C68A00; --accent2:#8A6A00;
+      --tint:#F1EADA; --dark:#1B1912; --surface:#FFFFFF;
+      --muted:#6E6656; --line:rgba(27,25,18,.12);
+    }
+    body{margin:0;background:var(--bg);font-family:'Inter',system-ui,sans-serif;color:var(--ink)}
+    a{color:var(--accent)}a:hover{color:var(--dark)}
+    .wrap{max-width:1180px;margin:0 auto;padding:56px 44px 96px}
+    .kick{font:700 11px 'Inter',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+    h1{font:800 40px 'Manrope',sans-serif;letter-spacing:-.02em;margin:10px 0 10px}
+    h2{font:800 19px 'Manrope',sans-serif;margin:0 0 16px}
+    .lead{max-width:640px;color:var(--muted);font-size:15px;line-height:1.65}
+    .sec{margin-top:46px}
+    .card{background:var(--surface);border-radius:20px;padding:26px 28px;box-shadow:0 1px 2px rgba(27,25,18,.05),0 16px 34px -22px rgba(27,25,18,.2)}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .sw{height:72px;border-radius:14px}
+    .swlbl{font:600 10.5px 'Inter',sans-serif;color:var(--muted);margin-top:7px;line-height:1.4}
+    .btn{height:46px;padding:0 26px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font:700 13.5px 'Inter',sans-serif}
+    .btn-p{background:var(--accent);color:#fff}
+    .btn-s{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+    .btn-g{background:var(--tint);color:var(--ink)}
+    .chip{display:inline-flex;align-items:center;height:28px;padding:0 13px;border-radius:999px;font:600 11.5px 'Inter',sans-serif}
+    .phones{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-start;margin-top:22px}
+    .plbl{font:700 12.5px 'Inter',sans-serif;color:var(--muted);margin-bottom:11px}
+    .scr{box-sizing:border-box;height:100%;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);padding:56px 20px 0}
+    .surf{background:var(--surface);border-radius:16px;padding:14px;box-shadow:0 1px 2px rgba(27,25,18,.05),0 10px 22px -16px rgba(27,25,18,.18)}
+    .stitle{font:800 20px 'Manrope',sans-serif;margin:0}
+    .tabbar{height:70px;flex:none;display:flex;align-items:center;justify-content:space-around;background:var(--surface);margin:auto -20px 0;border-top:1px solid var(--line)}
+    .tab{display:flex;flex-direction:column;align-items:center;gap:4px;font:600 9px 'Inter',sans-serif;color:var(--muted)}
+    .tab.on{color:var(--accent)}
+    .dot{width:19px;height:19px;border-radius:6px;background:var(--tint)}
+    .dot.on{background:var(--accent)}
+  </style>
+</helmet>
+<div class="wrap">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px">
+    <a href="KnowSnout Brandbook 04 Forest.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">04 · Лісова зелень</a>
+    <a href="KnowSnout Brandbook 05 Indigo.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">05 · Індиго з персиком</a>
+    <span style="font:700 11.5px 'Inter',sans-serif;color:#fff;background:var(--accent);padding:6px 13px;border-radius:999px">06 · Бурштин мінімал</span>
+    <a href="KnowSnout Brandbook 11 Rose.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">11 · Троянда з нафтовим синім</a>
+    <a href="KnowSnout Brandbook 12 Petrol Forest.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">12 · Нафтовий синій + ліс</a>
+    <a href="KnowSnout Brandbook 13 Grey.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">13 · Сірі відтінки</a>
+    <a href="KnowSnout Brandbook 14 Petrol Forest Grey.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">14 · Синій, ліс, троянда на сірому</a>
+  </div>
+  <div class="kick">Брендбук · варіант 06</div>
+  <h1>Бурштин мінімал</h1>
+  <p class="lead">Один насичений бурштиновий акцент, глибокий графіт і кремове тло — і більше нічого. Мінімалістичний, впевнений, майже редакційний характер.</p>
+
+  <div class="sec">
+    <h2>Логотип</h2>
+    <div class="grid2">
+      <div class="card" style="display:flex;flex-direction:column;gap:22px;align-items:flex-start">
+        <img src="assets/logo_KnowSnout_transparent.png" alt="KnowSnout" style="width:96px;height:auto">
+        <div style="display:flex;align-items:center;gap:0">
+          <img src="assets/logo_KnowSnout_transparent.png" alt="" style="width:52px;height:auto;margin-right:-2px">
+          <span style="font:800 27px 'Manrope',sans-serif;letter-spacing:-.02em;color:var(--ink)">KnowSnout</span>
+        </div>
+        <div style="font:700 14px 'Inter',sans-serif;color:var(--ink);text-decoration:underline;text-underline-offset:5px">KnowSnout</div>
+      </div>
+      <div class="card" style="background:var(--dark);display:flex;flex-direction:column;gap:22px;align-items:flex-start">
+        <img src="assets/logo_KnowSnout_transparent.png" alt="" style="width:96px;height:auto;filter:brightness(0) invert(1)">
+        <div style="display:flex;align-items:center;gap:0">
+          <img src="assets/logo_KnowSnout_transparent.png" alt="" style="width:52px;height:auto;margin-right:-2px;filter:brightness(0) invert(1)">
+          <span style="font:800 27px 'Manrope',sans-serif;letter-spacing:-.02em;color:#fff">KnowSnout</span>
+        </div>
+        <div style="font:600 11px 'Inter',sans-serif;color:rgba(255,255,255,.6)">Інверсія на темному тлі</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Палітра</h2>
+    <div class="card">
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px">
+        <div><div class="sw" style="background:var(--accent)"></div><div class="swlbl">Accent<br>#C68A00</div></div>
+        <div><div class="sw" style="background:var(--accent2)"></div><div class="swlbl">Second<br>#8A6A00</div></div>
+        <div><div class="sw" style="background:var(--tint)"></div><div class="swlbl">Tint<br>#F1EADA</div></div>
+        <div><div class="sw" style="background:var(--dark)"></div><div class="swlbl">Dark<br>#1B1912</div></div>
+        <div><div class="sw" style="background:var(--bg)"></div><div class="swlbl">Ground<br>#FBF8F1</div></div>
+        <div><div class="sw" style="background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)"></div><div class="swlbl">Surface<br>#FFFFFF</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Типографіка та компоненти</h2>
+    <div class="grid2">
+      <div class="card">
+        <div style="font:800 30px 'Manrope',sans-serif;letter-spacing:-.02em">Manrope 800</div>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:3px">Заголовки, цифри, назви екранів</div>
+        <div style="font:500 15px 'Inter',sans-serif;margin-top:20px;line-height:1.6">Inter 400–600 — інтерфейс, тіло тексту, підписи під показниками.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="btn btn-p">Зберегти</span><span class="btn btn-s">Скасувати</span><span class="btn btn-g">Пізніше</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="chip" style="background:var(--tint);color:var(--ink)">Собаки</span>
+          <span class="chip" style="background:var(--accent);color:#fff">Безпечно</span>
+          <span class="chip" style="background:rgba(198,138,0,.16);color:#8A6A00">Уважно</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center"><div style="flex:1;height:8px;border-radius:999px;background:var(--tint);overflow:hidden"><div style="width:68%;height:100%;background:var(--accent)"></div></div><span style="font:700 12px 'Inter',sans-serif">68%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Приклади екранів</h2>
+    <div class="phones">
+
+      <div>
+        <div class="plbl">Дашборд</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+          <div class="scr">
+            <div style="display:flex;align-items:center;justify-content:space-between"><h1 class="stitle">Привіт, Марто</h1><div style="width:34px;height:34px;border-radius:999px;background:var(--tint)"></div></div>
+            <div style="display:flex;gap:8px;margin-top:14px">
+              <div class="surf" style="flex:1;text-align:center;padding:13px 4px"><div style="font:800 18px 'Manrope',sans-serif;color:var(--accent)">47</div><div style="font:600 9.5px 'Inter',sans-serif;color:var(--muted)">Перевірок</div></div>
+              <div class="surf" style="flex:1;text-align:center;padding:13px 4px"><div style="font:800 18px 'Manrope',sans-serif;color:var(--accent2)">92%</div><div style="font:600 9.5px 'Inter',sans-serif;color:var(--muted)">Безпечно</div></div>
+              <div class="surf" style="flex:1;text-align:center;padding:13px 4px"><div style="font:800 18px 'Manrope',sans-serif">3</div><div style="font:600 9.5px 'Inter',sans-serif;color:var(--muted)">Улюбленці</div></div>
+            </div>
+            <div style="font:700 12.5px 'Manrope',sans-serif;margin:16px 0 9px">Останні перевірки</div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div class="surf" style="display:flex;align-items:center;gap:11px"><div style="width:36px;height:36px;border-radius:11px;background:var(--tint);flex:none"></div><div style="flex:1"><div style="font:700 12px 'Inter',sans-serif">Brit Care Adult Lamb</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Сьогодні</div></div><span class="chip" style="height:22px;padding:0 9px;font-size:10px;background:var(--accent);color:#fff">4.3</span></div>
+              <div class="surf" style="display:flex;align-items:center;gap:11px"><div style="width:36px;height:36px;border-radius:11px;background:rgba(198,138,0,.16);flex:none"></div><div style="flex:1"><div style="font:700 12px 'Inter',sans-serif">Монстера</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Вчора</div></div><span class="chip" style="height:22px;padding:0 9px;font-size:10px;background:rgba(198,138,0,.16);color:#8A6A00">Уважно</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px">
+              <div class="surf"><div style="font:700 11.5px 'Inter',sans-serif">Сканувати корм</div><div style="font:500 9.5px 'Inter',sans-serif;color:var(--muted);margin-top:2px">Штрихкод</div></div>
+              <div class="surf"><div style="font:700 11.5px 'Inter',sans-serif">Рослини</div><div style="font:500 9.5px 'Inter',sans-serif;color:var(--muted);margin-top:2px">Перевірити</div></div>
+            </div>
+            <div class="tabbar"><div class="tab on"><div class="dot on"></div>Головна</div><div class="tab"><div class="dot"></div>Перевір</div><div class="tab"><div class="dot"></div>Улюбленці</div><div class="tab"><div class="dot"></div>Профіль</div></div>
+          </div>
+        </x-import>
+      </div>
+
+      <div>
+        <div class="plbl">Результат сканування</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+          <div class="scr" style="background:var(--surface)">
+            <div style="width:100%;height:150px;border-radius:18px;background:var(--tint)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px"><h1 class="stitle" style="font-size:18px">Brit Care Adult Lamb</h1><span class="chip" style="background:var(--accent);color:#fff">4.3</span></div>
+            <div style="font:500 12px 'Inter',sans-serif;color:var(--muted);margin-top:5px;line-height:1.55">Склад без штучних консервантів. Основне джерело білка вказане першим — добрий знак.</div>
+            <div style="font:700 12.5px 'Manrope',sans-serif;margin:18px 0 9px">Показники</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div><div style="display:flex;justify-content:space-between;font:600 11.5px 'Inter',sans-serif;margin-bottom:5px"><span>Білок 26%</span><span style="color:var(--accent)">Добре</span></div><div style="height:7px;border-radius:999px;background:var(--tint)"><div style="width:78%;height:100%;border-radius:999px;background:var(--accent)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font:600 11.5px 'Inter',sans-serif;margin-bottom:5px"><span>Жири 14%</span><span style="color:var(--accent)">Норма</span></div><div style="height:7px;border-radius:999px;background:var(--tint)"><div style="width:58%;height:100%;border-radius:999px;background:var(--accent)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font:600 11.5px 'Inter',sans-serif;margin-bottom:5px"><span>Зернові</span><span style="color:#8A6A00">Уважно</span></div><div style="height:7px;border-radius:999px;background:var(--tint)"><div style="width:36%;height:100%;border-radius:999px;background:var(--accent2)"></div></div></div>
+            </div>
+            <div style="display:flex;gap:9px;margin-top:20px"><span class="btn btn-p" style="flex:1;height:44px">Зберегти</span><span class="btn btn-s" style="flex:1;height:44px">Порівняти</span></div>
+          </div>
+        </x-import>
+      </div>
+
+      <div>
+        <div class="plbl">Профіль улюбленця</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+          <div class="scr">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:11px;padding-top:6px">
+              <div style="width:92px;height:92px;border-radius:999px;background:var(--tint)"></div>
+              <div style="text-align:center"><div style="font:800 21px 'Manrope',sans-serif">Тукан</div><div style="font:500 12px 'Inter',sans-serif;color:var(--muted)">Вельш-корґі · 3 роки</div></div>
+              <div style="display:flex;gap:7px"><span class="chip" style="background:var(--tint);color:var(--ink)">12,4 кг</span><span class="chip" style="background:var(--accent);color:#fff">Щеплення в нормі</span></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:20px">
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Щеплення</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Наступне за 42 дні</div></div><span style="color:var(--muted)">›</span></div>
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Улюблений корм</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Brit Care Adult Lamb</div></div><span style="color:var(--muted)">›</span></div>
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Документи</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Паспорт, чип</div></div><span style="color:var(--muted)">›</span></div>
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Фотоальбом</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">24 фото</div></div><span style="color:var(--muted)">›</span></div>
+            </div>
+            <div class="tabbar"><div class="tab"><div class="dot"></div>Головна</div><div class="tab"><div class="dot"></div>Перевір</div><div class="tab on"><div class="dot on"></div>Улюбленці</div><div class="tab"><div class="dot"></div>Профіль</div></div>
+          </div>
+        </x-import>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

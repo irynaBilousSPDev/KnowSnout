@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   },
   lead: {
     marginBottom: 14,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 14,
     lineHeight: 20,
     color: '#5A6B7D',
@@ -282,20 +282,20 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   bannerText: {
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 13,
     color: brand.ink,
     lineHeight: 18,
   },
   sectionTitle: {
     marginBottom: 6,
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 17,
     color: brand.ink,
   },
   sectionHelp: {
     marginBottom: 12,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 14,
     lineHeight: 20,
     color: '#5A6B7D',
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   hintText: {
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 13,
     color: brand.ink,
   },

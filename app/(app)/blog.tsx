@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     borderColor: brand.navy,
   },
   chipText: {
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 13,
     color: brand.navy,
   },

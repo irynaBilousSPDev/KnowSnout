@@ -9,7 +9,7 @@ import { LoadingState } from '@/src/components/LoadingState';
 import { ErrorState } from '@/src/components/ErrorState';
 import { t } from '@/src/i18n';
 import { buildStoryDeepLink, buildStoryShareMessage } from '@/src/lib/share';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import {
   createStoryPost,
   deleteStoryPost,
@@ -111,7 +111,7 @@ const tagStyles = StyleSheet.create({
     paddingVertical: 4,
   },
   chipText: {
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 11,
     color: brand.navy,
   },
@@ -734,7 +734,7 @@ export default function StoriesScreen() {
             onPress={() => router.push(item.href as never)}
             style={[styles.moduleChip, dark && styles.moduleChipDark]}
           >
-            <Ionicons name={item.icon} size={16} color={brand.forest} />
+            <Ionicons name={item.icon} size={16} color={brand.accent} />
             <Text style={styles.moduleChipText} numberOfLines={1}>
               {item.label}
             </Text>
@@ -761,7 +761,7 @@ export default function StoriesScreen() {
           <Ionicons
             name={viewMode === 'list' ? 'grid-outline' : 'list'}
             size={18}
-            color={brand.forest}
+            color={brand.accent}
           />
         </Pressable>
       </View>
@@ -807,7 +807,7 @@ export default function StoriesScreen() {
             accessibilityRole="button"
             accessibilityLabel={item.label}
           >
-            <Ionicons name={item.icon} size={16} color={brand.sage} />
+            <Ionicons name={item.icon} size={16} color={brand.accent} />
             <Text
               style={[styles.quickChipText, dark && styles.quickChipTextDark]}
             >
@@ -1365,6 +1365,7 @@ const styles = StyleSheet.create({
     backgroundColor: STORIES_DARK.bg,
   },
   feedHeader: {
+    paddingHorizontal: 20,
     paddingBottom: 8,
   },
   feedHeaderDark: {
@@ -1373,27 +1374,23 @@ const styles = StyleSheet.create({
   moduleNav: {
     flexDirection: 'row',
     gap: 8,
-    paddingHorizontal: 20,
     paddingBottom: 12,
   },
   moduleChip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
   moduleChipDark: {
     backgroundColor: STORIES_DARK.card,
-    borderColor: STORIES_DARK.border,
   },
   moduleChipText: {
-    fontFamily: 'Figtree_500Medium',
-    fontSize: 12,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
     color: brand.ink,
   },
   actionsRow: {
@@ -1401,23 +1398,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     marginTop: 4,
-    paddingHorizontal: 20,
     paddingBottom: 8,
   },
   actionsPrimary: { flex: 1 },
   contestsBtn: {
     width: 42,
     height: 42,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   contestsBtnDark: {
     backgroundColor: STORIES_DARK.card,
-    borderColor: STORIES_DARK.border,
   },
   quickRow: {
     flexDirection: 'row',
@@ -1431,19 +1429,16 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 999,
-    backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
   },
   quickChipDark: {
     backgroundColor: STORIES_DARK.card,
-    borderColor: STORIES_DARK.border,
   },
   quickChipText: {
-    fontFamily: 'Figtree_500Medium',
-    fontSize: 12,
-    color: brand.navy,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.accentDark,
   },
   quickChipTextDark: {
     color: brand.rose,
@@ -1457,31 +1452,27 @@ const styles = StyleSheet.create({
   },
   filterChip: {
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-    backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    paddingVertical: 6,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
   },
   filterChipDark: {
     backgroundColor: STORIES_DARK.card,
-    borderColor: STORIES_DARK.border,
   },
   filterChipActive: {
-    backgroundColor: brand.navy,
-    borderColor: brand.navy,
+    backgroundColor: brand.accentTint,
   },
   filterChipText: {
-    fontFamily: 'Figtree_400Regular',
-    fontSize: 13,
-    color: brand.navy,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.ink,
   },
   filterChipTextDark: {
     color: STORIES_DARK.muted,
   },
   filterChipTextActive: {
-    fontFamily: 'Figtree_700Bold',
-    color: brand.surface,
+    fontFamily: fonts.bodyBold,
+    color: brand.accentDark,
   },
   listContent: {
     paddingBottom: 24,
@@ -1506,7 +1497,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 14,
     lineHeight: 20,
     color: '#5A6B7D',

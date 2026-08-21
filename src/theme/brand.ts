@@ -1,21 +1,20 @@
 /**
- * KnowSnout tokens — Organic PDF kit (active).
- * Source: docs/design/KnowSnout-UI-kit-v2-*.pdf + docs/design/refs/
- * Variant 12 (navy/forest/rose) deferred — see `v12` below for later remap.
+ * KnowSnout tokens — from HTML comps (`docs/design/html/*.dc.html`).
+ * Active source: module phone mockups (Вхід і Перевір etc.), not PDF raster guesses.
+ * Brandbook Variant 12 kept as `v12` for later remap if product chooses brandbook over kit screens.
  */
 
 export const fonts = {
-  display: 'Caprasimo_400Regular',
-  body: 'Figtree_400Regular',
-  bodyMedium: 'Figtree_500Medium',
-  bodySemi: 'Figtree_600SemiBold',
-  bodyBold: 'Figtree_700Bold',
-  /** Fallbacks if Caprasimo/Figtree fail to load */
-  displayFallback: 'Caprasimo_400Regular',
-  bodyFallback: 'Figtree_400Regular',
+  display: 'Manrope_700Bold',
+  body: 'Inter_400Regular',
+  bodyMedium: 'Inter_500Medium',
+  bodySemi: 'Inter_600SemiBold',
+  bodyBold: 'Inter_700Bold',
+  title: 'Manrope_700Bold',
+  titleExtra: 'Manrope_800ExtraBold',
 } as const;
 
-/** Deferred Brandbook Variant 12 — do not use as active chrome yet. */
+/** Brandbook Variant 12 — deferred relative to HTML kit screens. */
 export const v12 = {
   navy: '#122A4C',
   navyDeep: '#0C1C33',
@@ -27,63 +26,84 @@ export const v12 = {
 } as const;
 
 /**
- * Active Organic palette sampled from PDF phone mocks.
- * Primary CTA = deep sage/teal; warm cream surface; terracotta accent.
+ * Active HTML kit palette (phone mocks).
+ * Primary = petrol teal; success = bright green; canvas = warm stone.
  */
 export const brand = {
-  /** Primary CTA / active tab / links (PDF sage-teal) */
-  sage: '#0A6B5C',
-  sageDeep: '#084F44',
-  sageTint: '#D8EBE6',
-  /** Emotional / danger-adjacent accent */
+  /** Primary CTA / active accents */
+  accent: '#0E6E5D',
+  accentPressed: '#0A5346',
+  accentDark: '#083F35',
+  accentTint: '#EAF7F3',
+  accentBorder: '#CBEBE1',
+  accentSoft: '#9FD8CB',
+
+  /** Safe / success */
+  success: '#1EAE5C',
+  successDark: '#0F6D38',
+  successTint: '#EEFBF0',
+
+  /** Warm stone canvas */
+  canvas: '#F4F3F1',
+  cream: '#F4F3F1',
+  creamDeep: '#EAE7E2',
+
+  ink: '#152233',
+  muted: '#5B6B75',
+  mutedSoft: '#8b96a0',
+  label: '#455460',
+  surface: '#F4F3F1',
+  surfaceElevated: '#FFFFFF',
+  mist: '#EAF7F3',
+  mistBorder: '#D8D5D0',
+  chipTrack: '#EAE7E2',
+
   terracotta: '#C45C3E',
   terracottaTint: '#F3E0D8',
-  /** Warm page background */
-  cream: '#F3EDE4',
-  creamDeep: '#E8DFD2',
-
-  ink: '#1A2332',
-  muted: '#6B7280',
-  mutedSoft: '#9AA3AD',
-  surface: '#F3EDE4',
-  surfaceElevated: '#FFFFFF',
-  mist: '#D8EBE6',
-  mistBorder: '#D0D5CC',
   roseMist: '#F3E0D8',
 
   score: {
     poor: '#C45C3E',
     fair: '#C4922A',
-    good: '#0A6B5C',
+    good: '#1EAE5C',
   },
 
   gradient: {
-    start: '#0A6B5C',
-    end: '#084F44',
+    start: '#0E6E5D',
+    end: '#083F35',
     angleDeg: 135,
   },
 
   /**
-   * Compatibility aliases — existing screens use navy/forest/rose.
-   * Mapped onto Organic so the whole app shifts without per-file rewrites.
+   * Compatibility aliases used across older screens.
+   * Map to HTML kit so the whole app shifts.
    */
-  navy: '#0A6B5C',
-  navyDeep: '#084F44',
-  forest: '#0A6B5C',
-  forestTint: '#D8EBE6',
+  sage: '#0E6E5D',
+  sageDeep: '#083F35',
+  sageTint: '#EAF7F3',
+  navy: '#0E6E5D',
+  navyDeep: '#083F35',
+  forest: '#1EAE5C',
+  forestTint: '#EEFBF0',
   rose: '#C45C3E',
   roseTint: '#F3E0D8',
-  lime: '#0A6B5C',
-  teal: '#0A6B5C',
-  tealDeep: '#084F44',
-  tealPressed: '#084F44',
+  lime: '#1EAE5C',
+  teal: '#0E6E5D',
+  tealDeep: '#083F35',
+  tealPressed: '#0A5346',
 
-  /** Corner radii from PDF (soft, pill CTAs) */
   radius: {
     sm: 12,
-    md: 16,
-    lg: 22,
-    xl: 28,
+    md: 14,
+    lg: 18,
+    xl: 20,
     pill: 999,
+  },
+
+  shadow: {
+    color: '#152233',
+    opacity: 0.08,
+    radius: 3,
+    offset: { width: 0, height: 1 },
   },
 } as const;

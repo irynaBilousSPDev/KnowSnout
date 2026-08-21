@@ -15,7 +15,7 @@ type Props = {
   variant?: 'card' | 'flat';
 };
 
-/** PDF list row — white elevated card, soft radius, chevron. */
+/** HTML kit list row — white card r14, soft shadow. */
 export function ListRow({
   title,
   subtitle,
@@ -70,17 +70,15 @@ export function ListRow({
 
 const styles = StyleSheet.create({
   shell: {
-    borderRadius: brand.radius.lg,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
     paddingHorizontal: 14,
     paddingVertical: 14,
     marginBottom: 10,
-    shadowColor: '#1A2332',
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
     elevation: 1,
   },
   shellFlat: {
@@ -112,7 +110,7 @@ const styles = StyleSheet.create({
     marginTop: 3,
     fontFamily: fonts.bodyMedium,
     fontSize: 12,
-    color: brand.sage,
+    color: brand.accentDark,
   },
   trailing: {
     marginLeft: 8,

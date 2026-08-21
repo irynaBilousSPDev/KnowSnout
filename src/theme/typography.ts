@@ -2,62 +2,60 @@ import { StyleSheet, TextStyle } from 'react-native';
 
 import { brand, fonts } from '@/src/theme/brand';
 
-/** PDF Organic type scale — Caprasimo display + Figtree body. */
+/** HTML kit type scale — Manrope titles + Inter body. */
 export const type = StyleSheet.create({
   displayLg: {
-    fontFamily: fonts.display,
-    fontSize: 32,
-    lineHeight: 38,
+    fontFamily: fonts.title,
+    fontSize: 24,
+    lineHeight: 30,
     color: brand.ink,
-    letterSpacing: -0.3,
   },
   displayMd: {
-    fontFamily: fonts.display,
-    fontSize: 26,
-    lineHeight: 32,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
-    letterSpacing: -0.2,
   },
   title: {
     fontFamily: fonts.bodyBold,
-    fontSize: 20,
-    lineHeight: 26,
-    color: brand.ink,
-  },
-  subtitle: {
-    fontFamily: fonts.bodySemi,
     fontSize: 16,
     lineHeight: 22,
     color: brand.ink,
   },
+  subtitle: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 15,
+    lineHeight: 20,
+    color: brand.ink,
+  },
   body: {
     fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
     color: brand.muted,
   },
   bodyStrong: {
     fontFamily: fonts.bodySemi,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
     color: brand.ink,
   },
   label: {
     fontFamily: fonts.bodySemi,
-    fontSize: 13,
-    lineHeight: 18,
-    color: brand.ink,
+    fontSize: 12,
+    lineHeight: 16,
+    color: brand.label,
   },
   caption: {
     fontFamily: fonts.body,
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 11,
+    lineHeight: 15,
     color: brand.mutedSoft,
   },
   button: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 15,
-    letterSpacing: 0.2,
+    fontFamily: fonts.title,
+    fontSize: 14,
+    letterSpacing: 0.1,
   },
 });
 

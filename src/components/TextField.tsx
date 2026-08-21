@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   wrap: { marginBottom: 16 },
   label: {
     marginBottom: 8,
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 13,
     color: brand.muted,
   },
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 16,
     color: brand.ink,
   },

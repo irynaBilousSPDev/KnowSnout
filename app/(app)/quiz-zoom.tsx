@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   zoomLabel: {
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   zoomBody: {
     marginTop: 8,
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 18,
     color: brand.ink,
   },
@@ -139,13 +139,13 @@ const styles = StyleSheet.create({
   choiceOk: { borderColor: brand.score.good, backgroundColor: '#E8F8F2' },
   choiceBad: { borderColor: brand.score.poor, backgroundColor: '#FBEDEA' },
   choiceText: {
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 15,
     color: brand.ink,
   },
   score: {
     marginBottom: 16,
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 22,
     color: brand.ink,
   },

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#F4F3F1;font-family:'Inter',system-ui,sans-serif;color:#152233}
+    .wrap{max-width:1320px;margin:0 auto;padding:60px 44px 100px}
+    .kicker{font:700 11px/1.4 'Inter',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#0E6E5D}
+    .row{display:flex;gap:36px;flex-wrap:wrap;margin-top:34px;align-items:flex-start}
+    .lbl{font:700 13px 'Manrope',sans-serif;color:#5B6B75;margin-bottom:14px}
+    .card{background:#fff;border-radius:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:16px}
+    .btn{height:50px;border-radius:14px;background:#0E6E5D;color:#fff;display:flex;align-items:center;justify-content:center;font:700 14px 'Inter',sans-serif}
+    .tag{padding:5px 12px;border-radius:999px;background:#E3F5F0;color:#0A5346;font:700 11px 'Inter',sans-serif}
+  </style>
+</helmet>
+<div class="wrap">
+  <div class="kicker">KnowSnout · Приклад стилю за референсом</div>
+  <h1 style="font-size:32px;font-family:'Manrope',sans-serif;font-weight:800;margin:8px 0 6px">Кілька екранів у затвердженому бренді</h1>
+  <p style="max-width:640px;color:#5B6B75;font-size:14px;line-height:1.6">Той самий рівень деталізації, що й у референсі — але з логотипом, кольорами (смарагд #0E6E5D + м'ята) і шрифтами KnowSnout.</p>
+
+  <div class="row">
+
+    <div>
+      <div class="lbl">Онбординг</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+        <div style="height:100%;background:#fff;padding:24px 22px;display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center">
+          <div style="width:100%"></div>
+          <div style="width:88px;height:88px;border-radius:24px;background:#E3F5F0;display:flex;align-items:center;justify-content:center;margin-top:20px"><img src="assets/logo_KnowSnout_icon.png" style="width:44px"></div>
+          <div style="font:800 22px 'Manrope',sans-serif">Скануй корм за секунди</div>
+          <div style="font:500 13px 'Inter',sans-serif;color:#5B6B75;line-height:1.6;max-width:260px">Наведи камеру на штрихкод чи етикетку — і миттєво отримай оцінку складу</div>
+          <div style="display:flex;gap:6px;margin-top:auto"><div style="width:20px;height:6px;border-radius:999px;background:#0E6E5D"></div><div style="width:6px;height:6px;border-radius:999px;background:#D8E6E2"></div><div style="width:6px;height:6px;border-radius:999px;background:#D8E6E2"></div></div>
+          <div class="btn" style="width:100%">Далі</div>
+        </div>
+      </x-import>
+    </div>
+
+    <div>
+      <div class="lbl">Головна</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+        <div style="height:100%;background:#F4F3F1;padding:14px 20px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden">
+          <div style="font:700 20px 'Manrope',sans-serif">Привіт, Марто!</div>
+          <div style="display:flex;gap:10px">
+            <div class="card" style="flex:1;text-align:center;padding:12px 6px"><div style="font:800 18px 'Manrope',sans-serif;color:#0E6E5D">47</div><div style="font:600 10px 'Inter',sans-serif;color:#5B6B75">Перевірок</div></div>
+            <div class="card" style="flex:1;text-align:center;padding:12px 6px"><div style="font:800 18px 'Manrope',sans-serif;color:#0E6E5D">92%</div><div style="font:600 10px 'Inter',sans-serif;color:#5B6B75">Безпечно</div></div>
+            <div class="card" style="flex:1;text-align:center;padding:12px 6px"><div style="font:800 18px 'Manrope',sans-serif;color:#0E6E5D">3</div><div style="font:600 10px 'Inter',sans-serif;color:#5B6B75">Улюбленці</div></div>
+          </div>
+          <div style="font:700 13px 'Manrope',sans-serif;margin-top:4px">Останні перевірки</div>
+          <div class="card" style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;border-radius:10px;background:#E3F5F0"></div><div style="flex:1"><div style="font:700 12.5px 'Inter',sans-serif">Brit Care Adult Lamb</div><div style="font:500 11px 'Inter',sans-serif;color:#8b96a0">2 дні тому</div></div><span class="tag">4.3</span></div>
+          <div class="card" style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;border-radius:10px;background:#E3F5F0"></div><div style="flex:1"><div style="font:700 12.5px 'Inter',sans-serif">Монстера</div><div style="font:500 11px 'Inter',sans-serif;color:#8b96a0">4 дні тому</div></div><span class="tag">Безпечно</span></div>
+          <div style="display:flex;gap:10px;margin-top:4px"><div class="card" style="flex:1"><div style="font:700 12.5px 'Manrope',sans-serif">Корм</div><div style="font:500 10.5px 'Inter',sans-serif;color:#8b96a0">Сканувати</div></div><div class="card" style="flex:1"><div style="font:700 12.5px 'Manrope',sans-serif">Рослини</div><div style="font:500 10.5px 'Inter',sans-serif;color:#8b96a0">Перевірити</div></div></div>
+        </div>
+      </x-import>
+    </div>
+
+    <div>
+      <div class="lbl">Результат сканування</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+        <div style="height:100%;background:#F4F3F1;padding:14px 20px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden">
+          <div style="font:700 18px 'Manrope',sans-serif">Результат</div>
+          <div class="card" style="height:150px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><img src="assets/logo_KnowSnout_icon.png" style="width:52px"></div>
+          <div class="card" style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between"><div style="font:700 14px 'Manrope',sans-serif">Індекс довіри</div><div style="width:46px;height:46px;border-radius:999px;background:#0E6E5D;color:#fff;display:flex;align-items:center;justify-content:center;font:800 15px 'Manrope',sans-serif">86</div></div>
+            <div style="height:8px;border-radius:999px;background:#E3F5F0;overflow:hidden"><div style="width:86%;height:100%;background:#0E6E5D"></div></div>
+          </div>
+          <div class="card" style="display:flex;flex-direction:column;gap:8px">
+            <div style="font:700 13.5px 'Manrope',sans-serif">Склад</div>
+            <div style="display:flex;justify-content:space-between;font:500 12px 'Inter',sans-serif"><span>Курка</span><span style="color:#0E6E5D;font-weight:700">безпечно</span></div>
+            <div style="display:flex;justify-content:space-between;font:500 12px 'Inter',sans-serif"><span>Рис</span><span style="color:#0E6E5D;font-weight:700">безпечно</span></div>
+            <div style="display:flex;justify-content:space-between;font:500 12px 'Inter',sans-serif"><span>Барвник E120</span><span style="color:#C97A4A;font-weight:700">уважно</span></div>
+          </div>
+          <div class="btn">Зберегти в історію</div>
+        </div>
+      </x-import>
+    </div>
+
+    <div>
+      <div class="lbl">Порівняння кормів</div>
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+        <div style="height:100%;background:#F4F3F1;padding:14px 20px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden">
+          <div style="font:700 18px 'Manrope',sans-serif">Порівняння</div>
+          <div style="display:flex;gap:10px">
+            <div class="card" style="flex:1;text-align:center"><div style="width:100%;height:60px;border-radius:10px;background:#E3F5F0;margin-bottom:8px"></div><div style="font:700 11.5px 'Inter',sans-serif">Brit Care</div><span class="tag" style="margin-top:6px;display:inline-block">4.3</span></div>
+            <div class="card" style="flex:1;text-align:center"><div style="width:100%;height:60px;border-radius:10px;background:#E3F5F0;margin-bottom:8px"></div><div style="font:700 11.5px 'Inter',sans-serif">Royal Canin</div><span class="tag" style="margin-top:6px;display:inline-block;background:#F6EFE4;color:#8C5A1E">3.8</span></div>
+          </div>
+          <div class="card" style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;font:600 12px 'Inter',sans-serif;color:#5B6B75"><span>Білок</span><span>26% · 24%</span></div>
+            <div style="display:flex;justify-content:space-between;font:600 12px 'Inter',sans-serif;color:#5B6B75"><span>Жири</span><span>14% · 13%</span></div>
+            <div style="display:flex;justify-content:space-between;font:600 12px 'Inter',sans-serif;color:#5B6B75"><span>Ціна за кг</span><span>₴185 · ₴210</span></div>
+          </div>
+          <div class="btn">Додати до улюбленого</div>
+        </div>
+      </x-import>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

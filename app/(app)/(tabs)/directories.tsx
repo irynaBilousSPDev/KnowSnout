@@ -8,7 +8,7 @@ import { DIRECTORY_CATEGORIES } from '@/src/services/directories';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** PDF F1 — equal category tiles on cream. */
+/** HTML kit · Довідники hub — Manrope 22, soft white tiles. */
 const ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   vets: 'medkit-outline',
   breeders: 'ribbon-outline',
@@ -49,7 +49,7 @@ export default function DirectoriesHubScreen() {
                   <Ionicons
                     name={ICONS[cat.id] ?? 'location-outline'}
                     size={22}
-                    color={brand.sage}
+                    color={brand.accent}
                   />
                 </View>
                 <Text style={styles.tileTitle} numberOfLines={2}>
@@ -85,8 +85,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontFamily: fonts.display,
-    fontSize: 34,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
   },
   lead: {
@@ -106,11 +107,14 @@ const styles = StyleSheet.create({
     width: '47.5%',
     flexGrow: 1,
     minHeight: 112,
-    borderRadius: brand.radius.lg,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   tileIcon: {
     marginBottom: 10,
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: brand.sageTint,
+    backgroundColor: brand.accentTint,
   },
   tileTitle: {
     fontFamily: fonts.bodyBold,

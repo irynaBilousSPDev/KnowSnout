@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/styles.css">
+  <script src="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/_ds_bundle.js"></script>
+  <script src="./image-slot.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap');
+    :root{
+      --color-bg:#F4F3F1; --color-surface:#FFFFFF; --color-text:#152233;
+      --color-accent:#0E6E5D; --color-accent-2:#1EAE5C; --color-divider:rgba(21,34,51,.12);
+      --color-neutral-100:#F4F3F1; --color-neutral-200:#EAE7E2; --color-neutral-300:#D8D5D0;
+      --color-neutral-400:#B0A99D; --color-neutral-500:#8b96a0; --color-neutral-600:#5B6B75;
+      --color-neutral-700:#455460; --color-neutral-800:#2E3A44; --color-neutral-900:#152233;
+      --color-accent-100:#EAF7F3; --color-accent-200:#CBEBE1; --color-accent-300:#9FD8CB;
+      --color-accent-400:#5FBBA6; --color-accent-500:#0E6E5D; --color-accent-600:#0A5346;
+      --color-accent-700:#083F35; --color-accent-800:#062B24; --color-accent-900:#041A16;
+      --color-accent-2-100:#EEFBF0; --color-accent-2-200:#DFF6E3; --color-accent-2-300:#C8F2CE;
+      --color-accent-2-400:#39E07A; --color-accent-2-500:#1EAE5C; --color-accent-2-600:#1A9A50;
+      --color-accent-2-700:#0F6D38; --color-accent-2-800:#0B5029; --color-accent-2-900:#07341A;
+      --font-heading:'Manrope', system-ui, sans-serif; --font-heading-weight:700;
+      --font-body:'Inter', system-ui, sans-serif;
+      --radius-sm:8px; --radius-md:14px; --radius-lg:20px;
+      --shadow-sm:0 1px 3px rgba(21,34,51,.08); --shadow-md:0 3px 10px rgba(21,34,51,.10); --shadow-lg:0 12px 32px rgba(21,34,51,.16);
+    }
+    body{margin:0}
+    .phones-row{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;padding:0 48px 80px}
+    .phone-col{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+    .phone-label{font-family:var(--font-heading);font-size:15px;color:var(--color-text)}
+    .scr-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 6px}
+    .scr-title{font-family:var(--font-heading);font-size:22px;color:var(--color-text);margin:0}
+    .scr-back{width:34px;height:34px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .kicker{font:600 11px/1.4 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)}
+    .paw-badge{display:flex;align-items:center;gap:6px;background:var(--color-accent-100);color:var(--color-accent-700);border-radius:999px;padding:6px 12px;font:700 13px var(--font-body)}
+    .chip{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-text);font:500 12.5px var(--font-body)}
+    .chip-warn{background:var(--color-accent-100);color:var(--color-accent-700)}
+    .chip-good{background:var(--color-accent-2-100);color:var(--color-accent-2-700)}
+    .card-sm{background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px}
+    .seg-simple{display:flex;background:var(--color-neutral-200);border-radius:999px;padding:4px;gap:4px}
+    .seg-simple-opt{flex:1;text-align:center;padding:8px 10px;border-radius:999px;font:600 13px var(--font-body);color:var(--color-text)}
+    .seg-simple-opt.active{background:#fff;box-shadow:var(--shadow-sm);color:var(--color-accent-700)}
+    .field-lbl{font:600 12px var(--font-body);color:var(--color-neutral-700);margin-bottom:6px}
+    .row-between{display:flex;align-items:center;justify-content:space-between}
+    .tab-bar{display:flex;justify-content:space-around;align-items:center;padding:10px 8px 6px;background:#fff;border-top:1px solid var(--color-neutral-200)}
+    .tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;font:600 10px var(--font-body);color:var(--color-neutral-500)}
+    .tab-item.active{color:var(--color-accent-700)}
+  </style>
+</helmet>
+<div style="max-width:1100px;margin:0 auto;padding:56px 48px 24px">
+  <div class="kicker">KnowSnout · UI Kit v2 · Дизайн-аудит</div>
+  <h1 style="font-size:34px;margin:8px 0 12px">Улюбленці</h1>
+  <p style="max-width:680px;color:var(--color-neutral-700);font-size:15.5px;line-height:1.6">
+    Частина 2 з 5. Профілі тварин, догляд, здоров'я, документи.
+  </p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><a href="KnowSnout UI Kit.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-600);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">← Огляд</a><a href="KnowSnout - Вхід і Перевір.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Вхід і Перевір</a><span style="font:700 12px var(--font-body);color:var(--color-text);padding:6px 12px;background:var(--color-neutral-200);border-radius:999px">Улюбленці</span><a href="KnowSnout - Стрічка.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Стрічка</a><a href="KnowSnout - Спільнота.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Спільнота</a><a href="KnowSnout - Профіль і Службові.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Профіль і Службові</a><a href="KnowSnout - Довідники.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Довідники</a><a href="KnowSnout Мапа додатку.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-600);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">🗺 Мапа додатку</a></div>
+</div>
+<div style="position:sticky;top:0;z-index:10;background:rgba(245,234,216,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-neutral-300);padding:10px 48px;display:flex;gap:8px;flex-wrap:wrap">
+  <a href="#sec-pets" style="font:600 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:5px 12px;background:var(--color-accent-100);border-radius:999px">Список · Хаб · Догляд · Здоров'я</a>
+  <a href="#sec-detail" style="font:600 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:5px 12px;background:var(--color-accent-100);border-radius:999px">Ігри · Звички · Календар</a>
+  <a href="#sec-docs-forms" style="font:600 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:5px 12px;background:var(--color-accent-100);border-radius:999px">Документи · Форми</a>
+</div>
+<div id="sec-pets" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Улюбленці</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Список, хаб тварини, догляд, здоров&apos;я</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">12 · Список тварин</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px" class="row-between">
+          <h1 class="scr-title">Улюбленці</h1>
+          <div class="scr-back">+</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:14px">
+            <image-slot id="list-pet-1" style="width:56px;height:56px" shape="circle" placeholder="Собака"></image-slot>
+            <div style="flex:1"><div style="font:700 15px var(--font-body)">Тукан</div><div style="font-size:12px;color:var(--color-neutral-600)">Корги · 3 роки</div></div>
+            <svg width="9" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" stroke-width="2.75" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:14px">
+            <image-slot id="list-pet-2" style="width:56px;height:56px" shape="circle" placeholder="Кіт"></image-slot>
+            <div style="flex:1"><div style="font:700 15px var(--font-body)">Сіра</div><div style="font-size:12px;color:var(--color-neutral-600)">Кіт · 1.5 роки</div></div>
+            <svg width="9" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" stroke-width="2.75" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg>
+          </div>
+          <div class="btn btn-secondary btn-block" style="height:46px;margin-top:6px">+ Додати улюбленця</div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:14px">
+            <image-slot id="list-pet-3" style="width:56px;height:56px" shape="circle" placeholder="Папуга"></image-slot>
+            <div style="flex:1"><div style="font:700 15px var(--font-body)">Кеша</div><div style="font-size:12px;color:var(--color-neutral-600)">Папуга жако · 2 роки</div></div>
+            <svg width="9" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" stroke-width="2.75" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg><span>Стрічка</span></div>
+          <div class="tab-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg><span>Перевір</span></div>
+          <div class="tab-item active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M15.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M8.5 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M13 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M12 12c3 0 5.5 2.3 5.5 5 0 2-1.7 3-3.3 2.3-1.3-.6-2.9-.6-4.4 0C8.2 20 6.5 19 6.5 17c0-2.7 2.5-5 5.5-5Z"></path></svg><span>Улюбленці</span></div>
+          <div class="tab-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.5 7.4 8.5 8.5 0 01-7.6.1L4 20l1-4.9a8.38 8.38 0 01-1-4.1 8.5 8.5 0 018.5-8.5h.5a8.48 8.48 0 018 8v.5z"></path></svg><span>Спільнота</span></div>
+          <div class="tab-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12a5 5 0 015-5 5 5 0 015 5v4a5 5 0 01-5 5 5 5 0 01-5-5v-4z"></path></svg><span>Довідники</span></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">13 · Хаб тварини</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 4px" class="row-between">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <div style="font:600 12px var(--font-body);color:var(--color-neutral-500)">Улюбленці</div>
+          <div style="width:34px"></div>
+        </div>
+        <div style="padding:6px 20px 4px;display:flex;align-items:center;gap:12px">
+          <image-slot id="hub-pet-avatar" style="width:56px;height:56px" shape="circle" placeholder="Собака"></image-slot>
+          <div>
+            <h1 class="scr-title" style="font-size:22px;margin:0">Тукан</h1>
+            <div style="font-size:12px;color:var(--color-neutral-600)">Корги · Пес · 3 роки</div>
+          </div>
+        </div>
+        <div style="padding:0 20px 10px;display:flex;gap:8px">
+          <div style="width:38px;height:38px;border-radius:999px;border:2px solid var(--color-accent);padding:1px"><image-slot id="switch-1" style="width:100%;height:100%" shape="circle" placeholder="Тукан"></image-slot></div>
+          <div style="width:38px;height:38px;border-radius:999px;opacity:.6"><image-slot id="switch-2" style="width:100%;height:100%" shape="circle" placeholder="Сіра"></image-slot></div>
+          <div style="width:38px;height:38px;border-radius:999px;opacity:.6"><image-slot id="switch-3" style="width:100%;height:100%" shape="circle" placeholder="Кеша"></image-slot></div>
+          <div style="width:38px;height:38px;border-radius:999px;border:2px dashed var(--color-neutral-400);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-500);font-size:16px">+</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:10px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:999px;background:var(--color-accent-100);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12a5 5 0 015-5 5 5 0 015 5v4a5 5 0 01-5 5 5 5 0 01-5-5v-4z"></path><path d="M9 9c-1-1-1-3 0-4M15 9c1-1 1-3 0-4"></path></svg>
+            </div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Улюблений корм</div><div style="font-size:12px;color:var(--color-neutral-600)">Brit Care Lamb</div></div>
+            <svg width="9" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" stroke-width="2.75" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:999px;background:var(--color-accent-2-100);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>
+            </div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Щеплення</div><div style="font-size:12px;color:var(--color-accent-2-700)">Актуально</div></div>
+            <svg width="9" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" stroke-width="2.75" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:999px;background:var(--color-accent-2-100);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg>
+            </div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Сьогодні з улюбленцем</div><div style="font-size:12px;color:var(--color-neutral-600)">Вода, гра, годування</div></div>
+            <svg width="9" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" stroke-width="2.75" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><path d="M14 2v6h6"></path></svg>
+            </div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Документи + Подорожі</div><div style="font-size:12px;color:var(--color-neutral-600)">3 з 5 пунктів</div></div>
+            <svg width="9" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" stroke-width="2.75" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg>
+          </div>
+          <div class="btn btn-secondary btn-block" style="height:44px;margin-top:6px">Переглянути повний профіль</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">14 · Догляд сьогодні</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px"><h1 class="scr-title">Догляд сьогодні</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:10px;overflow:auto">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+              <image-slot id="care-pet-1" style="width:56px;height:56px" shape="circle" placeholder="Собака"></image-slot>
+              <div style="font:600 11px var(--font-body)">Тукан</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.5">
+              <image-slot id="care-pet-2" style="width:56px;height:56px" shape="circle" placeholder="Кіт"></image-slot>
+              <div style="font:600 11px var(--font-body)">Сіра</div>
+            </div>
+          </div>
+          <div class="card-sm row-between"><span style="font:600 13.5px var(--font-body);display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z"></path></svg>Вода</span><span class="chip chip-good">Готово</span></div>
+          <div class="card-sm row-between"><span style="font:600 13.5px var(--font-body);display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg>Гра</span><span class="chip">Не відмічено</span></div>
+          <div class="card-sm row-between"><span style="font:600 13.5px var(--font-body);display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12a5 5 0 015-5 5 5 0 015 5v4a5 5 0 01-5 5 5 5 0 01-5-5v-4z"></path><path d="M9 9c-1-1-1-3 0-4M15 9c1-1 1-3 0-4"></path></svg>Годування</span><span class="chip chip-good">Готово</span></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">17 · Профіль тварини, перегляд</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px" class="row-between">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title">Тукан</h1>
+          <div class="scr-back" style="font:600 12px var(--font-body);color:var(--color-accent-700)">Редаг.</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <image-slot id="view-avatar" style="width:104px;height:104px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="font:700 19px var(--font-heading)">Тукан</div>
+            <div style="font-size:12.5px;color:var(--color-neutral-600)">Корги · Пес · 3 роки · 11.4 кг</div>
+          </div>
+          <div class="card-sm">
+            <div style="font:700 13.5px var(--font-body);margin-bottom:6px">Про Тукана</div>
+            <div style="font-size:13px;color:var(--color-neutral-700);line-height:1.5">Любить гратись з м&apos;ячем, боїться салюту, алергія на курку.</div>
+          </div>
+          <div class="card-sm row-between"><span style="font-size:13px;color:var(--color-neutral-600)">Улюблений корм</span><span style="font:700 13px var(--font-body)">Brit Care Lamb</span></div>
+          <div class="card-sm row-between"><span style="font-size:13px;color:var(--color-neutral-600)">Походження</span><span class="chip chip-good">Притулок</span></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">17b · Профіль тварини, перегляд — інший вид (папуга)</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px" class="row-between">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title">Кеша</h1>
+          <div class="scr-back" style="font:600 12px var(--font-body);color:var(--color-accent-700)">Редаг.</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <image-slot id="view-avatar-2" style="width:104px;height:104px" shape="circle" placeholder="Папуга"></image-slot>
+            <div style="font:700 19px var(--font-heading)">Кеша</div>
+            <div style="font-size:12.5px;color:var(--color-neutral-600)">Папуга жако · 2 роки · 420 г</div>
+          </div>
+          <div class="card-sm">
+            <div style="font:700 13.5px var(--font-body);margin-bottom:6px">Про Кешу</div>
+            <div style="font-size:13px;color:var(--color-neutral-700);line-height:1.5">Вміє повторювати 12 слів, любить горіхи, лякається пилососа.</div>
+          </div>
+          <div class="card-sm row-between"><span style="font-size:13px;color:var(--color-neutral-600)">Улюблений корм</span><span style="font:700 13px var(--font-body)">Зернова суміш «Вітакрафт»</span></div>
+          <div class="card-sm row-between"><span style="font-size:13px;color:var(--color-neutral-600)">Розмах крил</span><span style="font:700 13px var(--font-body)">52 см</span></div>
+          <div class="card-sm row-between"><span style="font-size:13px;color:var(--color-neutral-600)">Клітка</span><span style="font:700 13px var(--font-body)">80×50×80 см</span></div>
+          <div class="card-sm row-between"><span style="font-size:13px;color:var(--color-neutral-600)">Походження</span><span class="chip">Заводчик</span></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">19 · Щеплення</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px" class="row-between">
+          <h1 class="scr-title" style="font-size:20px">Щеплення</h1>
+          <div class="scr-back">+</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Сказ</div><div style="font-size:12px;color:var(--color-neutral-600)">Зроблено 12.10.2025 · до 12.10.2026</div></div>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Комплексна DHPPi</div><div style="font-size:12px;color:var(--color-neutral-600)">Зроблено 03.05.2025</div></div>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px;border:2px solid var(--color-accent-300)">
+            <div style="width:20px;height:20px;border-radius:999px;border:2px solid var(--color-accent-500);flex-shrink:0"></div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Бордетелла</div><div style="font-size:12px;color:var(--color-accent-700)">Термін наближається — за 3 тижні</div></div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">20 · Ліки та візити</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px" class="row-between">
+          <h1 class="scr-title" style="font-size:20px">Ліки та візити</h1>
+          <div class="scr-back">+</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <span class="chip chip-warn" style="flex-shrink:0">Лік</span>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Краплі від бліх</div><div style="font-size:12px;color:var(--color-neutral-600)">Щомісяця · наступного разу 14.08</div></div>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <span class="chip chip-good" style="flex-shrink:0">Візит</span>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Плановий огляд</div><div style="font-size:12px;color:var(--color-neutral-600)">Клініка «Вет+» · 22.06.2026</div></div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+
+<div id="sec-detail" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Улюбленці — розширений профіль</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Ігри та активності, звички, календар</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Ігри та активності (за видом тварини)</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px" class="row-between">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title" style="font-size:19px">Ігри для Тукана</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="padding:0 20px 8px;display:flex;gap:8px">
+          <span class="chip chip-good">Корги · Пес</span><span class="chip">3 роки</span>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:999px;background:var(--color-accent-2-100);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle></svg></div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Пошук ласощів</div><div style="font-size:12px;color:var(--color-neutral-600)">Розвиває нюх · 10 хв</div></div>
+            <span class="chip chip-good">Улюблене</span>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:999px;background:var(--color-accent-100);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4v16"></path></svg></div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Перетягування каната</div><div style="font-size:12px;color:var(--color-neutral-600)">Фізична активність · 15 хв</div></div>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"></rect></svg></div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Головоломка-кормушка</div><div style="font-size:12px;color:var(--color-neutral-600)">Ментальне навантаження · 20 хв</div></div>
+          </div>
+          <div style="font-size:11px;color:var(--color-neutral-500);margin-top:4px">Підбірка залежить від виду, віку і розміру улюбленця</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Звички (добрі й погані)</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px" class="row-between">
+          <h1 class="scr-title" style="font-size:19px">Звички Тукана</h1>
+          <div class="scr-back">+</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div style="font:700 12px var(--font-body);color:var(--color-accent-2-700);margin-bottom:8px">ДОБРІ ЗВИЧКИ</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="card-sm row-between"><span style="font-size:13.5px">Слухається команди «сидіти»</span><span class="chip chip-good">Часто</span></div>
+              <div class="card-sm row-between"><span style="font-size:13.5px">Терпляче чекає біля миски</span><span class="chip chip-good">Завжди</span></div>
+            </div>
+          </div>
+          <div>
+            <div style="font:700 12px var(--font-body);color:var(--color-accent-700);margin-bottom:8px">ЗВИЧКИ НАД ЯКИМИ ПРАЦЮЄМО</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="card-sm row-between"><span style="font-size:13.5px">Гавкає на дзвінок у двері</span><span class="chip chip-warn">Часто</span></div>
+              <div class="card-sm row-between"><span style="font-size:13.5px">Тягне повідець на прогулянці</span><span class="chip chip-warn">Іноді</span></div>
+            </div>
+          </div>
+          <div class="btn btn-secondary btn-block" style="height:44px;margin-top:4px">+ Додати звичку</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Календар догляду + синхронізація з Google</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px" class="row-between">
+          <h1 class="scr-title" style="font-size:19px">Календар Тукана</h1>
+          <div class="scr-back">+</div>
+        </div>
+        <div style="padding:0 20px 10px">
+          <div class="btn btn-secondary btn-block" style="height:42px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:6px"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>Синхронізувати з Google Календарем</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px;border:2px solid var(--color-accent-300)">
+            <div style="text-align:center;flex-shrink:0;width:36px"><div style="font:700 15px var(--font-heading);color:var(--color-accent-700)">14</div><div style="font-size:9.5px;color:var(--color-neutral-600)">СЕР</div></div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Краплі від бліх</div><div style="font-size:12px;color:var(--color-neutral-600)">Нагадування · 09:00</div></div>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <div style="text-align:center;flex-shrink:0;width:36px"><div style="font:700 15px var(--font-heading)">22</div><div style="font-size:9.5px;color:var(--color-neutral-600)">СЕР</div></div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Плановий огляд у Вет+</div><div style="font-size:12px;color:var(--color-neutral-600)">10:00 · додано в Google</div></div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <div style="text-align:center;flex-shrink:0;width:36px"><div style="font:700 15px var(--font-heading)">3</div><div style="font-size:9.5px;color:var(--color-neutral-600)">ЖОВ</div></div>
+            <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Щеплення від сказу</div><div style="font-size:12px;color:var(--color-neutral-600)">Нагадування за тиждень</div></div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+<div id="sec-docs-forms" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Улюбленці — документи та форми</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Повний чек-лист подорожей, форми додавання щеплення й ліків</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Документи + Подорожі — повний чек-лист</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 10px">
+          <h1 class="scr-title" style="margin-bottom:12px">Документи</h1>
+          <div class="seg-simple">
+            <div class="seg-simple-opt active">Вдома</div>
+            <div class="seg-simple-opt">В межах ЄС</div>
+            <div class="seg-simple-opt">Поза Шенгеном</div>
+          </div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:11px;color:var(--color-accent-700);background:var(--color-accent-100);border-radius:var(--radius-sm);padding:10px 12px">Інформація з офіційних джерел. Перевіряйте з ветеринаром/перевізником.</div>
+          <div class="card-sm row-between"><span style="font-size:13px;display:flex;align-items:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>Мікрочипування</span><span class="chip chip-good">Готово</span></div>
+          <div class="card-sm row-between"><span style="font-size:13px;display:flex;align-items:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg>Щеплення проти сказу</span><span class="chip chip-good">Готово</span></div>
+          <div class="card-sm row-between" style="opacity:.7"><span style="font-size:13px">Ветеринарний паспорт ЄС</span><span class="chip">Потрібно</span></div>
+          <div class="card-sm row-between" style="opacity:.7"><span style="font-size:13px">Аналіз титрів антитіл</span><span class="chip">Потрібно</span></div>
+          <div class="card-sm" style="background:var(--color-accent-2-100)"><div style="font:700 12px var(--font-body);color:var(--color-accent-2-700)">2 з 4 пунктів виконано</div></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Подорож — wizard із дедлайнами й нагадуваннями</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 6px" class="row-between">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title" style="font-size:18px">Маршрут: Україна → Польща</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="padding:8px 20px 6px"><div class="card-sm" style="display:flex;align-items:center;gap:10px;background:var(--color-accent-100)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg><div><div style="font:700 13px var(--font-body);color:var(--color-accent-700)">Наступний дедлайн через 6 днів</div><div style="font-size:11px;color:var(--color-accent-700)">Здати аналіз титрів антитіл</div></div></div></div>
+        <div style="flex:1;overflow:auto;padding:6px 20px 24px;display:flex;flex-direction:column;gap:0">
+          <div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:999px;background:var(--color-accent-2-500);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg></div><div style="width:2px;flex:1;background:var(--color-neutral-300);min-height:24px"></div></div><div style="padding-bottom:18px;flex:1"><div class="card-sm"><div style="font:700 13px var(--font-body)">Мікрочипування</div><div style="font-size:11px;color:var(--color-neutral-600);margin-top:2px">Виконано 12 черв 2026</div></div></div></div>
+          <div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:999px;background:var(--color-accent-2-500);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M20 6L9 17l-5-5"></path></svg></div><div style="width:2px;flex:1;background:var(--color-neutral-300);min-height:24px"></div></div><div style="padding-bottom:18px;flex:1"><div class="card-sm"><div style="font:700 13px var(--font-body)">Щеплення проти сказу</div><div style="font-size:11px;color:var(--color-neutral-600);margin-top:2px">Виконано 15 черв 2026</div></div></div></div>
+          <div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:999px;background:var(--color-accent);display:flex;align-items:center;justify-content:center;color:#fff;font:800 11px var(--font-body)">!</div><div style="width:2px;flex:1;background:var(--color-neutral-300);min-height:24px"></div></div><div style="padding-bottom:18px;flex:1"><div class="card-sm" style="border:1.5px solid var(--color-accent)"><div class="row-between"><div style="font:700 13px var(--font-body)">Аналіз титрів антитіл</div><span class="chip chip-warn" style="font-size:10px;padding:3px 8px">За 6 днів</span></div><div style="font-size:11px;color:var(--color-neutral-600);margin-top:2px">Дедлайн 3 сер 2026 · очікування результату ~4 міс</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><span style="font:600 11.5px var(--font-body);color:var(--color-neutral-700)">🔔 Нагадати за 3 дні</span><div style="width:36px;height:20px;border-radius:999px;background:var(--color-accent);position:relative"><div style="width:16px;height:16px;border-radius:999px;background:#fff;position:absolute;top:2px;right:2px"></div></div></div></div></div></div>
+          <div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:999px;background:var(--color-neutral-300)"></div></div><div style="flex:1;opacity:.6"><div class="card-sm"><div style="font:700 13px var(--font-body)">Ветеринарний паспорт ЄС</div><div style="font-size:11px;color:var(--color-neutral-600);margin-top:2px">Доступно після аналізу титрів</div></div></div></div>
+          <div class="btn btn-secondary btn-block" style="height:44px;margin-top:10px">+ Додати всі дедлайни в календар</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Форма додавання щеплення</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="scr-hd" style="padding-top:64px">
+          <div style="font:600 13px var(--font-body);color:var(--color-neutral-600)">Скасувати</div>
+          <h1 class="scr-title" style="font-size:18px">Щеплення</h1>
+          <div style="font:700 13px var(--font-body);color:var(--color-accent-700)">Зберегти</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div><div class="field-lbl">Назва вакцини</div><div class="input" style="width:100%;box-sizing:border-box">Бордетелла</div></div>
+          <div><div class="field-lbl">Дата введення</div><div class="input" style="width:100%;box-sizing:border-box">28.07.2026</div></div>
+          <div><div class="field-lbl">Дійсна до</div><div class="input" style="width:100%;box-sizing:border-box">28.07.2027</div></div>
+          <div><div class="field-lbl">Клініка</div><div class="input" style="width:100%;box-sizing:border-box">Вет+</div></div>
+          <div class="card-sm row-between"><span style="font-size:13px">Нагадати за тиждень</span><div style="width:40px;height:24px;border-radius:999px;background:var(--color-accent)"></div></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Форма додавання ліків</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="scr-hd" style="padding-top:64px">
+          <div style="font:600 13px var(--font-body);color:var(--color-neutral-600)">Скасувати</div>
+          <h1 class="scr-title" style="font-size:18px">Лік</h1>
+          <div style="font:700 13px var(--font-body);color:var(--color-accent-700)">Зберегти</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div><div class="field-lbl">Назва</div><div class="input" style="width:100%;box-sizing:border-box">Краплі від бліх</div></div>
+          <div><div class="field-lbl">Періодичність</div><div class="seg-simple"><div class="seg-simple-opt active">Щомісяця</div><div class="seg-simple-opt">Одноразово</div></div></div>
+          <div><div class="field-lbl">Наступний прийом</div><div class="input" style="width:100%;box-sizing:border-box">14.08.2026</div></div>
+          <div><div class="field-lbl">Нотатка</div><div class="input" style="width:100%;box-sizing:border-box;height:70px;align-items:flex-start;padding-top:12px">Наносити на холку, уникати купання 2 дні</div></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

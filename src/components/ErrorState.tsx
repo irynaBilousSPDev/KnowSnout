@@ -36,14 +36,14 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
   },
   title: {
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 20,
     color: brand.ink,
   },
   message: {
     marginTop: 8,
     textAlign: 'center',
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 15,
     lineHeight: 22,
     color: brand.muted,

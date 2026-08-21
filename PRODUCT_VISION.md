@@ -15,6 +15,12 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 
 ## Phase map (priority)
 
+### P0v — Pixel UI from HTML comps
+
+**Status:** rebuilding from `docs/design/html/*.dc.html` (Manrope + Inter, teal `#0E6E5D`, canvas `#F4F3F1`). PDF raster is not visual truth.
+
+Modules in order: Вхід і Перевір → Улюбленці → Стрічка → Спільнота → Профіль → Довідники → Адмінка.
+
 ### P0 — Core (in progress / next)
 - [x] Food scan (barcode → catalog → OFF → photo + AI)
 - [x] History filters dog/cat

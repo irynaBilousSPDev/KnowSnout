@@ -36,7 +36,7 @@ function petMeta(pet: PetRow) {
   return parts.join(' · ');
 }
 
-/** PDF 12 · Список тварин — Caprasimo title, + circle, white cards, chevron. */
+/** HTML kit · Список тварин — Manrope 22, + circle, white r14 cards, add pill. */
 export default function PetsScreen() {
   const [pets, setPets] = useState<PetRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,7 +120,7 @@ export default function PetsScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor={brand.sage}
+              tintColor={brand.accent}
             />
           }
           ListEmptyComponent={
@@ -132,6 +132,8 @@ export default function PetsScreen() {
             <Pressable
               onPress={() => router.push('/(app)/pet-form')}
               style={styles.addPill}
+              accessibilityRole="button"
+              accessibilityLabel={t('pets.add')}
             >
               <Text style={styles.addPillText}>+ {t('pets.add')}</Text>
             </Pressable>
@@ -145,6 +147,7 @@ export default function PetsScreen() {
                 } as never)
               }
               onLongPress={() => void onDelete(item)}
+              disabled={deletingId === item.id}
               style={({ pressed }) => [styles.petCard, pressed && styles.pressed]}
             >
               <PetAvatar
@@ -188,16 +191,16 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   title: {
-    fontFamily: fonts.display,
-    fontSize: 34,
-    lineHeight: 40,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
   },
   addCircle: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
-    backgroundColor: brand.creamDeep,
+    height: 34,
+    width: 34,
+    borderRadius: 17,
+    backgroundColor: brand.chipTrack,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -216,36 +219,35 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: brand.radius.lg,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    gap: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
-    shadowColor: '#1A2332',
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
     elevation: 1,
   },
   pressed: { opacity: 0.9 },
-  petCopy: { flex: 1, marginLeft: 12, minWidth: 0 },
+  petCopy: { flex: 1, minWidth: 0 },
   petName: {
     fontFamily: fonts.bodyBold,
-    fontSize: 17,
+    fontSize: 15,
     color: brand.ink,
   },
   petMeta: {
-    marginTop: 3,
+    marginTop: 2,
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 12,
     color: brand.muted,
   },
   addPill: {
-    marginTop: 4,
+    marginTop: 6,
     marginBottom: 16,
-    minHeight: 48,
+    minHeight: 46,
     borderRadius: brand.radius.pill,
-    borderWidth: 1.5,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
     alignItems: 'center',

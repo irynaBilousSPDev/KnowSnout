@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40 },
   subtitle: {
     marginBottom: 16,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 14,
     color: '#5A6B7D',
   },
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surface,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 15,
     color: brand.ink,
   },
@@ -231,13 +231,13 @@ const styles = StyleSheet.create({
     borderColor: brand.navy,
   },
   kindLabel: {
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 13,
     color: brand.ink,
   },
   kindLabelActive: { color: '#FFFFFF' },
   empty: {
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 15,
     lineHeight: 22,
     color: '#5A6B7D',

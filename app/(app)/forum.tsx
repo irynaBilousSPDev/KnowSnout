@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 22,
     marginBottom: 10,
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 12,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
@@ -116,20 +116,20 @@ const styles = StyleSheet.create({
   },
   catCopy: { flex: 1, paddingRight: 8 },
   catTitle: {
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: 'Inter_700Bold',
     fontSize: 16,
     color: brand.ink,
   },
   catBody: {
     marginTop: 4,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 13,
     lineHeight: 18,
     color: brand.muted,
   },
   catMeta: {
     marginTop: 6,
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 12,
     color: brand.navy,
   },
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     borderBottomColor: brand.mistBorder,
   },
   linkText: {
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: 'Inter_500Medium',
     fontSize: 15,
     color: brand.navy,
   },

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/styles.css">
+  <script src="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/_ds_bundle.js"></script>
+  <script src="./image-slot.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap');
+    :root{
+      --color-bg:#F4F3F1; --color-surface:#FFFFFF; --color-text:#152233;
+      --color-accent:#0E6E5D; --color-accent-2:#1EAE5C; --color-divider:rgba(21,34,51,.12);
+      --color-neutral-100:#F4F3F1; --color-neutral-200:#EAE7E2; --color-neutral-300:#D8D5D0;
+      --color-neutral-400:#B0A99D; --color-neutral-500:#8b96a0; --color-neutral-600:#5B6B75;
+      --color-neutral-700:#455460; --color-neutral-800:#2E3A44; --color-neutral-900:#152233;
+      --color-accent-100:#EAF7F3; --color-accent-200:#CBEBE1; --color-accent-300:#9FD8CB;
+      --color-accent-400:#5FBBA6; --color-accent-500:#0E6E5D; --color-accent-600:#0A5346;
+      --color-accent-700:#083F35; --color-accent-800:#062B24; --color-accent-900:#041A16;
+      --color-accent-2-100:#EEFBF0; --color-accent-2-200:#DFF6E3; --color-accent-2-300:#C8F2CE;
+      --color-accent-2-400:#39E07A; --color-accent-2-500:#1EAE5C; --color-accent-2-600:#1A9A50;
+      --color-accent-2-700:#0F6D38; --color-accent-2-800:#0B5029; --color-accent-2-900:#07341A;
+      --font-heading:'Manrope', system-ui, sans-serif; --font-heading-weight:700;
+      --font-body:'Inter', system-ui, sans-serif;
+      --radius-sm:8px; --radius-md:14px; --radius-lg:20px;
+      --shadow-sm:0 1px 3px rgba(21,34,51,.08); --shadow-md:0 3px 10px rgba(21,34,51,.10); --shadow-lg:0 12px 32px rgba(21,34,51,.16);
+    }
+    body{margin:0}
+    .phones-row{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;padding:0 48px 80px}
+    .phone-col{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+    .phone-label{font-family:var(--font-heading);font-size:15px;color:var(--color-text)}
+    .scr-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 6px}
+    .scr-title{font-family:var(--font-heading);font-size:22px;color:var(--color-text);margin:0}
+    .scr-back{width:34px;height:34px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .kicker{font:600 11px/1.4 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)}
+    .paw-badge{display:flex;align-items:center;gap:6px;background:var(--color-accent-100);color:var(--color-accent-700);border-radius:999px;padding:6px 12px;font:700 13px var(--font-body)}
+    .chip{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-text);font:500 12.5px var(--font-body)}
+    .chip-warn{background:var(--color-accent-100);color:var(--color-accent-700)}
+    .chip-good{background:var(--color-accent-2-100);color:var(--color-accent-2-700)}
+    .card-sm{background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px}
+    .seg-simple{display:flex;background:var(--color-neutral-200);border-radius:999px;padding:4px;gap:4px}
+    .seg-simple-opt{flex:1;text-align:center;padding:8px 10px;border-radius:999px;font:600 13px var(--font-body);color:var(--color-text)}
+    .seg-simple-opt.active{background:#fff;box-shadow:var(--shadow-sm);color:var(--color-accent-700)}
+    .field-lbl{font:600 12px var(--font-body);color:var(--color-neutral-700);margin-bottom:6px}
+    .row-between{display:flex;align-items:center;justify-content:space-between}
+    .tab-bar{display:flex;justify-content:space-around;align-items:center;padding:10px 8px 6px;background:#fff;border-top:1px solid var(--color-neutral-200)}
+    .tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;font:600 10px var(--font-body);color:var(--color-neutral-500)}
+    .tab-item.active{color:var(--color-accent-700)}
+  </style>
+</helmet>
+<div style="max-width:1100px;margin:0 auto;padding:56px 48px 24px">
+  <div class="kicker">KnowSnout · UI Kit v2 · Дизайн-аудит</div>
+  <h1 style="font-size:34px;margin:8px 0 12px">Спільнота</h1>
+  <p style="max-width:680px;color:var(--color-neutral-700);font-size:15.5px;line-height:1.6">
+    Частина 4 з 5. Квізи (класичні + нові інтерактивні формати), форум, блог.
+  </p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><a href="KnowSnout UI Kit.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-600);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">← Огляд</a><a href="KnowSnout - Вхід і Перевір.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Вхід і Перевір</a><a href="KnowSnout - Улюбленці.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Улюбленці</a><a href="KnowSnout - Стрічка.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Стрічка</a><span style="font:700 12px var(--font-body);color:var(--color-text);padding:6px 12px;background:var(--color-neutral-200);border-radius:999px">Спільнота</span><a href="KnowSnout - Профіль і Службові.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Профіль і Службові</a><a href="KnowSnout - Довідники.dc.html" style="font:700 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Довідники</a><a href="KnowSnout Мапа додатку.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-600);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">🗺 Мапа додатку</a></div>
+</div>
+<div style="position:sticky;top:0;z-index:10;background:rgba(245,234,216,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--color-neutral-300);padding:10px 48px;display:flex;gap:8px;flex-wrap:wrap">
+  <a href="#sec-quiz-hub" style="font:600 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:5px 12px;background:var(--color-accent-100);border-radius:999px">Квіз-хаб · Форум · Акаунт</a>
+  <a href="#sec-quiz-results" style="font:600 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:5px 12px;background:var(--color-accent-100);border-radius:999px">Квізи · Нові формати · Результати</a>
+  <a href="#sec-forum-blog" style="font:600 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:5px 12px;background:var(--color-accent-100);border-radius:999px">Форум · Блог</a>
+  <a href="#sec-forum-ext" style="font:600 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:5px 12px;background:var(--color-accent-100);border-radius:999px">Форум/Блог, розширено</a>
+  <a href="#sec-achievements" style="font:600 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:5px 12px;background:var(--color-accent-100);border-radius:999px">Досягнення · Тред · Статті</a>
+  <a href="#sec-leaderboard" style="font:600 12px var(--font-body);color:var(--color-accent-700);text-decoration:none;padding:5px 12px;background:var(--color-accent-100);border-radius:999px">Рейтинг · Коментарі</a>
+</div>
+<div id="sec-quiz-hub" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Спільнота</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Квіз-хаб, форум</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">30 · Квіз-хаб (переосмислено — живіші дані з Wikidata)</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 4px"><h1 class="scr-title">Квізи</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <div class="card-sm" style="background:linear-gradient(135deg,var(--color-accent-2-100),var(--color-accent-2-200));display:flex;align-items:center;gap:14px;padding:16px">
+            <div style="position:relative;width:60px;height:60px;flex-shrink:0">
+              <svg width="60" height="60" viewBox="0 0 60 60" style="position:absolute;inset:0"><circle cx="30" cy="30" r="26" fill="none" stroke="var(--color-accent-2-300)" stroke-width="5"></circle><circle cx="30" cy="30" r="26" fill="none" stroke="var(--color-accent-2-700)" stroke-width="5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="35" transform="rotate(-90 30 30)"></circle></svg>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a3 3 0 006 0c1 2 0 4-1 5a6 6 0 11-8-9c1 2 1 3 2 3-1-2-1-4 1-6z"></path></svg></div>
+            </div>
+            <div style="flex:1">
+              <div style="font:700 20px var(--font-heading);color:var(--color-accent-2-800)">12 днів поспіль</div>
+              <div style="font-size:12px;color:var(--color-accent-2-700)">До рекорду (21) — 9 днів. Рівень 7 · 340/500 XP</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--color-neutral-500)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.5 2.5 4 6 4 9s-1.5 6.5-4 9c-2.5-2.5-4-6-4-9s1.5-6.5 4-9z"></path></svg>
+            Питання генеруються з Wikidata + відкритих джерел про породи
+          </div>
+          <div class="card-sm" style="padding:0;display:flex;flex-direction:column;height:auto">
+            <image-slot id="quiz-card-1" style="width:100%;height:110px;border-radius:var(--radius-md) var(--radius-md) 0 0" shape="rect" placeholder="Фото породи-загадки"></image-slot>
+            <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+              <div class="row-between"><span style="font:700 14px var(--font-body)">Звідки ця порода?</span><span class="chip chip-good">Виклик дня</span></div>
+              <div style="font-size:12px;color:var(--color-neutral-600)">10 питань · +50 XP за серію без помилок</div>
+            </div>
+          </div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Яка це група тварин?</span><span class="chip">12 питань</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Вгадай породу за фото</span><span class="chip">15 питань</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Зум-загадка</span><span class="chip chip-good">Новий формат</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Хто важчий?</span><span class="chip chip-good">Новий формат</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Правда чи міф</span><span class="chip chip-good">Новий формат</span></div>
+          <div class="card-sm">
+            <div style="font:700 12px var(--font-body);color:var(--color-neutral-600);margin-bottom:8px">Топ тижня серед друзів</div>
+            <div style="display:flex;align-items:center;gap:-6px">
+              <image-slot id="lb-1" style="width:30px;height:30px;margin-right:-8px;border:2px solid #fff" shape="circle" placeholder="1"></image-slot>
+              <image-slot id="lb-2" style="width:30px;height:30px;margin-right:-8px;border:2px solid #fff" shape="circle" placeholder="2"></image-slot>
+              <image-slot id="lb-3" style="width:30px;height:30px;border:2px solid #fff" shape="circle" placeholder="3"></image-slot>
+              <span style="margin-left:10px;font-size:12px;color:var(--color-neutral-600)">Ти — #4 · +120 XP до 3 місця</span>
+            </div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg><span>Стрічка</span></div>
+          <div class="tab-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg><span>Перевір</span></div>
+          <div class="tab-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M15.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M8.5 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M13 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M12 12c3 0 5.5 2.3 5.5 5 0 2-1.7 3-3.3 2.3-1.3-.6-2.9-.6-4.4 0C8.2 20 6.5 19 6.5 17c0-2.7 2.5-5 5.5-5Z"></path></svg><span>Улюбленці</span></div>
+          <div class="tab-item active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.5 7.4 8.5 8.5 0 01-7.6.1L4 20l1-4.9a8.38 8.38 0 01-1-4.1 8.5 8.5 0 018.5-8.5h.5a8.48 8.48 0 018 8v.5z"></path></svg><span>Спільнота</span></div>
+          <div class="tab-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12a5 5 0 015-5 5 5 0 015 5v4a5 5 0 01-5 5 5 5 0 01-5-5v-4z"></path></svg><span>Довідники</span></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">41 · Акаунт</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px"><h1 class="scr-title">Мій акаунт</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <image-slot id="account-avatar" style="width:88px;height:88px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="font:700 16px var(--font-heading)">Марта Іваненко</div>
+            <div style="font-size:12.5px;color:var(--color-neutral-600)">Київ · marta@пошта.ua</div>
+          </div>
+          <div class="card-sm" style="padding:0;overflow:hidden">
+            <div class="row-between" style="padding:14px 16px;border-bottom:1px solid var(--color-neutral-200)"><span style="font-size:13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M15.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M8.5 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M13 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M12 12c3 0 5.5 2.3 5.5 5 0 2-1.7 3-3.3 2.3-1.3-.6-2.9-.6-4.4 0C8.2 20 6.5 19 6.5 17c0-2.7 2.5-5 5.5-5Z"></path></svg> Мої улюбленці</span><span style="color:var(--color-neutral-500)">2</span></div>
+            <div class="row-between" style="padding:14px 16px;border-bottom:1px solid var(--color-neutral-200)"><span style="font-size:13.5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 01-3.46 0"></path></svg> Сповіщення</span></div>
+            <div class="row-between" style="padding:14px 16px;border-bottom:1px solid var(--color-neutral-200)"><span style="font-size:13.5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:4px"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.5 2.5 4 6 4 9s-1.5 6.5-4 9c-2.5-2.5-4-6-4-9s1.5-6.5 4-9z"></path></svg> Мова та підписка</span><span style="color:var(--color-neutral-500)">UA · Free</span></div>
+            <div class="row-between" style="padding:14px 16px;border-bottom:1px solid var(--color-neutral-200)"><span style="font-size:13.5px;display:inline-flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>Приватність і дані</span></div>
+            <div class="row-between" style="padding:14px 16px"><span style="font-size:13.5px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.5 7.4 8.5 8.5 0 01-7.6.1L4 20l1-4.9a8.38 8.38 0 01-1-4.1 8.5 8.5 0 018.5-8.5h.5a8.48 8.48 0 018 8v.5z"></path></svg> Довідка і підтримка</span></div>
+          </div>
+          <div style="text-align:center;font:700 13.5px var(--font-body);color:#b3452e;padding:10px">Вийти</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+<div id="sec-quiz-results" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Спільнота</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Квізи, результати</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">31 · Квіз «Звідки порода?» — з фото + таймер</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="position:relative;height:230px;flex-shrink:0">
+          <image-slot id="quiz31-photo" style="width:100%;height:100%" shape="rect" placeholder="Фото породи-загадки"></image-slot>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.55) 100%);pointer-events:none"></div>
+          <div style="position:absolute;top:64px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center">
+            <div class="scr-back" style="background:rgba(255,255,255,.85)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+            <div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.9);color:var(--color-accent-700);font:700 12.5px var(--font-body);padding:6px 12px;border-radius:999px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>0:07
+            </div>
+          </div>
+          <div style="position:absolute;bottom:14px;left:20px;right:20px;display:flex;gap:5px">
+            <div style="width:22px;height:5px;border-radius:999px;background:#fff"></div>
+            <div style="width:22px;height:5px;border-radius:999px;background:#fff"></div>
+            <div style="width:22px;height:5px;border-radius:999px;background:rgba(255,255,255,.4)"></div>
+            <div style="width:22px;height:5px;border-radius:999px;background:rgba(255,255,255,.4)"></div>
+            <div style="width:22px;height:5px;border-radius:999px;background:rgba(255,255,255,.4)"></div>
+          </div>
+        </div>
+        <div style="flex:1;padding:16px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <h1 style="font-size:20px;margin:0 0 6px">Звідки ця порода родом?</h1>
+          <div class="card-sm" style="border:2px solid var(--color-accent);box-shadow:var(--shadow-md);display:flex;align-items:center;gap:12px"><span style="width:30px;height:30px;border-radius:999px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font:700 13px var(--font-body);flex-shrink:0">A</span>Німеччина</div>
+          <div class="card-sm" style="box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:12px"><span style="width:30px;height:30px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-neutral-700);display:flex;align-items:center;justify-content:center;font:700 13px var(--font-body);flex-shrink:0">B</span>Великобританія</div>
+          <div class="card-sm" style="box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:12px"><span style="width:30px;height:30px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-neutral-700);display:flex;align-items:center;justify-content:center;font:700 13px var(--font-body);flex-shrink:0">C</span>Японія</div>
+          <div class="card-sm" style="box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:12px"><span style="width:30px;height:30px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-neutral-700);display:flex;align-items:center;justify-content:center;font:700 13px var(--font-body);flex-shrink:0">D</span>Бельгія</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">32 · Квіз «Яка це група тварин?» — з фото</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px">
+          <div class="row-between" style="margin-bottom:12px">
+            <div style="height:7px;border-radius:999px;background:var(--color-neutral-200);overflow:hidden;flex:1;margin-right:10px"><div style="width:65%;height:100%;background:linear-gradient(90deg,var(--color-accent),var(--color-accent-600))"></div></div>
+            <span style="font:700 12px var(--font-body);color:var(--color-neutral-600)">8/12</span>
+          </div>
+          <h1 style="font-size:19px;margin:0">До якої групи належить ця порода?</h1>
+        </div>
+        <div style="flex:1;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <image-slot id="quiz32-photo" style="width:100%;height:160px" shape="rounded" radius="20" placeholder="Фото корги"></image-slot>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="card-sm" style="text-align:center;border:2px solid var(--color-accent);box-shadow:var(--shadow-md);display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px">
+              <div style="width:38px;height:38px;border-radius:999px;background:var(--color-accent-100);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z"></path></svg></div>Пастуші
+            </div>
+            <div class="card-sm" style="text-align:center;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px">
+              <div style="width:38px;height:38px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-600)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 3v3M12 18v3M3 12h3M18 12h3"></path></svg></div>Мисливські
+            </div>
+            <div class="card-sm" style="text-align:center;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px">
+              <div style="width:38px;height:38px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-600)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></div>Компаньйони
+            </div>
+            <div class="card-sm" style="text-align:center;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px">
+              <div style="width:38px;height:38px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-600)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg></div>Робочі
+            </div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">33 · Квіз «Вгадай породу за фото» — інтерактивно, натисни варіант</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px">
+          <div style="height:7px;border-radius:999px;background:var(--color-neutral-200);overflow:hidden;margin-bottom:14px"><div style="width:20%;height:100%;background:linear-gradient(90deg,var(--color-accent),var(--color-accent-600))"></div></div>
+          <h1 style="font-size:19px;margin:0">Що це за порода?</h1>
+        </div>
+        <div style="flex:1;padding:0 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <image-slot id="quiz33-photo" style="width:100%;height:200px" shape="rounded" radius="20" placeholder="Фото породи"></image-slot>
+          <div style="{{ quizOpt0Style }}" onclick="{{ quizPick0 }}">Хаскі</div>
+          <div style="{{ quizOpt1Style }}" onclick="{{ quizPick1 }}">Маламут</div>
+          <div style="{{ quizOpt2Style }}" onclick="{{ quizPick2 }}">Самоєд</div>
+          <sc-if value="{{ quizFeedbackShow }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align:center;font:700 13px var(--font-body)">{{ quizFeedback }}</div>
+          </sc-if>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">34 · Результати квізу — детальний розбір</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:76px 28px 24px;text-align:center;gap:14px">
+          <div style="position:relative;width:112px;height:112px">
+            <svg width="112" height="112" viewBox="0 0 112 112" style="position:absolute;inset:0"><circle cx="56" cy="56" r="48" fill="none" stroke="var(--color-neutral-200)" stroke-width="8"></circle><circle cx="56" cy="56" r="48" fill="none" stroke="var(--color-accent-2-600)" stroke-width="8" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="30" transform="rotate(-90 56 56)"></circle></svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font:700 28px var(--font-heading);color:var(--color-accent-2-700)">9/10</span></div>
+          </div>
+          <h2 style="font-size:21px;margin:0">Чудовий результат!</h2>
+          <div style="display:flex;align-items:center;gap:6px;color:var(--color-accent-2-700);font:700 13px var(--font-body)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a3 3 0 006 0c1 2 0 4-1 5a6 6 0 11-8-9c1 2 1 3 2 3-1-2-1-4 1-6z"></path></svg>Серія тепер — 13 днів поспіль
+          </div>
+          <div class="card-sm" style="width:100%;display:flex;flex-direction:column;gap:8px;text-align:left">
+            <div class="row-between"><span style="font-size:12.5px;color:var(--color-neutral-600)">Швидкість</span><span style="font:700 12.5px var(--font-body)">+20 XP</span></div>
+            <div class="row-between"><span style="font-size:12.5px;color:var(--color-neutral-600)">Точність</span><span style="font:700 12.5px var(--font-body)">+40 XP</span></div>
+            <div class="row-between"><span style="font-size:12.5px;color:var(--color-neutral-600)">Бонус серії</span><span style="font:700 12.5px var(--font-body)">+50 XP</span></div>
+          </div>
+          <div class="btn btn-primary btn-block" style="height:46px;width:100%">Наступний квіз</div>
+          <div class="btn btn-secondary btn-block" style="height:44px;width:100%">Історія результатів</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Новий формат · Зум-загадка — розмите фото, натисни щоб наблизити</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="position:relative;height:250px;flex-shrink:0;background:#111">
+          <image-slot id="zoom-photo" style="width:100%;height:100%;filter:blur({{ zoomBlur }}px);transition:filter .35s" shape="rect" placeholder="Фото тварини"></image-slot>
+          <div style="position:absolute;top:64px;left:20px;right:20px" class="row-between">
+            <div class="scr-back" style="background:rgba(255,255,255,.85)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+            <span class="chip chip-warn" style="box-shadow:var(--shadow-sm)">{{ zoomXpLabel }}</span>
+          </div>
+        </div>
+        <div style="flex:1;padding:16px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <h1 style="font-size:19px;margin:0">Що на фото?</h1>
+          <div class="btn btn-secondary btn-block" style="height:44px;box-shadow:var(--shadow-sm);gap:8px" onclick="{{ zoomReveal }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>Наблизити ще (−10 XP)</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+            <div class="card-sm" style="box-shadow:var(--shadow-sm)">Бенгальська кішка</div>
+            <div class="card-sm" style="border:2px solid var(--color-accent);box-shadow:var(--shadow-md)">Оцелот</div>
+            <div class="card-sm" style="box-shadow:var(--shadow-sm)">Мейн-кун</div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Новий формат · Хто важчий? — порівняння за даними Wikidata</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 6px" class="row-between">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <div style="font:600 12px var(--font-body);color:var(--color-neutral-500)">Хто важчий? · 4/8</div>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;padding:14px 20px 24px;display:flex;flex-direction:column;gap:16px">
+          <div style="text-align:center;font:700 17px var(--font-body)">Хто в середньому важчий?</div>
+          <div style="display:flex;gap:12px;align-items:stretch">
+            <div style="flex:1;display:flex;flex-direction:column;gap:10px" onclick="{{ weighPickA }}">
+              <image-slot id="weigh-a" style="width:100%;height:140px" shape="rounded" radius="18" placeholder="Сенбернар"></image-slot>
+              <div style="{{ weighAStyle }}">Сенбернар</div>
+            </div>
+            <div style="display:flex;align-items:center;font:700 13px var(--font-body);color:var(--color-neutral-400)">VS</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:10px" onclick="{{ weighPickB }}">
+              <image-slot id="weigh-b" style="width:100%;height:140px" shape="rounded" radius="18" placeholder="Чихуахуа"></image-slot>
+              <div style="{{ weighBStyle }}">Чихуахуа</div>
+            </div>
+          </div>
+          <sc-if value="{{ weighFeedbackShow }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align:center;font:700 13px var(--font-body)">{{ weighFeedback }}</div>
+          </sc-if>
+          <div style="display:flex;align-items:center;gap:6px;justify-content:center;font-size:11px;color:var(--color-neutral-500);margin-top:auto">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.5 2.5 4 6 4 9s-1.5 6.5-4 9c-2.5-2.5-4-6-4-9s1.5-6.5 4-9z"></path></svg>
+            Середня вага — за даними Wikidata
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Новий формат · Правда чи міф — свайп-картка</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 6px" class="row-between">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <div style="font:600 12px var(--font-body);color:var(--color-neutral-500)">Правда чи міф · 2/10</div>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;padding:14px 20px 24px;display:flex;flex-direction:column;gap:16px">
+          <div class="card-sm" style="flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font:700 18px var(--font-body);padding:28px;box-shadow:var(--shadow-md);background:linear-gradient(160deg,#fff,var(--color-accent-100))">
+            Собаки бачать світ виключно чорно-білим
+          </div>
+          <div style="display:flex;gap:10px">
+            <div style="{{ mythTruthStyle }}" onclick="{{ mythPickTruth }}">Правда</div>
+            <div style="{{ mythMythStyle }}" onclick="{{ mythPickMyth }}">Міф</div>
+          </div>
+          <sc-if value="{{ mythFeedbackShow }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align:center;font-size:12.5px;color:var(--color-neutral-700)">{{ mythFeedback }}</div>
+          </sc-if>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+<div id="sec-forum-blog" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Спільнота</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Форум, блог</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">35 · Форум: категорії</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px"><h1 class="scr-title">Форум</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body);display:flex;align-items:center;gap:6px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M15.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M8.5 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M13 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M12 12c3 0 5.5 2.3 5.5 5 0 2-1.7 3-3.3 2.3-1.3-.6-2.9-.6-4.4 0C8.2 20 6.5 19 6.5 17c0-2.7 2.5-5 5.5-5Z"></path></svg>Собаки</span><span class="chip">248 тем</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body);display:flex;align-items:center;gap:6px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M15.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M8.5 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M13 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M12 12c3 0 5.5 2.3 5.5 5 0 2-1.7 3-3.3 2.3-1.3-.6-2.9-.6-4.4 0C8.2 20 6.5 19 6.5 17c0-2.7 2.5-5 5.5-5Z"></path></svg>Коти</span><span class="chip">312 тем</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body);display:flex;align-items:center;gap:6px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12a5 5 0 015-5 5 5 0 015 5v4a5 5 0 01-5 5 5 5 0 01-5-5v-4z"></path><path d="M9 9c-1-1-1-3 0-4M15 9c1-1 1-3 0-4"></path></svg>Годування</span><span class="chip">96 тем</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body);display:flex;align-items:center;gap:6px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"></path></svg>Здоров&apos;я</span><span class="chip">154 теми</span></div>
+          <div class="btn btn-primary btn-block" style="height:46px;margin-top:6px">+ Нове питання</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">37 · Форум: нове питання</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="scr-hd" style="padding-top:64px">
+          <div style="font:600 13px var(--font-body);color:var(--color-neutral-600)">Скасувати</div>
+          <h1 class="scr-title" style="font-size:18px">Нове питання</h1>
+          <div style="font:700 13px var(--font-body);color:var(--color-accent-700)">Опубл.</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div><div class="field-lbl">Категорія</div><div class="input" style="width:100%;box-sizing:border-box">Собаки</div></div>
+          <div><div class="field-lbl">Заголовок</div><div class="input" style="width:100%;box-sizing:border-box">Як привчити до нашийника?</div></div>
+          <div><div class="field-lbl">Опис</div><div class="input" style="width:100%;box-sizing:border-box;height:90px;align-items:flex-start;padding-top:12px">Цуценя 3 місяці, боїться нашийника…</div></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">39 · Блог: стаття</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="flex:1;overflow:auto;padding:0 0 24px">
+          <image-slot id="blog-hero" style="width:100%;height:220px" shape="rect" placeholder="Обкладинка статті"></image-slot>
+          <div style="padding:16px 20px">
+            <span class="chip chip-good">Харчування</span>
+            <h1 style="font-size:22px;margin:10px 0 8px">5 міфів про сухий корм</h1>
+            <div style="font-size:12px;color:var(--color-neutral-600);margin-bottom:14px">7 хв читання · Ветеринарна редакція</div>
+            <div style="font-size:13.5px;line-height:1.6;color:var(--color-neutral-800)">Багато власників вважають, що дорожчий корм — завжди кращий. Насправді склад важливіший за ціну…</div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+<div id="sec-forum-ext" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Спільнота — форум і блог, розширено</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Автор, пошук, стрічка категорії, закладки, правила</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">Форум · Профіль автора треду</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="scr-hd" style="padding-top:64px">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title" style="font-size:18px">Автор</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <image-slot id="fauthor-avatar" style="width:80px;height:80px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="font:700 15px var(--font-heading)">Оксана</div>
+            <div style="font-size:12px;color:var(--color-neutral-600)">42 теми · 210 відповідей</div>
+            <span class="chip chip-good">Досвідчений власник кота</span>
+          </div>
+          <div class="card-sm row-between"><span style="font-size:13px">Як привчити кота до переноски?</span><span class="chip">14 відп.</span></div>
+          <div class="card-sm row-between"><span style="font-size:13px">Чи можна годувати кота рибою щодня?</span><span class="chip">8 відп.</span></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Форум · Пошук і популярні теги</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 10px">
+          <div class="input" style="width:100%;box-sizing:border-box;display:flex;align-items:center;gap:8px;color:var(--color-neutral-500)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>Пошук у форумі…</div>
+        </div>
+        <div style="padding:0 20px 10px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="chip chip-good">#алергія</span><span class="chip">#цуценя</span><span class="chip">#переноска</span><span class="chip">#щеплення</span>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm row-between"><span style="font-size:13px">Алергія на курку — чим годувати?</span><span class="chip">22 відп.</span></div>
+          <div class="card-sm row-between"><span style="font-size:13px">Цуценя гризе меблі, що робити?</span><span class="chip">31 відп.</span></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Форум · Стрічка категорії «Собаки»</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="scr-hd" style="padding-top:64px">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title" style="font-size:18px">Собаки</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm"><div style="font:700 13.5px var(--font-body);margin-bottom:4px">Як привчити до нашийника?</div><div style="font-size:12px;color:var(--color-neutral-600)">Марта · 6 відп. · 20 хв тому</div></div>
+          <div class="card-sm"><div style="font:700 13.5px var(--font-body);margin-bottom:4px">Найкращі майданчики у Києві</div><div style="font-size:12px;color:var(--color-neutral-600)">Ігор · 41 відп. · вчора</div></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Блог · Закладки</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px"><h1 class="scr-title" style="font-size:20px">Збережене</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;gap:12px;align-items:center">
+            <image-slot id="bm-1" style="width:52px;height:52px" shape="rounded" radius="12" placeholder="Стаття"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">5 міфів про сухий корм</div><div style="font-size:12px;color:var(--color-neutral-600)">Харчування</div></div>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="var(--color-accent)" stroke="var(--color-accent)" stroke-width="2"><path d="M6 3h12v18l-6-4-6 4V3z"></path></svg>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Правила спільноти</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="scr-hd" style="padding-top:64px">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title" style="font-size:18px">Правила спільноти</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm">1. Поважайте інших власників і тварин</div>
+          <div class="card-sm">2. Без реклами й спаму в темах</div>
+          <div class="card-sm">3. Медичні поради — не заміна візиту до лікаря</div>
+          <div class="card-sm">4. Порушення — попередження, потім блокування</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+
+<div id="sec-achievements" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Спільнота — гейміфікація, глибший форум</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Досягнення, тред з відповідями, сповіщення, статті категорії</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Досягнення і бейджі</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px" class="row-between">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title" style="font-size:19px">Досягнення</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="card-sm" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px">
+            <div style="width:52px;height:52px;border-radius:999px;background:var(--color-accent-2-100);display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a3 3 0 006 0c1 2 0 4-1 5a6 6 0 11-8-9c1 2 1 3 2 3-1-2-1-4 1-6z"></path></svg></div>
+            <div style="font:700 12px var(--font-body);text-align:center">Серія 30 днів</div>
+          </div>
+          <div class="card-sm" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px">
+            <div style="width:52px;height:52px;border-radius:999px;background:var(--color-accent-100);display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12a5 5 0 015-5 5 5 0 015 5v4a5 5 0 01-5 5 5 5 0 01-5-5v-4z"></path></svg></div>
+            <div style="font:700 12px var(--font-body);text-align:center">100 сканів корму</div>
+          </div>
+          <div class="card-sm" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;opacity:.4">
+            <div style="width:52px;height:52px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-600)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.5 7.4 8.5 8.5 0 01-7.6.1L4 20l1-4.9a8.38 8.38 0 01-1-4.1 8.5 8.5 0 018.5-8.5h.5a8.48 8.48 0 018 8v.5z"></path></svg></div>
+            <div style="font:700 12px var(--font-body);text-align:center">10 відповідей на форумі</div>
+          </div>
+          <div class="card-sm" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px;opacity:.4">
+            <div style="width:52px;height:52px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-600)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 01-10 0V4z"></path></svg></div>
+            <div style="font:700 12px var(--font-body);text-align:center">Переможець SnoutSpotlight</div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">36 · Форум: тред — з голосами й розв&apos;язанням</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="scr-hd" style="padding-top:64px">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title" style="font-size:18px">Тред</h1>
+          <div class="scr-back">⋯</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div class="card-sm">
+            <div style="font:700 14px var(--font-body);margin-bottom:6px">Як привчити кота до переноски?</div>
+            <div style="font-size:12.5px;color:var(--color-neutral-600)">Оксана · Коти · 14 відповідей</div>
+          </div>
+          <div class="card-sm" style="display:flex;gap:10px;border:2px solid var(--color-accent-2-400)">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"></path></svg>
+              <span style="font:700 11px var(--font-body)">24</span>
+            </div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+                <span style="font:700 12.5px var(--font-body)">Марта</span>
+                <span class="chip chip-good" style="padding:2px 8px;font-size:10px">Розв&apos;язання</span>
+              </div>
+              <div style="font-size:12.5px;color:var(--color-neutral-700)">Залишайте переноску відкритою вдома постійно, хай звикає поступово.</div>
+            </div>
+          </div>
+          <div class="card-sm" style="display:flex;gap:10px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-400)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"></path></svg>
+              <span style="font:700 11px var(--font-body)">6</span>
+            </div>
+            <div style="flex:1"><div style="font:700 12.5px var(--font-body);margin-bottom:2px">Ігор</div><div style="font-size:12.5px;color:var(--color-neutral-700)">Ще спробуйте класти улюблену ковдру всередину.</div></div>
+          </div>
+        </div>
+        <div style="padding:10px 20px 20px;display:flex;gap:8px;align-items:center">
+          <div class="input" style="flex:1;box-sizing:border-box">Написати відповідь…</div>
+          <div class="btn btn-primary btn-icon" style="width:44px;height:44px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4z"></path></svg></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Сповіщення форуму</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 8px"><h1 class="scr-title" style="font-size:20px">Сповіщення форуму</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px;background:var(--color-accent-100)">
+            <image-slot id="fnotif-1" style="width:36px;height:36px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1;font-size:13px"><b>Ігор</b> відповів у твоєму треді «Як привчити до нашийника?»</div>
+            <span style="font-size:11px;color:var(--color-accent-700)">Нове</span>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="fnotif-2" style="width:36px;height:36px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1;font-size:13px">Твою відповідь позначили як <b>розв&apos;язання</b></div>
+            <span style="font-size:11px;color:var(--color-neutral-500)">Вчора</span>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="fnotif-3" style="width:36px;height:36px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1;font-size:13px"><b>Оксана</b> проголосувала за твою відповідь</div>
+            <span style="font-size:11px;color:var(--color-neutral-500)">2 дні</span>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Блог: статті в категорії «Харчування»</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="scr-hd" style="padding-top:64px">
+          <div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+          <h1 class="scr-title" style="font-size:18px">Харчування</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div class="card-sm" style="display:flex;gap:12px;align-items:center">
+            <image-slot id="bl-art-1" style="width:56px;height:56px" shape="rounded" radius="12" placeholder="Стаття"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">5 міфів про сухий корм</div><div style="font-size:12px;color:var(--color-neutral-600)">7 хв читання</div></div>
+          </div>
+          <div class="card-sm" style="display:flex;gap:12px;align-items:center">
+            <image-slot id="bl-art-2" style="width:56px;height:56px" shape="rounded" radius="12" placeholder="Стаття"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Скільки разів годувати цуценя</div><div style="font-size:12px;color:var(--color-neutral-600)">5 хв читання</div></div>
+          </div>
+          <div class="card-sm" style="display:flex;gap:12px;align-items:center">
+            <image-slot id="bl-art-3" style="width:56px;height:56px" shape="rounded" radius="12" placeholder="Стаття"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Натуральний раціон: за і проти</div><div style="font-size:12px;color:var(--color-neutral-600)">9 хв читання</div></div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+<div id="sec-leaderboard" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Спільнота — рейтинг і коментарі до статей</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Повний рейтинг гравців, коментарі під статтею</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Рейтинг гравців квізів</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="padding:64px 20px 10px">
+          <h1 class="scr-title" style="margin-bottom:12px">Рейтинг</h1>
+          <div class="seg-simple">
+            <div class="seg-simple-opt active">Друзі</div>
+            <div class="seg-simple-opt">Глобальний</div>
+          </div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px;background:var(--color-accent-2-100)">
+            <span style="font:700 15px var(--font-heading);color:var(--color-accent-2-700);width:22px">1</span>
+            <image-slot id="qlb-1" style="width:40px;height:40px" shape="circle" placeholder="Гравець"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Оксана</div><div style="font-size:11px;color:var(--color-neutral-600)">Серія 21 день</div></div>
+            <span style="font:700 13px var(--font-body);color:var(--color-accent-2-700)">4 820 XP</span>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <span style="font:700 15px var(--font-heading);color:var(--color-neutral-500);width:22px">2</span>
+            <image-slot id="qlb-2" style="width:40px;height:40px" shape="circle" placeholder="Гравець"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Ігор</div><div style="font-size:11px;color:var(--color-neutral-600)">Серія 9 днів</div></div>
+            <span style="font:700 13px var(--font-body)">3 990 XP</span>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px;border:2px solid var(--color-accent-300)">
+            <span style="font:700 15px var(--font-heading);color:var(--color-neutral-500);width:22px">4</span>
+            <image-slot id="qlb-me" style="width:40px;height:40px" shape="circle" placeholder="Ти"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Марта (ти)</div><div style="font-size:11px;color:var(--color-neutral-600)">Серія 12 днів</div></div>
+            <span style="font:700 13px var(--font-body)">3 340 XP</span>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Блог: стаття з коментарями</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="flex:1;overflow:auto;padding:0 0 0">
+          <image-slot id="bl-comment-hero" style="width:100%;height:150px" shape="rect" placeholder="Обкладинка"></image-slot>
+          <div style="padding:14px 20px 10px">
+            <h1 style="font-size:18px;margin:0 0 6px">5 міфів про сухий корм</h1>
+            <div style="font-size:12px;color:var(--color-neutral-600);margin-bottom:10px">7 хв читання · 34 коментарі</div>
+            <div style="font-size:12.5px;line-height:1.5;color:var(--color-neutral-800);margin-bottom:14px">…Тож перед покупкою дивіться на перші 3 інгредієнти складу, а не на ціну чи рекламу.</div>
+          </div>
+          <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;gap:10px">
+              <image-slot id="bl-c-1" style="width:28px;height:28px;flex-shrink:0" shape="circle" placeholder="Аватар"></image-slot>
+              <div><div style="font:700 12px var(--font-body)">Дмитро</div><div style="font-size:12px;color:var(--color-neutral-700);margin-top:2px">Дуже корисно, не знав про перші 3 інгредієнти!</div></div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <image-slot id="bl-c-2" style="width:28px;height:28px;flex-shrink:0" shape="circle" placeholder="Аватар"></image-slot>
+              <div><div style="font:700 12px var(--font-body)">Соломія</div><div style="font-size:12px;color:var(--color-neutral-700);margin-top:2px">А чи є список кормів, які проходять цей тест?</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:10px 20px 20px;display:flex;gap:8px;align-items:center">
+          <div class="input" style="flex:1;box-sizing:border-box">Ваш коментар…</div>
+          <div class="btn btn-primary btn-icon" style="width:44px;height:44px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4z"></path></svg></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { quizSelected: null, zoomStep: 0, weighPick: null, mythPick: null };
+  renderVals() {
+    const sel = this.state.quizSelected;
+    const correctIdx = 0;
+    const zoomStep = this.state.zoomStep;
+    const blurPx = [22, 12, 5, 0][zoomStep];
+    const weighPick = this.state.weighPick;
+    const weighCorrect = 'a';
+    const weighStyle = (key) => {
+      const base2 = { flex: 1, padding: '18px 10px', borderRadius: '18px', textAlign: 'center', fontWeight: 700, fontSize: '14px', cursor: 'pointer', borderWidth: '2px', borderStyle: 'solid', transition: 'all .15s' };
+      if (weighPick === null) return { ...base2, background: '#fff', borderColor: 'transparent', boxShadow: 'var(--shadow-md)', color: 'var(--color-text)' };
+      if (key === weighCorrect) return { ...base2, background: 'var(--color-accent-2-100)', borderColor: 'var(--color-accent-2-500)', color: 'var(--color-accent-2-800)' };
+      if (key === weighPick) return { ...base2, background: '#fbe9e6', borderColor: '#c0503a', color: '#9a3b28' };
+      return { ...base2, background: '#fff', borderColor: 'transparent', opacity: 0.55, color: 'var(--color-neutral-500)' };
+    };
+    const mythPick = this.state.mythPick;
+    const mythCorrect = 'myth';
+    const mythStyle = (key) => {
+      const base3 = { flex: 1, padding: '16px', borderRadius: '16px', textAlign: 'center', fontWeight: 700, fontSize: '14px', cursor: 'pointer', borderWidth: '2px', borderStyle: 'solid', transition: 'all .15s' };
+      if (mythPick === null) return { ...base3, background: key === 'truth' ? 'var(--color-accent-2-100)' : 'var(--color-accent-100)', borderColor: 'transparent', color: key === 'truth' ? 'var(--color-accent-2-700)' : 'var(--color-accent-700)' };
+      if (key === mythCorrect) return { ...base3, background: 'var(--color-accent-2-100)', borderColor: 'var(--color-accent-2-500)', color: 'var(--color-accent-2-800)' };
+      if (key === mythPick) return { ...base3, background: '#fbe9e6', borderColor: '#c0503a', color: '#9a3b28' };
+      return { ...base3, background: '#fff', borderColor: 'transparent', opacity: 0.55 };
+    };
+    const base = {
+      padding: '14px 16px', borderRadius: '16px', fontWeight: 700, fontSize: '14px',
+      cursor: 'pointer', transition: 'background .15s,border-color .15s,color .15s',
+      borderWidth: '2px', borderStyle: 'solid',
+    };
+    const mk = (idx) => {
+      if (sel === null) return { ...base, background: '#fff', borderColor: 'transparent', color: 'var(--color-text)', boxShadow: 'var(--shadow-sm)' };
+      if (idx === correctIdx) return { ...base, background: 'var(--color-accent-2-100)', borderColor: 'var(--color-accent-2-500)', color: 'var(--color-accent-2-800)' };
+      if (idx === sel) return { ...base, background: '#fbe9e6', borderColor: '#c0503a', color: '#9a3b28' };
+      return { ...base, background: '#fff', borderColor: 'transparent', color: 'var(--color-neutral-400)', opacity: 0.6 };
+    };
+    return {
+      quizOpt0Style: mk(0), quizOpt1Style: mk(1), quizOpt2Style: mk(2),
+      quizPick0: () => sel === null && this.setState({ quizSelected: 0 }),
+      quizPick1: () => sel === null && this.setState({ quizSelected: 1 }),
+      quizPick2: () => sel === null && this.setState({ quizSelected: 2 }),
+      quizFeedbackShow: sel !== null,
+      quizFeedback: sel === null ? '' : (sel === correctIdx ? '✓ Правильно! +10 XP' : 'Правильна відповідь — Хаскі'),
+      zoomBlur: blurPx,
+      zoomMaxed: zoomStep >= 3,
+      zoomReveal: () => zoomStep < 3 && this.setState({ zoomStep: zoomStep + 1 }),
+      zoomXpLabel: ['+30 XP', '+20 XP', '+10 XP', '+0 XP'][zoomStep],
+      weighAStyle: weighStyle('a'), weighBStyle: weighStyle('b'),
+      weighPickA: () => weighPick === null && this.setState({ weighPick: 'a' }),
+      weighPickB: () => weighPick === null && this.setState({ weighPick: 'b' }),
+      weighFeedbackShow: weighPick !== null,
+      weighFeedback: weighPick === null ? '' : (weighPick === weighCorrect ? '✓ Правильно! Сенбернар важчий' : 'Насправді важчий сенбернар'),
+      mythTruthStyle: mythStyle('truth'), mythMythStyle: mythStyle('myth'),
+      mythPickTruth: () => mythPick === null && this.setState({ mythPick: 'truth' }),
+      mythPickMyth: () => mythPick === null && this.setState({ mythPick: 'myth' }),
+      mythFeedbackShow: mythPick !== null,
+      mythFeedback: mythPick === null ? '' : (mythPick === mythCorrect ? '✓ Міф! Собаки бачать більше відтінків, ніж просто чорно-біле' : 'Це міф — собаки розрізняють синій і жовтий'),
+    };
+  }
+}
+</script>
+</body>
+</html>

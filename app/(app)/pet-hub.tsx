@@ -17,8 +17,9 @@ import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { t } from '@/src/i18n';
 import { listPets } from '@/src/services/pets';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { CompanionSpecies, PetRow } from '@/src/types/pet';
+
 
 function speciesLabel(species: CompanionSpecies) {
   if (species === 'dog') return t('pets.speciesDog');
@@ -156,7 +157,7 @@ export default function PetHubScreen() {
               isBird ? t('petHub.careBird') : t('care.cardHint')
             }
             leading={
-              <Ionicons name="water-outline" size={22} color={brand.navy} />
+              <Ionicons name="water-outline" size={22} color={brand.accent} />
             }
             onPress={() => go('/(app)/pet-care')}
           />
@@ -164,7 +165,7 @@ export default function PetHubScreen() {
             title={t('pets.profileTitle')}
             subtitle={t('petHub.profileHint')}
             leading={
-              <Ionicons name="paw-outline" size={22} color={brand.navy} />
+              <Ionicons name="paw-outline" size={22} color={brand.accent} />
             }
             onPress={() =>
               router.push({
@@ -180,7 +181,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="medkit-outline"
                 size={22}
-                color={brand.navy}
+                color={brand.accent}
               />
             }
             onPress={() => go('/(app)/pet-vaccines')}
@@ -192,7 +193,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="clipboard-outline"
                 size={22}
-                color={brand.navy}
+                color={brand.accent}
               />
             }
             onPress={() => go('/(app)/pet-vet-log')}
@@ -206,7 +207,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="game-controller-outline"
                 size={22}
-                color={brand.navy}
+                color={brand.accent}
               />
             }
             onPress={() => go('/(app)/play-guides')}
@@ -218,7 +219,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="sparkles-outline"
                 size={22}
-                color={brand.navy}
+                color={brand.accent}
               />
             }
             onPress={() => go('/(app)/pet-habits')}
@@ -230,7 +231,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="calendar-outline"
                 size={22}
-                color={brand.navy}
+                color={brand.accent}
               />
             }
             onPress={() => go('/(app)/pet-calendar')}
@@ -244,7 +245,7 @@ export default function PetHubScreen() {
               <Ionicons
                 name="airplane-outline"
                 size={22}
-                color={brand.navy}
+                color={brand.accent}
               />
             }
             onPress={() => go('/(app)/pet-travel')}
@@ -256,9 +257,10 @@ export default function PetHubScreen() {
               <Ionicons
                 name="document-text-outline"
                 size={22}
-                color={brand.navy}
+                color={brand.accent}
               />
             }
+
             onPress={() => go('/(app)/pet-passport')}
           />
         </View>
@@ -282,43 +284,38 @@ const styles = StyleSheet.create({
     maxWidth: 140,
     paddingHorizontal: 10,
     paddingVertical: 8,
-    borderRadius: 999,
-    backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
   },
   chipActive: {
-    backgroundColor: brand.mist,
-    borderColor: brand.navy,
+    backgroundColor: brand.accentTint,
   },
   chipText: {
     flexShrink: 1,
-    fontFamily: 'Figtree_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
     color: brand.ink,
   },
   chipTextActive: {
-    fontFamily: 'Figtree_700Bold',
-    color: brand.navy,
+    fontFamily: fonts.bodyBold,
+    color: brand.accentDark,
   },
   birdNote: {
     marginBottom: 10,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.roseTint,
-    borderWidth: 1,
-    borderColor: brand.rose,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
   birdNoteText: {
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 18,
     color: brand.ink,
   },
   meta: {
     marginBottom: 12,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     color: brand.muted,
   },

@@ -18,6 +18,7 @@ import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { Section } from '@/src/components/Section';
+import { SegmentedControl } from '@/src/components/SegmentedControl';
 import { getScoreTone, SCORE_COLORS } from '@/src/constants/analysis';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
@@ -36,7 +37,7 @@ import {
   type PlantHistoryItem,
 } from '@/src/services/plants';
 import { deleteScan, listScans } from '@/src/services/scans';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 import type { PetSpecies, ScanRow } from '@/src/types/scan';
 import type { PlantToxicityLevel } from '@/src/types/plant';
@@ -258,34 +259,21 @@ export default function JournalScreen() {
           <ProfileEntry />
         </View>
 
-        <View style={styles.segment}>
-          <Pressable
-            onPress={() => {
+        <SegmentedControl
+          options={[
+            { id: 'new', label: t('check.tabNew') },
+            { id: 'history', label: t('check.tabHistory') },
+          ]}
+          value={mode}
+          onChange={(id) => {
+            if (id === 'new') {
               setMode('new');
               router.replace('/(app)/(tabs)');
-            }}
-            style={[styles.segBtn, mode === 'new' && styles.segBtnActive]}
-          >
-            <Text
-              style={[styles.segText, mode === 'new' && styles.segTextActive]}
-            >
-              {t('check.tabNew')}
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setMode('history')}
-            style={[styles.segBtn, mode === 'history' && styles.segBtnActive]}
-          >
-            <Text
-              style={[
-                styles.segText,
-                mode === 'history' && styles.segTextActive,
-              ]}
-            >
-              {t('check.tabHistory')}
-            </Text>
-          </Pressable>
-        </View>
+              return;
+            }
+            setMode('history');
+          }}
+        />
 
         <ScrollView
           horizontal
@@ -342,7 +330,7 @@ export default function JournalScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={() => void load(true)}
-              tintColor={brand.forest}
+              tintColor={brand.accent}
             />
           }
           ListEmptyComponent={
@@ -512,73 +500,50 @@ export default function JournalScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 },
+  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8, gap: 12 },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 14,
   },
   title: {
-    fontFamily: 'Caprasimo_400Regular',
-    fontSize: 34,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
-    letterSpacing: -0.3,
   },
-  segment: {
-    flexDirection: 'row',
-    borderRadius: 999,
-    backgroundColor: brand.creamDeep,
-    padding: 4,
-    marginBottom: 12,
-  },
-  segBtn: {
-    flex: 1,
-    borderRadius: 999,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  segBtnActive: {
-    backgroundColor: brand.sage,
-  },
-  segText: {
-    fontFamily: 'Figtree_500Medium',
-    fontSize: 13,
-    color: brand.muted,
-  },
-  segTextActive: {
-    fontFamily: 'Figtree_700Bold',
-    color: '#FFFFFF',
-  },
-  chipRow: { flexDirection: 'row', gap: 8, paddingBottom: 8 },
+  chipRow: { flexDirection: 'row', gap: 8, paddingBottom: 0 },
   chip: {
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   chipActive: {
-    backgroundColor: brand.forest,
-    borderColor: brand.forest,
+    backgroundColor: brand.successTint,
   },
   chipText: {
-    fontFamily: 'Figtree_500Medium',
-    fontSize: 13,
-    color: brand.muted,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.ink,
   },
-  chipTextActive: { color: '#FFFFFF' },
+  chipTextActive: {
+    fontFamily: fonts.bodyBold,
+    color: brand.successDark,
+  },
   list: { paddingHorizontal: 20, paddingBottom: 40, flexGrow: 1 },
   card: {
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     padding: 12,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   pressed: { opacity: 0.9 },
   thumbDash: {
@@ -602,13 +567,13 @@ const styles = StyleSheet.create({
   },
   cardCopy: { flex: 1, paddingRight: 8 },
   cardTitle: {
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 15,
     color: brand.ink,
   },
   cardMeta: {
     marginTop: 4,
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
     color: brand.muted,
   },
@@ -628,18 +593,18 @@ const styles = StyleSheet.create({
   },
   badgeMuted: {
     borderRadius: 12,
-    backgroundColor: brand.mist,
+    backgroundColor: brand.chipTrack,
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
-  badgeText: { fontFamily: 'Figtree_700Bold', fontSize: 14 },
+  badgeText: { fontFamily: fonts.bodyBold, fontSize: 14 },
   badgeMutedText: {
-    fontFamily: 'Figtree_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.muted,
   },
   emptyBody: {
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
     color: brand.muted,
@@ -647,7 +612,7 @@ const styles = StyleSheet.create({
   swipeHint: {
     marginTop: 8,
     textAlign: 'center',
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
     color: brand.mutedSoft,
   },

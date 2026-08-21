@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#F4F3F1;font-family:'Inter',system-ui,sans-serif;color:#152233}
+    h1,h2,h3{font-family:'Manrope',system-ui,sans-serif}
+    a{color:#0E6E5D}
+    .wrap{max-width:1080px;margin:0 auto;padding:64px 48px 110px}
+    .kicker{font:700 11px/1.4 'Inter',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#0E6E5D}
+    .sec{margin-top:60px}
+    .sec h2{font-size:23px;margin:0 0 8px}
+    .sec .num{font:800 12px 'Manrope',sans-serif;color:#9FD8CB;display:block;margin-bottom:6px}
+    .sec p.desc{color:#5B6B75;font-size:13.5px;margin:0 0 22px;max-width:640px;line-height:1.65}
+    .card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    .ramp{display:flex;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    .ramp-step{flex:1;height:56px;position:relative}
+    .ramp-step span{position:absolute;bottom:4px;left:6px;font-size:9px;font-weight:700;font-family:'Inter',sans-serif}
+    .ramp-name{font:700 12px 'Manrope',sans-serif;margin:10px 0 6px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .dont{border:1.5px dashed #E7B4AE;background:#FDF3F2}
+    .do{border:1.5px solid #9FD8CB;background:#F3FBF8}
+    .rule{border-radius:14px;padding:14px;font-size:12.5px;line-height:1.5}
+  </style>
+</helmet>
+<div class="wrap">
+  <div class="kicker">KnowSnout · Пропозиція дизайн-системи</div>
+  <h1 style="font-size:36px;margin:10px 0 10px">Куди веду бренд далі</h1>
+  <p style="max-width:680px;color:#5B6B75;font-size:15px;line-height:1.7">
+    Це не каталог того, що вже є (той документ — «Брендбук») — це моя пропозиція як дизайнера:
+    що варто зафіксувати, уточнити чи додати, відштовхуючись від твого реального знаку, щоб система
+    витримала ріст продукту (нові види тварин, більше мов, темна тема, маркетингові матеріали).
+  </p>
+
+  <div class="sec">
+    <span class="num">01 — Логіка знаку</span>
+    <h2>Чому ніс, а не лапка</h2>
+    <p class="desc">
+      Більшість pet-застосунків використовують лапку — це вже візуальний штамп категорії. Твій знак —
+      ніс з «хвилями нюху» зверху — розповідає саме про функцію застосунку (розпізнавання, перевірку),
+      а не просто «це про тварин». Це сильніша, більш власна ідея. Раджу свідомо будувати навколо неї
+      месседж «ми аналізуємо», а не «ми мило про тварин» — це й відрізняє KnowSnout від типових конкурентів.
+    </p>
+    <div class="grid2">
+      <div class="card rule do"><b>Зберегти:</b> двобарвний градієнт зелений→бірюзовий у знаку — він унікальний і впізнаваний навіть маленьким.</div>
+      <div class="card rule dont"><b>Не додавати:</b> лапки, кістки, мисочки як другорядну іконографію бренду — це розмиє відмінність знаку.</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <span class="num">02 — Колірна система</span>
+    <h2>Від двох кольорів — до повної шкали</h2>
+    <p class="desc">
+      У продукті зараз одна пляма primary teal і одна м&apos;ятна. Цього мало для 60+ екранів: потрібні тональні
+      рампи (100–900) для кожної ролі, щоб стани (hover/pressed/disabled), теги і графіки не вигадувались ситуативно.
+      Нижче — рампи, порановані з реального primary teal логотипу в OKLCH, тож кожен крок відповідає своєму
+      сусіду по яскравості в інших рампах.
+    </p>
+    <div class="ramp-name">Teal (primary)</div>
+    <div class="ramp">
+      <div class="ramp-step" style="background:#EAF7F3"><span>100</span></div>
+      <div class="ramp-step" style="background:#CBEBE1"><span>200</span></div>
+      <div class="ramp-step" style="background:#9FD8CB"><span>300</span></div>
+      <div class="ramp-step" style="background:#5FBBA6;color:#fff"><span style="color:#fff">400</span></div>
+      <div class="ramp-step" style="background:#0E6E5D;color:#fff"><span style="color:#fff">500</span></div>
+      <div class="ramp-step" style="background:#0A5346;color:#fff"><span style="color:#fff">600</span></div>
+      <div class="ramp-step" style="background:#083F35;color:#fff"><span style="color:#fff">700</span></div>
+      <div class="ramp-step" style="background:#062B24;color:#fff"><span style="color:#fff">800</span></div>
+      <div class="ramp-step" style="background:#041A16;color:#fff"><span style="color:#fff">900</span></div>
+    </div>
+    <div class="ramp-name">Signal Green (лого-акцент, вживати економно)</div>
+    <div class="ramp">
+      <div class="ramp-step" style="background:#EEFBF0"><span>100</span></div>
+      <div class="ramp-step" style="background:#C8F2CE"><span>300</span></div>
+      <div class="ramp-step" style="background:#39E07A"><span>500</span></div>
+      <div class="ramp-step" style="background:#1EAE5C;color:#fff"><span style="color:#fff">700</span></div>
+      <div class="ramp-step" style="background:#0F6D38;color:#fff"><span style="color:#fff">900</span></div>
+    </div>
+    <div class="ramp-name">Ink (текст і поверхні темної теми)</div>
+    <div class="ramp">
+      <div class="ramp-step" style="background:#F4F3F1"><span>50</span></div>
+      <div class="ramp-step" style="background:#D8D5D0"><span>200</span></div>
+      <div class="ramp-step" style="background:#8b96a0;color:#fff"><span style="color:#fff">400</span></div>
+      <div class="ramp-step" style="background:#5B6B75;color:#fff"><span style="color:#fff">600</span></div>
+      <div class="ramp-step" style="background:#152233;color:#fff"><span style="color:#fff">900</span></div>
+    </div>
+    <p class="desc" style="margin-top:16px">
+      <b>Правило вживання:</b> Teal 500 — це кнопки й активні стани, ніколи не body-текст (замалий контраст
+      на теплому фоні у великих обсягах тексту). Signal Green — лише для лого, крапок «активний»,
+      геймифікації (XP/стрік) — якщо він з&apos;явиться в кожному другому елементі, втратить святковість.
+    </p>
+  </div>
+
+  <div class="sec">
+    <span class="num">03 — Типографіка</span>
+    <h2>Manrope + Inter — залишаю, але з чіткими ролями</h2>
+    <p class="desc">Manrope зчитується як «технологічний, але дружній» — добре тримає баланс між «AI-продукт» і «застосунок про тваринок». Inter — нейтральний робочий кінь для інтерфейсу. Розводжу їх суворіше, ніж зараз:</p>
+    <div class="card" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="width:130px;font-size:11px;color:#8b96a0;font-weight:600;flex-shrink:0">Дисплей / H1</span><span style="font:800 30px 'Manrope',sans-serif">Знайди безпечний корм</span></div>
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="width:130px;font-size:11px;color:#8b96a0;font-weight:600;flex-shrink:0">Заголовок екрана</span><span style="font:700 20px 'Manrope',sans-serif">Профіль улюбленця</span></div>
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="width:130px;font-size:11px;color:#8b96a0;font-weight:600;flex-shrink:0">Підзаголовок картки</span><span style="font:600 14px 'Inter',sans-serif">Спосіб життя і харчування</span></div>
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="width:130px;font-size:11px;color:#8b96a0;font-weight:600;flex-shrink:0">Основний текст</span><span style="font:400 14px 'Inter',sans-serif">Оцінка рахується з відкритих баз і аналізу AI.</span></div>
+      <div style="display:flex;align-items:baseline;gap:16px"><span style="width:130px;font-size:11px;color:#8b96a0;font-weight:600;flex-shrink:0">Лейбл поля</span><span style="font:600 11px 'Inter',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#0E6E5D">Улюблена їжа</span></div>
+    </div>
+    <p class="desc" style="margin-top:14px"><b>Правило:</b> Manrope тільки на H1/H2 і заголовках екранів — ніколи для абзаців (важкий на очі у великій кількості), Inter — все інше, включно з кнопками (зараз кнопки хаотично то Manrope, то Inter).</p>
+  </div>
+
+  <div class="sec">
+    <span class="num">04 — Форма і простір</span>
+    <h2>Заокруглений, але не «мильний»</h2>
+    <p class="desc">Радіус 14px для карток/кнопок/полів — читається як «дружній, але серйозний AI-продукт», не дитячий (24px+) і не корпоративний (4px). Пігулки (999px) — тільки для тегів, аватарів і сегментованих перемикачів, ніде більше.</p>
+    <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+      <div style="width:90px;height:56px;background:#0E6E5D;border-radius:14px"></div>
+      <div style="width:90px;height:56px;background:#fff;border:1.5px solid #9FD8CB;border-radius:14px"></div>
+      <div style="background:#0E6E5D;color:#fff;border-radius:999px;padding:10px 20px;font:700 13px 'Inter',sans-serif">Тег/пігулка</div>
+      <div style="width:56px;height:56px;background:#E3F5F0;border-radius:999px"></div>
+    </div>
+    <p class="desc" style="margin-top:14px">Тіні — м&apos;які й теплі (не чорні): <code style="background:#fff;padding:2px 6px;border-radius:6px;font-size:11px">0 1px 3px rgba(21,34,51,.08)</code> для карток у спокої, трохи глибша при підйомі (модалки, sticky-навігація).</p>
+  </div>
+
+  <div class="sec">
+    <span class="num">05 — Іконографія</span>
+    <h2>Аутлайн 2.2px, заокруглені кінці — завжди</h2>
+    <p class="desc">Товщина штриха узгоджена з вагою знаку (він теж «намальований» товстою лінією зі скругленими кінцями) — тому інтерфейсні іконки мають ту саму характерність, а не випадковий Material/Feather мікс.</p>
+    <div style="display:flex;gap:14px">
+      <div class="card" style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;padding:0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12a5 5 0 015-5 5 5 0 015 5v4a5 5 0 01-5 5 5 5 0 01-5-5v-4z"></path></svg></div>
+      <div class="card" style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;padding:0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg></div>
+      <div class="card" style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;padding:0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path></svg></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <span class="num">06 — Мультивидовість</span>
+    <h2>Готуємось до «не лише собаки й коти» вже в системі кольору</h2>
+    <p class="desc">Замість жорсткого зв&apos;язку «зелений = здоров&apos;я/собака», раджу нейтральні позначки виду —
+      маленькі монохромні силует-іконки (пес/кіт/птах/гризун/рептилія) в м&apos;ятному колі, а не кольорове кодування
+      за видом. Це масштабується на 10+ видів без вибору нових кольорів щоразу.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10c0-2 1.2-3.5 2.5-3.5S9 8 9 10"></path><path d="M15 10c0-2 1.2-3.5 2.5-3.5S20 8 20 10"></path><path d="M6.5 10c-1 0-2 1.3-2 3s1.5 4 3.5 5c1.3.7 2 .7 2 2.5v.5"></path><path d="M17.5 10c1 0 2 1.3 2 3s-1.5 4-3.5 5c-1.3.7-2 .7-2 2.5v.5"></path><ellipse cx="12" cy="14.5" rx="5" ry="4.5"></ellipse><circle cx="12" cy="14" r=".6" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Пес</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9L4.5 4.5 9 7"></path><path d="M18 9l1.5-4.5L15 7"></path><path d="M6 9c0-1.5 2.5-2.5 6-2.5s6 1 6 2.5v5c0 3-2.5 5.5-6 5.5s-6-2.5-6-5.5z"></path><path d="M9 12h.01M15 12h.01"></path><path d="M10.5 15h3"></path></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Кіт</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3 0 5 2.2 5 5.2 0 1.6-.7 2.6-1.4 3.4l3.4 1.9-2.3 1-2.3-1.2c-.6 3.7-2.4 7.7-2.4 7.7s-1.8-4-2.4-7.7L9.3 14l-2.3-1 3.4-1.9C9.7 10.3 9 9.3 9 7.7 9 4.7 9.5 3 12 3z"></path><circle cx="14.3" cy="7.5" r=".6" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Птах</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 8.5C8 6 8 3.5 9.3 3c1.2-.5 2.2 1.5 2.4 4M15 8.5c1-2.5 1-5 -.3-5.5-1.2-.5-2.2 1.5-2.4 4"></path><ellipse cx="12" cy="14" rx="6" ry="5.5"></ellipse><circle cx="10" cy="13" r=".5" fill="#0E6E5D"></circle><circle cx="14" cy="13" r=".5" fill="#0E6E5D"></circle><path d="M10.5 16h3"></path></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Кріль</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="10" r="2"></circle><circle cx="16" cy="10" r="2"></circle><ellipse cx="12" cy="14" rx="7" ry="5.5"></ellipse><circle cx="9.5" cy="13" r=".5" fill="#0E6E5D"></circle><circle cx="14.5" cy="13" r=".5" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Гризун</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0-4.5 3.5-7 8-7s8 2.5 8 7-3.5 7-8 7-8-2.5-8-7z"></path><path d="M8 8.5C7 7.5 5.5 7.5 5 8.5M9 5.5C8.3 4 7 3.8 6 4.5"></path><circle cx="9" cy="10.5" r=".6" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Черепаха</div>
+      </div>
+      <div style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:999px;background:#E3F5F0;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6E5D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-4 6-5 9-5 4 0 7 2.2 9 5-2 2.8-5 5-9 5-3 0-6-1-9-5z"></path><path d="M21 12l2-3M21 12l2 3"></path><circle cx="8.5" cy="11" r=".6" fill="#0E6E5D"></circle></svg></div>
+        <div style="font-size:10.5px;color:#8b96a0;margin-top:6px">Риба</div>
+      </div>
+    </div>
+    <p class="desc" style="margin-top:14px">Спільна логіка малювання: одне коло-«обличчя», прості геометричні вуха/плавники/крила, товщина 2.2px зі скругленими кінцями — так новий вид (наприклад, змія чи їжак) домальовується за 5 хвилин без порушення стилю.</p>
+  </div>
+
+  <div class="sec">
+    <span class="num">07 — Темна тема</span>
+    <h2>Не інверсія — окрема поверхнева система</h2>
+    <p class="desc">Теплий чорно-коричневий (#1C1A17), не чистий чорний — так тепліше і менше «OLED-панк». Teal 500 лишається як є (вже читається на темному), Signal Green світлішає на пів кроку для контрасту.</p>
+    <div style="background:#1C1A17;border-radius:18px;padding:24px;display:flex;gap:16px">
+      <div style="flex:1;background:#2A2622;border-radius:14px;padding:16px"><div style="color:#F0E9DF;font:700 13px 'Manrope',sans-serif;margin-bottom:8px">Картка</div><div style="color:#B8AC9C;font-size:12px">Другорядний текст на 60% світлості від основного</div></div>
+      <div style="flex:1;background:#0E6E5D;border-radius:14px;padding:16px;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font:700 13px 'Inter',sans-serif">Кнопка</span></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <span class="num">08 — Наступні кроки</span>
+    <h2>Що б я зробив далі, по пріоритету</h2>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="card" style="display:flex;gap:12px;align-items:center"><span style="font:800 13px 'Manrope',sans-serif;color:#0E6E5D;width:24px">1</span><span style="font-size:13px">Перефарбувати всі 5 файлів екранів KnowSnout у цю палітру (зараз вони на тимчасовій Organic-теракоті) + додати темну версію кожного</span></div>
+      <div class="card" style="display:flex;gap:12px;align-items:center"><span style="font:800 13px 'Manrope',sans-serif;color:#0E6E5D;width:24px">2</span><span style="font-size:13px">Отримати справжній векторний файл лого (Figma/AI) для чіткого SVG на будь-якому масштабі</span></div>
+      <div class="card" style="display:flex;gap:12px;align-items:center"><span style="font:800 13px 'Manrope',sans-serif;color:#0E6E5D;width:24px">3</span><span style="font-size:13px">Замовити/намалювати єдиний набір видо-нейтральних силует-іконок (п.06) замість емодзі-заглушок</span></div>
+      <div class="card" style="display:flex;gap:12px;align-items:center"><span style="font:800 13px 'Manrope',sans-serif;color:#0E6E5D;width:24px">4</span><span style="font-size:13px">Зафіксувати цю пропозицію як «v1 рішено» — і оновити «Брендбук» так, щоб він відображав уже затверджену систему, а не аудит</span></div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

@@ -6,7 +6,7 @@ import { ListRow } from '@/src/components/ListRow';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** PDF Admin — numbered dashboard sections. */
+/** HTML kit · Admin — Manrope 22, accent numbered badges. */
 const LINKS: { n: string; href: string; titleKey: string; bodyKey: string }[] = [
   {
     n: '1',
@@ -88,8 +88,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontFamily: fonts.display,
-    fontSize: 34,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
     marginBottom: 8,
   },
@@ -110,14 +111,14 @@ const styles = StyleSheet.create({
     height: 28,
     width: 28,
     borderRadius: 14,
-    backgroundColor: brand.sageTint,
+    backgroundColor: brand.accentTint,
     alignItems: 'center',
     justifyContent: 'center',
   },
   numText: {
     fontFamily: fonts.bodyBold,
     fontSize: 13,
-    color: brand.sageDeep,
+    color: brand.accentDark,
   },
   rowBody: { flex: 1 },
 });

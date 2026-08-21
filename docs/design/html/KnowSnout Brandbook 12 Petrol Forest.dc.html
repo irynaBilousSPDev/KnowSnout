@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#F7F1ED; --ink:#122A4C; --accent:#122A4C; --accent2:#2F5233;
+      --rose:#E8879A; --tint:#F4DADF; --tint2:#E3E9DF; --dark:#0C1C33;
+      --surface:#FFFFFF; --muted:#5E6B7E; --line:rgba(18,42,76,.12);
+    }
+    body{margin:0;background:var(--bg);font-family:'Inter',system-ui,sans-serif;color:var(--ink)}
+    a{color:var(--accent)}a:hover{color:var(--accent2)}
+    .wrap{max-width:1180px;margin:0 auto;padding:56px 44px 96px}
+    .kick{font:700 11px 'Inter',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--accent2)}
+    h1{font:800 40px 'Manrope',sans-serif;letter-spacing:-.02em;margin:10px 0 10px}
+    h2{font:800 19px 'Manrope',sans-serif;margin:0 0 16px}
+    .lead{max-width:660px;color:var(--muted);font-size:15px;line-height:1.65}
+    .sec{margin-top:46px}
+    .card{background:var(--surface);border-radius:20px;padding:26px 28px;box-shadow:0 1px 2px rgba(18,42,76,.05),0 16px 34px -22px rgba(18,42,76,.2)}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .sw{height:72px;border-radius:14px}
+    .swlbl{font:600 10.5px 'Inter',sans-serif;color:var(--muted);margin-top:7px;line-height:1.4}
+    .btn-arrow{height:50px;padding:0 8px 0 26px;border-radius:999px;background:var(--accent);color:#fff;display:inline-flex;align-items:center;gap:16px;font:700 13.5px 'Inter',sans-serif}
+    .btn-arrow .circ{width:34px;height:34px;border-radius:999px;background:var(--rose);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:15px;flex:none}
+    .btn-out{height:50px;padding:0 28px;border-radius:999px;border:1.5px solid var(--accent);color:var(--accent);display:inline-flex;align-items:center;font:700 13.5px 'Inter',sans-serif}
+    .btn-green{height:50px;padding:0 26px;border-radius:999px;background:var(--accent2);color:#fff;display:inline-flex;align-items:center;font:700 13.5px 'Inter',sans-serif}
+    .chip{display:inline-flex;align-items:center;height:28px;padding:0 13px;border-radius:999px;font:600 11.5px 'Inter',sans-serif}
+    .phones{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-start;margin-top:22px}
+    .plbl{font:700 12.5px 'Inter',sans-serif;color:var(--muted);margin-bottom:11px}
+    .scr{box-sizing:border-box;height:100%;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);padding:56px 20px 0}
+    .surf{background:var(--surface);border-radius:16px;padding:14px;box-shadow:0 1px 2px rgba(18,42,76,.05),0 10px 22px -16px rgba(18,42,76,.18)}
+    .stitle{font:800 20px 'Manrope',sans-serif;margin:0}
+    .tabbar{height:70px;flex:none;display:flex;align-items:center;justify-content:space-around;background:var(--surface);margin:auto -20px 0;border-top:1px solid var(--line)}
+    .tab{display:flex;flex-direction:column;align-items:center;gap:4px;font:600 9px 'Inter',sans-serif;color:var(--muted)}
+    .tab.on{color:var(--accent)}
+    .dot{width:19px;height:19px;border-radius:6px;background:var(--tint)}
+    .dot.on{background:var(--accent)}
+    .sbtn{height:46px;border-radius:999px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 6px 0 22px;font:700 13px 'Inter',sans-serif}
+    .sbtn .circ{width:32px;height:32px;border-radius:999px;background:var(--rose);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:14px}
+  </style>
+</helmet>
+<div class="wrap">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px">
+    <a href="KnowSnout Brandbook 04 Forest.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">04 · Лісова зелень</a>
+    <a href="KnowSnout Brandbook 05 Indigo.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">05 · Індиго з персиком</a>
+    <a href="KnowSnout Brandbook 06 Amber.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">06 · Бурштин мінімал</a>
+    <a href="KnowSnout Brandbook 11 Rose.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">11 · Троянда з нафтовим синім</a>
+    <span style="font:700 11.5px 'Inter',sans-serif;color:#fff;background:var(--accent);padding:6px 13px;border-radius:999px">12 · Нафтовий синій + ліс</span>
+    <a href="KnowSnout Brandbook 13 Grey.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">13 · Сірі відтінки</a>
+    <a href="KnowSnout Brandbook 14 Petrol Forest Grey.dc.html" style="font:700 11.5px 'Inter',sans-serif;color:var(--muted);text-decoration:none;padding:6px 13px;border:1px solid var(--line);border-radius:999px">14 · Синій, ліс, троянда на сірому</a>
+  </div>
+  <div class="kick">Брендбук · варіант 12 · поєднання 11 + 04</div>
+  <h1>Нафтовий синій, ліс і троянда</h1>
+  <p class="lead">Нафтовий синій тримає структуру, лісова зелень працює як другий повноправний голос для «безпечно / здорово», троянда лишається емоційним акцентом у кнопках і деталях. Логотип перефарбований під тему, а не просто вставлений поверх неї.</p>
+
+  <div class="sec">
+    <h2>Логотип у кольорах теми</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px">
+      <div class="card" style="display:flex;flex-direction:column;gap:20px;align-items:flex-start">
+        <img src="assets/logo_petrol.png" alt="KnowSnout" style="width:92px;height:auto">
+        <div style="display:flex;align-items:center;gap:0">
+          <img src="assets/logo_petrol.png" alt="" style="width:50px;height:auto;margin-right:-2px">
+          <span style="font:800 25px 'Manrope',sans-serif;letter-spacing:-.02em;color:var(--accent)">KnowSnout</span>
+        </div>
+        <div style="font:600 11px 'Inter',sans-serif;color:var(--muted)">Основний — нафтовий синій</div>
+      </div>
+      <div class="card" style="background:var(--tint2);display:flex;flex-direction:column;gap:20px;align-items:flex-start">
+        <img src="assets/logo_forest.png" alt="" style="width:92px;height:auto">
+        <div style="display:flex;align-items:center;gap:0">
+          <img src="assets/logo_forest.png" alt="" style="width:50px;height:auto;margin-right:-2px">
+          <span style="font:800 25px 'Manrope',sans-serif;letter-spacing:-.02em;color:var(--accent2)">KnowSnout</span>
+        </div>
+        <div style="font:600 11px 'Inter',sans-serif;color:#4A5B44">Зелений — для «здоров'я» й безпеки</div>
+      </div>
+      <div class="card" style="background:var(--dark);display:flex;flex-direction:column;gap:20px;align-items:flex-start">
+        <img src="assets/logo_rose.png" alt="" style="width:92px;height:auto">
+        <div style="display:flex;align-items:center;gap:0">
+          <img src="assets/logo_white.png" alt="" style="width:50px;height:auto;margin-right:-2px">
+          <span style="font:800 25px 'Manrope',sans-serif;letter-spacing:-.02em;color:#fff">KnowSnout</span>
+        </div>
+        <div style="font:600 11px 'Inter',sans-serif;color:rgba(255,255,255,.6)">Троянда й білий — на темному</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Іконка-плитка · варіанти</h2>
+    <div class="card">
+      <div style="display:flex;gap:22px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:9px;align-items:center">
+          <div style="width:64px;height:64px;border-radius:19px;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.06),0 8px 18px -10px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center"><img src="assets/logo_petrol.png" alt="" style="width:52px;height:auto;margin-bottom:-5px"></div>
+          <div style="font:600 10.5px 'Inter',sans-serif;color:var(--muted);text-align:center;line-height:1.4">Біла плитка<br>синій знак</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;align-items:center">
+          <div style="width:64px;height:64px;border-radius:19px;background:var(--tint2);box-shadow:0 1px 2px rgba(0,0,0,.06),0 8px 18px -10px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center"><img src="assets/logo_forest.png" alt="" style="width:52px;height:auto;margin-bottom:-5px"></div>
+          <div style="font:600 10.5px 'Inter',sans-serif;color:var(--muted);text-align:center;line-height:1.4">Зелений тінт<br>зелений знак</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;align-items:center">
+          <div style="width:64px;height:64px;border-radius:19px;background:var(--tint);box-shadow:0 1px 2px rgba(0,0,0,.06),0 8px 18px -10px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center"><img src="assets/logo_rose.png" alt="" style="width:52px;height:auto;margin-bottom:-5px"></div>
+          <div style="font:600 10.5px 'Inter',sans-serif;color:var(--muted);text-align:center;line-height:1.4">Рожевий тінт<br>рожевий знак</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;align-items:center">
+          <div style="width:64px;height:64px;border-radius:19px;background:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.06),0 8px 18px -10px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center"><img src="assets/logo_white.png" alt="" style="width:52px;height:auto;margin-bottom:-5px"></div>
+          <div style="font:600 10.5px 'Inter',sans-serif;color:var(--muted);text-align:center;line-height:1.4">Синя плитка<br>білий знак</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;align-items:center">
+          <div style="width:64px;height:64px;border-radius:19px;background:var(--accent2);box-shadow:0 1px 2px rgba(0,0,0,.06),0 8px 18px -10px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center"><img src="assets/logo_white.png" alt="" style="width:52px;height:auto;margin-bottom:-5px"></div>
+          <div style="font:600 10.5px 'Inter',sans-serif;color:var(--muted);text-align:center;line-height:1.4">Зелена плитка<br>білий знак</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;align-items:center">
+          <div style="width:64px;height:64px;border-radius:19px;background:var(--dark);box-shadow:0 1px 2px rgba(0,0,0,.06),0 8px 18px -10px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center"><img src="assets/logo_rose.png" alt="" style="width:52px;height:auto;margin-bottom:-5px"></div>
+          <div style="font:600 10.5px 'Inter',sans-serif;color:var(--muted);text-align:center;line-height:1.4">Темна плитка<br>рожевий знак</div>
+        </div>
+      </div>
+      <div style="font:500 12.5px 'Inter',sans-serif;color:var(--muted);margin-top:18px;line-height:1.6;max-width:640px">Плитка: радіус 30% сторони, знак займає ~70% плитки, тінь м'яка й коротка. У шапці екрана — 44px, як застосунковий значок — 64px і більше.</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Палітра</h2>
+    <div class="card">
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:13px">
+        <div><div class="sw" style="background:var(--accent)"></div><div class="swlbl">Нафтовий<br>#122A4C</div></div>
+        <div><div class="sw" style="background:var(--accent2)"></div><div class="swlbl">Лісова зелень<br>#2F5233</div></div>
+        <div><div class="sw" style="background:var(--rose)"></div><div class="swlbl">Троянда<br>#E8879A</div></div>
+        <div><div class="sw" style="background:var(--tint)"></div><div class="swlbl">Рожевий тінт<br>#F4DADF</div></div>
+        <div><div class="sw" style="background:var(--tint2)"></div><div class="swlbl">Зелений тінт<br>#E3E9DF</div></div>
+        <div><div class="sw" style="background:var(--bg)"></div><div class="swlbl">Тло<br>#F7F1ED</div></div>
+        <div><div class="sw" style="background:var(--dark)"></div><div class="swlbl">Глибокий<br>#0C1C33</div></div>
+      </div>
+      <div style="font:500 12.5px 'Inter',sans-serif;color:var(--muted);margin-top:18px;line-height:1.6;max-width:640px">Розподіл ролей: синій — навігація, заголовки, основні дії. Зелений — усе, що означає «добре / безпечно / в нормі». Троянда — акцент у колі кнопки, активні стани, емоційні деталі. Два тінти не змішуються в одному блоці.</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Кнопки й компоненти</h2>
+    <div class="grid2">
+      <div class="card" style="display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <span class="btn-arrow">Зберегти<span class="circ">→</span></span>
+          <span class="btn-out">Скасувати</span>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <span class="btn-green">Все в нормі</span>
+          <span class="btn-out" style="border-color:var(--accent2);color:var(--accent2)">Деталі</span>
+        </div>
+        <div style="font:500 11.5px 'Inter',sans-serif;color:var(--muted);line-height:1.55">Основна кнопка зберігає форму з варіанта 11: пілюля з рожевим колом-стрілкою праворуч. Зелена — для підтверджувальних, «здорових» дій.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="chip" style="background:var(--tint2);color:var(--accent2)">Безпечно</span>
+          <span class="chip" style="background:var(--tint);color:#A8455C">Уважно</span>
+          <span class="chip" style="background:var(--accent);color:#fff">4.3</span>
+          <span class="chip" style="background:rgba(18,42,76,.08);color:var(--accent)">Собаки</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center"><div style="flex:1;height:8px;border-radius:999px;background:var(--tint2);overflow:hidden"><div style="width:72%;height:100%;background:var(--accent2)"></div></div><span style="font:700 12px 'Inter',sans-serif;color:var(--accent2)">72%</span></div>
+        <div style="display:flex;gap:10px;align-items:center"><div style="flex:1;height:8px;border-radius:999px;background:var(--tint);overflow:hidden"><div style="width:38%;height:100%;background:var(--rose)"></div></div><span style="font:700 12px 'Inter',sans-serif;color:#A8455C">38%</span></div>
+        <div style="font:800 26px 'Manrope',sans-serif;letter-spacing:-.02em;margin-top:2px">Manrope 800 · Inter</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Приклади екранів</h2>
+    <div class="phones">
+
+      <div>
+        <div class="plbl">Дашборд</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+          <div class="scr">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="display:flex;align-items:center;gap:10px"><div style="width:44px;height:44px;border-radius:13px;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.06),0 6px 14px -8px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden"><img src="assets/logo_petrol.png" alt="" style="width:44px;height:auto;margin-bottom:-4px"></div><h1 class="stitle">Привіт, Марто</h1></div>
+              <div style="width:34px;height:34px;border-radius:999px;background:var(--tint)"></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px">
+              <div class="surf" style="flex:1;text-align:center;padding:13px 4px"><div style="font:800 18px 'Manrope',sans-serif;color:var(--accent)">47</div><div style="font:600 9.5px 'Inter',sans-serif;color:var(--muted)">Перевірок</div></div>
+              <div class="surf" style="flex:1;text-align:center;padding:13px 4px;background:var(--tint2)"><div style="font:800 18px 'Manrope',sans-serif;color:var(--accent2)">92%</div><div style="font:600 9.5px 'Inter',sans-serif;color:#4A5B44">Безпечно</div></div>
+              <div class="surf" style="flex:1;text-align:center;padding:13px 4px;background:var(--tint)"><div style="font:800 18px 'Manrope',sans-serif;color:#A8455C">3</div><div style="font:600 9.5px 'Inter',sans-serif;color:#A8455C">Улюбленці</div></div>
+            </div>
+            <div style="font:700 12.5px 'Manrope',sans-serif;margin:16px 0 9px">Останні перевірки</div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div class="surf" style="display:flex;align-items:center;gap:11px"><div style="width:36px;height:36px;border-radius:11px;background:var(--tint2);flex:none"></div><div style="flex:1"><div style="font:700 12px 'Inter',sans-serif">Brit Care Adult Lamb</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Сьогодні</div></div><span class="chip" style="height:22px;padding:0 9px;font-size:10px;background:var(--tint2);color:var(--accent2)">4.3</span></div>
+              <div class="surf" style="display:flex;align-items:center;gap:11px"><div style="width:36px;height:36px;border-radius:11px;background:var(--tint);flex:none"></div><div style="flex:1"><div style="font:700 12px 'Inter',sans-serif">Монстера</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Вчора</div></div><span class="chip" style="height:22px;padding:0 9px;font-size:10px;background:var(--tint);color:#A8455C">Уважно</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px">
+              <div class="surf"><div style="width:26px;height:26px;border-radius:8px;background:rgba(18,42,76,.08);margin-bottom:7px"></div><div style="font:700 11.5px 'Inter',sans-serif">Сканувати корм</div><div style="font:500 9.5px 'Inter',sans-serif;color:var(--muted);margin-top:2px">Штрихкод</div></div>
+              <div class="surf"><div style="width:26px;height:26px;border-radius:8px;background:var(--tint2);margin-bottom:7px"></div><div style="font:700 11.5px 'Inter',sans-serif">Рослини</div><div style="font:500 9.5px 'Inter',sans-serif;color:var(--muted);margin-top:2px">Перевірити</div></div>
+              <div class="surf"><div style="width:26px;height:26px;border-radius:8px;background:var(--tint);margin-bottom:7px"></div><div style="font:700 11.5px 'Inter',sans-serif">Порода</div><div style="font:500 9.5px 'Inter',sans-serif;color:var(--muted);margin-top:2px">За фото</div></div>
+              <div class="surf"><div style="width:26px;height:26px;border-radius:8px;background:rgba(18,42,76,.08);margin-bottom:7px"></div><div style="font:700 11.5px 'Inter',sans-serif">Порівняти</div><div style="font:500 9.5px 'Inter',sans-serif;color:var(--muted);margin-top:2px">2 корми</div></div>
+            </div>
+            <div class="sbtn" style="margin-top:12px">Сканувати корм<span class="circ">→</span></div>
+            <div class="tabbar"><div class="tab on"><div class="dot on"></div>Головна</div><div class="tab"><div class="dot"></div>Перевір</div><div class="tab"><div class="dot"></div>Улюбленці</div><div class="tab"><div class="dot"></div>Профіль</div></div>
+          </div>
+        </x-import>
+      </div>
+
+      <div>
+        <div class="plbl">Результат сканування</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+          <div class="scr" style="background:var(--surface)">
+            <div style="width:100%;height:150px;border-radius:18px;background:var(--tint2)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px"><h1 class="stitle" style="font-size:18px">Brit Care Adult Lamb</h1><span class="chip" style="background:var(--accent2);color:#fff">4.3</span></div>
+            <div style="font:500 12px 'Inter',sans-serif;color:var(--muted);margin-top:5px;line-height:1.55">Склад без штучних консервантів. Основне джерело білка вказане першим — добрий знак.</div>
+            <div style="font:700 12.5px 'Manrope',sans-serif;margin:18px 0 9px">Показники</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div><div style="display:flex;justify-content:space-between;font:600 11.5px 'Inter',sans-serif;margin-bottom:5px"><span>Білок 26%</span><span style="color:var(--accent2)">Добре</span></div><div style="height:7px;border-radius:999px;background:var(--tint2)"><div style="width:78%;height:100%;border-radius:999px;background:var(--accent2)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font:600 11.5px 'Inter',sans-serif;margin-bottom:5px"><span>Жири 14%</span><span style="color:var(--accent2)">Норма</span></div><div style="height:7px;border-radius:999px;background:var(--tint2)"><div style="width:58%;height:100%;border-radius:999px;background:var(--accent2)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font:600 11.5px 'Inter',sans-serif;margin-bottom:5px"><span>Зернові</span><span style="color:#A8455C">Уважно</span></div><div style="height:7px;border-radius:999px;background:var(--tint)"><div style="width:36%;height:100%;border-radius:999px;background:var(--rose)"></div></div></div>
+            </div>
+            <div style="font:700 12.5px 'Manrope',sans-serif;margin:18px 0 9px">Склад</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="surf" style="display:flex;align-items:center;gap:10px;padding:11px 13px"><div style="width:8px;height:8px;border-radius:999px;background:var(--accent2);flex:none"></div><div style="flex:1;font:600 11.5px 'Inter',sans-serif">Ягня дегідратоване, 26%</div><span style="font:600 10px 'Inter',sans-serif;color:var(--accent2)">Добре</span></div>
+              <div class="surf" style="display:flex;align-items:center;gap:10px;padding:11px 13px"><div style="width:8px;height:8px;border-radius:999px;background:var(--accent2);flex:none"></div><div style="flex:1;font:600 11.5px 'Inter',sans-serif">Рис, батат</div><span style="font:600 10px 'Inter',sans-serif;color:var(--accent2)">Норма</span></div>
+              <div class="surf" style="display:flex;align-items:center;gap:10px;padding:11px 13px"><div style="width:8px;height:8px;border-radius:999px;background:var(--rose);flex:none"></div><div style="flex:1;font:600 11.5px 'Inter',sans-serif">Кукурудзяний глютен</div><span style="font:600 10px 'Inter',sans-serif;color:#A8455C">Уважно</span></div>
+              <div class="surf" style="display:flex;align-items:center;gap:10px;padding:11px 13px"><div style="width:8px;height:8px;border-radius:999px;background:var(--accent2);flex:none"></div><div style="flex:1;font:600 11.5px 'Inter',sans-serif">Лососева олія, вітаміни</div><span style="font:600 10px 'Inter',sans-serif;color:var(--accent2)">Добре</span></div>
+            </div>
+            <div style="display:flex;gap:9px;margin-top:16px;align-items:center">
+              <span class="btn-arrow" style="flex:1;height:46px;justify-content:space-between;padding-left:22px;padding-right:6px">Зберегти<span class="circ" style="width:32px;height:32px">→</span></span>
+              <span class="btn-out" style="height:46px;padding:0 20px">Порівняти</span>
+            </div>
+          </div>
+        </x-import>
+      </div>
+
+      <div>
+        <div class="plbl">Профіль улюбленця</div>
+        <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="375,812">
+          <div class="scr">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:11px;padding-top:6px">
+              <div style="width:92px;height:92px;border-radius:999px;background:var(--tint)"></div>
+              <div style="text-align:center"><div style="font:800 21px 'Manrope',sans-serif">Тукан</div><div style="font:500 12px 'Inter',sans-serif;color:var(--muted)">Вельш-корґі · 3 роки</div></div>
+              <div style="display:flex;gap:7px"><span class="chip" style="background:rgba(18,42,76,.08);color:var(--accent)">12,4 кг</span><span class="chip" style="background:var(--tint2);color:var(--accent2)">Щеплення в нормі</span></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:20px">
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Щеплення</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Наступне за 42 дні</div></div><span style="color:var(--accent2)">›</span></div>
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Улюблений корм</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Brit Care Adult Lamb</div></div><span style="color:var(--accent2)">›</span></div>
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Документи</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Паспорт, чип</div></div><span style="color:var(--accent2)">›</span></div>
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Фотоальбом</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">24 фото</div></div><span style="color:var(--accent2)">›</span></div>
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Ігри й активності</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">6 ідей для корґі</div></div><span style="color:var(--accent2)">›</span></div>
+              <div class="surf" style="display:flex;align-items:center;justify-content:space-between"><div><div style="font:700 12.5px 'Inter',sans-serif">Алергії та обмеження</div><div style="font:500 10px 'Inter',sans-serif;color:var(--muted)">Курятина</div></div><span style="color:var(--accent2)">›</span></div>
+            </div>
+            <div class="sbtn" style="margin-top:16px">Додати запис<span class="circ">→</span></div>
+            <div class="tabbar"><div class="tab"><div class="dot"></div>Головна</div><div class="tab"><div class="dot"></div>Перевір</div><div class="tab on"><div class="dot on"></div>Улюбленці</div><div class="tab"><div class="dot"></div>Профіль</div></div>
+          </div>
+        </x-import>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

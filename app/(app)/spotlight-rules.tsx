@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   body: {
-    fontFamily: 'Figtree_400Regular',
+    fontFamily: 'Inter_400Regular',
     fontSize: 15,
     lineHeight: 24,
     color: brand.ink,

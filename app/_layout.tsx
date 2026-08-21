@@ -1,12 +1,15 @@
 import '../global.css';
 
-import { Caprasimo_400Regular } from '@expo-google-fonts/caprasimo';
 import {
-  Figtree_400Regular,
-  Figtree_500Medium,
-  Figtree_600SemiBold,
-  Figtree_700Bold,
-} from '@expo-google-fonts/figtree';
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from '@expo-google-fonts/inter';
+import {
+  Manrope_700Bold,
+  Manrope_800ExtraBold,
+} from '@expo-google-fonts/manrope';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -28,11 +31,12 @@ SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    Caprasimo_400Regular,
-    Figtree_400Regular,
-    Figtree_500Medium,
-    Figtree_600SemiBold,
-    Figtree_700Bold,
+    Manrope_700Bold,
+    Manrope_800ExtraBold,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
   });
 
   useEffect(() => {
@@ -61,11 +65,14 @@ export default function RootLayout() {
             <Stack
               screenOptions={{
                 headerShown: false,
-                contentStyle: { backgroundColor: brand.surface, flex: 1 },
+                contentStyle: { backgroundColor: brand.canvas, flex: 1 },
               }}
             >
               <Stack.Screen name="index" />
-              <Stack.Screen name="spotlight-vote" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="spotlight-vote"
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="(auth)" />
               <Stack.Screen name="(app)" />
               <Stack.Screen name="(admin)" />

@@ -136,7 +136,7 @@ export default function DmThreadScreen() {
             >
               <Text
                 style={{
-                  fontFamily: 'Figtree_400Regular',
+                  fontFamily: 'Inter_400Regular',
                   fontSize: 14,
                   color: item.mine ? brand.surface : brand.ink,
                 }}

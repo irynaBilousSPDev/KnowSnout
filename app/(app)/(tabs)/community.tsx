@@ -7,7 +7,7 @@ import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** PDF 04 Спільнота hub — Caprasimo title, sage/terracotta pillars. */
+/** HTML kit · Спільнота hub — Manrope 22, soft white cards. */
 const PRIMARY = [
   {
     key: 'quiz',
@@ -15,7 +15,7 @@ const PRIMARY = [
     bodyKey: 'community.quizHubBody',
     icon: 'help-circle-outline' as const,
     href: '/(app)/(tabs)/quiz',
-    color: brand.sage,
+    color: brand.accent,
   },
   {
     key: 'forum',
@@ -23,7 +23,7 @@ const PRIMARY = [
     bodyKey: 'community.forumBody',
     icon: 'chatbubbles-outline' as const,
     href: '/(app)/forum',
-    color: brand.sageDeep,
+    color: brand.accentDark,
   },
   {
     key: 'blog',
@@ -103,8 +103,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontFamily: fonts.display,
-    fontSize: 34,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
   },
   lead: {
@@ -118,12 +119,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: brand.radius.lg,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 16,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   pressed: { opacity: 0.9 },
   icon: {
@@ -167,6 +171,6 @@ const styles = StyleSheet.create({
   linkText: {
     fontFamily: fonts.bodyMedium,
     fontSize: 15,
-    color: brand.sage,
+    color: brand.accent,
   },
 });
