@@ -1,37 +1,36 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { queueFraudReport } from '@/src/services/directoryReviews';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML kit · Скарга на шахрайство. */
+const REASONS = [
+  'directories.reportReasonFalse',
+  'directories.reportReasonFraud',
+  'directories.reportReasonAnimal',
+] as const;
+
+/** HTML phone “F6 · Повідомити про шахрайство”. */
 export default function DirectoryReportScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const [reason, setReason] = useState('');
-  const [details, setDetails] = useState('');
+  const [reasonKey, setReasonKey] = useState<string>(REASONS[0]);
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
-    if (!id) return;
-    if (!reason.trim()) {
-      notify(t('common.error'), t('directories.reportRequired'));
-      return;
-    }
     setBusy(true);
     try {
-      await queueFraudReport({ placeId: id, reason, details });
+      await queueFraudReport({
+        placeId: id || 'general',
+        reason: t(reasonKey),
+        details: '',
+      });
       notify(t('common.ok'), t('directories.reportSaved'));
       router.back();
     } catch {
@@ -42,35 +41,31 @@ export default function DirectoryReportScreen() {
   };
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('directories.reportProblem')} titleSize={18} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero
-            title={t('directories.reportTitle')}
-            lead={t('directories.reportSubtitle')}
-          />
-          <Text style={styles.label}>{t('directories.reportReason')}</Text>
-          <TextInput
-            value={reason}
-            onChangeText={setReason}
-            placeholder={t('directories.reportReasonPlaceholder')}
-            placeholderTextColor={brand.mutedSoft}
-            style={styles.input}
-          />
-          <Text style={styles.label}>{t('directories.reportDetails')}</Text>
-          <TextInput
-            value={details}
-            onChangeText={setDetails}
-            placeholder={t('directories.reportDetailsPlaceholder')}
-            placeholderTextColor={brand.mutedSoft}
-            multiline
-            style={[styles.input, styles.area]}
-          />
-          <View style={styles.gap} />
+          <Text style={styles.hint}>{t('directories.reportSubtitle')}</Text>
+          {REASONS.map((key) => {
+            const active = reasonKey === key;
+            return (
+              <Pressable
+                key={key}
+                onPress={() => setReasonKey(key)}
+                style={[styles.row, active && styles.rowActive]}
+              >
+                <Text style={[styles.rowText, active && styles.rowTextActive]}>
+                  {t(key)}
+                </Text>
+              </Pressable>
+            );
+          })}
           <PrimaryButton
             label={t('directories.submitReport')}
             loading={busy}
             onPress={() => void submit()}
+            style={styles.btn}
           />
         </View>
       </ScrollView>
@@ -79,25 +74,40 @@ export default function DirectoryReportScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  label: {
-    marginTop: 12,
-    marginBottom: 6,
-    fontFamily: fonts.bodyMedium,
-    fontSize: 13,
-    color: brand.muted,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 40,
+    gap: 10,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+  hint: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+    marginBottom: 4,
+  },
+  row: {
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  rowActive: {
+    backgroundColor: brand.accentTint,
+  },
+  rowText: {
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 13.5,
     color: brand.ink,
   },
-  area: { minHeight: 110, textAlignVertical: 'top' },
-  gap: { height: 16 },
+  rowTextActive: {
+    fontFamily: fonts.bodyBold,
+    color: brand.accentDark,
+  },
+  btn: { marginTop: 6 },
 });

@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { HubHero } from '@/src/components/HubHero';
 import { t } from '@/src/i18n';
@@ -14,7 +15,8 @@ export default function HelpArticleScreen() {
 
   if (!topic) {
     return (
-      <AppScreen>
+      <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
         <View style={styles.pad}>
           <HubHero title={t('help.missing')} />
         </View>
@@ -23,7 +25,8 @@ export default function HelpArticleScreen() {
   }
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <HubHero title={t(topic.titleKey)} />

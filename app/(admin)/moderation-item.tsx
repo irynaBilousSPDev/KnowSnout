@@ -2,10 +2,11 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import {
@@ -13,8 +14,9 @@ import {
   getModerationItem,
   type ModerationItem,
 } from '@/src/services/adminModeration';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML · Картка заявки — рішення. */
 export default function AdminModerationItemScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const [item, setItem] = useState<ModerationItem | null>(null);
@@ -43,9 +45,7 @@ export default function AdminModerationItemScreen() {
       setItem(next);
       notify(
         t('common.ok'),
-        status === 'approved'
-          ? t('admin.approved')
-          : t('admin.rejected'),
+        status === 'approved' ? t('admin.approved') : t('admin.rejected'),
       );
       router.back();
     } finally {
@@ -59,32 +59,49 @@ export default function AdminModerationItemScreen() {
 
   if (!item) {
     return (
-      <AppScreen edges={['bottom']}>
-        <View style={styles.pad}>
-          <ScreenHeader title={t('admin.missing')} />
-        </View>
+      <AppScreen edges={['bottom', 'top']}>
+        <AppChromeHeader />
+        <ScrHeader title={t('admin.missing')} titleSize={18} />
       </AppScreen>
     );
   }
 
   return (
-    <AppScreen edges={['bottom']}>
+    <AppScreen edges={['bottom', 'top']}>
+      <AppChromeHeader />
+      <ScrHeader title={item.title} titleSize={18} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader title={item.title} subtitle={item.type} />
-          <Text style={styles.body}>{item.summary}</Text>
-          <Text style={styles.meta}>
-            {t(`admin.status.${item.status}`)}
-          </Text>
+          <Text style={styles.kicker}>{item.summary}</Text>
+          {item.source ? (
+            <View style={styles.row}>
+              <Text style={styles.lbl}>{t('admin.source')}</Text>
+              <Text style={styles.val}>{item.source}</Text>
+            </View>
+          ) : null}
+          <View style={styles.row}>
+            <Text style={styles.lbl}>{t('admin.statusLabel')}</Text>
+            <Text style={styles.val}>{t(`admin.status.${item.status}`)}</Text>
+          </View>
+
+          <View style={styles.check}>
+            <Text style={styles.checkTitle}>{t('admin.checklistTitle')}</Text>
+            <Text style={styles.checkLine}>{t('admin.checklistBody')}</Text>
+          </View>
+
           {item.status === 'pending' ? (
             <>
-              <View style={styles.gap} />
               <PrimaryButton
-                label={t('admin.approve')}
+                label={t('admin.approveVerified')}
                 loading={busy}
                 onPress={() => void decide('approved')}
               />
-              <View style={styles.gapSm} />
+              <PrimaryButton
+                label={t('admin.publishNoBadge')}
+                variant="secondary"
+                loading={busy}
+                onPress={() => void decide('approved')}
+              />
               <PrimaryButton
                 label={t('admin.reject')}
                 variant="danger"
@@ -100,19 +117,48 @@ export default function AdminModerationItemScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  body: {
-    fontFamily: 'Inter_400Regular',
-    fontSize: 15,
-    lineHeight: 22,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 40,
+    gap: 12,
+  },
+  kicker: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  row: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    padding: 12,
+  },
+  lbl: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 11,
+    color: brand.mutedSoft,
+  },
+  val: {
+    marginTop: 4,
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
     color: brand.ink,
   },
-  meta: {
-    marginTop: 10,
-    fontFamily: 'Inter_500Medium',
-    fontSize: 13,
-    color: brand.navy,
+  check: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
+    padding: 14,
   },
-  gap: { height: 16 },
-  gapSm: { height: 10 },
+  checkTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
+  },
+  checkLine: {
+    marginTop: 6,
+    fontFamily: fonts.body,
+    fontSize: 12.5,
+    lineHeight: 18,
+    color: brand.accentDark,
+  },
 });

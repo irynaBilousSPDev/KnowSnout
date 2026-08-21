@@ -1,0 +1,52 @@
+hone-col">
+    <div class="phone-label">Нове · Редагування акаунта</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div class="scr-hd" style="padding-top:14px">
+          <div style="font:600 13px var(--font-body);color:var(--color-neutral-600)">Скасувати</div>
+          <h1 class="scr-title" style="font-size:18px">Редагувати</h1>
+          <div style="font:700 13px var(--font-body);color:var(--color-accent-700)">Зберегти</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:center;padding:4px 0"><image-slot id="acc-edit-avatar" style="width:88px;height:88px" shape="circle" placeholder="Фото"></image-slot></div>
+          <div><div class="field-lbl">Ім&apos;я</div><div class="input" style="width:100%;box-sizing:border-box">Марта Іваненко</div></div>
+          <div><div class="field-lbl">Пошта</div><div class="input" style="width:100%;box-sizing:border-box">marta@пошта.ua</div></div>
+          <div><div class="field-lbl">Місто</div><div class="input" style="width:100%;box-sizing:border-box">Київ</div></div>
+          <div>
+            <div class="field-lbl">Пов&apos;язані акаунти</div>
+            <div class="card-sm" style="padding:0;overflow:hidden">
+              <div class="row-between" style="padding:12px 14px;border-bottom:1px solid var(--color-neutral-200)"><span style="font-size:13px">Google</span><span class="chip chip-good">Підключено</span></div>
+              <div class="row-between" style="padding:12px 14px"><span style="font-size:13px">Apple</span><span class="chip">Підключити</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Заблоковані користувачі</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div style="padding:14px 20px 8px" class="row-between">
+          <div class="hd-left"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div></div>
+          <h1 class="scr-title" style="font-size:19px">Заблоковані</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="blk-1" style="width:40px;height:40px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Невідомий_2024</div></div>
+            <div class="btn btn-secondary" style="height:32px;padding:0 14px;font-size:12px">Розблокувати</div>
+          </div>
+          <div style="font-size:11.5px;color:var(--color-neutral-500);text-align:center;margin-top:8px">Заблоковані не бачать твої пости й не можуть писати</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Підписка і платежі</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size

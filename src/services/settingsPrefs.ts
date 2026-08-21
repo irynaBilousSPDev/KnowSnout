@@ -8,11 +8,19 @@ export type ThemePref = 'light' | 'dark';
 export type SettingsPrefs = {
   language: AppLanguage;
   theme: ThemePref;
+  notifyVaccines: boolean;
+  notifyCare: boolean;
+  notifyQuiz: boolean;
+  notifyFeed: boolean;
 };
 
 const DEFAULTS: SettingsPrefs = {
   language: 'uk',
   theme: 'light',
+  notifyVaccines: true,
+  notifyCare: true,
+  notifyQuiz: false,
+  notifyFeed: false,
 };
 
 export async function getSettingsPrefs(): Promise<SettingsPrefs> {
@@ -26,6 +34,10 @@ export async function getSettingsPrefs(): Promise<SettingsPrefs> {
           ? parsed.language
           : 'uk',
       theme: parsed.theme === 'dark' ? 'dark' : 'light',
+      notifyVaccines: parsed.notifyVaccines ?? DEFAULTS.notifyVaccines,
+      notifyCare: parsed.notifyCare ?? DEFAULTS.notifyCare,
+      notifyQuiz: parsed.notifyQuiz ?? DEFAULTS.notifyQuiz,
+      notifyFeed: parsed.notifyFeed ?? DEFAULTS.notifyFeed,
     };
   } catch {
     return { ...DEFAULTS };
@@ -39,6 +51,10 @@ export async function saveSettingsPrefs(
   const next: SettingsPrefs = {
     language: patch.language ?? prev.language,
     theme: patch.theme ?? prev.theme,
+    notifyVaccines: patch.notifyVaccines ?? prev.notifyVaccines,
+    notifyCare: patch.notifyCare ?? prev.notifyCare,
+    notifyQuiz: patch.notifyQuiz ?? prev.notifyQuiz,
+    notifyFeed: patch.notifyFeed ?? prev.notifyFeed,
   };
   await AsyncStorage.setItem(KEY, JSON.stringify(next));
   return next;

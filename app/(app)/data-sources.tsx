@@ -1,5 +1,6 @@
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { HubHero } from '@/src/components/HubHero';
 import {
@@ -29,6 +30,7 @@ function kindLabel(kind: DataSourceEntry['kind']) {
 export default function DataSourcesScreen() {
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView
         contentContainerStyle={styles.pad}
         keyboardShouldPersistTaps="handled"

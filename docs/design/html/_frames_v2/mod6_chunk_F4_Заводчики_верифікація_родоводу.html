@@ -1,0 +1,25 @@
+hone-col">
+    <div class="phone-label">F4 · Заводчики — верифікація родоводу</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div style="padding:14px 20px 4px"><h1 class="scr-title" style="font-size:20px">Заводчики</h1></div>
+        <div style="padding:6px 20px 4px"><div class="card-sm" style="display:flex;gap:8px;align-items:flex-start;background:var(--color-accent-100)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-700)" stroke-width="2.75" style="flex-shrink:0;margin-top:1px"><path d="M12 9v4M12 17h.01"></path><circle cx="12" cy="12" r="9"></circle></svg><div style="font-size:11.5px;color:var(--color-accent-700);line-height:1.4">Перевіряємо метрику FCI. Без бейджа — інформація не підтверджена, будьте уважні.</div></div></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;gap:12px;align-items:flex-start"><image-slot id="breeder-1" style="width:52px;height:52px;flex-shrink:0" shape="rounded" radius="12" placeholder="Собака"></image-slot><div style="flex:1"><div class="row-between"><div style="font:700 14px var(--font-body)">Shiba Magical Bijin</div><span class="verified">✓ FCI</span></div><div style="font-size:11.5px;color:var(--color-neutral-600);margin-top:2px">Шиба-іну · під Краковом</div></div></div>
+          <div class="card-sm" style="display:flex;gap:12px;align-items:flex-start;opacity:.85"><image-slot id="breeder-2" style="width:52px;height:52px;flex-shrink:0" shape="rounded" radius="12" placeholder="Собака"></image-slot><div style="flex:1"><div class="row-between"><div style="font:700 14px var(--font-body)">Toy Poodle Варшава</div><span class="chip" style="font-size:10px;padding:3px 8px">Не підтверджено</span></div><div style="font-size:11.5px;color:var(--color-neutral-600);margin-top:2px">Той-пудель</div></div></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">F4b · Перевізники — список і відгуки</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div style="padding:14px 20px 4px" class="row-between"><div class="hd-left"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div></div><h1 class="scr-title" style="font-size:20px">Перевізники</h1><div style="width:34px"></div></div>
+        <div style="padding:6px 20px 4px"><div class="card-sm" style="display:flex;gap:8px;align-items:flex-start;background:var(--color-accent-100)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-700)" stroke-width="2.75" style="flex-shrink:0;margin-top:1px"><path d="M12 9v4M12 17h.01"></path><circle cx="12" cy="12" r="9"></circle></svg><div style="font-size:11.5px;color:var(--color-accent-700);line-height:1.4">Обирайте перевізників з підтвердженими документами. Уникайте пропозицій "вирішити питання на кордоні за гроші".</div></div></div>
+        <div style="padding:6px 20px 4px;display:flex;gap:6px;overflow:auto"><span class="chip chip-good">Напрямок</span><span class="chip">Тип тварини</span><span class="chip">Рейтинг</span></div>
+        <div style="flex:1;overflow:auto;padding:4px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;gap:12px;align-items:flex-start"><image-slot id="carrier-1" style="width:52px;height:52px;flex-shrink:0" shape="rounded" radius="12" placeholder="Авто"></image-slot><div style="flex:1"><div class="row-between"><div style="font:700 14px var(--font-body)">PetTrans UA-PL</div><span class="verifie

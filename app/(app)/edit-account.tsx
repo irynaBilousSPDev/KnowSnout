@@ -1,6 +1,7 @@
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,17 +9,18 @@ import {
   View,
 } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { LoadingState } from '@/src/components/LoadingState';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { getUserProfile, saveUserProfile } from '@/src/services/userProfile';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML kit · Редагування акаунта. */
+/** HTML · Редагування акаунта. */
 export default function EditAccountScreen() {
+  const { user } = useAuth();
   const [displayName, setDisplayName] = useState('');
   const [city, setCity] = useState('');
   const [loading, setLoading] = useState(true);
@@ -49,6 +51,7 @@ export default function EditAccountScreen() {
         city: city.trim() || null,
       });
       notify(t('me.savedTitle'), t('editAccount.saved'));
+      router.back();
     } catch (err) {
       notify(
         t('common.error'),
@@ -64,13 +67,19 @@ export default function EditAccountScreen() {
   }
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <View style={styles.hd}>
+        <Pressable onPress={() => router.back()}>
+          <Text style={styles.hdSide}>{t('common.cancel')}</Text>
+        </Pressable>
+        <Text style={styles.hdTitle}>{t('editAccount.title')}</Text>
+        <Pressable onPress={() => void save()} disabled={busy}>
+          <Text style={styles.hdSave}>{t('common.save')}</Text>
+        </Pressable>
+      </View>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero
-            title={t('editAccount.title')}
-            lead={t('editAccount.subtitle')}
-          />
           <Text style={styles.label}>{t('me.displayName')}</Text>
           <TextInput
             value={displayName}
@@ -80,6 +89,10 @@ export default function EditAccountScreen() {
             autoCapitalize="words"
             style={styles.input}
           />
+          <Text style={styles.label}>{t('me.account')}</Text>
+          <View style={[styles.input, styles.inputReadonly]}>
+            <Text style={styles.readonlyText}>{user?.email ?? '—'}</Text>
+          </View>
           <Text style={styles.label}>{t('me.city')}</Text>
           <TextInput
             value={city}
@@ -89,12 +102,6 @@ export default function EditAccountScreen() {
             autoCapitalize="words"
             style={styles.input}
           />
-          <View style={styles.gap} />
-          <PrimaryButton
-            label={t('common.save')}
-            loading={busy}
-            onPress={() => void save()}
-          />
         </View>
       </ScrollView>
     </AppScreen>
@@ -102,7 +109,33 @@ export default function EditAccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  hd: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 8,
+  },
+  hdSide: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
+    color: brand.muted,
+    minWidth: 72,
+  },
+  hdTitle: {
+    fontFamily: fonts.title,
+    fontSize: 18,
+    color: brand.ink,
+  },
+  hdSave: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
+    minWidth: 72,
+    textAlign: 'right',
+  },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
   label: {
     marginTop: 12,
     marginBottom: 6,
@@ -121,5 +154,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: brand.ink,
   },
-  gap: { height: 16 },
+  inputReadonly: { justifyContent: 'center' },
+  readonlyText: {
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.muted,
+  },
 });

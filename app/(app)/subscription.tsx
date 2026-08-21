@@ -1,5 +1,6 @@
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
@@ -16,7 +17,8 @@ const PLANS = [
 /** HTML kit · Підписка — plan cards + accent CTA. */
 export default function SubscriptionScreen() {
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <HubHero

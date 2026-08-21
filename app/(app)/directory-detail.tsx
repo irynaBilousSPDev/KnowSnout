@@ -1,9 +1,10 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
@@ -16,12 +17,12 @@ import { listReviewsForPlace } from '@/src/services/directoryReviews';
 import { brand, fonts } from '@/src/theme/brand';
 
 function verificationLabel(v: VerificationStatus) {
-  if (v === 'verified') return t('directories.verified');
+  if (v === 'verified') return t('directories.verifiedCheck');
   if (v === 'pending') return t('directories.pending');
-  return t('directories.unverified');
+  return t('directories.unverifiedShort');
 }
 
-/** HTML kit · Картка місця — soft stats card, accent CTA. */
+/** HTML phones F3 / F4c — place / carrier card. */
 export default function DirectoryDetailScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const [place, setPlace] = useState<DirectoryPlace | null>(null);
@@ -51,9 +52,10 @@ export default function DirectoryDetailScreen() {
 
   if (!place) {
     return (
-      <AppScreen>
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
         <View style={styles.pad}>
-          <HubHero title={t('directories.missing')} />
+          <Text style={styles.title}>{t('directories.missing')}</Text>
         </View>
       </AppScreen>
     );
@@ -61,16 +63,40 @@ export default function DirectoryDetailScreen() {
 
   const isTransport = place.category === 'transport';
   const verified = place.verification === 'verified';
+  const reviewsTotal = place.reviewCount + reviewCountLocal;
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
+        <View style={styles.hero}>
+          <Ionicons name="business-outline" size={40} color={brand.mutedSoft} />
+        </View>
         <View style={styles.pad}>
-          <HubHero title={place.name} lead={place.city} />
-          <View style={[styles.badge, verified && styles.badgeGood]}>
-            <Text style={[styles.badgeText, verified && styles.badgeTextGood]}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>{place.name}</Text>
+            <Text style={[styles.badge, verified && styles.badgeGood]}>
               {verificationLabel(place.verification)}
             </Text>
+          </View>
+          <Text style={styles.address}>
+            {place.city}
+            {place.specialty ? ` · ${place.specialty}` : ''}
+          </Text>
+
+          <View style={styles.tagRow}>
+            {place.specialty ? (
+              <View style={styles.tag}>
+                <Text style={styles.tagText}>{place.specialty}</Text>
+              </View>
+            ) : null}
+            {verified ? (
+              <View style={styles.tag}>
+                <Text style={styles.tagText}>
+                  {t('directories.docsChecked')}
+                </Text>
+              </View>
+            ) : null}
           </View>
 
           <View style={styles.stats}>
@@ -79,56 +105,31 @@ export default function DirectoryDetailScreen() {
               <Text style={styles.statLbl}>{t('directories.rating')}</Text>
             </View>
             <View style={styles.stat}>
-              <Text style={styles.statNum}>
-                {place.reviewCount + reviewCountLocal}
+              <Text style={[styles.statNum, styles.statNumInk]}>
+                {reviewsTotal}
               </Text>
-              <Text style={styles.statLbl}>
-                {t('directories.ratingLine', {
-                  rating: place.rating.toFixed(1),
-                  count: place.reviewCount + reviewCountLocal,
-                })}
-              </Text>
+              <Text style={styles.statLbl}>{t('directories.reviewsCount')}</Text>
+            </View>
+            <View style={styles.stat}>
+              <Text style={[styles.statNum, styles.statNumInk]}>₴₴</Text>
+              <Text style={styles.statLbl}>{t('directories.priceLevel')}</Text>
             </View>
           </View>
 
-          {place.specialty ? (
-            <Text style={styles.meta}>{place.specialty}</Text>
-          ) : null}
-          {place.phone ? <Text style={styles.meta}>{place.phone}</Text> : null}
+          <Text style={styles.aboutLbl}>{t('directories.aboutPlace')}</Text>
           <Text style={styles.body}>{place.blurb}</Text>
 
           {isTransport && place.vehicleType ? (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                {t('directories.carriersVehicle')}
-              </Text>
-              <Text style={styles.sectionBody}>{place.vehicleType}</Text>
-            </View>
+            <Text style={styles.metaLine}>
+              {t('directories.carriersVehicle')}: {place.vehicleType}
+            </Text>
+          ) : null}
+          {isTransport && place.routes?.length ? (
+            <Text style={styles.metaLine}>
+              {t('directories.carriersRoutes')}: {place.routes.join(' · ')}
+            </Text>
           ) : null}
 
-          {isTransport && place.routes && place.routes.length > 0 ? (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                {t('directories.carriersRoutes')}
-              </Text>
-              {place.routes.map((route) => (
-                <Text key={route} style={styles.routeLine}>
-                  · {route}
-                </Text>
-              ))}
-            </View>
-          ) : null}
-
-          {isTransport && place.reviewsBlurb ? (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                {t('directories.carriersReviewsBlurb')}
-              </Text>
-              <Text style={styles.sectionBody}>{place.reviewsBlurb}</Text>
-            </View>
-          ) : null}
-
-          <View style={styles.gap} />
           <PrimaryButton
             label={t('directories.writePlace')}
             onPress={() =>
@@ -137,8 +138,8 @@ export default function DirectoryDetailScreen() {
                 params: { placeId: place.id },
               } as never)
             }
+            style={styles.btn}
           />
-          <View style={styles.gapSm} />
           <PrimaryButton
             label={t('directories.writeReview')}
             variant="secondary"
@@ -149,17 +150,19 @@ export default function DirectoryDetailScreen() {
               } as never)
             }
           />
-          <View style={styles.gapSm} />
-          <PrimaryButton
-            label={t('directories.reportFraud')}
-            variant="secondary"
+          <Pressable
             onPress={() =>
               router.push({
                 pathname: '/(app)/directory-report',
                 params: { id: place.id },
               } as never)
             }
-          />
+            style={styles.report}
+          >
+            <Text style={styles.reportText}>
+              {t('directories.reportProblem')}
+            </Text>
+          </Pressable>
         </View>
       </ScrollView>
     </AppScreen>
@@ -167,25 +170,56 @@ export default function DirectoryDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  hero: {
+    height: 170,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 40,
+    gap: 10,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  title: {
+    flex: 1,
+    fontFamily: fonts.title,
+    fontSize: 20,
+    color: brand.ink,
+  },
   badge: {
-    alignSelf: 'flex-start',
-    marginBottom: 12,
+    fontFamily: fonts.bodyBold,
+    fontSize: 11,
+    color: brand.mutedSoft,
+  },
+  badgeGood: { color: brand.successDark },
+  address: {
+    fontFamily: fonts.body,
+    fontSize: 12.5,
+    color: brand.muted,
+    marginTop: -4,
+  },
+  tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  tag: {
     borderRadius: brand.radius.pill,
-    backgroundColor: brand.chipTrack,
+    backgroundColor: brand.creamDeep,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-  badgeGood: { backgroundColor: brand.successTint },
-  badgeText: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 11,
-    color: brand.label,
+  tagText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12,
+    color: brand.ink,
   },
-  badgeTextGood: { color: brand.successDark },
   stats: {
     flexDirection: 'row',
-    marginBottom: 12,
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingVertical: 14,
@@ -197,59 +231,40 @@ const styles = StyleSheet.create({
   },
   stat: { flex: 1, alignItems: 'center' },
   statNum: {
-    fontFamily: fonts.titleExtra,
-    fontSize: 18,
+    fontFamily: fonts.bodyBold,
+    fontSize: 16,
     color: brand.accentDark,
   },
+  statNumInk: { color: brand.ink },
   statLbl: {
     marginTop: 2,
     fontFamily: fonts.body,
-    fontSize: 11,
+    fontSize: 10.5,
     color: brand.muted,
   },
-  meta: {
-    marginBottom: 4,
-    fontFamily: fonts.body,
-    fontSize: 13,
+  aboutLbl: {
+    marginTop: 4,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12,
     color: brand.muted,
   },
   body: {
-    marginTop: 10,
     fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 12.5,
+    lineHeight: 19,
     color: brand.ink,
+    marginTop: -4,
   },
-  section: {
-    marginTop: 16,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    padding: 14,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
-  },
-  sectionTitle: {
-    marginBottom: 6,
-    fontFamily: fonts.title,
-    fontSize: 15,
-    color: brand.ink,
-  },
-  sectionBody: {
+  metaLine: {
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 12.5,
     color: brand.muted,
   },
-  routeLine: {
-    marginTop: 2,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: brand.muted,
+  btn: { marginTop: 6 },
+  report: { alignItems: 'center', paddingVertical: 8 },
+  reportText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11.5,
+    color: brand.mutedSoft,
   },
-  gap: { height: 16 },
-  gapSm: { height: 10 },
 });

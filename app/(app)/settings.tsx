@@ -1,28 +1,41 @@
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
-import { ListRow } from '@/src/components/ListRow';
+import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   getSettingsPrefs,
   saveSettingsPrefs,
   type AppLanguage,
   type SettingsPrefs,
-  type ThemePref,
 } from '@/src/services/settingsPrefs';
 import { brand, fonts } from '@/src/theme/brand';
 
-const LANGS: { id: AppLanguage; label: string }[] = [
+const LANGS: {
+  id: AppLanguage | 'de' | 'es';
+  label: string;
+  soon?: boolean;
+}[] = [
   { id: 'uk', label: 'Українська' },
   { id: 'pl', label: 'Polski' },
   { id: 'en', label: 'English' },
+  { id: 'de', label: 'Deutsch', soon: true },
+  { id: 'es', label: 'Español', soon: true },
 ];
 
-/** HTML kit · Мова / налаштування — soft chips, accent active. */
+/** HTML phone “44 · Мова та підписка”. */
 export default function SettingsScreen() {
   const [prefs, setPrefs] = useState<SettingsPrefs | null>(null);
 
@@ -37,97 +50,75 @@ export default function SettingsScreen() {
     setPrefs(next);
   };
 
-  const toggleTheme = async () => {
-    if (!prefs) return;
-    const theme: ThemePref = prefs.theme === 'dark' ? 'light' : 'dark';
-    const next = await saveSettingsPrefs({ theme });
-    setPrefs(next);
-  };
-
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('settings.langAndPlan')} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero
-            title={t('settings.title')}
-            lead={t('settings.subtitle')}
-          />
-
-          <Text style={styles.section}>{t('settings.language')}</Text>
-          <Text style={styles.hint}>{t('settings.languageHint')}</Text>
-          <View style={styles.row}>
-            {LANGS.map((lang) => {
-              const active = prefs?.language === lang.id;
+          <Text style={styles.fieldLbl}>{t('settings.languageUi')}</Text>
+          <View style={styles.langCard}>
+            {LANGS.map((lang, i) => {
+              const active =
+                !lang.soon && prefs?.language === (lang.id as AppLanguage);
               return (
                 <Pressable
                   key={lang.id}
-                  onPress={() => void setLanguage(lang.id)}
-                  style={[styles.chip, active && styles.chipActive]}
+                  disabled={lang.soon}
+                  onPress={() => {
+                    if (!lang.soon) void setLanguage(lang.id as AppLanguage);
+                  }}
+                  style={[
+                    styles.langRow,
+                    i < LANGS.length - 1 && styles.langRowBorder,
+                  ]}
                 >
                   <Text
-                    style={[styles.chipText, active && styles.chipTextActive]}
+                    style={[
+                      styles.langLabel,
+                      lang.soon && styles.langSoon,
+                    ]}
                   >
                     {lang.label}
                   </Text>
+                  {lang.soon ? (
+                    <View style={styles.chip}>
+                      <Text style={styles.chipText}>{t('settings.soon')}</Text>
+                    </View>
+                  ) : active ? (
+                    <Ionicons
+                      name="checkmark"
+                      size={16}
+                      color={brand.successDark}
+                    />
+                  ) : null}
                 </Pressable>
               );
             })}
           </View>
 
-          <Text style={styles.section}>{t('settings.theme')}</Text>
-          <ListRow
-            title={t('settings.themeToggle')}
-            subtitle={t('settings.themeHint')}
-            meta={
-              prefs?.theme === 'dark'
-                ? t('settings.themeDark')
-                : t('settings.themeLight')
-            }
-            leading={
-              <Ionicons
-                name="moon-outline"
-                size={22}
-                color={brand.accent}
-              />
-            }
-            onPress={() => void toggleTheme()}
-            showChevron={false}
-          />
+          <View style={styles.plusCard}>
+            <Text style={styles.plusTitle}>{t('subscription.plan.plus')}</Text>
+            <Text style={styles.plusBody}>
+              {t('subscription.plusPitch')}
+            </Text>
+            <PrimaryButton
+              label={t('subscription.getPlus')}
+              onPress={() =>
+                Alert.alert(
+                  t('subscription.mockTitle'),
+                  t('subscription.mockBody'),
+                )
+              }
+            />
+          </View>
 
-          <Text style={styles.section}>{t('settings.links')}</Text>
-          <ListRow
-            title={t('settings.notifications')}
-            onPress={() => router.push('/(app)/notifications' as never)}
-          />
-          <ListRow
-            title={t('settings.help')}
-            onPress={() => router.push('/(app)/help' as never)}
-          />
-          <ListRow
-            title={t('settings.privacy')}
-            onPress={() => router.push('/(app)/privacy' as never)}
-          />
-          <ListRow
-            title={t('settings.subscription')}
-            onPress={() => router.push('/(app)/subscription' as never)}
-          />
-          <ListRow
-            title={t('settings.editAccount')}
-            onPress={() => router.push('/(app)/edit-account' as never)}
-          />
-          <ListRow
-            title={t('settings.blocked')}
-            onPress={() => router.push('/(app)/blocked-users' as never)}
-          />
-          <ListRow
-            title={t('settings.deleteAccount')}
-            onPress={() => router.push('/(app)/delete-account' as never)}
-          />
-          <ListRow
-            title={t('settings.adminLink')}
-            subtitle={t('settings.adminHint')}
-            onPress={() => router.push('/(admin)' as never)}
-          />
+          <View style={styles.planRow}>
+            <Text style={styles.planLabel}>{t('subscription.currentPlan')}</Text>
+            <View style={styles.chip}>
+              <Text style={styles.chipText}>{t('subscription.plan.free')}</Text>
+            </View>
+          </View>
         </View>
       </ScrollView>
     </AppScreen>
@@ -135,39 +126,90 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  section: {
-    marginTop: 16,
-    marginBottom: 8,
-    fontFamily: fonts.bodyBold,
-    fontSize: 12,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    color: brand.muted,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 40,
+    gap: 14,
   },
-  hint: {
-    marginBottom: 8,
+  fieldLbl: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12,
+    color: brand.muted,
+    marginBottom: -4,
+  },
+  langCard: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    overflow: 'hidden',
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  langRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  langRowBorder: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: brand.mistBorder,
+  },
+  langLabel: {
+    fontFamily: fonts.body,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  langSoon: { color: brand.mutedSoft },
+  chip: {
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.creamDeep,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  chipText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 10.5,
+    color: brand.ink,
+  },
+  plusCard: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
+    padding: 14,
+    gap: 6,
+  },
+  plusTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.accentDark,
+  },
+  plusBody: {
+    fontFamily: fonts.body,
+    fontSize: 12.5,
+    color: brand.accentDark,
+    marginBottom: 6,
+  },
+  planRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  planLabel: {
     fontFamily: fonts.body,
     fontSize: 13,
     color: brand.muted,
   },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
-  chip: {
-    borderRadius: brand.radius.md,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  chipActive: {
-    backgroundColor: brand.accent,
-    borderColor: brand.accent,
-  },
-  chipText: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 13,
-    color: brand.ink,
-  },
-  chipTextActive: { color: '#FFFFFF' },
 });
