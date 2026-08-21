@@ -9,12 +9,14 @@ import {
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { ErrorState } from '@/src/components/ErrorState';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
+import { AppScreen } from '@/src/components/AppScreen';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { SharePhotoSheet } from '@/src/components/SharePhotoSheet';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
@@ -166,7 +168,9 @@ export default function ContestEntryScreen() {
     entry.species === 'cat' ? t('pets.speciesCat') : t('pets.speciesDog');
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={entry.petName} />
       <ScrollView contentContainerClassName="pb-12">
         <View style={styles.hero}>
           {entry.imageUri ? (
@@ -352,7 +356,7 @@ export default function ContestEntryScreen() {
           caption: entry.caption,
         })}
       />
-    </SafeAreaView>
+    </AppScreen>
   );
 }
 

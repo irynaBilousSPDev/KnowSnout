@@ -1,13 +1,15 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/src/components/ErrorState';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
+import { AppScreen } from '@/src/components/AppScreen';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ProsConsList } from '@/src/components/ProsConsList';
 import { ScoreGauge } from '@/src/components/ScoreGauge';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { StoreScoreBadge } from '@/src/components/StoreScoreBadge';
 import { t } from '@/src/i18n';
 import { getPendingAnalysis, setPendingAnalysis } from '@/src/lib/resultStore';
@@ -98,13 +100,14 @@ export default function ResultScreen() {
 
   if (!pending?.result) {
     return (
-      <SafeAreaView className="flex-1 bg-sand-50">
+      <AppScreen>
+        <AppChromeHeader />
         <ErrorState
           title={t('result.noResultTitle')}
           message={t('result.noResultBody')}
           onRetry={() => router.replace('/(app)/(tabs)')}
         />
-      </SafeAreaView>
+      </AppScreen>
     );
   }
 
@@ -154,7 +157,9 @@ export default function ResultScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('result.title')} />
       <ScrollView contentContainerClassName="px-5 pb-10 pt-2">
         <Text className="mb-6 text-center font-display text-2xl text-forest-800">
           {result.productName}
@@ -324,6 +329,6 @@ export default function ResultScreen() {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }

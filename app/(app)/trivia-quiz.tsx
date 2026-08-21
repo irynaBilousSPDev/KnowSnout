@@ -8,10 +8,12 @@ import {
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/src/components/ErrorState';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
+import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   createTriviaQuizRound,
@@ -110,15 +112,14 @@ export default function TriviaQuizScreen() {
     round?.choices.find((c) => c.id === round.correctId)?.label ?? '';
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('quizHub.triviaTitle')} />
       <ScrollView
         contentContainerClassName="px-5 pb-12 pt-2"
         keyboardShouldPersistTaps="handled"
       >
-        <Text className="font-display text-xl text-forest-800">
-          {t('quizHub.triviaTitle')}
-        </Text>
-        <Text className="mt-2 font-body text-sm leading-5 text-forest-600">
+        <Text className="font-body text-sm leading-5 text-forest-600">
           {t('quiz.triviaSubtitle')}
         </Text>
 
@@ -233,6 +234,6 @@ export default function TriviaQuizScreen() {
           </>
         ) : null}
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }

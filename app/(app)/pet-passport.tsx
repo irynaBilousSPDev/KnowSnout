@@ -3,9 +3,11 @@ import { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import {
   getPassportPack,
   PASSPORT_PACKS,
@@ -83,6 +85,7 @@ export default function PetPassportScreen() {
   if (error || !pet) {
     return (
       <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
         <ErrorState
           message={error ?? t('pets.notFound')}
           onRetry={() => void load()}
@@ -93,8 +96,10 @@ export default function PetPassportScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('passport.title')} />
       <ScrollView contentContainerStyle={styles.pad}>
-        <Text style={styles.title}>{t('passport.title')}</Text>
+        <Text style={styles.subtitle}>{t('passport.subtitle')}</Text>
 
         <View style={styles.seg}>
           {PASSPORT_PACKS.map((p) => {
@@ -168,13 +173,14 @@ export default function PetPassportScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
+  subtitle: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    lineHeight: 19,
+    color: brand.muted,
     marginBottom: 12,
+    textAlign: 'center',
   },
   seg: {
     flexDirection: 'row',

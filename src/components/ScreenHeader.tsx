@@ -1,64 +1,67 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { BrandLogo } from '@/src/components/BrandLogo';
-import { ProfileEntry } from '@/src/components/ProfileEntry';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   title?: string;
   subtitle?: string;
+  /** @deprecated logo row replaced by AppChromeHeader */
   logo?: 'full' | 'icon' | 'none';
+  /** @deprecated use AppChromeHeader avatar */
   showProfile?: boolean;
   right?: ReactNode;
+  showBack?: boolean;
+  titleSize?: number;
 };
 
-/** HTML kit screen title — Manrope 22. */
+/**
+ * Compatibility wrapper → HTML `.scr-hd` (ScrHeader).
+ * Prefer importing ScrHeader directly on new screens.
+ */
 export function ScreenHeader({
   title,
   subtitle,
-  logo = 'none',
-  showProfile = false,
   right,
+  showBack = true,
+  titleSize = 20,
 }: Props) {
-  const showTop = logo !== 'none' || right || showProfile;
+  if (!title) {
+    if (!subtitle) return null;
+    return (
+      <View style={styles.subOnly}>
+        <Text style={styles.subtitle}>{subtitle}</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.wrap}>
-      {showTop ? (
-        <View style={styles.topRow}>
-          <View style={styles.logoCol}>
-            {logo === 'full' ? <BrandLogo variant="full" size="sm" /> : null}
-            {logo === 'icon' ? <BrandLogo variant="icon" size="sm" /> : null}
-          </View>
-          {right ?? (showProfile ? <ProfileEntry /> : null)}
-        </View>
-      ) : null}
-      {title ? <Text style={styles.title}>{title}</Text> : null}
+    <View>
+      <ScrHeader
+        title={title}
+        titleSize={titleSize}
+        showBack={showBack}
+        right={right}
+      />
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: { marginBottom: 12 },
-  topRow: {
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  logoCol: { flex: 1, paddingRight: 12 },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
+  subOnly: {
+    paddingHorizontal: 20,
+    paddingBottom: 6,
   },
   subtitle: {
-    marginTop: 6,
+    paddingHorizontal: 20,
+    marginTop: 2,
+    marginBottom: 8,
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 19,
     color: brand.muted,
+    textAlign: 'center',
   },
 });

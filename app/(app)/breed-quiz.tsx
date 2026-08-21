@@ -9,11 +9,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect } from 'expo-router';
 
 import { ErrorState } from '@/src/components/ErrorState';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
+import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { SourceLangNote } from '@/src/components/SourceLangNote';
 import { t } from '@/src/i18n';
 import {
@@ -153,7 +155,9 @@ export default function BreedQuizScreen() {
     round?.choices.find((c) => c.id === round.correctId)?.name ?? '';
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('quizHub.breedTitle')} />
       <ScrollView
         contentContainerClassName="px-5 pb-12 pt-2"
         keyboardShouldPersistTaps="handled"
@@ -426,7 +430,7 @@ export default function BreedQuizScreen() {
           {t('quiz.attribution')}
         </Text>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
 

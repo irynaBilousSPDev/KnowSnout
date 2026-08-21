@@ -11,10 +11,12 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/src/components/ErrorState';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
+import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { saveQuizSession } from '@/src/services/quizResults';
 import {
@@ -22,7 +24,7 @@ import {
   type WikiQuizCategory,
   type WikiQuizRound,
 } from '@/src/services/wikidataQuiz';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 const SESSION_ROUNDS = 5;
 
@@ -129,10 +131,11 @@ export default function WikiQuizScreen() {
       : t('quizHub.originTitle');
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={title} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.scroll}>
-          <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{t('quiz.wikiSubtitle')}</Text>
 
           <View style={styles.metaRow}>
@@ -243,28 +246,22 @@ export default function WikiQuizScreen() {
           ) : null}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: brand.surface },
   scroll: {
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 48,
   },
-  title: {
-    fontFamily: 'Manrope_700Bold',
-    fontSize: 22,
-    color: brand.ink,
-  },
   subtitle: {
-    marginTop: 8,
-    fontFamily: 'Inter_400Regular',
+    marginTop: 0,
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   metaRow: {
     marginTop: 16,

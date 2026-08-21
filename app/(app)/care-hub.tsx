@@ -9,11 +9,13 @@ import {
   View,
 } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   careProgress,
@@ -76,6 +78,8 @@ export default function CareHubScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('care.hubTitle')} />
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -86,7 +90,6 @@ export default function CareHubScreen() {
         }
         contentContainerStyle={styles.scroll}
       >
-        <Text style={styles.title}>{t('care.hubTitle')}</Text>
         <Text style={styles.subtitle}>{t('care.hubSubtitle')}</Text>
 
         {error ? (

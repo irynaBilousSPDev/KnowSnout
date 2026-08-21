@@ -11,10 +11,11 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { PetAvatar } from '@/src/components/PetAvatar';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
+import { AppScreen } from '@/src/components/AppScreen';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
@@ -184,7 +185,8 @@ export default function ContestsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <View className="px-5 pb-2 pt-2">
         <ScreenHeader
           logo="none"
@@ -641,7 +643,7 @@ export default function ContestsScreen() {
             : ''
         }
       />
-    </SafeAreaView>
+    </AppScreen>
   );
 }
 

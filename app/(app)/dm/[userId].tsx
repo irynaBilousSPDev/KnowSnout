@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
@@ -91,7 +92,8 @@ export default function DmThreadScreen() {
 
   if (loading) {
     return (
-      <AppScreen>
+      <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
         <LoadingState message={t('dm.loading')} />
       </AppScreen>
     );

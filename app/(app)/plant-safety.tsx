@@ -8,12 +8,14 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ErrorState } from '@/src/components/ErrorState';
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
+import { AppScreen } from '@/src/components/AppScreen';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { guessMimeType, uriToBase64 } from '@/src/lib/image';
 import { getPet } from '@/src/services/pets';
@@ -221,14 +223,17 @@ export default function PlantSafetyScreen() {
 
   if (error) {
     return (
-      <SafeAreaView className="flex-1 bg-sand-50">
+      <AppScreen>
+        <AppChromeHeader />
         <ErrorState message={error} onRetry={() => void load()} />
-      </SafeAreaView>
+      </AppScreen>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-sand-50" edges={['bottom']}>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('plants.title')} />
       <ScrollView
         contentContainerClassName="px-5 pb-12 pt-2"
         keyboardShouldPersistTaps="handled"
@@ -361,6 +366,6 @@ export default function PlantSafetyScreen() {
           {t('plants.disclaimer')}
         </Text>
       </ScrollView>
-    </SafeAreaView>
+    </AppScreen>
   );
 }

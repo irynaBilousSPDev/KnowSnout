@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
@@ -83,6 +84,7 @@ export default function PetTravelScreen() {
   if (error || !pet) {
     return (
       <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
         <ErrorState
           message={error ?? t('pets.notFound')}
           onRetry={() => void load()}

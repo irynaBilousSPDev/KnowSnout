@@ -1,4 +1,5 @@
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
   Image,
   Pressable,
@@ -10,22 +11,23 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { UserAvatar } from '@/src/components/UserAvatar';
+import { t } from '@/src/i18n';
+import { getUserProfile } from '@/src/services/userProfile';
 import { brand, fonts } from '@/src/theme/brand';
+import type { UserProfile } from '@/src/types/userProfile';
 
 const logoEmerald = require('../../assets/images/logo_emerald.png');
 
 type Props = {
-  /** Navigate home / check hub on brand press */
   onBrandPress?: () => void;
-  /** Navigate to profile / my-data on avatar press */
   onAvatarPress?: () => void;
   showAvatar?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
 /**
- * HTML `.app-hd` — global chrome on every phone mock:
- * logo + Know(ink)/Snout(logoGreen) + optional avatar.
+ * HTML `.app-hd` — logo + Know/Snout + real user avatar (or icon pack).
  */
 export function AppChromeHeader({
   onBrandPress,
@@ -34,6 +36,13 @@ export function AppChromeHeader({
   style,
 }: Props) {
   const insets = useSafeAreaInsets();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      void getUserProfile().then(setProfile);
+    }, []),
+  );
 
   return (
     <View style={[styles.hd, { paddingTop: Math.max(insets.top, 12) }, style]}>
@@ -56,10 +65,18 @@ export function AppChromeHeader({
           onPress={
             onAvatarPress ?? (() => router.push('/(app)/my-data' as never))
           }
-          style={styles.avatar}
+          style={styles.avatarBtn}
           accessibilityRole="button"
-          accessibilityLabel="Мої дані"
-        />
+          accessibilityLabel={t('me.title')}
+        >
+          <UserAvatar
+            avatarKey={profile?.avatar_key}
+            avatarUri={profile?.avatar_uri}
+            gender={profile?.gender}
+            size={36}
+            name={profile?.display_name ?? t('me.title')}
+          />
+        </Pressable>
       ) : (
         <View style={styles.avatarSpacer} />
       )}
@@ -104,11 +121,9 @@ const styles = StyleSheet.create({
     fontFamily: fonts.titleExtra,
     color: brand.logoGreen,
   },
-  avatar: {
-    width: 36,
-    height: 36,
+  avatarBtn: {
     borderRadius: 18,
-    backgroundColor: brand.successSoft,
+    overflow: 'hidden',
   },
   avatarSpacer: {
     width: 36,

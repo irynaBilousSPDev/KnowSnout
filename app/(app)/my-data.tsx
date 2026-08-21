@@ -56,6 +56,12 @@ export default function MyDataScreen() {
 
   const rows: MenuRow[] = [
     {
+      key: 'edit',
+      titleKey: 'editAccount.title',
+      icon: 'create-outline',
+      href: '/(app)/edit-account',
+    },
+    {
       key: 'pets',
       titleKey: 'me.openPets',
       icon: 'paw-outline',
@@ -111,6 +117,7 @@ export default function MyDataScreen() {
             {metaParts.length > 0 ? (
               <Text style={styles.heroMeta}>{metaParts.join(' · ')}</Text>
             ) : null}
+            <Text style={styles.heroEdit}>{t('editAccount.title')}</Text>
           </Pressable>
 
           <View style={styles.menu}>
@@ -172,6 +179,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 12.5,
     color: brand.muted,
+  },
+  heroEdit: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
   },
   menu: {
     borderRadius: brand.radius.md,

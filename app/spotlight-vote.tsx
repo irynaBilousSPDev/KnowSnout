@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
@@ -22,7 +23,7 @@ import {
   type SpotlightContest,
   type SpotlightEntry,
 } from '@/src/services/spotlight';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
 export default function SpotlightGuestVotePublicScreen() {
   const { contestId: contestIdParam } = useLocalSearchParams<{
@@ -86,11 +87,11 @@ export default function SpotlightGuestVotePublicScreen() {
 
   return (
     <View style={styles.root}>
+      <AppChromeHeader showAvatar={false} />
       <ScrollView
         contentContainerStyle={styles.pad}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.brand}>KnowSnout</Text>
         <Text style={styles.title}>{t('spotlight.guestVoteTitle')}</Text>
         <Text style={styles.subtitle}>{t('spotlight.guestVoteSubtitle')}</Text>
 
@@ -159,65 +160,59 @@ export default function SpotlightGuestVotePublicScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: brand.surface },
-  pad: { paddingHorizontal: 20, paddingTop: 28, paddingBottom: 48 },
-  brand: {
-    fontFamily: 'Manrope_700Bold',
-    fontSize: 22,
-    color: brand.navy,
-    marginBottom: 8,
-  },
+  root: { flex: 1, backgroundColor: brand.canvas },
+  pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 48 },
   title: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.title,
     fontSize: 24,
     color: brand.ink,
   },
   subtitle: {
     marginTop: 6,
     marginBottom: 18,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
-    color: brand.forest,
+    color: brand.muted,
   },
   section: {
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 12,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: brand.forest,
+    color: brand.muted,
   },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
   chip: {
-    borderRadius: 16,
+    borderRadius: brand.radius.md,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    backgroundColor: brand.mist,
+    backgroundColor: brand.chipTrack,
   },
-  chipActive: { backgroundColor: brand.navy },
+  chipActive: { backgroundColor: brand.accent },
   chipText: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.ink,
   },
   chipTextActive: { color: '#FFFFFF' },
   brief: {
     marginBottom: 16,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 18,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   empty: {
     marginTop: 12,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: brand.forest,
+    color: brand.muted,
   },
   card: {
     marginBottom: 12,
-    borderRadius: 16,
+    borderRadius: brand.radius.lg,
     borderWidth: 1,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
@@ -227,20 +222,20 @@ const styles = StyleSheet.create({
   cardTop: { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
   cardBody: { flex: 1 },
   cardTitle: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 16,
     color: brand.ink,
   },
   cardCaption: {
     marginTop: 4,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 13,
-    color: '#5A6B7D',
+    color: brand.muted,
   },
   cardMeta: {
     marginTop: 6,
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 12,
-    color: brand.forest,
+    color: brand.muted,
   },
 });
