@@ -6,6 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { LoadingState } from '@/src/components/LoadingState';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
@@ -98,10 +99,9 @@ export default function MyDataScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('me.title')} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.title}>{t('me.title')}</Text>
-
           <Pressable
             onPress={() => router.push('/(app)/edit-account' as never)}
             style={styles.hero}
@@ -163,14 +163,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     gap: 16,
   },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
-  },
-  hero: { alignItems: 'center', gap: 8 },
-  heroName: {
+  hero: { alignItems: 'center', gap: 8 },  heroName: {
     fontFamily: fonts.title,
     fontSize: 16,
     color: brand.ink,
