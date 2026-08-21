@@ -5,9 +5,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { listFriends, type FriendUser } from '@/src/services/friends';
@@ -51,12 +51,10 @@ export default function BlockedUsersScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('blocked.title')} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero
-            title={t('blocked.title')}
-            lead={t('blocked.subtitle')}
-          />
+          <Text style={styles.sub}>{t('blocked.subtitle')}</Text>
           {ids.length === 0 ? (
             <Text style={styles.empty}>{t('blocked.empty')}</Text>
           ) : (
@@ -92,7 +90,13 @@ export default function BlockedUsersScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
+  sub: {
+    marginBottom: 10,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
   empty: {
     fontFamily: fonts.body,
     fontSize: 14,

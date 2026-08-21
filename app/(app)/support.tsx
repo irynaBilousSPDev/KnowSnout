@@ -9,8 +9,8 @@ import {
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { submitSupportTicket } from '@/src/services/supportTickets';
@@ -45,12 +45,10 @@ export default function SupportScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('support.title')} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero
-            title={t('support.title')}
-            lead={t('support.subtitle')}
-          />
+          <Text style={styles.sub}>{t('support.subtitle')}</Text>
           <Text style={styles.label}>{t('support.email')}</Text>
           <TextInput
             value={email}
@@ -91,7 +89,13 @@ export default function SupportScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
+  sub: {
+    marginBottom: 4,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
   label: {
     marginTop: 12,
     marginBottom: 6,

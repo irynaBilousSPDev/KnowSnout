@@ -2,9 +2,9 @@ import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
@@ -19,12 +19,10 @@ export default function SubscriptionScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('subscription.title')} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero
-            title={t('subscription.title')}
-            lead={t('subscription.subtitle')}
-          />
+          <Text style={styles.sub}>{t('subscription.subtitle')}</Text>
           <View style={styles.leadCard}>
             <Text style={styles.lead}>{t('subscription.lead')}</Text>
           </View>
@@ -54,7 +52,13 @@ export default function SubscriptionScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
+  sub: {
+    marginBottom: 10,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
   leadCard: {
     marginBottom: 12,
     borderRadius: brand.radius.md,

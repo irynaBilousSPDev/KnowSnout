@@ -17,7 +17,7 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 
 ### P0v — Pixel UI from design project (hard reset)
 
-**Status (2026-08-21):** ignore current app chrome as reference. Rebuild as if from zero.
+**Status (2026-08-22):** modules **1–7 shipped** on `main` (phone HTML + брендбук chrome). Ignore current app chrome as historical reference only.
 
 **Source of truth (full pack):** `docs/design/KnowSnout_project/`  
 (= Downloads `KnowSnout UI Design Setup (2)/KnowSnout_project` + same module HTML as `Downloads/knowsnout`).
@@ -31,7 +31,7 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 
 **Locked choice (2026-08-21):** option **1** — phone HTML + брендбук. Organic = class/spacing scaffold only; `ref-*.png` ignored for look.
 
-Modules order: Вхід і Перевір → Улюбленці → Стрічка → Спільнота → Профіль → Довідники → Адмінка.
+Modules order (done): Вхід і Перевір → Улюбленці → Стрічка → Спільнота → Профіль → Довідники → Адмінка.
 
 ### P0 — Core (in progress / next)
 - [x] Food scan (barcode → catalog → OFF → photo + AI)

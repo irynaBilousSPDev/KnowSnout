@@ -13,10 +13,10 @@ import {
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
-import { HubHero } from '@/src/components/HubHero';
 import { IconButton } from '@/src/components/IconButton';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { Section } from '@/src/components/Section';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
@@ -108,13 +108,12 @@ export default function QuizResultsScreen() {
   }
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('quiz.resultsTitle')} titleSize={20} />
       {error ? (
         <View style={styles.pad}>
-          <HubHero
-            title={t('quiz.resultsTitle')}
-            lead={t('quiz.resultsSubtitle')}
-          />
+          <Text style={styles.sub}>{t('quiz.resultsSubtitle')}</Text>
           <ErrorState message={error} onRetry={() => void load()} />
         </View>
       ) : (
@@ -131,10 +130,7 @@ export default function QuizResultsScreen() {
           }
           ListHeaderComponent={
             <View style={styles.headerBlock}>
-              <HubHero
-                title={t('quiz.resultsTitle')}
-                lead={t('quiz.resultsSubtitle')}
-              />
+              <Text style={styles.sub}>{t('quiz.resultsSubtitle')}</Text>
               <View style={styles.statsCard}>
                 <Text style={styles.statsLabel}>{t('quiz.avgLabel')}</Text>
                 <Text style={styles.statsValue}>
@@ -243,7 +239,13 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 40,
   },
-  headerBlock: { marginBottom: 8 },
+  headerBlock: { marginBottom: 8, paddingHorizontal: 20, paddingTop: 4 },
+  sub: {
+    marginBottom: 10,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
   statsCard: {
     marginBottom: 12,
     borderRadius: brand.radius.md,

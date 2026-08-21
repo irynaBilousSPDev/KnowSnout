@@ -2,7 +2,7 @@ import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-na
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import {
   DATA_SOURCES,
   dataSourcesUpdatedNote,
@@ -31,11 +31,12 @@ export default function DataSourcesScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('sources.title')} titleSize={20} />
       <ScrollView
         contentContainerStyle={styles.pad}
         keyboardShouldPersistTaps="handled"
       >
-        <HubHero title={t('sources.title')} lead={t('sources.lead')} />
+        <Text style={styles.sub}>{t('sources.lead')}</Text>
         <Text style={styles.updated}>
           {t('sources.updated', { date: dataSourcesUpdatedNote() })}
         </Text>
@@ -63,7 +64,14 @@ export default function DataSourcesScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
+  sub: {
+    marginBottom: 8,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    lineHeight: 19,
+    color: brand.muted,
+  },
   updated: {
     marginBottom: 14,
     fontFamily: fonts.body,
