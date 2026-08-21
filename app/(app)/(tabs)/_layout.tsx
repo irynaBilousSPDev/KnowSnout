@@ -6,6 +6,11 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { t } from '@/src/i18n';
 import { brand } from '@/src/theme/brand';
 
+/** PDF Design-Setup modules 01→02→03→04→06; default landing = Перевір. */
+export const unstable_settings = {
+  initialRouteName: 'index',
+};
+
 function TabIcon({
   name,
   focused,
@@ -35,13 +40,13 @@ function TabLabel({ label, focused }: { label: string; focused: boolean }) {
   );
 }
 
-/** PDF order: Стрічка · Перевір · Улюбленці · Спільнота · Довідники */
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const bottom = Math.max(insets.bottom, 8);
 
   return (
     <Tabs
+      initialRouteName="index"
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
@@ -59,21 +64,6 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: '#8A9BB0',
       }}
     >
-      <Tabs.Screen
-        name="stories"
-        options={{
-          title: t('tabs.stories'),
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              name={focused ? 'images' : 'images-outline'}
-              focused={focused}
-            />
-          ),
-          tabBarLabel: ({ focused }) => (
-            <TabLabel label={t('tabs.stories')} focused={focused} />
-          ),
-        }}
-      />
       <Tabs.Screen
         name="index"
         options={{
@@ -98,6 +88,21 @@ export default function TabsLayout() {
           ),
           tabBarLabel: ({ focused }) => (
             <TabLabel label={t('tabs.pets')} focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="stories"
+        options={{
+          title: t('tabs.stories'),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              name={focused ? 'images' : 'images-outline'}
+              focused={focused}
+            />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <TabLabel label={t('tabs.stories')} focused={focused} />
           ),
         }}
       />

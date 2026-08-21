@@ -3,107 +3,103 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { t } from '@/src/i18n';
 import { brand } from '@/src/theme/brand';
 
-type Pillar = {
-  title: string;
-  body: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  href: string;
-  tone: 'navy' | 'forest' | 'rose';
-};
+/** PDF 04 Спільнота: Квіз-хаб · Форум · Блог (+ рейтинг / досягнення / акаунт) */
+const PRIMARY = [
+  {
+    key: 'quiz',
+    titleKey: 'community.quizHub',
+    bodyKey: 'community.quizHubBody',
+    icon: 'help-circle-outline' as const,
+    href: '/(app)/(tabs)/quiz',
+    color: brand.navy,
+  },
+  {
+    key: 'forum',
+    titleKey: 'community.forum',
+    bodyKey: 'community.forumBody',
+    icon: 'chatbubbles-outline' as const,
+    href: '/(app)/forum',
+    color: brand.forest,
+  },
+  {
+    key: 'blog',
+    titleKey: 'community.blog',
+    bodyKey: 'community.blogBody',
+    icon: 'newspaper-outline' as const,
+    href: '/(app)/blog',
+    color: brand.rose,
+  },
+];
+
+const SECONDARY = [
+  {
+    titleKey: 'community.leaderboard',
+    href: '/(app)/quiz-leaderboard',
+  },
+  {
+    titleKey: 'community.achievements',
+    href: '/(app)/achievements',
+  },
+  {
+    titleKey: 'me.title',
+    href: '/(app)/my-data',
+  },
+];
 
 export default function CommunityHubScreen() {
-  const pillars: Pillar[] = [
-    {
-      title: t('community.quizHub'),
-      body: t('community.quizHubBody'),
-      icon: 'help-circle-outline',
-      href: '/(app)/(tabs)/quiz',
-      tone: 'navy',
-    },
-    {
-      title: t('community.forum'),
-      body: t('community.forumBody'),
-      icon: 'chatbubbles-outline',
-      href: '/(app)/forum',
-      tone: 'forest',
-    },
-    {
-      title: t('community.blog'),
-      body: t('community.blogBody'),
-      icon: 'newspaper-outline',
-      href: '/(app)/blog',
-      tone: 'rose',
-    },
-  ];
-
   return (
     <AppScreen>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero
-            brandMark
-            title={t('tabs.community')}
-            lead={t('community.lead')}
-            right={<ProfileEntry />}
-          />
+          <View style={styles.headerRow}>
+            <Text style={styles.title}>{t('tabs.community')}</Text>
+            <ProfileEntry />
+          </View>
+          <Text style={styles.lead}>{t('community.lead')}</Text>
 
-          {pillars.map((p) => (
+          {PRIMARY.map((p) => (
             <Pressable
-              key={p.href}
+              key={p.key}
               onPress={() => router.push(p.href as never)}
-              style={({ pressed }) => pressed && styles.pressed}
+              style={({ pressed }) => [
+                styles.card,
+                pressed && styles.pressed,
+              ]}
             >
-              <View
-                style={[
-                  styles.pillar,
-                  p.tone === 'navy' && styles.pillarNavy,
-                  p.tone === 'forest' && styles.pillarForest,
-                  p.tone === 'rose' && styles.pillarRose,
-                ]}
-              >
-                <View
-                  style={[
-                    styles.iconWrap,
-                    p.tone === 'navy' && { backgroundColor: brand.navy },
-                    p.tone === 'forest' && { backgroundColor: brand.forest },
-                    p.tone === 'rose' && { backgroundColor: brand.rose },
-                  ]}
-                >
-                  <Ionicons name={p.icon} size={22} color="#FFFFFF" />
-                </View>
-                <View style={styles.copy}>
-                  <Text style={styles.pillarTitle}>{p.title}</Text>
-                  <Text style={styles.pillarBody}>{p.body}</Text>
-                </View>
-                <Ionicons
-                  name="chevron-forward"
-                  size={20}
-                  color={brand.mistBorder}
-                />
+              <View style={[styles.icon, { backgroundColor: p.color }]}>
+                <Ionicons name={p.icon} size={22} color="#FFFFFF" />
               </View>
+              <View style={styles.copy}>
+                <Text style={styles.cardTitle}>{t(p.titleKey)}</Text>
+                <Text style={styles.cardBody}>{t(p.bodyKey)}</Text>
+              </View>
+              <Ionicons
+                name="chevron-forward"
+                size={20}
+                color={brand.mistBorder}
+              />
             </Pressable>
           ))}
 
-          <Text style={styles.section}>{t('community.sectionQuiz')}</Text>
-          <Pressable
-            onPress={() => router.push('/(app)/quiz-leaderboard' as never)}
-            style={styles.linkRow}
-          >
-            <Text style={styles.linkText}>{t('community.leaderboard')}</Text>
-            <Ionicons name="chevron-forward" size={16} color={brand.mutedSoft} />
-          </Pressable>
-          <Pressable
-            onPress={() => router.push('/(app)/achievements' as never)}
-            style={styles.linkRow}
-          >
-            <Text style={styles.linkText}>{t('community.achievements')}</Text>
-            <Ionicons name="chevron-forward" size={16} color={brand.mutedSoft} />
-          </Pressable>
+          <Text style={styles.section}>{t('check.moreSection')}</Text>
+          {SECONDARY.map((item) => (
+            <Pressable
+              key={item.href}
+              onPress={() => router.push(item.href as never)}
+              style={styles.linkRow}
+            >
+              <Text style={styles.linkText}>{t(item.titleKey)}</Text>
+              <Ionicons
+                name="chevron-forward"
+                size={16}
+                color={brand.mutedSoft}
+              />
+            </Pressable>
+          ))}
         </View>
       </ScrollView>
     </AppScreen>
@@ -112,9 +108,27 @@ export default function CommunityHubScreen() {
 
 const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  pressed: { opacity: 0.9 },
-  pillar: {
-    marginBottom: 12,
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  title: {
+    fontFamily: 'DMSans_700Bold',
+    fontSize: 32,
+    color: brand.ink,
+    letterSpacing: -0.5,
+  },
+  lead: {
+    marginBottom: 16,
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 15,
+    lineHeight: 22,
+    color: brand.muted,
+  },
+  card: {
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 20,
@@ -124,10 +138,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 16,
   },
-  pillarNavy: { borderColor: '#D5DCE6' },
-  pillarForest: { borderColor: brand.mistBorder },
-  pillarRose: { borderColor: brand.roseTint },
-  iconWrap: {
+  pressed: { opacity: 0.9 },
+  icon: {
     marginRight: 12,
     height: 44,
     width: 44,
@@ -136,12 +148,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   copy: { flex: 1, paddingRight: 8 },
-  pillarTitle: {
+  cardTitle: {
     fontFamily: 'DMSans_700Bold',
     fontSize: 17,
     color: brand.ink,
   },
-  pillarBody: {
+  cardBody: {
     marginTop: 4,
     fontFamily: 'DMSans_400Regular',
     fontSize: 13,
@@ -149,7 +161,7 @@ const styles = StyleSheet.create({
     color: brand.muted,
   },
   section: {
-    marginTop: 20,
+    marginTop: 18,
     marginBottom: 6,
     fontFamily: 'DMSans_700Bold',
     fontSize: 12,

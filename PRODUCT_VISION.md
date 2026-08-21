@@ -27,13 +27,15 @@ Trust + care for pets at home and on the road — then a gentle social layer for
 
 ### P0c — IA: «Перевір» hub + journal (2026-07-21) — **SHIPPED UI**
 
-**Visual truth (2026-08-21 PDF mock):** hub = title + «Нещодавно» dashed strip + 3 stats + 4 action cards (Корм / Рослини / Порода / Порівняти); History = Нова|Історія segment + species/kind chips; tabs order **Стрічка · Перевір · Улюбленці · Спільнота · Довідники** (Перевір center, forest active).
+**PDF structure source of truth:** `docs/PDF_APP_STRUCTURE.md` (from Design-Setup map). Tabs: **Перевір · Улюбленці · Стрічка · Спільнота · Довідники**; default landing = Перевір. Check hub = Нещодавно + stats + Корм/Рослини/Порода/Порівняти. Profile = header, not a tab.
 
 | Tab | Role |
 |--|--|
-| **Перевір** | Hub: **Корм** · **Рослина** · **Порода** |
-| **Журнал** | Inner tabs: Корм · Рослини · Породи |
-| Улюбленці / Стрічка | unchanged |
+| **Перевір** | Hub + Історія + Порівняти (default landing) |
+| **Улюбленці** | Список → хаб тварини |
+| **Стрічка** | Feed + Spotlight / друзі / чат |
+| **Спільнота** | Квіз · Форум · Блог |
+| **Довідники** | F1–F6 |
 
 ### P0d — IA: UI Kit v2 tabs (2026-08-21) — **STRUCTURE SHIPPED (mock-first)**
 

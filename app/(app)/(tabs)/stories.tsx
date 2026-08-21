@@ -694,6 +694,54 @@ export default function StoriesScreen() {
         lead={t('stories.tagline')}
         right={<ProfileEntry />}
       />
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.moduleNav}
+      >
+        {(
+          [
+            {
+              label: t('spotlight.title'),
+              icon: 'sparkles-outline' as const,
+              href: '/(app)/spotlight-hub',
+            },
+            {
+              label: t('friends.title'),
+              icon: 'people-outline' as const,
+              href: '/(app)/friends',
+            },
+            {
+              label: t('activity.title'),
+              icon: 'notifications-outline' as const,
+              href: '/(app)/activity',
+            },
+            {
+              label: t('dm.title'),
+              icon: 'chatbubble-ellipses-outline' as const,
+              href: '/(app)/messages',
+            },
+            {
+              label: t('search.title'),
+              icon: 'search-outline' as const,
+              href: '/(app)/search',
+            },
+          ] as const
+        ).map((item) => (
+          <Pressable
+            key={item.href}
+            onPress={() => router.push(item.href as never)}
+            style={[styles.moduleChip, dark && styles.moduleChipDark]}
+          >
+            <Ionicons name={item.icon} size={16} color={brand.forest} />
+            <Text style={styles.moduleChipText} numberOfLines={1}>
+              {item.label}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+
       <View style={styles.actionsRow}>
         <View style={styles.actionsPrimary}>
           <PrimaryButton
@@ -702,14 +750,6 @@ export default function StoriesScreen() {
             onPress={openCompose}
           />
         </View>
-        <Pressable
-          onPress={() => router.push('/(app)/contests')}
-          style={[styles.contestsBtn, dark && styles.contestsBtnDark]}
-          accessibilityRole="button"
-          accessibilityLabel={t('contests.open')}
-        >
-          <Ionicons name="trophy-outline" size={18} color={brand.rose} />
-        </Pressable>
         <Pressable
           onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
           style={[styles.contestsBtn, dark && styles.contestsBtnDark]}
@@ -721,7 +761,7 @@ export default function StoriesScreen() {
           <Ionicons
             name={viewMode === 'list' ? 'grid-outline' : 'list'}
             size={18}
-            color={brand.rose}
+            color={brand.forest}
           />
         </Pressable>
       </View>
@@ -1325,18 +1365,44 @@ const styles = StyleSheet.create({
     backgroundColor: STORIES_DARK.bg,
   },
   feedHeader: {
-    paddingHorizontal: 20,
-    paddingTop: 8,
     paddingBottom: 8,
   },
   feedHeaderDark: {
     backgroundColor: STORIES_DARK.bg,
+  },
+  moduleNav: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 20,
+    paddingBottom: 12,
+  },
+  moduleChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  moduleChipDark: {
+    backgroundColor: STORIES_DARK.card,
+    borderColor: STORIES_DARK.border,
+  },
+  moduleChipText: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 12,
+    color: brand.ink,
   },
   actionsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     marginTop: 4,
+    paddingHorizontal: 20,
+    paddingBottom: 8,
   },
   actionsPrimary: { flex: 1 },
   contestsBtn: {
