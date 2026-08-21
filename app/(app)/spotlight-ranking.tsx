@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -43,7 +44,8 @@ export default function SpotlightRankingScreen() {
   };
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <ScreenHeader

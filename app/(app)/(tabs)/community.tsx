@@ -2,12 +2,12 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML kit · Спільнота hub — Manrope 22, soft white cards. */
+/** HTML · Спільнота hub — квизи / форум / блог. */
 const PRIMARY = [
   {
     key: 'quiz',
@@ -15,7 +15,7 @@ const PRIMARY = [
     bodyKey: 'community.quizHubBody',
     icon: 'help-circle-outline' as const,
     href: '/(app)/(tabs)/quiz',
-    color: brand.accent,
+    tone: 'accent' as const,
   },
   {
     key: 'forum',
@@ -23,7 +23,7 @@ const PRIMARY = [
     bodyKey: 'community.forumBody',
     icon: 'chatbubbles-outline' as const,
     href: '/(app)/forum',
-    color: brand.accentDark,
+    tone: 'success' as const,
   },
   {
     key: 'blog',
@@ -31,7 +31,7 @@ const PRIMARY = [
     bodyKey: 'community.blogBody',
     icon: 'newspaper-outline' as const,
     href: '/(app)/blog',
-    color: brand.terracotta,
+    tone: 'neutral' as const,
   },
 ];
 
@@ -43,35 +43,47 @@ const SECONDARY = [
 
 export default function CommunityHubScreen() {
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <View style={styles.headerRow}>
-            <Text style={styles.title}>{t('tabs.community')}</Text>
-            <ProfileEntry />
-          </View>
+          <Text style={styles.title}>{t('tabs.community')}</Text>
           <Text style={styles.lead}>{t('community.lead')}</Text>
 
-          {PRIMARY.map((p) => (
-            <Pressable
-              key={p.key}
-              onPress={() => router.push(p.href as never)}
-              style={({ pressed }) => [styles.card, pressed && styles.pressed]}
-            >
-              <View style={[styles.icon, { backgroundColor: p.color }]}>
-                <Ionicons name={p.icon} size={22} color="#FFFFFF" />
-              </View>
-              <View style={styles.copy}>
-                <Text style={styles.cardTitle}>{t(p.titleKey)}</Text>
-                <Text style={styles.cardBody}>{t(p.bodyKey)}</Text>
-              </View>
-              <Ionicons
-                name="chevron-forward"
-                size={20}
-                color={brand.mutedSoft}
-              />
-            </Pressable>
-          ))}
+          {PRIMARY.map((p) => {
+            const bg =
+              p.tone === 'accent'
+                ? brand.accentTint
+                : p.tone === 'success'
+                  ? brand.successTint
+                  : brand.creamDeep;
+            const fg =
+              p.tone === 'accent'
+                ? brand.accentDark
+                : p.tone === 'success'
+                  ? brand.successDark
+                  : brand.ink;
+            return (
+              <Pressable
+                key={p.key}
+                onPress={() => router.push(p.href as never)}
+                style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+              >
+                <View style={[styles.icon, { backgroundColor: bg }]}>
+                  <Ionicons name={p.icon} size={22} color={fg} />
+                </View>
+                <View style={styles.copy}>
+                  <Text style={styles.cardTitle}>{t(p.titleKey)}</Text>
+                  <Text style={styles.cardBody}>{t(p.bodyKey)}</Text>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={16}
+                  color={brand.mutedSoft}
+                />
+              </Pressable>
+            );
+          })}
 
           <Text style={styles.section}>{t('check.moreSection')}</Text>
           {SECONDARY.map((item) => (
@@ -95,12 +107,11 @@ export default function CommunityHubScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 40,
+    gap: 10,
   },
   title: {
     fontFamily: fonts.title,
@@ -109,68 +120,60 @@ const styles = StyleSheet.create({
     color: brand.ink,
   },
   lead: {
-    marginBottom: 16,
     fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
     color: brand.muted,
+    marginBottom: 4,
   },
   card: {
-    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 14,
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 16,
+    padding: 14,
     shadowColor: brand.shadow.color,
     shadowOpacity: brand.shadow.opacity,
     shadowRadius: brand.shadow.radius,
     shadowOffset: brand.shadow.offset,
     elevation: 1,
   },
-  pressed: { opacity: 0.9 },
+  pressed: { opacity: 0.88 },
   icon: {
-    marginRight: 12,
-    height: 44,
-    width: 44,
-    borderRadius: 14,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  copy: { flex: 1, paddingRight: 8 },
+  copy: { flex: 1 },
   cardTitle: {
     fontFamily: fonts.bodyBold,
-    fontSize: 17,
+    fontSize: 15,
     color: brand.ink,
   },
   cardBody: {
-    marginTop: 4,
+    marginTop: 2,
     fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 12.5,
     color: brand.muted,
   },
   section: {
-    marginTop: 18,
-    marginBottom: 6,
+    marginTop: 8,
     fontFamily: fonts.bodyBold,
     fontSize: 12,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    color: brand.mutedSoft,
+    color: brand.muted,
   },
   linkRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: brand.mistBorder,
+    paddingVertical: 6,
   },
   linkText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 15,
-    color: brand.accent,
+    fontFamily: fonts.bodySemi,
+    fontSize: 14,
+    color: brand.accentDark,
   },
 });

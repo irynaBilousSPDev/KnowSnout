@@ -1,0 +1,55 @@
+hone-col">
+    <div class="phone-label">25 · SnoutSpotlight, хаб конкурсів</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd">
+          <div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div>
+          <div class="app-avatar" title="Мої дані"></div>
+        </div>
+        <div style="padding:14px 20px 8px"><h1 class="scr-title">SnoutSpotlight</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <div class="card-sm" style="background:var(--color-accent-100);display:flex;flex-direction:column;gap:6px">
+            <span class="chip chip-warn" style="width:fit-content">Активний конкурс</span>
+            <div style="font:700 16px var(--font-body);color:var(--color-accent-700)">Найкумедніша поза тижня <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M15.5 9.5c0-1.5 1-2.5 2-2.5s2 1 2 2.5-1 2.5-2 2.5-2-1-2-2.5Z"></path><path d="M8.5 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M13 5c0-1.4.9-2.5 2-2.5s2 1.1 2 2.5-.9 2.5-2 2.5-2-1.1-2-2.5Z"></path><path d="M12 12c3 0 5.5 2.3 5.5 5 0 2-1.7 3-3.3 2.3-1.3-.6-2.9-.6-4.4 0C8.2 20 6.5 19 6.5 17c0-2.7 2.5-5 5.5-5Z"></path></svg></div>
+            <div style="font-size:12.5px;color:var(--color-accent-700)">Закінчується через 2 дні · 214 учасників</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <image-slot id="spot-1" style="width:100%;height:120px" shape="rounded" radius="16" placeholder="Учасник"></image-slot>
+            <image-slot id="spot-2" style="width:100%;height:120px" shape="rounded" radius="16" placeholder="Учасник"></image-slot>
+            <image-slot id="spot-3" style="width:100%;height:120px" shape="rounded" radius="16" placeholder="Учасник"></image-slot>
+            <image-slot id="spot-4" style="width:100%;height:120px" shape="rounded" radius="16" placeholder="Учасник"></image-slot>
+          </div>
+          <div class="btn btn-primary btn-block" style="height:46px">Взяти участь</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">26 · Картка учасника («Поділитися» — головний CTA)</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div class="scr-hd" style="padding-top:14px">
+          <div class="hd-left"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div></div>
+          <h1 class="scr-title">Учасник</h1>
+          <div style="width:34px;flex-shrink:0"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <image-slot id="entry-photo" style="width:100%;height:260px" shape="rounded" radius="20" placeholder="Фото учасника конкурсу"></image-slot>
+          <div>
+            <div style="font:700 16px var(--font-body)">Тукан бере участь!</div>
+            <div style="font-size:13px;color:var(--color-neutral-600);margin-top:4px">128 голосів · #47 у рейтингу</div>
+          </div>
+          <div class="btn btn-primary btn-block" style="height:48px;font-size:15px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-3px;margin-right:5px"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg>Поділитися і зібрати голоси</div>
+          <div class="btn btn-secondary btn-block" style="height:44px">Проголосувати</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">27 · Гостьове голосування (веб, без акаунту)</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><

@@ -131,26 +131,36 @@ const uk: Dict = {
   'compare.browseFiles': 'або файли',
   'compare.na': '—',
 
-  'quizHub.title': 'Квіз',
+  'quizHub.title': 'Квізи',
   'quizHub.subtitle': 'Категорії · кілька відкритих джерел',
   'quizHub.lead':
     'Кілька джерел разом: TheDogAPI / TheCatAPI, Wikidata і Open Trivia DB (Animals).',
-  'quizHub.breedTitle': 'Вгадай породу',
+  'quizHub.breedTitle': 'Вгадай породу за фото',
   'quizHub.breedBody':
     'Фото + 4 варіанти (TheDogAPI / TheCatAPI), факти також з Wikidata',
-  'quizHub.originTitle': 'Звідки порода?',
+  'quizHub.originTitle': 'Звідки ця порода?',
   'quizHub.originBody':
     'Країна походження собак і котів — дані Wikidata (P495)',
-  'quizHub.groupTitle': 'Група тварин',
+  'quizHub.groupTitle': 'Яка це група тварин?',
   'quizHub.groupBody':
     'Ссавець, птах, плазун чи риба? Підписи з Wikidata',
   'quizHub.triviaTitle': 'Факти про тварин',
   'quizHub.triviaBody':
     'Класична вікторина Animals з Open Trivia DB (CC BY-SA)',
   'quizHub.wikidataNote':
-    'Повний список джерел і ліцензій — у «Мої дані» → «Джерела даних».',
+    'Питання генеруються з Wikidata + відкритих джерел про породи',
 
-  'quizStreak.dailyTitle': 'Квіз дня',
+  'quizHub.chipDaily': 'Виклик дня',
+  'quizHub.chipNew': 'Новий формат',
+  'quizHub.chipQuestions': '12 питань',
+  'quizHub.chipBreedQs': '15 питань',
+  'quizHub.friendsTop': 'Топ тижня серед друзів',
+  'quizHub.friendsTopHint': 'Ти — у рейтингу · відкрий таблицю XP',
+  'quizStreak.daysInARow': '{count} днів поспіль',
+  'quizStreak.toRecord': 'До рекорду ({record}) — {left} днів',
+  'quizStreak.xpLine': 'Рівень {level} · {xp}/{next} XP',
+
+'quizStreak.dailyTitle': 'Виклик дня',
   'quizStreak.dailyBreedBody':
     'Сьогодні — вгадай породу за фото. Будь-який завершений квіз рахує серію днів.',
   'quizStreak.dailyOriginBody':
@@ -159,7 +169,7 @@ const uk: Dict = {
     'Сьогодні — група тварин. Будь-який завершений квіз рахує серію днів.',
   'quizStreak.dailyTriviaBody':
     'Сьогодні — факти про тварин. Будь-який завершений квіз рахує серію днів.',
-  'quizStreak.playDaily': 'Грати квіз дня',
+  'quizStreak.playDaily': 'Грати виклик дня',
   'quizStreak.playAgain': 'Ще раз сьогодні',
   'quizStreak.doneToday': 'Сьогодні вже зараховано в серію',
   'quizStreak.current': 'Серія: {count} дн.',
@@ -1077,7 +1087,7 @@ const uk: Dict = {
   'spotlight.active': 'Активні конкурси',
   'spotlight.statusActive': 'Активний',
   'spotlight.statusClosed': 'Закритий',
-  'spotlight.applyCta': 'Подати заявку',
+  'spotlight.applyCta': 'Взяти участь',
   'spotlight.rulesTitle': 'Правила Spotlight',
   'spotlight.rulesSubtitle': 'Коротко й чесно',
   'spotlight.applyTitle': 'Заявка',
@@ -1119,6 +1129,10 @@ const uk: Dict = {
 
   'friends.title': 'Друзі',
   'friends.subtitle': 'Локальний граф знайомств',
+  'friends.followingCount': 'Підписки ({count})',
+  'friends.suggestions': 'Пропозиції',
+  'friends.suggestionsHint': 'Знайди людей через пошук або інвайт',
+  'friends.unfollow': 'Відписатись',
   'friends.requests': 'Запити',
   'friends.search': 'Знайти людей',
   'friends.invite': 'Запросити друга',
@@ -1210,12 +1224,12 @@ const uk: Dict = {
   'stories.openSearch': 'Пошук',
   'stories.openActivity': 'Активність',
 
-  'quizHub.zoomTitle': 'Zoom-квіз',
-  'quizHub.zoomBody': 'Вгадай тварину з крупного плану (мок)',
-  'quizHub.heavierTitle': 'Складний квіз',
-  'quizHub.heavierBody': 'Глибші питання про безпеку й корм',
-  'quizHub.mythTitle': 'Міф чи факт?',
-  'quizHub.mythBody': 'Свайп так/ні — розвіюй міфи',
+  'quizHub.zoomTitle': 'Зум-загадка',
+  'quizHub.zoomBody': 'Розмите фото — наблизь і вгадай',
+  'quizHub.heavierTitle': 'Хто важчий?',
+  'quizHub.heavierBody': 'Порівняння за даними Wikidata',
+  'quizHub.mythTitle': 'Правда чи міф',
+  'quizHub.mythBody': 'Свайп-картка — розвіюй міфи',
 
   'quizZoom.title': 'Zoom-квіз',
   'quizZoom.zoomHint': 'Крупний план',

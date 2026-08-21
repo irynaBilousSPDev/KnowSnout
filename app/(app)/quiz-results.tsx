@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { HubHero } from '@/src/components/HubHero';
@@ -99,7 +100,8 @@ export default function QuizResultsScreen() {
 
   if (loading) {
     return (
-      <AppScreen>
+      <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
         <LoadingState message={t('quiz.resultsLoading')} />
       </AppScreen>
     );

@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -68,7 +69,8 @@ export default function WalkPlanScreen() {
   };
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <ScreenHeader title={t('walks.title')} subtitle={t('walks.subtitle')} />

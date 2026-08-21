@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { ListRow } from '@/src/components/ListRow';
@@ -158,7 +159,8 @@ export default function PetHubScreen() {
   };
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.topBar}>
           <Pressable
@@ -207,7 +209,7 @@ export default function PetHubScreen() {
                   avatarKey={p.avatar_key}
                   avatarUri={p.avatar_uri}
                   species={p.species}
-                  size={34}
+                  size={active ? 30 : 34}
                   name={p.name}
                 />
               </Pressable>
@@ -315,7 +317,7 @@ const styles = StyleSheet.create({
   pad: { paddingHorizontal: 20, paddingBottom: 40 },
   topBar: {
     paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingTop: 14,
     paddingBottom: 4,
     flexDirection: 'row',
     alignItems: 'center',
@@ -325,7 +327,7 @@ const styles = StyleSheet.create({
     height: 34,
     width: 34,
     borderRadius: 17,
-    backgroundColor: brand.chipTrack,
+    backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -360,6 +362,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     lineHeight: 28,
     color: brand.ink,
+    margin: 0,
   },
   heroMeta: {
     marginTop: 2,
@@ -369,7 +372,7 @@ const styles = StyleSheet.create({
   },
   switcher: {
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 0,
     paddingBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -381,6 +384,8 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     opacity: 0.6,
     overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   switchAvatarActive: {
     opacity: 1,
@@ -399,7 +404,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   switchAddText: {
-    fontFamily: fonts.bodyBold,
+    fontFamily: fonts.body,
     fontSize: 16,
     color: brand.mutedSoft,
   },
@@ -407,7 +412,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 8,
     borderRadius: brand.radius.md,
-    backgroundColor: brand.terracottaTint,
+    backgroundColor: brand.accentTint,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },

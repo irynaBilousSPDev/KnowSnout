@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
@@ -71,7 +72,8 @@ export default function ForumThreadScreen() {
   };
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <ScreenHeader

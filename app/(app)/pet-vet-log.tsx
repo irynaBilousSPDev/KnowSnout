@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
@@ -176,6 +177,7 @@ export default function PetVetLogScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <Text style={styles.title}>{t('vetLog.title')}</Text>
@@ -185,14 +187,8 @@ export default function PetVetLogScreen() {
             accessibilityRole="button"
             accessibilityLabel={t('vetLog.add')}
           >
-            <Ionicons name="add" size={22} color={brand.ink} />
+            <Text style={styles.addPlus}>+</Text>
           </Pressable>
-        </View>
-        <Text style={styles.subtitle}>
-          {pet.name} · {t('vetLog.subtitle')}
-        </Text>
-        <View style={styles.disclaimer}>
-          <Text style={styles.disclaimerText}>{t('vetLog.disclaimer')}</Text>
         </View>
       </View>
 
@@ -341,9 +337,15 @@ const styles = StyleSheet.create({
     height: 34,
     width: 34,
     borderRadius: 17,
-    backgroundColor: brand.chipTrack,
+    backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  addPlus: {
+    fontFamily: fonts.body,
+    fontSize: 20,
+    lineHeight: 22,
+    color: brand.ink,
   },
   subtitle: {
     marginTop: 4,

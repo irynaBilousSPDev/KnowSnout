@@ -1,0 +1,62 @@
+hone-col">
+    <div class="phone-label">Активність (лайки, коментарі, нові підписники)</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div style="padding:14px 20px 8px"><h1 class="scr-title" style="font-size:20px">Активність</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="act-1" style="width:36px;height:36px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1;font-size:13px"><b>Ігор</b> вподобав твій пост</div>
+            <span style="font-size:11px;color:var(--color-neutral-500)">2 год</span>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="act-2" style="width:36px;height:36px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1;font-size:13px"><b>Оксана</b> прокоментувала твій пост</div>
+            <span style="font-size:11px;color:var(--color-neutral-500)">5 год</span>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px;background:var(--color-accent-100)">
+            <image-slot id="act-3" style="width:36px;height:36px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1;font-size:13px"><b>Марта</b> тепер підписана на тебе</div>
+            <span style="font-size:11px;color:var(--color-accent-700)">Новий</span>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Чат — список розмов</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div style="padding:14px 20px 8px"><h1 class="scr-title" style="font-size:20px">Чат</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="dm-1" style="width:44px;height:44px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Оксана</div><div style="font-size:12px;color:var(--color-neutral-600)">Дякую за пораду про корм!</div></div>
+            <span style="font-size:11px;color:var(--color-neutral-500)">14:20</span>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="dm-2" style="width:44px;height:44px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Ігор</div><div style="font-size:12px;color:var(--color-neutral-600)">Де саме той парк?</div></div>
+            <div style="width:8px;height:8px;border-radius:999px;background:var(--color-accent)"></div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Чат — розмова</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div class="scr-hd" style="padding-top:14px">
+          <div class="hd-left"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div></div>
+          <h1 class="scr-title" style="font-size:18px">Оксана</h1>
+          <div style="width:34px;flex-shrink:0"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:8px">
+          <div style="align-self:flex-start;background:#fff;border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:13px;max-width:75%;box-shadow:var(--shadow-sm)">Привіт! Дякую за пораду про корм</div>
+          <div style="ali

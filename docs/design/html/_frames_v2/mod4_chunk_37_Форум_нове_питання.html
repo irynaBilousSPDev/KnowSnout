@@ -1,0 +1,63 @@
+hone-col">
+    <div class="phone-label">37 · Форум: нове питання</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div class="scr-hd" style="padding-top:14px">
+          <div style="font:600 13px var(--font-body);color:var(--color-neutral-600)">Скасувати</div>
+          <h1 class="scr-title" style="font-size:18px">Нове питання</h1>
+          <div style="font:700 13px var(--font-body);color:var(--color-accent-700)">Опубл.</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div><div class="field-lbl">Категорія</div><div class="input" style="width:100%;box-sizing:border-box">Собаки</div></div>
+          <div><div class="field-lbl">Заголовок</div><div class="input" style="width:100%;box-sizing:border-box">Як привчити до нашийника?</div></div>
+          <div><div class="field-lbl">Опис</div><div class="input" style="width:100%;box-sizing:border-box;height:90px;align-items:flex-start;padding-top:12px">Цуценя 3 місяці, боїться нашийника…</div></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">39 · Блог: стаття</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="flex:1;overflow:auto;padding:0 0 24px">
+          <image-slot id="blog-hero" style="width:100%;height:220px" shape="rect" placeholder="Обкладинка статті"></image-slot>
+          <div style="padding:16px 20px">
+            <span class="chip chip-good">Харчування</span>
+            <h1 style="font-size:22px;margin:10px 0 8px">5 міфів про сухий корм</h1>
+            <div style="font-size:12px;color:var(--color-neutral-600);margin-bottom:14px">7 хв читання · Ветеринарна редакція</div>
+            <div style="font-size:13.5px;line-height:1.6;color:var(--color-neutral-800)">Багато власників вважають, що дорожчий корм — завжди кращий. Насправді склад важливіший за ціну…</div>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+<div id="sec-forum-ext" style="max-width:1100px;margin:48px auto 0;padding:0 48px">
+  <div class="kicker">Розділ · Спільнота — форум і блог, розширено</div>
+  <h2 style="font-size:26px;margin:8px 0 0">Автор, пошук, стрічка категорії, закладки, правила</h2>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label">Форум · Профіль автора треду</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div class="scr-hd" style="padding-top:14px">
+          <div class="hd-left"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div></div>
+          <h1 class="scr-title" style="font-size:18px">Автор</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <image-slot id="fauthor-avatar" style="width:80px;height:80px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="font:700 15px var(--font-heading)">Оксана</div>
+            <div style="font-size:12px;color:var(--color-neutral-600)">42 теми · 210 відповідей</div>
+            <span class="chip chip-good">Досвідчений власник кота</span>
+          </div>
+          <div class="card-sm row-between"><span style="font-size:13px">Як привчити кота до переноски?</span><span class="chip">14 відп.</span></div>
+          <div 

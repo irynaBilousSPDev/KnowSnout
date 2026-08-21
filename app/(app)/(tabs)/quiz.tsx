@@ -3,8 +3,8 @@ import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import {
@@ -24,66 +24,73 @@ import { brand, fonts } from '@/src/theme/brand';
 
 type QuizCategoryCard = {
   id: string;
-  icon: keyof typeof Ionicons.glyphMap;
   titleKey: string;
   bodyKey: string;
   href: string;
+  chip?: 'daily' | 'new' | 'count';
+  chipLabelKey?: string;
   tracked?: boolean;
 };
 
+/** HTML phone “30 · Квіз-хаб”. */
 const CATEGORIES: QuizCategoryCard[] = [
   {
-    id: 'breed',
-    icon: 'camera-outline',
-    titleKey: 'quizHub.breedTitle',
-    bodyKey: 'quizHub.breedBody',
-    href: '/(app)/breed-quiz',
-    tracked: true,
-  },
-  {
     id: 'breed_origin',
-    icon: 'globe-outline',
     titleKey: 'quizHub.originTitle',
     bodyKey: 'quizHub.originBody',
     href: '/(app)/wiki-quiz?category=breed_origin',
+    chip: 'daily',
+    chipLabelKey: 'quizHub.chipDaily',
     tracked: true,
   },
   {
     id: 'animal_group',
-    icon: 'leaf-outline',
     titleKey: 'quizHub.groupTitle',
     bodyKey: 'quizHub.groupBody',
     href: '/(app)/wiki-quiz?category=animal_group',
+    chip: 'count',
+    chipLabelKey: 'quizHub.chipQuestions',
     tracked: true,
   },
   {
-    id: 'animals_trivia',
-    icon: 'bulb-outline',
-    titleKey: 'quizHub.triviaTitle',
-    bodyKey: 'quizHub.triviaBody',
-    href: '/(app)/trivia-quiz',
+    id: 'breed',
+    titleKey: 'quizHub.breedTitle',
+    bodyKey: 'quizHub.breedBody',
+    href: '/(app)/breed-quiz',
+    chip: 'count',
+    chipLabelKey: 'quizHub.chipBreedQs',
     tracked: true,
   },
   {
     id: 'zoom',
-    icon: 'scan-outline',
     titleKey: 'quizHub.zoomTitle',
     bodyKey: 'quizHub.zoomBody',
     href: '/(app)/quiz-zoom',
+    chip: 'new',
+    chipLabelKey: 'quizHub.chipNew',
   },
   {
     id: 'heavier',
-    icon: 'school-outline',
     titleKey: 'quizHub.heavierTitle',
     bodyKey: 'quizHub.heavierBody',
     href: '/(app)/quiz-heavier',
+    chip: 'new',
+    chipLabelKey: 'quizHub.chipNew',
   },
   {
     id: 'myth',
-    icon: 'swap-horizontal-outline',
     titleKey: 'quizHub.mythTitle',
     bodyKey: 'quizHub.mythBody',
     href: '/(app)/quiz-myth',
+    chip: 'new',
+    chipLabelKey: 'quizHub.chipNew',
+  },
+  {
+    id: 'animals_trivia',
+    titleKey: 'quizHub.triviaTitle',
+    bodyKey: 'quizHub.triviaBody',
+    href: '/(app)/trivia-quiz',
+    tracked: true,
   },
 ];
 
@@ -105,31 +112,50 @@ export default function QuizHubScreen() {
     }, []),
   );
 
+  const toRecord = Math.max(0, streak.bestStreak - streak.currentStreak);
+
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.scroll}>
-        <HubHero
-          title={t('quizHub.title')}
-          lead={t('quizHub.subtitle')}
-        />
+          <Text style={styles.title}>{t('quizHub.title')}</Text>
 
-        <View style={styles.dailyCard}>
-          <Text style={styles.dailyEyebrow}>{t('quizStreak.dailyTitle')}</Text>
-          <Text style={styles.dailyTitle}>{t(daily.titleKey)}</Text>
-          <Text style={styles.dailyBody}>{t(daily.bodyKey)}</Text>
-          <View style={styles.streakRow}>
-            <Text style={styles.streakValue}>
-              {t('quizStreak.current', { count: streak.currentStreak })}
-            </Text>
-            <Text style={styles.streakBest}>
-              {t('quizStreak.best', { count: streak.bestStreak })}
-            </Text>
+          <View style={styles.streakCard}>
+            <View style={styles.streakRing}>
+              <Ionicons name="flame" size={24} color={brand.successDark} />
+            </View>
+            <View style={styles.streakCopy}>
+              <Text style={styles.streakValue}>
+                {t('quizStreak.daysInARow', { count: streak.currentStreak })}
+              </Text>
+              <Text style={styles.streakMeta}>
+                {t('quizStreak.toRecord', {
+                  record: streak.bestStreak || 21,
+                  left: toRecord || Math.max(1, 21 - streak.currentStreak),
+                })}
+                {' · '}
+                {t('quizStreak.xpLine', {
+                  level: Math.max(1, Math.floor(stats.games / 3) + 1),
+                  xp: Math.min(500, stats.games * 40),
+                  next: 500,
+                })}
+              </Text>
+            </View>
           </View>
-          {doneToday ? (
-            <Text style={styles.doneToday}>{t('quizStreak.doneToday')}</Text>
-          ) : null}
-          <View style={styles.ratingBtn}>
+
+          <View style={styles.wikiNote}>
+            <Ionicons name="globe-outline" size={13} color={brand.mutedSoft} />
+            <Text style={styles.wikiNoteText}>{t('quizHub.wikidataNote')}</Text>
+          </View>
+
+          <View style={styles.dailyCard}>
+            <Text style={styles.dailyEyebrow}>{t('quizStreak.dailyTitle')}</Text>
+            <Text style={styles.dailyTitle}>{t(daily.titleKey)}</Text>
+            <Text style={styles.dailyBody}>{t(daily.bodyKey)}</Text>
+            {doneToday ? (
+              <Text style={styles.doneToday}>{t('quizStreak.doneToday')}</Text>
+            ) : null}
             <PrimaryButton
               label={
                 doneToday
@@ -137,221 +163,208 @@ export default function QuizHubScreen() {
                   : t('quizStreak.playDaily')
               }
               onPress={() => router.push(daily.href as never)}
+              style={styles.dailyBtn}
             />
           </View>
-        </View>
 
-        <View style={styles.ratingCard}>
-          <Text style={styles.ratingLabel}>{t('quiz.avgLabel')}</Text>
-          <Text style={styles.ratingValue}>
-            {stats.games > 0
-              ? t('quiz.avgValue', { value: stats.averagePercent })
-              : '—'}
-          </Text>
-          <Text style={styles.ratingMeta}>
-            {stats.games > 0
-              ? t('quiz.statsLine', {
-                  games: stats.games,
-                  best: stats.bestPercent,
-                })
-              : t('quiz.statsEmpty')}
-          </Text>
-          <View style={styles.ratingBtn}>
-            <PrimaryButton
-              label={t('quiz.viewResults')}
-              variant="secondary"
-              onPress={() => router.push('/(app)/quiz-results')}
-            />
-          </View>
-        </View>
-
-        <Text style={styles.lead}>{t('quizHub.lead')}</Text>
-
-        {CATEGORIES.map((cat) => {
-          const c =
-            cat.tracked && cat.id in stats.byCategory
-              ? stats.byCategory[cat.id as keyof typeof stats.byCategory]
-              : null;
-          return (
-            <Pressable
-              key={cat.id}
-              onPress={() => router.push(cat.href as never)}
-              style={({ pressed }) => pressed && styles.cardPressed}
-            >
-              <View style={styles.card}>
-                <View style={styles.cardIcon}>
-                  <Ionicons name={cat.icon} size={22} color={brand.accent} />
-                </View>
-                <View style={styles.cardCopy}>
-                  <Text style={styles.cardTitle}>{t(cat.titleKey)}</Text>
-                  <Text style={styles.cardBody}>{t(cat.bodyKey)}</Text>
-                  {c && c.games > 0 ? (
-                    <Text style={styles.cardStats}>
-                      {t('quiz.categoryStatsShort', {
-                        avg: c.averagePercent,
-                        games: c.games,
-                      })}
+          {CATEGORIES.map((cat) => {
+            const chipGood = cat.chip === 'daily' || cat.chip === 'new';
+            return (
+              <Pressable
+                key={cat.id}
+                onPress={() => router.push(cat.href as never)}
+                style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+              >
+                <Text style={styles.rowTitle}>{t(cat.titleKey)}</Text>
+                {cat.chipLabelKey ? (
+                  <View
+                    style={[styles.chip, chipGood ? styles.chipGood : styles.chipNeutral]}
+                  >
+                    <Text
+                      style={[
+                        styles.chipText,
+                        chipGood && styles.chipTextGood,
+                      ]}
+                    >
+                      {t(cat.chipLabelKey)}
                     </Text>
-                  ) : null}
-                </View>
-                <Ionicons
-                  name="chevron-forward"
-                  size={18}
-                  color={brand.mutedSoft}
-                />
-              </View>
-            </Pressable>
-          );
-        })}
+                  </View>
+                ) : (
+                  <Ionicons
+                    name="chevron-forward"
+                    size={16}
+                    color={brand.mutedSoft}
+                  />
+                )}
+              </Pressable>
+            );
+          })}
 
-        <Text style={styles.hint}>{t('quizHub.wikidataNote')}</Text>
+          <Pressable
+            onPress={() => router.push('/(app)/quiz-leaderboard' as never)}
+            style={styles.friendsCard}
+          >
+            <Text style={styles.friendsLabel}>{t('quizHub.friendsTop')}</Text>
+            <Text style={styles.friendsMeta}>{t('quizHub.friendsTopHint')}</Text>
+          </Pressable>
+
+          <PrimaryButton
+            label={t('quiz.viewResults')}
+            variant="secondary"
+            onPress={() => router.push('/(app)/quiz-results')}
+          />
         </View>
       </ScrollView>
     </AppScreen>
   );
 }
 
-const softCard = {
-  backgroundColor: brand.surfaceElevated,
-  shadowColor: brand.shadow.color,
-  shadowOpacity: brand.shadow.opacity,
-  shadowRadius: brand.shadow.radius,
-  shadowOffset: brand.shadow.offset,
-  elevation: 1,
-} as const;
-
 const styles = StyleSheet.create({
   scroll: {
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 14,
     paddingBottom: 40,
+    gap: 12,
   },
-  dailyCard: {
-    marginBottom: 16,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.mist,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  dailyEyebrow: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    color: brand.accentDark,
-  },
-  dailyTitle: {
-    marginTop: 6,
+  title: {
     fontFamily: fonts.title,
     fontSize: 22,
     lineHeight: 28,
     color: brand.ink,
   },
-  dailyBody: {
-    marginTop: 6,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: brand.muted,
-  },
-  streakRow: {
-    marginTop: 12,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  streakValue: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 15,
-    color: brand.ink,
-  },
-  streakBest: {
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.muted,
-  },
-  doneToday: {
-    marginTop: 8,
-    fontFamily: fonts.bodyMedium,
-    fontSize: 13,
-    color: brand.accentDark,
-  },
-  ratingCard: {
-    marginBottom: 16,
-    borderRadius: brand.radius.md,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    ...softCard,
-  },
-  ratingLabel: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.muted,
-  },
-  ratingValue: {
-    marginTop: 4,
-    fontFamily: fonts.title,
-    fontSize: 36,
-    lineHeight: 42,
-    color: brand.ink,
-  },
-  ratingMeta: {
-    marginTop: 6,
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.muted,
-  },
-  ratingBtn: { marginTop: 14 },
-  lead: {
-    marginBottom: 16,
-    fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
-    color: brand.muted,
-  },
-  card: {
-    marginBottom: 10,
+  streakCard: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 14,
     borderRadius: brand.radius.md,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    ...softCard,
+    backgroundColor: brand.successTint,
+    padding: 16,
   },
-  cardPressed: { opacity: 0.9 },
-  cardIcon: {
-    marginRight: 12,
-    height: 44,
-    width: 44,
+  streakRing: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 5,
+    borderColor: brand.successSoft,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 14,
-    backgroundColor: brand.accentTint,
+    backgroundColor: brand.surfaceElevated,
   },
-  cardCopy: { flex: 1, paddingRight: 8 },
-  cardTitle: {
+  streakCopy: { flex: 1 },
+  streakValue: {
+    fontFamily: fonts.title,
+    fontSize: 20,
+    color: brand.successDark,
+  },
+  streakMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.successDark,
+  },
+  wikiNote: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  wikiNoteText: {
+    flex: 1,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.mutedSoft,
+  },
+  dailyCard: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    padding: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  dailyEyebrow: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12,
+    color: brand.accentDark,
+  },
+  dailyTitle: {
+    marginTop: 6,
     fontFamily: fonts.bodyBold,
     fontSize: 16,
     color: brand.ink,
   },
-  cardBody: {
+  dailyBody: {
     marginTop: 4,
     fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 12.5,
     color: brand.muted,
   },
-  cardStats: {
-    marginTop: 6,
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12,
-    color: brand.accentDark,
-  },
-  hint: {
+  doneToday: {
     marginTop: 8,
-    fontFamily: fonts.body,
+    fontFamily: fonts.bodySemi,
     fontSize: 12,
-    lineHeight: 18,
-    color: brand.mutedSoft,
+    color: brand.successDark,
+  },
+  dailyBtn: { marginTop: 12 },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  pressed: { opacity: 0.88 },
+  rowTitle: {
+    flex: 1,
+    fontFamily: fonts.bodyBold,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  chip: {
+    borderRadius: brand.radius.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: brand.creamDeep,
+  },
+  chipGood: { backgroundColor: brand.successTint },
+  chipNeutral: { backgroundColor: brand.creamDeep },
+  chipText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.ink,
+  },
+  chipTextGood: {
+    fontFamily: fonts.bodyBold,
+    color: brand.successDark,
+  },
+  friendsCard: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    padding: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  friendsLabel: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.muted,
+    marginBottom: 6,
+  },
+  friendsMeta: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.ink,
   },
 });

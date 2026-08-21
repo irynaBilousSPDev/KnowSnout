@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
@@ -44,7 +45,8 @@ export default function QuizZoomScreen() {
 
   if (done) {
     return (
-      <AppScreen>
+      <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
         <ScrollView>
           <View style={styles.pad}>
             <ScreenHeader title={t('quizZoom.title')} subtitle={t('quizZoom.done')} />

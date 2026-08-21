@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
@@ -18,7 +18,7 @@ import { t } from '@/src/i18n';
 import { listDmThreads, type DmThread } from '@/src/services/dm';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML kit · Чат — Manrope 22, white r14 soft cards. */
+/** HTML · Чат — список розмов. */
 export default function MessagesScreen() {
   const [threads, setThreads] = useState<DmThread[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,20 +40,22 @@ export default function MessagesScreen() {
 
   if (loading) {
     return (
-      <AppScreen>
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
         <LoadingState message={t('dm.loading')} />
       </AppScreen>
     );
   }
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <FlatList
         data={threads}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         ListHeaderComponent={
-          <HubHero title={t('dm.title')} lead={t('dm.emptyHint')} />
+          <Text style={styles.title}>{t('dm.title')}</Text>
         }
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -95,7 +97,7 @@ export default function MessagesScreen() {
             </View>
             <Ionicons
               name="chevron-forward"
-              size={18}
+              size={16}
               color={brand.mutedSoft}
             />
           </Pressable>
@@ -108,9 +110,16 @@ export default function MessagesScreen() {
 const styles = StyleSheet.create({
   list: {
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 14,
     paddingBottom: 40,
     flexGrow: 1,
+  },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+    marginBottom: 12,
   },
   empty: {
     marginTop: 48,

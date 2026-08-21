@@ -14,11 +14,13 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   addStoryComment,
@@ -156,7 +158,9 @@ export default function StoryCommentsScreen() {
   }
 
   return (
-    <AppScreen edges={['top', 'bottom']}>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('stories.commentsTitle')} titleSize={20} />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

@@ -1,6 +1,5 @@
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
-import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { SharePhotoSheet } from '@/src/components/SharePhotoSheet';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PhotoAttachField } from '@/src/components/PhotoAttachField';
@@ -638,12 +637,9 @@ export default function StoriesScreen() {
 
   const feedHeader = (
     <View style={[styles.feedHeader, dark && styles.feedHeaderDark]}>
-      <HubHero
-        brandMark
-        title={t('tabs.stories')}
-        lead={t('stories.tagline')}
-        right={<ProfileEntry />}
-      />
+      <Text style={[styles.pageTitle, dark && styles.pageTitleDark]}>
+        {t('tabs.stories')}
+      </Text>
 
       <ScrollView
         horizontal
@@ -801,7 +797,8 @@ export default function StoriesScreen() {
   );
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <View style={[styles.flex, dark && styles.darkScreen]}>
       {loading ? (
         <View style={styles.flex}>
@@ -1299,8 +1296,16 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   pressed: { opacity: 0.9 },
   darkScreen: { backgroundColor: STORIES_DARK.bg },
-  feedHeader: { paddingHorizontal: 20, paddingBottom: 8 },
+  feedHeader: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 8 },
   feedHeaderDark: { backgroundColor: STORIES_DARK.bg },
+  pageTitle: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+    marginBottom: 12,
+  },
+  pageTitleDark: { color: STORIES_DARK.text },
   moduleNav: { flexDirection: 'row', gap: 8, paddingBottom: 12 },
   moduleChip: {
     flexDirection: 'row',

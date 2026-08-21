@@ -1,0 +1,60 @@
+hone-col">
+    <div class="phone-label">Профіль іншого користувача</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div class="scr-hd" style="padding-top:14px">
+          <div class="hd-left"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div></div>
+          <h1 class="scr-title" style="font-size:18px">Профіль</h1>
+          <div class="scr-back">⋯</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:16px">
+
+          <div style="display:flex;gap:14px;align-items:center">
+            <image-slot id="other-avatar" style="width:76px;height:76px;flex-shrink:0" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1;display:flex;justify-content:space-around;text-align:center">
+              <div><div style="font:700 17px var(--font-heading)">34</div><div style="font-size:11px;color:var(--color-neutral-600)">Пости</div></div>
+              <div><div style="font:700 17px var(--font-heading)">128</div><div style="font-size:11px;color:var(--color-neutral-600)">Друзі</div></div>
+              <div><div style="font:700 17px var(--font-heading)">2</div><div style="font-size:11px;color:var(--color-neutral-600)">Улюбленці</div></div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font:700 16px var(--font-heading)">Оксана Мельник</div>
+            <div style="font-size:12.5px;color:var(--color-neutral-600);margin-top:3px;line-height:1.5">Волонтерка притулку «На Палюху». Кокер-спанієль і два коти вдома.</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+              <span class="chip" style="font-size:11px;padding:4px 10px">📍 Варшава</span>
+              <span class="chip" style="font-size:11px;padding:4px 10px">🇺🇦 укр · 🇵🇱 пол</span>
+              <span class="chip chip-good" style="font-size:11px;padding:4px 10px">З нами 2 роки</span>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <div class="btn btn-primary" style="flex:1;height:40px">+ Додати в друзі</div>
+              <div class="btn btn-secondary" style="flex:1;height:40px">Написати</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="row-between" style="margin-bottom:8px"><div style="font:700 13px var(--font-heading)">Улюбленці</div><span style="font-size:11.5px;color:var(--color-accent-700);font-weight:700">Усі 2</span></div>
+            <div style="display:flex;gap:8px">
+              <div class="card-sm" style="flex:1;display:flex;align-items:center;gap:9px;padding:10px"><image-slot id="op-pet1" style="width:38px;height:38px;flex-shrink:0" shape="circle" placeholder="Пес"></image-slot><div><div style="font:700 12px var(--font-body)">Лапка</div><div style="font-size:10.5px;color:var(--color-neutral-600)">Кокер · 4 р.</div></div></div>
+              <div class="card-sm" style="flex:1;display:flex;align-items:center;gap:9px;padding:10px"><image-slot id="op-pet2" style="width:38px;height:38px;flex-shrink:0" shape="circle" placeholder="Кіт"></image-slot><div><div style="font:700 12px var(--font-body)">Мурчик</div><div style="font-size:10.5px;color:var(--color-neutral-600)">Кіт · 7 р.</div></div></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="row-between" style="margin-bottom:8px"><div style="font:700 13px var(--font-heading)">Спільні друзі</div><span style="font-size:11.5px;color:var(--color-accent-700);font-weight:700">12</span></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex">
+                <image-slot id="op-f1" style="width:34px;height:34px" shape="circle" placeholder="А"></image-slot>
+                <image-slot id="op-f2" style="width:34px;height:34px;margin-left:-10px" shape="circle" placeholder="Б"></image-slot>
+                <image-slot id="op-f3" style="width:34px;height:34px;margin-left:-10px" shape="circle" placeholder="В"></image-slot>
+                <image-slot id="op-f4" style="width:34px;height:34px;margin-left:-10px" shape="circle" placeholder="Г"></image-slot>
+              </div>
+              <div style="font-size:12px;color:var(--color-neutral-600)">Ігор, Марта та ще 10</div>
+            </div>
+          </div>
+
+          <div>
+            <div style="display:flex;gap:6px;margin-bottom:9px">
+              <span class="chip chip-good" style="font-size:11.5px;padding:5px 13px">Пости</span>
+       

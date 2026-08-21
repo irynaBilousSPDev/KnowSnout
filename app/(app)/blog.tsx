@@ -3,8 +3,8 @@ import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
@@ -15,6 +15,7 @@ import {
 } from '@/src/services/blog';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML · Блог hub with category chips. */
 export default function BlogScreen() {
   const categories = listBlogCategories();
   const [categoryId, setCategoryId] = useState<string | null>(null);
@@ -27,10 +28,12 @@ export default function BlogScreen() {
   );
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero title={t('blog.title')} lead={t('blog.subtitle')} />
+          <Text style={styles.title}>{t('blog.title')}</Text>
+
           <PrimaryButton
             label={t('blog.bookmarks')}
             variant="secondary"
@@ -46,7 +49,9 @@ export default function BlogScreen() {
               onPress={() => setCategoryId(null)}
               style={[styles.chip, !categoryId && styles.chipActive]}
             >
-              <Text style={[styles.chipText, !categoryId && styles.chipTextActive]}>
+              <Text
+                style={[styles.chipText, !categoryId && styles.chipTextActive]}
+              >
                 {t('blog.all')}
               </Text>
             </Pressable>
@@ -58,7 +63,9 @@ export default function BlogScreen() {
                   onPress={() => setCategoryId(c.id)}
                   style={[styles.chip, active && styles.chipActive]}
                 >
-                  <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                  <Text
+                    style={[styles.chipText, active && styles.chipTextActive]}
+                  >
                     {c.title}
                   </Text>
                 </Pressable>
@@ -73,7 +80,13 @@ export default function BlogScreen() {
               subtitle={a.excerpt}
               meta={t('blog.readMin', { n: a.readMinutes })}
               leading={
-                <Ionicons name="newspaper-outline" size={22} color={brand.navy} />
+                <View style={styles.leadIcon}>
+                  <Ionicons
+                    name="newspaper-outline"
+                    size={18}
+                    color={brand.accentDark}
+                  />
+                </View>
               }
               onPress={() =>
                 router.push({
@@ -90,26 +103,41 @@ export default function BlogScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  chips: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingVertical: 14,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 40,
+    gap: 12,
   },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+  },
+  chips: { flexDirection: 'row', gap: 8, paddingBottom: 4 },
   chip: {
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.creamDeep,
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-    backgroundColor: brand.surfaceElevated,
-      },
-  chipActive: {
-    backgroundColor: brand.navy,
-    borderColor: brand.navy,
+    paddingVertical: 6,
   },
+  chipActive: { backgroundColor: brand.successTint },
   chipText: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.navy,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.ink,
   },
-  chipTextActive: { color: '#fff' },
+  chipTextActive: {
+    fontFamily: fonts.bodyBold,
+    color: brand.successDark,
+  },
+  leadIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: brand.accentTint,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

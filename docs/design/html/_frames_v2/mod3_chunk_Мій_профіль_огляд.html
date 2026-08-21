@@ -1,0 +1,49 @@
+hone-col">
+    <div class="phone-label">Мій профіль — огляд</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div class="scr-hd" style="padding-top:14px">
+          
+          <h1 class="scr-title" style="font-size:18px">Мій профіль</h1>
+          <div style="display:flex;align-items:center;gap:8px"><div class="scr-back" title="Додати фото"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div><div class="scr-back">⚙</div></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:16px">
+
+          <div style="display:flex;gap:14px;align-items:center">
+            <image-slot id="me-avatar" style="width:76px;height:76px;flex-shrink:0" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1;display:flex;justify-content:space-around;text-align:center">
+              <div><div style="font:700 17px var(--font-heading)">18</div><div style="font-size:11px;color:var(--color-neutral-600)">Пости</div></div>
+              <div><div style="font:700 17px var(--font-heading)">64</div><div style="font-size:11px;color:var(--color-neutral-600)">Друзі</div></div>
+              <div><div style="font:700 17px var(--font-heading)">3</div><div style="font-size:11px;color:var(--color-neutral-600)">Улюбленці</div></div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font:700 16px var(--font-heading)">Марта Ковальчук</div>
+            <div style="font-size:12.5px;color:var(--color-neutral-600);margin-top:3px">@marta.k · Варшава</div>
+            <div class="btn btn-secondary btn-block" style="height:40px;margin-top:10px">Редагувати профіль</div>
+          </div>
+
+          <div>
+            <div style="font:700 13px var(--font-heading);margin-bottom:8px">Персональні дані</div>
+            <div class="card-sm" style="display:flex;flex-direction:column;gap:0;padding:0">
+              <div class="row-between" style="padding:12px 14px"><span style="font-size:12.5px;color:var(--color-neutral-600)">Пошта</span><span style="font:600 12.5px var(--font-body)">marta.k@mail.com</span></div>
+              <div class="row-between" style="padding:12px 14px;border-top:1px solid var(--color-neutral-200)"><span style="font-size:12.5px;color:var(--color-neutral-600)">Телефон</span><span style="font:600 12.5px var(--font-body)">+48 •••• 421</span></div>
+              <div class="row-between" style="padding:12px 14px;border-top:1px solid var(--color-neutral-200)"><span style="font-size:12.5px;color:var(--color-neutral-600)">Мова</span><span style="font:600 12.5px var(--font-body)">Українська</span></div>
+              <div class="row-between" style="padding:12px 14px;border-top:1px solid var(--color-neutral-200)"><span style="font-size:12.5px;color:var(--color-neutral-600)">Підписка</span><span class="chip chip-good" style="font-size:11px;padding:3px 10px">Plus</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="row-between" style="margin-bottom:8px"><div style="font:700 13px var(--font-heading)">Мої улюбленці</div><span style="font-size:11.5px;color:var(--color-accent-700);font-weight:700">+ Додати</span></div>
+            <div style="display:flex;gap:8px;overflow:auto">
+              <div class="card-sm" style="display:flex;align-items:center;gap:9px;padding:10px;flex-shrink:0"><image-slot id="me-pet1" style="width:38px;height:38px;flex-shrink:0" shape="circle" placeholder="Пес"></image-slot><div><div style="font:700 12px var(--font-body)">Тукан</div><div style="font-size:10.5px;color:var(--color-neutral-600)">Корґі · 3 р.</div></div></div>
+              <div class="card-sm" style="display:flex;align-items:center;gap:9px;padding:10px;flex-shrink:0"><image-slot id="me-pet2" style="width:38px;height:38px;flex-shrink:0" shape="circle" placeholder="Кіт"></image-slot><div><div style="font:700 12px var(--font-body)">Пух</div><div style="font-size:10.5px;color:var(--color-neutral-600)">Кіт · 2 р.</div></div></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="row-between" style="margin-bottom:8px"><div style="font:700 13px var(--font-heading)">Друзі</div><span style="font-size:11.5px;color:var(--color-accent-700);font-weight:700">Усі 64</span></div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="card-sm" style="display:flex;align-items:center;g

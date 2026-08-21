@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { ListRow } from '@/src/components/ListRow';
@@ -369,6 +370,7 @@ export default function PetProfileScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
@@ -392,6 +394,7 @@ export default function PetProfileScreen() {
                 params: { id: pet.id },
               })
             }
+            style={styles.editPill}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel={t('pets.edit')}
@@ -911,12 +914,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 10,
+    paddingTop: 14,
   },
   backBtn: {
     height: 34,
     width: 34,
     borderRadius: 17,
-    backgroundColor: brand.chipTrack,
+    backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -928,12 +932,19 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     color: brand.ink,
   },
+  editPill: {
+    minWidth: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
   editLink: {
     fontFamily: fonts.bodySemi,
     fontSize: 12,
-    color: brand.accent,
-    minWidth: 34,
-    textAlign: 'right',
+    color: brand.accentDark,
   },
   hero: {
     alignItems: 'center',

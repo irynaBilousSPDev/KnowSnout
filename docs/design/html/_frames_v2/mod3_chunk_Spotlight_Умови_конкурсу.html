@@ -1,0 +1,58 @@
+hone-col">
+    <div class="phone-label">Spotlight · Умови конкурсу</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="position:relative;height:180px;flex-shrink:0">
+          <image-slot id="rules-hero" style="width:100%;height:100%" shape="rect" placeholder="Обкладинка конкурсу"></image-slot>
+          <div class="scr-back" style="position:absolute;top:64px;left:20px;background:rgba(255,255,255,.85)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:16px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <h1 style="font-size:20px;margin:0">Найкумедніша поза тижня</h1>
+          <div style="display:flex;gap:8px"><span class="chip chip-warn">Закінчується за 2 дні</span><span class="chip">214 учасників</span></div>
+          <div class="card-sm">
+            <div style="font:700 13px var(--font-body);margin-bottom:6px">Правила</div>
+            <div style="font-size:12.5px;color:var(--color-neutral-700);line-height:1.6">1 фото на тварину. Без чужих знімків. Переможець — за кількістю голосів на кінець тижня. Приз — річний Plus.</div>
+          </div>
+          <div class="card-sm row-between"><span style="font-size:13px;color:var(--color-neutral-600)">Приз</span><span style="font:700 13px var(--font-body)">KnowSnout Plus на рік</span></div>
+          <div class="btn btn-primary btn-block" style="height:48px;margin-top:auto">Подати заявку</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Spotlight · Форма подачі заявки</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div class="scr-hd" style="padding-top:14px">
+          <div class="hd-left"><div style="font:600 13px var(--font-body);color:var(--color-neutral-600)">Скасувати</div></div>
+          <h1 class="scr-title" style="font-size:18px">Заявка</h1>
+          <div style="font:700 13px var(--font-body);color:var(--color-accent-700)">Надіслати</div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <image-slot id="entry-upload" style="width:100%;height:200px" shape="rounded" radius="18" placeholder="Додати фото улюбленця"></image-slot>
+          <div><div class="field-lbl">Оберіть улюбленця</div><div class="input" style="width:100%;box-sizing:border-box">Тукан</div></div>
+          <div><div class="field-lbl">Підпис до фото</div><div class="input" style="width:100%;box-sizing:border-box;height:70px;align-items:flex-start;padding-top:12px">Найкраща поза після відкриття морозива</div></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Spotlight · Повний рейтинг</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div style="padding:14px 20px 8px"><h1 class="scr-title" style="font-size:20px">Рейтинг</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px;background:var(--color-accent-100)">
+            <span style="font:700 15px var(--font-heading);color:var(--color-accent-700);width:22px">1</span>
+            <image-slot id="rank-1" style="width:40px;height:40px" shape="circle" placeholder="Учасник"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Аполлон</div></div>
+            <span style="font:700 13px var(--font-body);color:var(--color-accent-700)">312 голосів</span>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <span style="font:700 15px var(--font-heading);color:var(--color-neutral-500);width:22px">2</span>
+            <image-slot id="rank-2" style="width:40px;height:40px" shape="circle" placeholder="Учасник"></image-slot>
+            <div style="flex:1"><div style="font:700 13px

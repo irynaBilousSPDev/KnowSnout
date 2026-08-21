@@ -96,14 +96,14 @@ const styles = StyleSheet.create({
   textCol: { flex: 1, minWidth: 0 },
   title: {
     fontFamily: fonts.bodyBold,
-    fontSize: 15,
+    fontSize: 13.5,
     color: brand.ink,
   },
   subtitle: {
-    marginTop: 3,
+    marginTop: 2,
     fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 12,
+    lineHeight: 17,
     color: brand.muted,
   },
   meta: {

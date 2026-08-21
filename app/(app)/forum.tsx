@@ -2,27 +2,24 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { listForumCategories } from '@/src/services/forum';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** HTML phone “35 · Форум: категорії”. */
 export default function ForumScreen() {
   const categories = listForumCategories();
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero title={t('forum.title')} lead={t('forum.subtitle')} />
-          <PrimaryButton
-            label={t('forum.newThread')}
-            onPress={() => router.push('/(app)/forum-new' as never)}
-          />
+          <Text style={styles.title}>{t('forum.title')}</Text>
 
-          <Text style={styles.section}>{t('forum.title')}</Text>
           {categories.map((c) => (
             <Pressable
               key={c.id}
@@ -32,29 +29,29 @@ export default function ForumScreen() {
                   params: { id: c.id },
                 } as never)
               }
-              style={({ pressed }) => [styles.cat, pressed && styles.pressed]}
+              style={({ pressed }) => [styles.row, pressed && styles.pressed]}
             >
-              <View style={styles.catIcon}>
+              <View style={styles.rowLeft}>
                 <Ionicons
                   name="chatbubbles-outline"
-                  size={20}
-                  color={brand.accent}
+                  size={17}
+                  color={brand.ink}
                 />
+                <Text style={styles.rowTitle}>{c.title}</Text>
               </View>
-              <View style={styles.catCopy}>
-                <Text style={styles.catTitle}>{c.title}</Text>
-                <Text style={styles.catBody}>{c.body}</Text>
-                <Text style={styles.catMeta}>
+              <View style={styles.chip}>
+                <Text style={styles.chipText}>
                   {t('forum.threadCount', { count: c.threadCount })}
                 </Text>
               </View>
-              <Ionicons
-                name="chevron-forward"
-                size={18}
-                color={brand.mistBorder}
-              />
             </Pressable>
           ))}
+
+          <PrimaryButton
+            label={`+ ${t('forum.newThread')}`}
+            onPress={() => router.push('/(app)/forum-new' as never)}
+            style={styles.addBtn}
+          />
 
           <Text style={styles.section}>{t('check.moreSection')}</Text>
           {(
@@ -84,69 +81,68 @@ export default function ForumScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  pressed: { opacity: 0.9 },
-  section: {
-    marginTop: 22,
-    marginBottom: 10,
-    fontFamily: fonts.bodyBold,
-    fontSize: 12,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    color: brand.mutedSoft,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 40,
+    gap: 10,
   },
-  cat: {
-    marginBottom: 10,
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+    marginBottom: 4,
+  },
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    padding: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
     shadowColor: brand.shadow.color,
     shadowOpacity: brand.shadow.opacity,
     shadowRadius: brand.shadow.radius,
     shadowOffset: brand.shadow.offset,
     elevation: 1,
   },
-  catIcon: {
-    marginRight: 12,
-    height: 40,
-    width: 40,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: brand.accentTint,
-  },
-  catCopy: { flex: 1, paddingRight: 8 },
-  catTitle: {
+  pressed: { opacity: 0.88 },
+  rowLeft: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6 },
+  rowTitle: {
     fontFamily: fonts.bodyBold,
-    fontSize: 16,
+    fontSize: 13.5,
     color: brand.ink,
   },
-  catBody: {
-    marginTop: 4,
-    fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 18,
-    color: brand.muted,
+  chip: {
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.creamDeep,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
-  catMeta: {
-    marginTop: 6,
+  chipText: {
     fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.ink,
+  },
+  addBtn: { marginTop: 6 },
+  section: {
+    marginTop: 8,
+    fontFamily: fonts.bodyBold,
     fontSize: 12,
-    color: brand.accentDark,
+    color: brand.muted,
   },
   linkRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: brand.mistBorder,
+    paddingVertical: 4,
   },
   linkText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 15,
+    fontFamily: fonts.bodySemi,
+    fontSize: 14,
     color: brand.accentDark,
   },
 });

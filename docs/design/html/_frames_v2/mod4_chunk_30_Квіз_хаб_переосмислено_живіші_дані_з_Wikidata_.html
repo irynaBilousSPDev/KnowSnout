@@ -1,0 +1,38 @@
+hone-col">
+    <div class="phone-label">30 · Квіз-хаб (переосмислено — живіші дані з Wikidata)</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div style="padding:14px 20px 4px"><h1 class="scr-title">Квізи</h1></div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <div class="card-sm" style="background:linear-gradient(135deg,var(--color-accent-2-100),var(--color-accent-2-200));display:flex;align-items:center;gap:14px;padding:16px">
+            <div style="position:relative;width:60px;height:60px;flex-shrink:0">
+              <svg width="60" height="60" viewBox="0 0 60 60" style="position:absolute;inset:0"><circle cx="30" cy="30" r="26" fill="none" stroke="var(--color-accent-2-300)" stroke-width="5"></circle><circle cx="30" cy="30" r="26" fill="none" stroke="var(--color-accent-2-700)" stroke-width="5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="35" transform="rotate(-90 30 30)"></circle></svg>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a3 3 0 006 0c1 2 0 4-1 5a6 6 0 11-8-9c1 2 1 3 2 3-1-2-1-4 1-6z"></path></svg></div>
+            </div>
+            <div style="flex:1">
+              <div style="font:700 20px var(--font-heading);color:var(--color-accent-2-800)">12 днів поспіль</div>
+              <div style="font-size:12px;color:var(--color-accent-2-700)">До рекорду (21) — 9 днів. Рівень 7 · 340/500 XP</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--color-neutral-500)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.5 2.5 4 6 4 9s-1.5 6.5-4 9c-2.5-2.5-4-6-4-9s1.5-6.5 4-9z"></path></svg>
+            Питання генеруються з Wikidata + відкритих джерел про породи
+          </div>
+          <div class="card-sm" style="padding:0;display:flex;flex-direction:column;height:auto">
+            <image-slot id="quiz-card-1" style="width:100%;height:110px;border-radius:var(--radius-md) var(--radius-md) 0 0" shape="rect" placeholder="Фото породи-загадки"></image-slot>
+            <div style="padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+              <div class="row-between"><span style="font:700 14px var(--font-body)">Звідки ця порода?</span><span class="chip chip-good">Виклик дня</span></div>
+              <div style="font-size:12px;color:var(--color-neutral-600)">10 питань · +50 XP за серію без помилок</div>
+            </div>
+          </div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Яка це група тварин?</span><span class="chip">12 питань</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Вгадай породу за фото</span><span class="chip">15 питань</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Зум-загадка</span><span class="chip chip-good">Новий формат</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Хто важчий?</span><span class="chip chip-good">Новий формат</span></div>
+          <div class="card-sm row-between"><span style="font:700 13.5px var(--font-body)">Правда чи міф</span><span class="chip chip-good">Новий формат</span></div>
+          <div class="card-sm">
+            <div style="font:700 12px var(--font-body);color:var(--color-neutral-600);margin-bottom:8px">Топ тижня серед друзів</div>
+            <div style="display:flex;align-items:center;gap:-6px">
+              <image-slot id="lb-1" style="width:30px;height:30px;margin-right:-8px;border:2px solid #fff" shape="circle" placeholder="1"></image-slot>
+              <ima

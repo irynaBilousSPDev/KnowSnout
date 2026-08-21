@@ -1,18 +1,23 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { HubHero } from '@/src/components/HubHero';
 import { ListRow } from '@/src/components/ListRow';
+import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { SegmentedControl } from '@/src/components/SegmentedControl';
 import { t } from '@/src/i18n';
 import { listFriends, removeFriend, type FriendUser } from '@/src/services/friends';
 import { brand, fonts } from '@/src/theme/brand';
 
+type Tab = 'following' | 'suggestions';
+
+/** HTML phone “28 · Друзі”. */
 export default function FriendsScreen() {
   const [friends, setFriends] = useState<FriendUser[]>([]);
+  const [tab, setTab] = useState<Tab>('following');
 
   const load = useCallback(async () => {
     setFriends(await listFriends());
@@ -25,86 +30,97 @@ export default function FriendsScreen() {
   );
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <HubHero title={t('friends.title')} lead={t('friends.subtitle')} />
-          <PrimaryButton
-            label={t('friends.search')}
-            onPress={() => router.push('/(app)/friend-search' as never)}
+          <Text style={styles.title}>{t('friends.title')}</Text>
+          <SegmentedControl
+            options={[
+              {
+                id: 'following',
+                label: t('friends.followingCount', { count: friends.length }),
+              },
+              { id: 'suggestions', label: t('friends.suggestions') },
+            ]}
+            value={tab}
+            onChange={setTab}
           />
 
           <View style={styles.quickRow}>
-            <Pressable
-              style={styles.quick}
+            <PrimaryButton
+              label={t('friends.search')}
+              size="sm"
+              onPress={() => router.push('/(app)/friend-search' as never)}
+              style={styles.quickBtn}
+            />
+            <PrimaryButton
+              label={t('friends.requests')}
+              size="sm"
+              variant="secondary"
               onPress={() => router.push('/(app)/friend-requests' as never)}
-            >
-              <Ionicons name="mail-outline" size={18} color={brand.accent} />
-              <Text style={styles.quickText}>{t('friends.requests')}</Text>
-            </Pressable>
-            <Pressable
-              style={styles.quick}
-              onPress={() => router.push('/(app)/friend-invite' as never)}
-            >
-              <Ionicons name="qr-code-outline" size={18} color={brand.accent} />
-              <Text style={styles.quickText}>{t('friends.invite')}</Text>
-            </Pressable>
-            <Pressable
-              style={styles.quick}
-              onPress={() => router.push('/(app)/walk-plan' as never)}
-            >
-              <Ionicons name="walk-outline" size={18} color={brand.accent} />
-              <Text style={styles.quickText}>{t('friends.planWalk')}</Text>
-            </Pressable>
+              style={styles.quickBtn}
+            />
           </View>
 
-          <Pressable
-            style={styles.linkRow}
-            onPress={() =>
-              router.push('/(app)/friend-invite-accept' as never)
-            }
-          >
-            <Text style={styles.linkText}>{t('friends.inviteAccept')}</Text>
-            <Ionicons name="chevron-forward" size={16} color={brand.mutedSoft} />
-          </Pressable>
-
-          <Text style={styles.section}>{t('friends.list')}</Text>
-          {friends.length === 0 ? (
-            <Text style={styles.empty}>{t('friends.empty')}</Text>
-          ) : (
-            friends.map((f) => (
-              <ListRow
-                key={f.id}
-                title={f.name}
-                subtitle={f.bio}
-                meta={f.handle}
-                leading={
-                  <Ionicons name="person-outline" size={22} color={brand.navy} />
-                }
-                onPress={() =>
-                  router.push({
-                    pathname: '/(app)/user-profile',
-                    params: { userId: f.id },
-                  } as never)
-                }
-                trailing={
-                  <Pressable
-                    onPress={() =>
-                      void removeFriend(f.id).then(() => load())
-                    }
-                    hitSlop={8}
-                  >
-                    <Ionicons
-                      name="close-outline"
-                      size={20}
-                      color={brand.score.poor}
+          {tab === 'following' ? (
+            friends.length === 0 ? (
+              <Text style={styles.empty}>{t('friends.empty')}</Text>
+            ) : (
+              friends.map((f) => (
+                <ListRow
+                  key={f.id}
+                  title={f.name}
+                  subtitle={f.bio || f.handle}
+                  leading={
+                    <PetAvatar
+                      avatarKey={f.avatarKey}
+                      species="dog"
+                      size={44}
+                      name={f.name}
                     />
-                  </Pressable>
-                }
-                showChevron={false}
+                  }
+                  trailing={
+                    <Pressable
+                      onPress={() => void removeFriend(f.id).then(load)}
+                      style={styles.unfollow}
+                    >
+                      <Text style={styles.unfollowText}>
+                        {t('friends.unfollow')}
+                      </Text>
+                    </Pressable>
+                  }
+                  showChevron={false}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/(app)/user-profile',
+                      params: { userId: f.id },
+                    } as never)
+                  }
+                />
+              ))
+            )
+          ) : (
+            <View style={styles.suggestBox}>
+              <Text style={styles.empty}>{t('friends.suggestionsHint')}</Text>
+              <PrimaryButton
+                label={t('friends.search')}
+                variant="secondary"
+                onPress={() => router.push('/(app)/friend-search' as never)}
               />
-            ))
+            </View>
           )}
+
+          <PrimaryButton
+            label={t('friends.invite')}
+            variant="ghost"
+            onPress={() => router.push('/(app)/friend-invite' as never)}
+          />
+          <PrimaryButton
+            label={t('friends.planWalk')}
+            variant="ghost"
+            onPress={() => router.push('/(app)/walk-plan' as never)}
+          />
         </View>
       </ScrollView>
     </AppScreen>
@@ -112,58 +128,40 @@ export default function FriendsScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  quickRow: {
-    marginTop: 14,
-    flexDirection: 'row',
-    gap: 8,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 40,
+    gap: 12,
   },
-  quick: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 6,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    paddingVertical: 12,
-    paddingHorizontal: 6,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
   },
-  quickText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 11,
-    textAlign: 'center',
-    color: brand.accentDark,
-  },
-  linkRow: {
-    marginTop: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: brand.mistBorder,
-  },
-  linkText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: brand.accentDark,
-  },
-  section: {
-    marginTop: 22,
-    marginBottom: 10,
-    fontFamily: fonts.bodyBold,
-    fontSize: 12,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    color: brand.mutedSoft,
-  },
+  quickRow: { flexDirection: 'row', gap: 8 },
+  quickBtn: { flex: 1 },
   empty: {
     fontFamily: fonts.body,
     fontSize: 14,
     color: brand.muted,
+    marginVertical: 8,
+  },
+  suggestBox: { gap: 12, marginTop: 4 },
+  unfollow: {
+    height: 34,
+    paddingHorizontal: 14,
+    borderRadius: brand.radius.md,
+    borderWidth: 1,
+    borderColor: brand.divider,
+    backgroundColor: brand.surfaceElevated,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  unfollowText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 12,
+    color: brand.ink,
   },
 });

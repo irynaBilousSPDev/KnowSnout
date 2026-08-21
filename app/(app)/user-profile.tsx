@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ListRow } from '@/src/components/ListRow';
 import { LoadingState } from '@/src/components/LoadingState';
@@ -120,7 +121,8 @@ export default function UserProfileScreen() {
 
   if (loading) {
     return (
-      <AppScreen>
+      <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
         <LoadingState />
       </AppScreen>
     );

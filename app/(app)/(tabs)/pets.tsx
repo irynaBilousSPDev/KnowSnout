@@ -10,11 +10,11 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
-import { ProfileEntry } from '@/src/components/ProfileEntry';
 import { Section } from '@/src/components/Section';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
@@ -33,7 +33,7 @@ function petMeta(pet: PetRow) {
   return parts.join(' · ');
 }
 
-/** HTML kit · Список тварин — Manrope 22, + circle, white r14 cards, add pill. */
+/** HTML phone “12 · Список тварин”. */
 export default function PetsScreen() {
   const [pets, setPets] = useState<PetRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,22 +88,18 @@ export default function PetsScreen() {
   }
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <View style={styles.header}>
-        <View style={styles.headerRow}>
-          <Text style={styles.title}>{t('pets.title')}</Text>
-          <View style={styles.headerActions}>
-            <ProfileEntry />
-            <Pressable
-              onPress={() => router.push('/(app)/pet-form')}
-              style={styles.addCircle}
-              accessibilityRole="button"
-              accessibilityLabel={t('pets.add')}
-            >
-              <Ionicons name="add" size={22} color={brand.ink} />
-            </Pressable>
-          </View>
-        </View>
+        <Text style={styles.title}>{t('pets.title')}</Text>
+        <Pressable
+          onPress={() => router.push('/(app)/pet-form')}
+          style={styles.addCircle}
+          accessibilityRole="button"
+          accessibilityLabel={t('pets.add')}
+        >
+          <Text style={styles.addPlus}>+</Text>
+        </Pressable>
       </View>
 
       {error ? (
@@ -128,11 +124,11 @@ export default function PetsScreen() {
           ListFooterComponent={
             <Pressable
               onPress={() => router.push('/(app)/pet-form')}
-              style={styles.addPill}
+              style={styles.addBtn}
               accessibilityRole="button"
               accessibilityLabel={t('pets.add')}
             >
-              <Text style={styles.addPillText}>+ {t('pets.add')}</Text>
+              <Text style={styles.addBtnText}>+ {t('pets.add')}</Text>
             </Pressable>
           }
           renderItem={({ item }) => (
@@ -160,7 +156,7 @@ export default function PetsScreen() {
               </View>
               <Ionicons
                 name="chevron-forward"
-                size={18}
+                size={16}
                 color={brand.mutedSoft}
               />
             </Pressable>
@@ -173,19 +169,12 @@ export default function PetsScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 8,
-  },
-  headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 8,
   },
   title: {
     fontFamily: fonts.title,
@@ -197,14 +186,21 @@ const styles = StyleSheet.create({
     height: 34,
     width: 34,
     borderRadius: 17,
-    backgroundColor: brand.chipTrack,
+    backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  addPlus: {
+    fontFamily: fonts.body,
+    fontSize: 20,
+    lineHeight: 22,
+    color: brand.ink,
   },
   list: {
     paddingHorizontal: 20,
     paddingBottom: 40,
     flexGrow: 1,
+    gap: 12,
   },
   emptyBody: {
     fontFamily: fonts.body,
@@ -213,7 +209,6 @@ const styles = StyleSheet.create({
     color: brand.muted,
   },
   petCard: {
-    marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
@@ -239,20 +234,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: brand.muted,
   },
-  addPill: {
+  addBtn: {
     marginTop: 6,
     marginBottom: 16,
     minHeight: 46,
-    borderRadius: brand.radius.pill,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
+    borderWidth: 1,
+    borderColor: brand.divider,
     backgroundColor: brand.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  addPillText: {
+  addBtnText: {
     fontFamily: fonts.bodyBold,
-    fontSize: 15,
+    fontSize: 14,
     color: brand.ink,
   },
 });

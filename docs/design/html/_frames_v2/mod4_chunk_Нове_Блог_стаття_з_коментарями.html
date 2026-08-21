@@ -1,0 +1,57 @@
+hone-col">
+    <div class="phone-label">Нове · Блог: стаття з коментарями</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="flex:1;overflow:auto;padding:0 0 0">
+          <image-slot id="bl-comment-hero" style="width:100%;height:150px" shape="rect" placeholder="Обкладинка"></image-slot>
+          <div style="padding:14px 20px 10px">
+            <h1 style="font-size:18px;margin:0 0 6px">5 міфів про сухий корм</h1>
+            <div style="font-size:12px;color:var(--color-neutral-600);margin-bottom:10px">7 хв читання · 34 коментарі</div>
+            <div style="font-size:12.5px;line-height:1.5;color:var(--color-neutral-800);margin-bottom:14px">…Тож перед покупкою дивіться на перші 3 інгредієнти складу, а не на ціну чи рекламу.</div>
+          </div>
+          <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;gap:10px">
+              <image-slot id="bl-c-1" style="width:28px;height:28px;flex-shrink:0" shape="circle" placeholder="Аватар"></image-slot>
+              <div><div style="font:700 12px var(--font-body)">Дмитро</div><div style="font-size:12px;color:var(--color-neutral-700);margin-top:2px">Дуже корисно, не знав про перші 3 інгредієнти!</div></div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <image-slot id="bl-c-2" style="width:28px;height:28px;flex-shrink:0" shape="circle" placeholder="Аватар"></image-slot>
+              <div><div style="font:700 12px var(--font-body)">Соломія</div><div style="font-size:12px;color:var(--color-neutral-700);margin-top:2px">А чи є список кормів, які проходять цей тест?</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:10px 20px 20px;display:flex;gap:8px;align-items:center">
+          <div class="input" style="flex:1;box-sizing:border-box">Ваш коментар…</div>
+          <div class="btn btn-primary btn-icon" style="width:44px;height:44px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4z"></path></svg></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { quizSelected: null, zoomStep: 0, weighPick: null, mythPick: null };
+  renderVals() {
+    const sel = this.state.quizSelected;
+    const correctIdx = 0;
+    const zoomStep = this.state.zoomStep;
+    const blurPx = [22, 12, 5, 0][zoomStep];
+    const weighPick = this.state.weighPick;
+    const weighCorrect = 'a';
+    const weighStyle = (key) => {
+      const base2 = { flex: 1, padding: '18px 10px', borderRadius: '18px', textAlign: 'center', fontWeight: 700, fontSize: '14px', cursor: 'pointer', borderWidth: '2px', borderStyle: 'solid', transition: 'all .15s' };
+      if (weighPick === null) return { ...base2, background: '#fff', borderColor: 'transparent', boxShadow: 'var(--shadow-md)', color: 'var(--color-text)' };
+      if (key === weighCorrect) return { ...base2, background: 'var(--color-accent-2-100)', borderColor: 'var(--color-accent-2-500)', color: 'var(--color-accent-2-800)' };
+      if (key === weighPick) return { ...base2, background: '#fbe9e6', borderColor: '#c0503a', color: '#9a3b28' };
+      return { ...base2, background: '#fff', borderColor: 'transparent', opacity: 0.55, color: 'var(--color-neutral-500)' };
+    };
+    const mythPick = this.state.mythPick;
+    const mythCorrect = 'myth';
+    const mythStyle = (key) => {
+      const base3 = { flex: 1, padding: '16px', borderRadius: '16px', textAlign: 'center', fontWeight: 700, fontSize: '14px', cursor: 'pointer', borderWidth: '2px', borderStyle: 'solid', transition: 'all .15s' };
+      if (mythPick === null) return { ...base3, background: key === 'truth' ? 'var(--color-accent-2-100)' : 'var(--color-accent-100)', borderColor: 'transparent', color: key === 'truth' ? 'var(--color-accent-2-700)' : 'var(--color-accent-700)' };
+      if (key === mythCorrect) return { ...base3, background: 'var(--color-accent-2-100)', borderColor: 'var(--color-accent-2-500)', color: 'var(--color-accent-2-800)' };
+      if (key === mythPick) return { ...base3, background: '#fbe9e6', borderColor: '#c0503a', color: '#9a3b28' };
+      return { ...base3, background: '#fff', border

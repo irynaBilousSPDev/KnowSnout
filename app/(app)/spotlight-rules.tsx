@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
@@ -10,7 +11,8 @@ export default function SpotlightRulesScreen() {
   const rules = getSpotlightRules();
 
   return (
-    <AppScreen>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <ScreenHeader

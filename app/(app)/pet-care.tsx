@@ -14,6 +14,7 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Calendar from 'expo-calendar';
 
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
@@ -278,23 +279,10 @@ export default function PetCareScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <Text style={styles.title}>{t('care.title')}</Text>
-          <Text style={styles.subtitle}>
-            {pet.name} · {t('care.subtitle')}
-          </Text>
-
-          <View style={styles.disclaimer}>
-            <Text style={styles.disclaimerText}>{t('care.disclaimer')}</Text>
-          </View>
-
-          <Text style={styles.progress}>
-            {t('care.progress', {
-              done: progress.done,
-              total: progress.total,
-            })}
-          </Text>
 
           <CheckRow
             done={log.water_done}
@@ -384,12 +372,13 @@ export default function PetCareScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  pad: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 40 },
   title: {
     fontFamily: fonts.title,
     fontSize: 22,
     lineHeight: 28,
     color: brand.ink,
+    marginBottom: 12,
   },
   subtitle: {
     marginTop: 4,

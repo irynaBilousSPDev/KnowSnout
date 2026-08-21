@@ -1,0 +1,43 @@
+hone-col">
+    <div class="phone-label">34 · Результати квізу — детальний розбір</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;padding:76px 28px 24px;text-align:center;gap:14px">
+          <div style="position:relative;width:112px;height:112px">
+            <svg width="112" height="112" viewBox="0 0 112 112" style="position:absolute;inset:0"><circle cx="56" cy="56" r="48" fill="none" stroke="var(--color-neutral-200)" stroke-width="8"></circle><circle cx="56" cy="56" r="48" fill="none" stroke="var(--color-accent-2-600)" stroke-width="8" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="30" transform="rotate(-90 56 56)"></circle></svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font:700 28px var(--font-heading);color:var(--color-accent-2-700)">9/10</span></div>
+          </div>
+          <h2 style="font-size:21px;margin:0">Чудовий результат!</h2>
+          <div style="display:flex;align-items:center;gap:6px;color:var(--color-accent-2-700);font:700 13px var(--font-body)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a3 3 0 006 0c1 2 0 4-1 5a6 6 0 11-8-9c1 2 1 3 2 3-1-2-1-4 1-6z"></path></svg>Серія тепер — 13 днів поспіль
+          </div>
+          <div class="card-sm" style="width:100%;display:flex;flex-direction:column;gap:8px;text-align:left">
+            <div class="row-between"><span style="font-size:12.5px;color:var(--color-neutral-600)">Швидкість</span><span style="font:700 12.5px var(--font-body)">+20 XP</span></div>
+            <div class="row-between"><span style="font-size:12.5px;color:var(--color-neutral-600)">Точність</span><span style="font:700 12.5px var(--font-body)">+40 XP</span></div>
+            <div class="row-between"><span style="font-size:12.5px;color:var(--color-neutral-600)">Бонус серії</span><span style="font:700 12.5px var(--font-body)">+50 XP</span></div>
+          </div>
+          <div class="btn btn-primary btn-block" style="height:46px;width:100%">Наступний квіз</div>
+          <div class="btn btn-secondary btn-block" style="height:44px;width:100%">Історія результатів</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Новий формат · Зум-загадка — розмите фото, натисни щоб наблизити</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div style="position:relative;height:250px;flex-shrink:0;background:#111">
+          <image-slot id="zoom-photo" style="width:100%;height:100%;filter:blur({{ zoomBlur }}px);transition:filter .35s" shape="rect" placeholder="Фото тварини"></image-slot>
+          <div style="position:absolute;top:64px;left:20px;right:20px" class="row-between">
+            <div class="scr-back" style="background:rgba(255,255,255,.85)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div>
+            <span class="chip chip-warn" style="box-shadow:var(--shadow-sm)">{{ zoomXpLabel }}</span>
+          </div>
+        </div>
+        <div style="flex:1;padding:16px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <h1 style="font-size:19px;margin:0">Що на фото?</h1>
+          <div class="btn btn-secondary btn-block" style="height:44px;box-shadow:var(--shadow-sm);gap:8px" onclick="{{ zoomReveal }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>Наблизити ще (−10 XP)</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+            <div class="card-sm" style="box-shadow:var(--shadow-sm)">Бенгальська кішка</div>
+            <div class="card-sm" style="border:2px solid var(--color-accent);box-shadow:var(--shadow-md)">Оцелот</div>
+            <div class="card-sm" style="

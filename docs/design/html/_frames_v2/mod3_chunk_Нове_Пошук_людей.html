@@ -1,0 +1,56 @@
+hone-col">
+    <div class="phone-label">Нове · Пошук людей</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div style="padding:14px 20px 10px">
+          <div class="input" style="width:100%;box-sizing:border-box;display:flex;align-items:center;gap:8px;color:var(--color-neutral-500)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>Ім&apos;я, @нік або email…</div>
+        </div>
+        <div style="padding:0 20px 10px;display:flex;gap:8px">
+          <span class="chip chip-good">Контакти</span><span class="chip">Поруч</span><span class="chip">Ті самі породи</span>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="srch-1" style="width:44px;height:44px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Ярослава К.</div><div style="font-size:12px;color:var(--color-neutral-600)">@yaroslava · 2 спільні друзі</div></div>
+            <div class="btn btn-primary" style="height:32px;padding:0 14px;font-size:12px">+ Додати</div>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="srch-2" style="width:44px;height:44px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Дмитро П.</div><div style="font-size:12px;color:var(--color-neutral-600)">@dpetrov · Корги, як у тебе</div></div>
+            <div class="btn btn-secondary" style="height:32px;padding:0 14px;font-size:12px;color:var(--color-neutral-500)">Запрошено</div>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="srch-3" style="width:44px;height:44px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Марта та Тукан</div><div style="font-size:12px;color:var(--color-neutral-600)">@marta_tukan</div></div>
+            <span class="chip chip-good">Друзі</span>
+          </div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label">Нове · Вхідні запити в друзі</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-avatar" title="Мої дані"></div></div>
+        <div style="padding:14px 20px 8px" class="row-between">
+          <div class="hd-left"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div></div>
+          <h1 class="scr-title" style="font-size:19px">Запити (3)</h1>
+          <div style="width:34px;flex-shrink:0"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px">
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="req-1" style="width:44px;height:44px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Ігор С.</div><div style="font-size:12px;color:var(--color-neutral-600)">Хоче додати тебе в друзі</div></div>
+          </div>
+          <div style="display:flex;gap:8px;margin:-4px 0 6px 56px">
+            <div class="btn btn-primary" style="height:32px;padding:0 16px;font-size:12px;flex:1">Прийняти</div>
+            <div class="btn btn-secondary" style="height:32px;padding:0 16px;font-size:12px;flex:1">Відхилити</div>
+          </div>
+          <div class="card-sm" style="display:flex;align-items:center;gap:12px">
+            <image-slot id="req-2" style="width:44px;height:44px" shape="circle" placeholder="Аватар"></image-slot>
+            <div style="flex:1"><div style="font:700 13px var(--font-body)">Соломія В.</div><div style="font-size:12px;color:var(--color-neutral-600)">Хоче додати тебе в друзі</div></div>
+          </div>
+  
