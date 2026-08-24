@@ -8,7 +8,8 @@ export type DirectoryCategoryId =
   | 'transport'
   | 'sitters'
   | 'insurance'
-  | 'lodging';
+  | 'lodging'
+  | 'shops';
 
 export type VerificationStatus = 'verified' | 'pending' | 'unverified';
 
@@ -36,6 +37,7 @@ export const DIRECTORY_CATEGORIES: { id: DirectoryCategoryId }[] = [
   { id: 'sitters' },
   { id: 'insurance' },
   { id: 'lodging' },
+  { id: 'shops' },
 ];
 
 /**
@@ -150,6 +152,39 @@ const SEED: DirectoryPlace[] = [
     rating: 4.7,
     reviewCount: 41,
     blurb: 'Pet-friendly житло (mock).',
+  },
+  {
+    id: 'shop-1',
+    category: 'shops',
+    name: 'MasterZoo',
+    city: 'Київ',
+    specialty: 'Мережа + інтернет-магазин',
+    verification: 'verified',
+    rating: 4.5,
+    reviewCount: 210,
+    blurb: 'Mock пет-магазин UA. Живі офери — пізніше (партнер/API).',
+  },
+  {
+    id: 'shop-2',
+    category: 'shops',
+    name: 'Kakadu',
+    city: 'Warszawa',
+    specialty: 'Мережа PL',
+    verification: 'verified',
+    rating: 4.4,
+    reviewCount: 88,
+    blurb: 'Mock стаціонарний магазин PL (≤30 км на результаті скану — мок).',
+  },
+  {
+    id: 'shop-3',
+    category: 'shops',
+    name: 'Allegro (маркетплейс)',
+    city: 'Онлайн · PL',
+    specialty: 'Онлайн',
+    verification: 'pending',
+    rating: 4.6,
+    reviewCount: 0,
+    blurb: 'Один з PL онлайн-каналів, не єдина платформа.',
   },
 ];
 

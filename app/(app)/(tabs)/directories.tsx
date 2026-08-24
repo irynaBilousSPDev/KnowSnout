@@ -30,6 +30,7 @@ const ICONS: Record<
   sitters: { icon: 'checkmark-outline', tone: 'accent' },
   insurance: { icon: 'shield-checkmark-outline', tone: 'success' },
   lodging: { icon: 'bed-outline', tone: 'neutral' },
+  shops: { icon: 'storefront-outline', tone: 'success' },
 };
 
 export default function DirectoriesHubScreen() {

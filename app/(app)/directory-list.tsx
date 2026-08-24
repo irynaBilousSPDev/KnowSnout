@@ -29,7 +29,8 @@ function isCategory(v: string | undefined): v is DirectoryCategoryId {
     v === 'transport' ||
     v === 'sitters' ||
     v === 'insurance' ||
-    v === 'lodging'
+    v === 'lodging' ||
+    v === 'shops'
   );
 }
 

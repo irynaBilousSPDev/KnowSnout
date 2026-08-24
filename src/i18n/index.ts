@@ -213,6 +213,22 @@ const uk: Dict = {
   'result.openStore': 'Відкрити',
   'result.storeMeta': '{count} оцінки · від ₴{price}/кг',
 
+  'buy.title': 'Де купити',
+  'buy.loading': 'Шукаємо пропозиції…',
+  'buy.online': 'Інтернет-магазини',
+  'buy.stationary': 'Стаціонарні поруч',
+  'buy.countryUA': 'Україна',
+  'buy.countryPL': 'Польща',
+  'buy.cityUnknown': 'місто не вказано',
+  'buy.regionLine': '{country} · {city}',
+  'buy.geoOn': 'радіус {km} км (демо)',
+  'buy.geoOff': 'без геолокації — за містом / країною',
+  'buy.km': '{km} км',
+  'buy.empty': 'Поки немає пропозицій у цій країні. Заглянь у Довідники → Магазини.',
+  'buy.demoHint':
+    'Ціни й наявність демо. Живі офери (партнерські API / дозволений збір) — пізніше. Allegro — лише один з PL-каналів.',
+  'buy.changeRegion': 'Країна / місто',
+
 
   'onboarding.title': 'Ласкаво просимо',
   'onboarding.skip': 'Пропустити',
@@ -1505,7 +1521,7 @@ const uk: Dict = {
   'help.body.stories':
     'Публікуй пости, коментуй і пиши в DM. Модерація й блок — локальні на пристрої.',
   'help.body.directories':
-    'Категорії клінік, сіттерів тощо. Можна залишити відгук або поскаржитись на шахрайство.',
+    'Категорії клінік, сіттерів, магазинів корму тощо. Можна залишити відгук або поскаржитись на шахрайство.',
   'help.body.account':
     'Ім’я, місто й аватар — у Мої дані / Редагувати акаунт. Видалення акаунта зараз лише локальне підтвердження.',
 
@@ -1526,6 +1542,17 @@ const uk: Dict = {
   'settings.langPlanMeta': 'UA · Free',
   'settings.soon': 'Скоро',
   'settings.languageUi': 'Мова інтерфейсу',
+  'settings.regionTitle': 'Країна для покупок',
+  'settings.regionHint':
+    'Не питаємо на реєстрації — можна вказати тут пізніше. Впливає на блок «Де купити» після скану корму.',
+  'settings.countryAuto': 'Авто',
+  'settings.countryUA': 'Україна',
+  'settings.countryPL': 'Польща',
+  'settings.geoOffers': 'Стаціонарні в радіусі 30 км',
+  'settings.geoOffersHint':
+    'Коли дозволиш геолокацію — покажемо магазини поруч. Зараз відстані демо.',
+  'settings.geoOn': 'Увімкнено',
+  'settings.geoOff': 'Вимкнено',
   'notifications.toggleVaccines': 'Нагадування про щеплення',
   'notifications.toggleCare': 'Нагадування про гру/догляд',
   'notifications.toggleQuiz': 'Серія квізів',
@@ -1662,12 +1689,14 @@ const uk: Dict = {
   'directories.cat.sitters': 'Петсіттери й грумери',
   'directories.cat.insurance': 'Страхування',
   'directories.cat.lodging': 'Житло',
+  'directories.cat.shops': 'Магазини',
   'directories.catBody.vets': 'Клініки й спеціалісти',
   'directories.catBody.breeders': 'Верифікація FCI',
   'directories.catBody.transport': 'Для кордону',
   'directories.catBody.sitters': 'Догляд, вигул',
   'directories.catBody.insurance': 'Порівняння пакетів',
   'directories.catBody.lodging': 'Pet-friendly житло',
+  'directories.catBody.shops': 'Корм онлайн і офлайн',
   'directories.writePlace': 'Написати в чат',
   'directories.chatTitle': 'Чат із закладом',
   'directories.chatHint': 'Локальний чат (мок відповіді закладу)',

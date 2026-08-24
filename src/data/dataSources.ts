@@ -135,9 +135,12 @@ export const DATA_SOURCES: DataSourceEntry[] = [
     id: 'allegro',
     name: 'Allegro',
     kind: 'api',
-    usedForUk: 'Магазинна оцінка корму (score + посилання, без текстів відгуків)',
+    usedForUk:
+      'Один з PL онлайн-каналів у «Де купити» (оцінка + посилання, без текстів відгуків). Не єдина платформа.',
     codePaths: [
       'src/services/storeScores.ts',
+      'src/services/marketOffers.ts',
+      'src/components/WhereToBuyBlock.tsx',
       'src/components/StoreScoreBadge.tsx',
       'supabase/functions/store-rating',
     ],
@@ -145,6 +148,25 @@ export const DATA_SOURCES: DataSourceEntry[] = [
     licenseOrTerms: 'Allegro REST API terms — client id/secret only on server',
     attributionUk:
       'Оцінки з Allegro (коли підключено API). Демо-режим показує зразок. Не оцінка складу KnowSnout.',
+  },
+  {
+    id: 'market-offers',
+    name: 'KnowSnout market offers (mock)',
+    kind: 'catalog',
+    usedForUk:
+      'Блок «Де купити»: кілька онлайн + стаціонарних оферів за країною (UA/PL mock). Живі партнери / скрейп — пізніше.',
+    codePaths: [
+      'src/services/marketOffers.ts',
+      'src/types/marketOffer.ts',
+      'src/components/WhereToBuyBlock.tsx',
+      'app/(app)/result.tsx',
+      'app/(app)/settings.tsx',
+    ],
+    homepage: 'https://knowsnout.com/',
+    licenseOrTerms:
+      'Mock listings; live sources must respect marketplace ToS. Prices informational.',
+    attributionUk:
+      'Пропозиції «де купити» зараз демо. Джерела з’являться в «Мої дані → Джерела даних» коли підключимо партнерів.',
   },
   {
     id: 'supabase',
@@ -159,5 +181,5 @@ export const DATA_SOURCES: DataSourceEntry[] = [
 ];
 
 export function dataSourcesUpdatedNote(): string {
-  return '2026-07-27';
+  return '2026-08-24';
 }

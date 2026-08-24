@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import type { MarketCountryPref } from '@/src/types/marketOffer';
+
 const KEY = 'knowsnout.settings_prefs.v1';
 
 export type AppLanguage = 'uk' | 'pl' | 'en';
@@ -12,6 +14,12 @@ export type SettingsPrefs = {
   notifyCare: boolean;
   notifyQuiz: boolean;
   notifyFeed: boolean;
+  /** Market country for «Де купити»; auto = locale/fallback. Not collected at signup. */
+  country: MarketCountryPref;
+  /** City for stationary offers; optional, also synced to user profile when saved here. */
+  city: string;
+  /** User allowed ~30 km geo filter for stationary shops (GPS later; mock distances now). */
+  geoOffersAllowed: boolean;
 };
 
 const DEFAULTS: SettingsPrefs = {
@@ -21,6 +29,9 @@ const DEFAULTS: SettingsPrefs = {
   notifyCare: true,
   notifyQuiz: false,
   notifyFeed: false,
+  country: 'auto',
+  city: '',
+  geoOffersAllowed: false,
 };
 
 export async function getSettingsPrefs(): Promise<SettingsPrefs> {
@@ -38,6 +49,12 @@ export async function getSettingsPrefs(): Promise<SettingsPrefs> {
       notifyCare: parsed.notifyCare ?? DEFAULTS.notifyCare,
       notifyQuiz: parsed.notifyQuiz ?? DEFAULTS.notifyQuiz,
       notifyFeed: parsed.notifyFeed ?? DEFAULTS.notifyFeed,
+      country:
+        parsed.country === 'UA' || parsed.country === 'PL'
+          ? parsed.country
+          : 'auto',
+      city: typeof parsed.city === 'string' ? parsed.city : '',
+      geoOffersAllowed: parsed.geoOffersAllowed ?? DEFAULTS.geoOffersAllowed,
     };
   } catch {
     return { ...DEFAULTS };
@@ -55,6 +72,9 @@ export async function saveSettingsPrefs(
     notifyCare: patch.notifyCare ?? prev.notifyCare,
     notifyQuiz: patch.notifyQuiz ?? prev.notifyQuiz,
     notifyFeed: patch.notifyFeed ?? prev.notifyFeed,
+    country: patch.country ?? prev.country,
+    city: patch.city !== undefined ? patch.city : prev.city,
+    geoOffersAllowed: patch.geoOffersAllowed ?? prev.geoOffersAllowed,
   };
   await AsyncStorage.setItem(KEY, JSON.stringify(next));
   return next;

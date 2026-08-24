@@ -20,7 +20,8 @@
 | Wikidata (CC0) | Quiz origin / animal group + enrich |
 | Open Trivia DB (CC BY-SA) | Animals trivia quiz |
 | KnowSnout plants seed + Supabase | Plant safety cache |
-| Allegro (optional API) | Store score + link on food result (mock by default) |
+| Allegro (optional API) | One PL channel in «Де купити» (mock by default) |
+| KnowSnout market offers (mock) | Multi-shop buy block by country + directories «Магазини» |
 | Supabase | Auth, journal, quiz scores, storage |
 
-Last process note: **2026-07-27** — Allegro store-score badge (mock + Edge `store-rating`).
+Last process note: **2026-08-24** — «Де купити» mock (UA/PL packs); Allegro is not the only store.

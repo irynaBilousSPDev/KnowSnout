@@ -88,7 +88,7 @@ Status: **shipped** — search + photo vision Edge (`identify-breed`); enrich fr
 - Food ↔ pet allergies / life stage match — **shipped** (informational hints on result + pet profile; `pets.life_stage` column)
 - Meds & vet visit log — **shipped** (thin log: meds / visit / note; `pet_vet_logs`)
 - Toys & how-to-play guides — **shipped** (editorial packs dog/cat/other; `play-guides`)
-- External store **scores only** (Allegro) — **shipped** (badge on result; mock default; Edge `store-rating`)
+- External store **scores only** (Allegro) — **shipped as temporary PL example** (badge on result; mock default; Edge `store-rating`). **Superseded by P1e «Де купити»** below — Allegro = one of many PL online channels, not the product end-state.
 - Quiz of the day + streak — **shipped** (local AsyncStorage; rotates category by day)
 - Passport / docs checklist — **shipped** (local packs home + EU; `pet-passport`)
 - Breed-from-photo (beta, with confidence)
@@ -225,11 +225,14 @@ Architecture: keep `species` extensible; UI copy «Собака / Кіт / Ін�
 | Field | Notes |
 |--|--|
 | Display name, photo | Required for chat |
-| City / country | UA/PL |
+| **Country** | UA / PL first; others later — **Settings** (required for good «Де купити»); optional at register |
+| **City** | Free text or picker later — same: Settings now, optional at register |
 | Bio (short) | Optional |
 | Pets (“діти”) | Count + links to pet profiles |
 | Shelter staff flag | Later, verified |
 | Charity / shelter follows | Later |
+
+**Registration UX (locked 2026-08-24):** keep signup **light** — email/phone + password (+ verify). **Do not** force country/city on the register form. Offer optional “Країна / місто” skippable step **or** prompt later in Settings / first scan / onboarding tip. Auto-detect remains fallback until the user sets them.
 
 ### Pet profile
 | Field | Notes |
@@ -251,6 +254,51 @@ Architecture: keep `species` extensible; UI copy «Собака / Кіт / Ін�
 - Adoption & sponsorship = shelter-led; no false “instant adopt” promises
 - GDPR / UA privacy for photos & chat
 - Charity listings curated to reduce fraud
+- **Buy links / prices:** informational only; availability & price can be stale; never scrape review *text* into our UI; respect each marketplace ToS / robots; prefer official partner APIs where they exist; attribute source; no “we sell this” claim unless we do.
+
+---
+
+## Captured 2026-08-24 — P1e «Де купити» (after food scan + directories shops)
+
+**Trigger:** on food **Результат** (02.05), replace single Allegro badge with a **«Де купити»** block: several options for *this* product in the user’s country.  
+**Also:** new **Довідники** category **«Магазини»** (pet food / pet shops / marketplaces) — browse by country/city later; fill via catalog + scrape/API when we deepen Wave 6 / data ops (not in current UI-kit slice).
+
+### Country / city resolution (order)
+1. **Settings** — user-chosen **країна** + **місто** (UA / PL first) — *override*
+2. Optional at **registration or later** — never block signup; skippable
+3. **Auto** — device locale / IP / last known profile if Settings empty / «Авто»
+4. Fallback: UA until more markets ship
+
+**Settings UI:** always editable under профіль / налаштування (країна + місто), independent of when the user first filled them.
+
+### Result card — what to show
+| Channel | Rule |
+|--|--|
+| **Online** | 2–5 country-relevant platforms/shops that list this SKU/barcode/name; **price if known**; deep link / search URL; stock hint if available |
+| **Stationary** | Several brick-and-mortar pet stores / chains; if **geolocation allowed** → prefer within **~30 km**; else city from profile/settings |
+| Empty | Honest «поки немає пропозицій у цій країні» + CTA to directories shops / add product |
+
+**PL examples (not exclusive):** Allegro, Zooplus/other PL pets e-com, local chains — whichever we can license or partner.  
+**UA examples:** Rozetka / Allo / local pet e-com + stationary chains — TBD per partnership & ToS.  
+**Other countries:** same pattern when we add market packs.
+
+### Data architecture (target)
+| Layer | Notes |
+|--|--|
+| `markets` / country packs | Which online + chain IDs are active per country |
+| `product_offers` | barcode/product_id · retailer_id · price · currency · url · stock · updated_at · source |
+| `retailers` | online \| stationary · country · lat/lng (stores) · brand |
+| Client | Mock-first offers by country; live Edge lookup later; **never** put retailer API secrets in the app |
+| Geo | Optional permission; radius default **30 km**; degrade gracefully if denied |
+
+### Delivery waves
+| Wave | What |
+|--|--|
+| **UI now / soon** | «Де купити» shell on result (mock offers by country) + Довідники → **Магазини** category stub |
+| **Data later (≈ Wave 6 / scrape ops)** | Bulk fill offers (partner API preferred; controlled scrape only where legal); admin tools to curate retailers |
+| **Not now** | Full scrape pipeline, paid geo APIs, multi-country beyond UA/PL |
+
+**Status (2026-08-24):** mock slice **in app** — Settings країна/місто/гео (не на реєстрації); result «Де купити» (UA/PL packs); Довідники → Магазини. Live prices / GPS / scrape = later.
 
 ---
 

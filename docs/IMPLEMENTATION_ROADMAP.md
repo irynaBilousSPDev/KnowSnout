@@ -92,6 +92,7 @@ Status: `organic` | `stub` | `missing` · Variant 12 remap = later
 | Screen | Status | Route |
 |--|--|--|
 | Hub / list / detail / review / report | done | `directories/*` via tab + stack |
+| Категорія Магазини (P1e) | done mock | `shops` + `marketOffers` · SQL `20260321245000` unrun |
 | Chat із закладом (local) | done | `directory-chat` |
 | Перевізники F4b/c (routes / vehicle) | done | `directory-carriers` + transport detail |
 
@@ -109,6 +110,7 @@ Status: `organic` | `stub` | `missing` · Variant 12 remap = later
 | `20260321241000_friends_graph.sql` | done | applied 2026-08-21 |
 | `20260321242000_directories_trust.sql` | done | applied 2026-08-21 |
 | `20260321243000_spotlight_cloud.sql` | done | applied 2026-08-21 |
+| `20260321245000_directory_shops.sql` | stub | run before cloud `shops` rows |
 
 ## Gap close 2026-08-21 (was missing / stub)
 

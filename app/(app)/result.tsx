@@ -1,10 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
   Image,
-  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -16,6 +15,7 @@ import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { ScrHeader } from '@/src/components/ScrHeader';
+import { WhereToBuyBlock } from '@/src/components/WhereToBuyBlock';
 import {
   buildFoodResultView,
   scoreHeadline,
@@ -28,13 +28,14 @@ import { scoreOutOfFive } from '@/src/lib/relativeTime';
 import { buildScanShareMessage, shareText } from '@/src/lib/share';
 import { resolveSpecies } from '@/src/lib/species';
 import { matchFoodToPet } from '@/src/services/foodMatch';
+import { fetchWhereToBuy } from '@/src/services/marketOffers';
 import { listPets } from '@/src/services/pets';
 import { saveScan } from '@/src/services/scans';
-import { fetchStoreScore } from '@/src/services/storeScores';
+import { getSettingsPrefs } from '@/src/services/settingsPrefs';
 import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 import type { PetSpecies } from '@/src/types/scan';
-import type { StoreScore } from '@/src/types/storeScore';
+import type { WhereToBuyResult } from '@/src/types/marketOffer';
 
 function toneColor(tone: Tone) {
   if (tone === 'caution') return brand.warning;
@@ -49,7 +50,8 @@ export default function ResultScreen() {
   const [saved, setSaved] = useState(Boolean(pending?.saved));
   const [error, setError] = useState<string | null>(null);
   const [pets, setPets] = useState<PetRow[]>([]);
-  const [storeScore, setStoreScore] = useState<StoreScore | null>(null);
+  const [buy, setBuy] = useState<WhereToBuyResult | null>(null);
+  const [buyLoading, setBuyLoading] = useState(false);
   const [species, setSpecies] = useState<PetSpecies>(() =>
     resolveSpecies(
       pending?.species,
@@ -63,35 +65,34 @@ export default function ResultScreen() {
       void listPets()
         .then(setPets)
         .catch(() => setPets([]));
-    }, []),
-  );
 
-  useEffect(() => {
-    const name = pending?.result?.productName;
-    if (!name) {
-      setStoreScore(null);
-      return;
-    }
-    let cancelled = false;
-    void fetchStoreScore({
-      productName: name,
-      barcode: pending?.barcode,
-      productId: pending?.productId,
-    })
-      .then((next) => {
-        if (!cancelled) setStoreScore(next);
-      })
-      .catch(() => {
-        if (!cancelled) setStoreScore(null);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    pending?.result?.productName,
-    pending?.barcode,
-    pending?.productId,
-  ]);
+      const name = pending?.result?.productName;
+      if (!name) {
+        setBuy(null);
+        return;
+      }
+      let cancelled = false;
+      setBuyLoading(true);
+      void (async () => {
+        const prefs = await getSettingsPrefs();
+        try {
+          const next = await fetchWhereToBuy({
+            productName: name,
+            barcode: pending?.barcode,
+            geoAllowed: prefs.geoOffersAllowed,
+          });
+          if (!cancelled) setBuy(next);
+        } catch {
+          if (!cancelled) setBuy(null);
+        } finally {
+          if (!cancelled) setBuyLoading(false);
+        }
+      })();
+      return () => {
+        cancelled = true;
+      };
+    }, [pending?.result?.productName, pending?.barcode]),
+  );
 
   const view = useMemo(
     () => (pending?.result ? buildFoodResultView(pending.result) : null),
@@ -261,34 +262,11 @@ export default function ResultScreen() {
           </View>
         ))}
 
-        {storeScore ? (
-          <View style={styles.storeCard}>
-            <View style={styles.storeIcon}>
-              <Ionicons name="storefront-outline" size={18} color={brand.ink} />
-            </View>
-            <View style={styles.storeCopy}>
-              <Text style={styles.storeTitle}>
-                Allegro
-                {storeScore.scoreOutOf5 != null
-                  ? ` · ${storeScore.scoreOutOf5.toFixed(1)} із 5`
-                  : ''}
-              </Text>
-              <Text style={styles.storeMeta}>
-                {t('result.storeMeta', {
-                  count: (storeScore.reviewCount ?? 0).toLocaleString('uk-UA'),
-                  price: '185',
-                })}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => {
-                if (storeScore.url) void Linking.openURL(storeScore.url);
-              }}
-            >
-              <Text style={styles.open}>{t('result.openStore')}</Text>
-            </Pressable>
-          </View>
-        ) : null}
+        <WhereToBuyBlock
+          data={buy}
+          loading={buyLoading}
+          onOpenSettings={() => router.push('/(app)/settings' as never)}
+        />
 
         <Text style={styles.disclaimer}>{t('result.disclaimer')}</Text>
 

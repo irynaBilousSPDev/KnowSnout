@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -21,7 +22,9 @@ import {
   type AppLanguage,
   type SettingsPrefs,
 } from '@/src/services/settingsPrefs';
+import { saveUserProfile } from '@/src/services/userProfile';
 import { brand, fonts } from '@/src/theme/brand';
+import type { MarketCountryPref } from '@/src/types/marketOffer';
 
 const LANGS: {
   id: AppLanguage | 'de' | 'es';
@@ -47,6 +50,29 @@ export default function SettingsScreen() {
 
   const setLanguage = async (language: AppLanguage) => {
     const next = await saveSettingsPrefs({ language });
+    setPrefs(next);
+  };
+
+  const setCountry = async (country: MarketCountryPref) => {
+    const next = await saveSettingsPrefs({ country });
+    setPrefs(next);
+  };
+
+  const persistCity = async (city: string) => {
+    const next = await saveSettingsPrefs({ city });
+    setPrefs(next);
+    try {
+      await saveUserProfile({ city: city.trim() || null });
+    } catch {
+      // demo / unsigned
+    }
+  };
+
+  const toggleGeo = async () => {
+    if (!prefs) return;
+    const next = await saveSettingsPrefs({
+      geoOffersAllowed: !prefs.geoOffersAllowed,
+    });
     setPrefs(next);
   };
 
@@ -96,6 +122,63 @@ export default function SettingsScreen() {
               );
             })}
           </View>
+
+          <Text style={styles.fieldLbl}>{t('settings.regionTitle')}</Text>
+          <Text style={styles.regionHint}>{t('settings.regionHint')}</Text>
+          <View style={styles.langCard}>
+            {(
+              [
+                ['auto', t('settings.countryAuto')],
+                ['UA', t('settings.countryUA')],
+                ['PL', t('settings.countryPL')],
+              ] as const
+            ).map(([id, label], i, arr) => {
+              const active = prefs?.country === id;
+              return (
+                <Pressable
+                  key={id}
+                  onPress={() => void setCountry(id)}
+                  style={[
+                    styles.langRow,
+                    i < arr.length - 1 && styles.langRowBorder,
+                  ]}
+                >
+                  <Text style={styles.langLabel}>{label}</Text>
+                  {active ? (
+                    <Ionicons
+                      name="checkmark"
+                      size={16}
+                      color={brand.successDark}
+                    />
+                  ) : null}
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <Text style={styles.fieldLbl}>{t('me.city')}</Text>
+          <TextInput
+            value={prefs?.city ?? ''}
+            onChangeText={(city) => setPrefs((p) => (p ? { ...p, city } : p))}
+            onEndEditing={(e) => {
+              void persistCity(e.nativeEvent.text);
+            }}
+            placeholder={t('me.cityPlaceholder')}
+            placeholderTextColor={brand.mutedSoft}
+            style={styles.cityInput}
+          />
+
+          <Pressable onPress={() => void toggleGeo()} style={styles.geoRow}>
+            <View style={styles.geoCopy}>
+              <Text style={styles.langLabel}>{t('settings.geoOffers')}</Text>
+              <Text style={styles.regionHint}>{t('settings.geoOffersHint')}</Text>
+            </View>
+            <Text style={styles.geoState}>
+              {prefs?.geoOffersAllowed
+                ? t('settings.geoOn')
+                : t('settings.geoOff')}
+            </Text>
+          </Pressable>
 
           <View style={styles.plusCard}>
             <Text style={styles.plusTitle}>{t('subscription.plan.plus')}</Text>
@@ -165,6 +248,39 @@ const styles = StyleSheet.create({
     color: brand.ink,
   },
   langSoon: { color: brand.mutedSoft },
+  regionHint: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 17,
+    color: brand.muted,
+    marginTop: -8,
+  },
+  cityInput: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  geoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  geoCopy: { flex: 1 },
+  geoState: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 12,
+    color: brand.accentDark,
+  },
   chip: {
     borderRadius: brand.radius.pill,
     backgroundColor: brand.creamDeep,
