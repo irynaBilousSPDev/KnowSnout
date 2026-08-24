@@ -21,7 +21,8 @@ Use this while connecting real backends. Demo mode works without any of this.
 - [x] Run SQL migration `supabase/migrations/20260321170000_pet_avatar_album.sql`
 - [x] Run SQL migration `supabase/migrations/20260321180000_pet_profile_fields.sql`
 - [x] `20260321190000_favorite_food_feeding.sql`
-- [ ] `20260321210000_pet_vaccines.sql` *(у логах: таблиці ще немає — перезапусти SQL)*
+- [x] `20260321210000_pet_vaccines.sql` *(re-run 2026-08-24)*
+- [x] `20260321245000_directory_shops.sql` *(2026-08-24)*
 - [x] `20260321200000_snout_stories.sql`
 - [x] **Нове:** `20260321232000_story_posts_feed_fields.sql` (privacy / species / story-images bucket)
 - [x] **Нове:** `20260321233000_plant_catalog_expand.sql` (+27 рослин у кеш Supabase)

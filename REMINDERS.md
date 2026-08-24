@@ -13,9 +13,9 @@
 
 | Статус | Файл | Нотатка |
 |--|--|--|
-| **перезапустити** | `20260321210000_pet_vaccines.sql` | у Expo: `pet_vaccines` відсутня в schema cache |
-| **запустити** | `20260321245000_directory_shops.sql` | категорія `shops` у `directory_places` (хмарні рядки; UI seed локальний і без цього) |
-| зроблено (користувач) | `140000`… + stories (крім vaccines вище) | |
+| зроблено (користувач, 2026-08-24) | `20260321210000_pet_vaccines.sql` | ідемпотентний re-run · reload schema якщо Expo ще кешує |
+| зроблено (користувач, 2026-08-24) | `20260321245000_directory_shops.sql` | `shops` у `directory_places` |
+| зроблено (користувач) | `140000`… + stories | |
 | зроблено (користувач, 2026-07-27) | `20260321232000_story_posts_feed_fields.sql` | privacy · species · `story-images` |
 | зроблено (користувач, 2026-07-27) | `20260321233000_plant_catalog_expand.sql` | розширення каталогу рослин |
 | зроблено (користувач, 2026-07-27) | `20260321234000_story_comments_author.sql` | `author_name` на коментарях |

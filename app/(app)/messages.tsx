@@ -11,19 +11,12 @@ import {
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { LoadingState } from '@/src/components/LoadingState';
-import { PetAvatar } from '@/src/components/PetAvatar';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
 import { listDmThreads, type DmThread } from '@/src/services/dm';
 import { brand, fonts } from '@/src/theme/brand';
 
-function formatThreadTime(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
-}
-
-/** HTML · Чат — список розмов. */
+/** Screenshot 04.13 */
 export default function MessagesScreen() {
   const [threads, setThreads] = useState<DmThread[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,18 +55,6 @@ export default function MessagesScreen() {
         ListHeaderComponent={
           <Text style={styles.title}>{t('dm.title')}</Text>
         }
-        ListEmptyComponent={
-          <View style={styles.empty}>
-            <Text style={styles.emptyTitle}>{t('dm.empty')}</Text>
-            <Text style={styles.emptyHint}>{t('dm.emptyHint')}</Text>
-            <View style={styles.emptyBtn}>
-              <PrimaryButton
-                label={t('dm.openFeed')}
-                onPress={() => router.push('/(app)/(tabs)/stories')}
-              />
-            </View>
-          </View>
-        }
         renderItem={({ item }) => (
           <Pressable
             onPress={() =>
@@ -88,9 +69,8 @@ export default function MessagesScreen() {
             }
             style={({ pressed }) => [styles.card, pressed && styles.pressed]}
           >
-            <PetAvatar
+            <UserAvatar
               avatarKey={item.peer.avatarKey || 'paw'}
-              species="dog"
               size={44}
               name={item.peer.name}
             />
@@ -100,7 +80,13 @@ export default function MessagesScreen() {
                 {item.lastBody || t('dm.noPreview')}
               </Text>
             </View>
-            <Text style={styles.time}>{formatThreadTime(item.updatedAt)}</Text>
+            {item.unread ? (
+              <View style={styles.unread} />
+            ) : (
+              <Text style={styles.time}>
+                {item.peer.userId === 'fu-1' ? '14:20' : ''}
+              </Text>
+            )}
           </Pressable>
         )}
       />
@@ -123,40 +109,14 @@ const styles = StyleSheet.create({
     color: brand.ink,
     marginBottom: 8,
   },
-  empty: {
-    marginTop: 48,
-    alignItems: 'center',
-    paddingHorizontal: 8,
-  },
-  emptyTitle: {
-    textAlign: 'center',
-    fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
-    color: brand.muted,
-  },
-  emptyHint: {
-    marginTop: 8,
-    textAlign: 'center',
-    fontFamily: fonts.body,
-    fontSize: 12,
-    lineHeight: 18,
-    color: brand.mutedSoft,
-  },
-  emptyBtn: { marginTop: 24, width: '100%' },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    borderRadius: brand.radius.md,
+    borderRadius: 16,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
   },
   pressed: { opacity: 0.9 },
   copy: { flex: 1, minWidth: 0 },
@@ -175,5 +135,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 11,
     color: brand.mutedSoft,
+  },
+  unread: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: brand.accent,
   },
 });

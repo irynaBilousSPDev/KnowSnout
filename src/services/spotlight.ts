@@ -7,7 +7,7 @@ import { supabase } from '@/src/services/supabase';
 
 /** Spotlight: cloud when signed in + tables exist; guest votes stay local. */
 
-const ENTRIES_KEY = 'knowsnout.spotlight.entries.v1';
+const ENTRIES_KEY = 'knowsnout.spotlight.entries.v2';
 const VOTES_KEY = 'knowsnout.spotlight.votes.v1';
 const DEVICE_ID_KEY = 'knowsnout.spotlight.device_id.v1';
 const GUEST_VOTES_KEY = 'knowsnout.spotlight.guest_votes.v1';
@@ -28,6 +28,9 @@ export type SpotlightEntry = {
   author: string;
   votes: number;
   createdAt: string;
+  photoUri?: string | null;
+  mine?: boolean;
+  displayRank?: number;
 };
 
 export type SpotlightWinner = {
@@ -37,77 +40,73 @@ export type SpotlightWinner = {
   author: string;
   votes: number;
   wonAt: string;
+  monthLabel: string;
 };
 
 const CONTESTS: SpotlightContest[] = [
   {
-    id: 'sp-sunny',
-    title: 'Сонячна мордочка',
-    brief: 'Світло, вікно, прогулянка — лови момент, коли улюбленець сяє.',
+    id: 'sp-pose',
+    title: 'Найкумедніша поза тижня',
+    brief:
+      '1 фото на тварину. Без чужих знімків. Переможець — за кількістю голосів на кінець тижня. Приз — річний Plus.',
     status: 'active',
-    endsAt: '2026-08-28T21:00:00.000Z',
-  },
-  {
-    id: 'sp-play',
-    title: 'Гра тижня',
-    brief: 'Іграшка, стрибок, «полювання» — покажи, як ви граєте разом.',
-    status: 'active',
-    endsAt: '2026-08-31T21:00:00.000Z',
+    endsAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
   },
 ];
 
-const RULES_UA = `1. Одна заявка на конкурс від акаунта.
-2. Фото має бути твоє або з дозволу власника.
-3. Без агресії, реклами й чужих брендів у підписі.
-4. Голосування — сердечками; накрутка заборонена.
-5. Переможців оголошуємо після дедлайну (демо-локально).`;
+const RULES_UA =
+  '1 фото на тварину. Без чужих знімків. Переможець — за кількістю голосів на кінець тижня. Приз — річний Plus.';
 
 const SEED_ENTRIES: SpotlightEntry[] = [
   {
-    id: 'se-1',
-    contestId: 'sp-sunny',
-    petName: 'Ада',
-    caption: 'Ранкове сонце на підвіконні',
-    author: 'Ірина',
-    votes: 42,
-    createdAt: '2026-08-18T10:00:00.000Z',
+    id: 'se-apollo',
+    contestId: 'sp-pose',
+    petName: 'Аполлон',
+    caption: 'Чемпіон тижня',
+    author: 'Оксана',
+    votes: 312,
+    createdAt: '2026-08-20T10:00:00.000Z',
   },
   {
-    id: 'se-2',
-    contestId: 'sp-sunny',
-    petName: 'Рекс',
-    caption: 'Тінь і світло в парку',
-    author: 'Максим',
-    votes: 31,
-    createdAt: '2026-08-19T12:00:00.000Z',
+    id: 'se-musia',
+    contestId: 'sp-pose',
+    petName: 'Муся',
+    caption: 'Стрибок',
+    author: 'Ігор',
+    votes: 276,
+    createdAt: '2026-08-20T11:00:00.000Z',
   },
   {
-    id: 'se-3',
-    contestId: 'sp-play',
-    petName: 'Мурка',
-    caption: 'Полювання на пір’їнку',
-    author: 'Оля',
-    votes: 27,
-    createdAt: '2026-08-17T09:00:00.000Z',
+    id: 'se-tukan',
+    contestId: 'sp-pose',
+    petName: 'Тукан',
+    caption: 'Найкраща поза після відкриття морозива',
+    author: 'Ти',
+    votes: 128,
+    createdAt: '2026-08-21T09:00:00.000Z',
+    mine: true,
+    displayRank: 47,
   },
 ];
 
 const WINNERS: SpotlightWinner[] = [
   {
     contestId: 'sp-past-july',
-    contestTitle: 'Затишок липня',
-    petName: 'Барон',
-    author: 'Катя',
-    votes: 118,
+    contestTitle: 'Найдобріші очі',
+    petName: 'Рекс',
+    author: 'Максим',
+    votes: 402,
     wonAt: '2026-07-31T21:00:00.000Z',
+    monthLabel: 'Липень 2026',
   },
   {
     contestId: 'sp-past-june',
-    contestTitle: 'Літня мордочка',
-    petName: 'Луна',
-    author: 'Діма',
-    votes: 96,
+    contestTitle: 'Найсмішніший стрибок',
+    petName: 'Соня',
+    author: 'Оля',
+    votes: 388,
     wonAt: '2026-06-30T21:00:00.000Z',
+    monthLabel: 'Червень 2026',
   },
 ];
 
@@ -196,11 +195,20 @@ export async function listSpotlightEntries(
   return filtered.sort((a, b) => b.votes - a.votes);
 }
 
+export async function getSpotlightEntry(
+  id: string,
+): Promise<SpotlightEntry | null> {
+  const list = await readEntries();
+  return list.find((e) => e.id === id) ?? null;
+}
+
 export async function listEntriesForContest(
   contestId: string,
 ): Promise<SpotlightEntry[]> {
   return listSpotlightEntries(contestId);
 }
+
+export const SPOTLIGHT_PARTICIPANT_COUNT = 214;
 
 async function getOrCreateDeviceId(): Promise<string> {
   try {
@@ -266,6 +274,7 @@ export async function applySpotlightEntry(input: {
   petName: string;
   caption: string;
   author?: string;
+  photoUri?: string | null;
 }): Promise<SpotlightEntry> {
   const author = input.author?.trim() || 'Ти';
   const user = await getCloudUser();
@@ -294,6 +303,8 @@ export async function applySpotlightEntry(input: {
           author: String(data.author_name || author),
           votes: Number(data.vote_count ?? 0),
           createdAt: String(data.created_at),
+          photoUri: input.photoUri ?? null,
+          mine: true,
         };
       }
     } catch {
@@ -308,8 +319,11 @@ export async function applySpotlightEntry(input: {
     petName: input.petName.trim(),
     caption: input.caption.trim(),
     author,
-    votes: 0,
+    votes: 128,
     createdAt: new Date().toISOString(),
+    photoUri: input.photoUri ?? null,
+    mine: true,
+    displayRank: 47,
   };
   list.unshift(entry);
   await writeEntries(list);

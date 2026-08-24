@@ -5,7 +5,7 @@ import { isUuid } from '@/src/lib/uuid';
 import { getCurrentUser } from '@/src/services/auth';
 import { supabase } from '@/src/services/supabase';
 
-const STORAGE_KEY = 'knowsnout.dm.v1';
+const STORAGE_KEY = 'knowsnout.dm.v2';
 
 export type DmPeer = {
   userId: string;
@@ -27,6 +27,7 @@ export type DmThread = {
   peer: DmPeer;
   updatedAt: string;
   lastBody?: string | null;
+  unread?: boolean;
 };
 
 type Store = {
@@ -34,14 +35,69 @@ type Store = {
   messages: Record<string, DmMessage[]>;
 };
 
+const THREAD_OKSANA = 'local:demo-user|fu-1';
+const THREAD_IHOR = 'local:demo-user|fu-2';
+
+function seedStore(): Store {
+  return {
+    threads: [
+      {
+        id: THREAD_OKSANA,
+        peer: { userId: 'fu-1', name: 'Оксана', avatarKey: 'woman-1' },
+        updatedAt: '2026-08-24T14:20:00.000Z',
+        lastBody: 'Дякую за пораду про корм!',
+        unread: false,
+      },
+      {
+        id: THREAD_IHOR,
+        peer: { userId: 'fu-2', name: 'Ігор', avatarKey: 'man-1' },
+        updatedAt: '2026-08-24T13:40:00.000Z',
+        lastBody: 'Де саме той парк?',
+        unread: true,
+      },
+    ],
+    messages: {
+      [THREAD_OKSANA]: [
+        {
+          id: 'dm-ok-1',
+          threadId: THREAD_OKSANA,
+          senderId: 'fu-1',
+          body: 'Привіт! Дякую за пораду про корм',
+          createdAt: '2026-08-24T14:18:00.000Z',
+        },
+        {
+          id: 'dm-ok-2',
+          threadId: THREAD_OKSANA,
+          senderId: 'demo-user',
+          body: 'Нема за що! Як Сіра відреагувала?',
+          createdAt: '2026-08-24T14:20:00.000Z',
+        },
+      ],
+      [THREAD_IHOR]: [
+        {
+          id: 'dm-ih-1',
+          threadId: THREAD_IHOR,
+          senderId: 'fu-2',
+          body: 'Де саме той парк?',
+          createdAt: '2026-08-24T13:40:00.000Z',
+        },
+      ],
+    },
+  };
+}
+
 function emptyStore(): Store {
-  return { threads: [], messages: {} };
+  return seedStore();
 }
 
 async function readStore(): Promise<Store> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
-    if (!raw) return emptyStore();
+    if (!raw) {
+      const seed = seedStore();
+      await writeStore(seed);
+      return seed;
+    }
     const parsed = JSON.parse(raw) as Partial<Store>;
     return {
       threads: Array.isArray(parsed.threads) ? parsed.threads : [],
@@ -76,11 +132,12 @@ function orderedPair(a: string, b: string): [string, string] {
 
 export async function listDmThreads(): Promise<DmThread[]> {
   const me = await getCurrentUser();
-  if (!me) return [];
   const store = await readStore();
   const local = [...store.threads].sort((a, b) =>
     b.updatedAt.localeCompare(a.updatedAt),
   );
+
+  if (!me) return local;
 
   const user = await cloudUser();
   if (!user || !supabase) return local;
@@ -129,7 +186,17 @@ export async function openDmThread(peer: DmPeer): Promise<DmThread> {
   const store = await readStore();
   const existing = store.threads.find((t) => t.peer.userId === peer.userId);
   if (existing) {
-    existing.peer = { ...existing.peer, ...peer };
+    const incomingName = peer.name?.trim();
+    const keepSeedName =
+      !incomingName ||
+      incomingName === 'Користувач' ||
+      incomingName === existing.peer.name;
+    existing.peer = {
+      ...existing.peer,
+      ...peer,
+      name: keepSeedName ? existing.peer.name : incomingName,
+      avatarKey: peer.avatarKey || existing.peer.avatarKey,
+    };
     await writeStore(store);
     return existing;
   }

@@ -7,9 +7,10 @@ import { supabase } from '@/src/services/supabase';
 
 /** Friends: cloud invites/friendships when signed in; seed list stays local. */
 
-const FRIENDS_KEY = 'knowsnout.friends.v1';
-const REQUESTS_KEY = 'knowsnout.friend_requests.v1';
+const FRIENDS_KEY = 'knowsnout.friends.v2';
+const REQUESTS_KEY = 'knowsnout.friend_requests.v2';
 const INVITES_KEY = 'knowsnout.friend_invites.v1';
+const OUTGOING_KEY = 'knowsnout.friend_outgoing.v1';
 
 export type FriendUser = {
   id: string;
@@ -18,6 +19,8 @@ export type FriendUser = {
   bio: string;
   avatarKey: string;
   city?: string;
+  speciesHint?: string;
+  mutualCount?: number;
 };
 
 export type FriendRequest = {
@@ -34,20 +37,23 @@ export type FriendInvite = {
 
 const SEED_FRIENDS: FriendUser[] = [
   {
-    id: 'fu-1',
-    name: 'Ірина К.',
-    handle: '@iryna_pets',
-    bio: 'Дві кішки й один балкон',
+    id: 'seed-marta',
+    name: 'Марта та Тукан',
+    handle: '@marta_tukan',
+    bio: 'Собаки',
     avatarKey: 'woman-1',
-    city: 'Київ',
+    city: 'Варшава',
+    speciesHint: 'Собаки',
   },
   {
-    id: 'fu-2',
-    name: 'Максим',
-    handle: '@rex_walks',
-    bio: 'Ранок = прогулянка з Рексом',
-    avatarKey: 'man-1',
-    city: 'Львів',
+    id: 'fu-1',
+    name: 'Оксана Мельник',
+    handle: '@oksana',
+    bio: 'Волонтерка притулку «На Палюху». Кокер-спанієль і два коти вдома.',
+    avatarKey: 'woman-1',
+    city: 'Варшава',
+    speciesHint: 'Коти',
+    mutualCount: 12,
   },
 ];
 
@@ -56,58 +62,79 @@ const SEED_REQUESTS: FriendRequest[] = [
     id: 'fr-1',
     from: {
       id: 'fu-3',
-      name: 'Оля',
-      handle: '@olia_murka',
-      bio: 'Мурці 4 роки',
-      avatarKey: 'woman-2',
-      city: 'Одеса',
+      name: 'Ігор С.',
+      handle: '@ihor_s',
+      bio: 'Хоче додати тебе в друзі',
+      avatarKey: 'man-1',
+      city: 'Львів',
     },
     createdAt: '2026-08-20T08:00:00.000Z',
+  },
+  {
+    id: 'fr-2',
+    from: {
+      id: 'fu-5',
+      name: 'Соломія В.',
+      handle: '@solomiya',
+      bio: 'Хоче додати тебе в друзі',
+      avatarKey: 'woman-2',
+      city: 'Львів',
+    },
+    createdAt: '2026-08-21T09:00:00.000Z',
+  },
+  {
+    id: 'fr-3',
+    from: {
+      id: 'fu-7',
+      name: 'Андрій К.',
+      handle: '@andriy',
+      bio: 'Хоче додати тебе в друзі',
+      avatarKey: 'man-2',
+      city: 'Одеса',
+    },
+    createdAt: '2026-08-22T09:00:00.000Z',
   },
 ];
 
 const SEARCH_SEED: FriendUser[] = [
   ...SEED_FRIENDS,
   SEED_REQUESTS[0].from,
+  SEED_REQUESTS[1].from,
+  {
+    id: 'fu-2',
+    name: 'Ігор Шевчук',
+    handle: '@ihor',
+    bio: 'Собаки',
+    avatarKey: 'man-1',
+    city: 'Київ',
+    speciesHint: 'Собаки',
+  },
   {
     id: 'fu-4',
-    name: 'Катя',
-    handle: '@katya_baron',
-    bio: 'Барон — зірка липня',
+    name: 'Ярослава К.',
+    handle: '@yaroslava',
+    bio: '2 спільні друзі',
     avatarKey: 'woman-3',
-    city: 'Харків',
+    city: 'Київ',
+    mutualCount: 2,
   },
   {
-    id: 'fu-5',
-    name: 'Діма',
-    handle: '@dima_luna',
-    bio: 'Луна й кава',
+    id: 'fu-6',
+    name: 'Дмитро П.',
+    handle: '@dpetrov',
+    bio: 'Корги, як у тебе',
     avatarKey: 'man-2',
     city: 'Дніпро',
-  },
-  {
-    id: 'seed-iryna',
-    name: 'Iryna',
-    handle: '@iryna',
-    bio: 'Сонячні коти',
-    avatarKey: 'woman-1',
-    city: 'Київ',
-  },
-  {
-    id: 'seed-andrii',
-    name: 'Andrii',
-    handle: '@andrii',
-    bio: 'Белла й іграшки',
-    avatarKey: 'man-1',
-    city: 'Львів',
+    speciesHint: 'Корги',
   },
   {
     id: 'seed-marta',
-    name: 'Marta',
-    handle: '@marta',
-    bio: 'Рекс після дощу',
-    avatarKey: 'woman-2',
-    city: 'Одеса',
+    name: 'Марта та Тукан',
+    handle: '@marta_tukan',
+    bio: 'Власниця корги',
+    avatarKey: 'woman-1',
+    city: 'Варшава',
+    speciesHint: 'Собаки',
   },
 ];
 
@@ -231,17 +258,51 @@ export async function removeFriend(userId: string): Promise<void> {
 }
 
 export async function searchUsers(query: string): Promise<FriendUser[]> {
+  const hits = await searchPeople(query);
+  return hits.map((h) => h.user);
+}
+
+export type PeopleRelation = 'friends' | 'invited' | 'none';
+
+export async function listOutgoingIds(): Promise<string[]> {
+  return readJson<string[]>(OUTGOING_KEY, ['fu-6']);
+}
+
+export async function searchPeople(
+  query: string,
+): Promise<{ user: FriendUser; relation: PeopleRelation }[]> {
   const q = query.trim().toLowerCase();
-  const friends = await listFriends();
+  const [friends, outgoing] = await Promise.all([
+    listFriends(),
+    listOutgoingIds(),
+  ]);
   const friendIds = new Set(friends.map((f) => f.id));
-  const pool = SEARCH_SEED.filter((u) => !friendIds.has(u.id));
-  if (!q) return pool;
-  return pool.filter(
-    (u) =>
-      u.name.toLowerCase().includes(q) ||
-      u.handle.toLowerCase().includes(q) ||
-      u.bio.toLowerCase().includes(q),
-  );
+  const outSet = new Set(outgoing);
+  const pool: FriendUser[] = [];
+  const seen = new Set<string>();
+  for (const u of [...friends, ...SEARCH_SEED]) {
+    if (seen.has(u.id)) continue;
+    seen.add(u.id);
+    pool.push(u);
+  }
+  const filtered = q
+    ? pool.filter(
+        (u) =>
+          u.name.toLowerCase().includes(q) ||
+          u.handle.toLowerCase().includes(q) ||
+          u.bio.toLowerCase().includes(q),
+      )
+    : ['fu-4', 'fu-6', 'seed-marta']
+        .map((id) => pool.find((u) => u.id === id))
+        .filter(Boolean) as FriendUser[];
+  return filtered.map((user) => ({
+    user,
+    relation: friendIds.has(user.id)
+      ? 'friends'
+      : outSet.has(user.id)
+        ? 'invited'
+        : 'none',
+  }));
 }
 
 export async function sendFriendRequest(userId: string): Promise<boolean> {
@@ -269,8 +330,15 @@ export async function sendFriendRequest(userId: string): Promise<boolean> {
   const toAdd =
     user ??
     friendFromUuid(userId);
-  friends.push(toAdd);
-  await writeJson(FRIENDS_KEY, friends);
+  const outgoing = await listOutgoingIds();
+  if (!outgoing.includes(userId)) {
+    await writeJson(OUTGOING_KEY, [...outgoing, userId]);
+  }
+  // Seed demo: keep "invited" until they accept incoming; don't auto-friend.
+  if (isUuid(userId)) {
+    friends.push(toAdd);
+    await writeJson(FRIENDS_KEY, friends);
+  }
   return true;
 }
 

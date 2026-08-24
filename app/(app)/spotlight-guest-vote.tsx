@@ -1,241 +1,115 @@
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useState } from 'react';
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Linking, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import {
   castGuestVote,
-  getSpotlightContest,
   listEntriesForContest,
-  listGuestVotedEntryIds,
   listSpotlightContests,
-  type SpotlightContest,
-  type SpotlightEntry,
 } from '@/src/services/spotlight';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** Screenshot 04.24 — guest landing (in-app), same as public /vote */
 export default function SpotlightGuestVoteScreen() {
-  const { contestId: contestIdParam } = useLocalSearchParams<{
-    contestId?: string;
-  }>();
-  const contests = listSpotlightContests();
-  const initialId =
-    (typeof contestIdParam === 'string' && contestIdParam) ||
-    contests.find((c) => c.status === 'active')?.id ||
-    contests[0]?.id ||
-    '';
+  const name = 'Тукана';
 
-  const [contestId, setContestId] = useState(initialId);
-  const [entries, setEntries] = useState<SpotlightEntry[]>([]);
-  const [voted, setVoted] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(true);
-  const [votingId, setVotingId] = useState<string | null>(null);
-
-  const contest: SpotlightContest | null = contestId
-    ? getSpotlightContest(contestId)
-    : null;
-
-  const load = useCallback(async () => {
-    if (!contestId) {
-      setEntries([]);
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    try {
-      const [list, ids] = await Promise.all([
-        listEntriesForContest(contestId),
-        listGuestVotedEntryIds(contestId),
-      ]);
-      setEntries(list);
-      setVoted(ids);
-    } finally {
-      setLoading(false);
-    }
-  }, [contestId]);
-
-  useFocusEffect(
-    useCallback(() => {
-      void load();
-    }, [load]),
-  );
-
-  const onVote = async (entryId: string) => {
-    setVotingId(entryId);
-    try {
-      const ok = await castGuestVote(entryId);
-      notify(
-        t('common.ok'),
-        ok ? t('spotlight.guestVoteDone') : t('spotlight.guestVoteAlready'),
-      );
-      await load();
-    } finally {
-      setVotingId(null);
-    }
+  const onVote = async () => {
+    const contest = listSpotlightContests()[0];
+    if (!contest) return;
+    const entries = await listEntriesForContest(contest.id);
+    const tukan = entries.find((e) => e.petName === 'Тукан') ?? entries[0];
+    if (!tukan) return;
+    const ok = await castGuestVote(tukan.id);
+    notify(
+      t('common.ok'),
+      ok ? t('spotlight.guestVoteDone') : t('spotlight.guestVoteAlready'),
+    );
   };
 
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.pad}>
-          <ScreenHeader
-            title={t('spotlight.guestVoteTitle')}
-            subtitle={t('spotlight.guestVoteSubtitle')}
-          />
-
-          <Text style={styles.section}>{t('spotlight.pickContest')}</Text>
-          <View style={styles.chips}>
-            {contests.map((c) => {
-              const active = c.id === contestId;
-              return (
-                <Pressable
-                  key={c.id}
-                  onPress={() => setContestId(c.id)}
-                  style={[styles.chip, active && styles.chipActive]}
-                >
-                  <Text
-                    style={[styles.chipText, active && styles.chipTextActive]}
-                  >
-                    {c.title}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-
-          {contest ? <Text style={styles.brief}>{contest.brief}</Text> : null}
-
-          <PrimaryButton
-            label={t('spotlight.openPublicVote')}
-            variant="secondary"
-            onPress={() =>
-              router.push({
-                pathname: '/spotlight-vote',
-                params: contestId ? { contestId } : {},
-              } as never)
-            }
-          />
-          <View style={styles.gap} />
-
-          {loading ? (
-            <LoadingState message={t('spotlight.guestVoteLoading')} />
-          ) : entries.length === 0 ? (
-            <Text style={styles.empty}>{t('spotlight.rankingEmpty')}</Text>
-          ) : (
-            entries.map((e, i) => {
-              const already = voted.has(e.id);
-              return (
-                <View key={e.id} style={styles.card}>
-                  <View style={styles.cardTop}>
-                    <Ionicons name="heart" size={20} color={brand.rose} />
-                    <View style={styles.cardBody}>
-                      <Text style={styles.cardTitle}>
-                        #{i + 1} {e.petName}
-                      </Text>
-                      <Text style={styles.cardCaption}>{e.caption}</Text>
-                      <Text style={styles.cardMeta}>
-                        {e.author} · {e.votes} {t('spotlight.votes')}
-                      </Text>
-                    </View>
-                  </View>
-                  <PrimaryButton
-                    label={
-                      already
-                        ? t('spotlight.guestVoted')
-                        : t('spotlight.guestVoteCta')
-                    }
-                    size="sm"
-                    variant={already ? 'secondary' : 'primary'}
-                    loading={votingId === e.id}
-                    disabled={already}
-                    onPress={() => void onVote(e.id)}
-                  />
-                </View>
-              );
-            })
-          )}
+      <View style={styles.pad}>
+        <Text style={styles.url}>knowsnout.app/vote</Text>
+        <Text style={styles.title}>{t('spotlight.voteFor', { name })}</Text>
+        <View style={styles.photo}>
+          <Ionicons name="image-outline" size={32} color={brand.mutedSoft} />
+          <Text style={styles.photoT}>{t('spotlight.entryPhoto')}</Text>
         </View>
-      </ScrollView>
+        <Text style={styles.count}>{t('spotlight.votesNow', { n: '128' })}</Text>
+        <PrimaryButton
+          label={t('spotlight.guestVoteCta')}
+          size="lg"
+          icon={<Ionicons name="paw" size={16} color="#FFFFFF" />}
+          onPress={() => void onVote()}
+        />
+        <Text style={styles.foot}>
+          {t('spotlight.guestFoot')}{' '}
+          <Text
+            style={styles.link}
+            onPress={() => void Linking.openURL('https://knowsnout.app')}
+          >
+            {t('spotlight.downloadApp')}
+          </Text>{' '}
+          {t('spotlight.guestFootEnd')}
+        </Text>
+      </View>
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  section: {
-    marginBottom: 8,
-    fontFamily: fonts.bodyBold,
-    fontSize: 12,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    color: brand.forest,
+  pad: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 6,
+    gap: 14,
+    alignItems: 'center',
   },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
-  chip: {
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    backgroundColor: brand.mist,
+  url: {
+    textAlign: 'center',
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
+    letterSpacing: 0.6,
+    color: brand.mutedSoft,
   },
-  chipActive: { backgroundColor: brand.navy },
-  chipText: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 13,
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
     color: brand.ink,
-  },
-  chipTextActive: { color: '#FFFFFF' },
-  brief: {
-    marginBottom: 14,
-    fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 18,
-    color: brand.muted,
-  },
-  empty: {
-    marginTop: 12,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.forest,
-  },
-  gap: { height: 12 },
-  card: {
-    marginBottom: 12,
-    borderRadius: 16,
-        backgroundColor: brand.surfaceElevated,
-    padding: 14,
-    gap: 12,
-  },
-  cardTop: { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
-  cardBody: { flex: 1 },
-  cardTitle: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: brand.ink,
-  },
-  cardCaption: {
-    marginTop: 4,
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.muted,
-  },
-  cardMeta: {
+    textAlign: 'center',
     marginTop: 6,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: brand.forest,
   },
+  photo: {
+    width: '100%',
+    height: 220,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  photoT: { fontFamily: fonts.body, fontSize: 13, color: brand.mutedSoft },
+  count: {
+    textAlign: 'center',
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  foot: {
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 11.5,
+    color: brand.muted,
+    lineHeight: 18,
+    marginTop: 4,
+  },
+  link: { textDecorationLine: 'underline', color: brand.accent },
 });

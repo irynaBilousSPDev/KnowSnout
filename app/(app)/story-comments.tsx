@@ -33,7 +33,10 @@ import type { StoryComment, StoryPost } from '@/src/types/story';
 /** HTML phone “24 · Коментарі під постом”. */
 export default function StoryCommentsScreen() {
   const params = useLocalSearchParams<{ postId?: string }>();
-  const postId = typeof params.postId === 'string' ? params.postId : undefined;
+  const postId =
+    typeof params.postId === 'string' && params.postId.trim()
+      ? params.postId
+      : 'seed-park';
 
   const [post, setPost] = useState<StoryPost | null>(null);
   const [comments, setComments] = useState<StoryComment[]>([]);
@@ -43,11 +46,6 @@ export default function StoryCommentsScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    if (!postId) {
-      setError(t('stories.postNotFound'));
-      setLoading(false);
-      return;
-    }
     setLoading(true);
     setError(null);
     try {

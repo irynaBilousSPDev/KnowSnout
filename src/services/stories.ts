@@ -21,10 +21,32 @@ import type {
   StorySpecies,
 } from '@/src/types/story';
 
-const LOCAL_KEY = 'knowsnout.story_posts.v1';
-const LOCAL_COMMENTS_KEY = 'knowsnout.story_comments.v1';
+const LOCAL_KEY = 'knowsnout.story_posts.v2';
+const LOCAL_COMMENTS_KEY = 'knowsnout.story_comments.v2';
 
 const SEED_POSTS: StoryPost[] = [
+  {
+    id: 'seed-park',
+    userId: 'seed-marta',
+    author: 'Марта',
+    petName: 'Тукан',
+    species: 'dog',
+    avatarKey: 'woman-1',
+    caption: 'Знайшли новий парк для вигулу біля Оболоні!',
+    imageUri: null,
+    imagePath: null,
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    likes: 48,
+    liked: true,
+    commentsCount: 12,
+    mine: false,
+    privacy: 'public',
+    petId: null,
+    taggedPetIds: [],
+    taggedFriendIds: [],
+    taggedPetNames: [],
+    taggedFriendNames: [],
+  },
   {
     id: 'seed-1',
     userId: 'seed-iryna',
@@ -47,45 +69,25 @@ const SEED_POSTS: StoryPost[] = [
     taggedPetNames: [],
     taggedFriendNames: ['Ірина К.'],
   },
-  {
-    id: 'seed-2',
-    userId: 'seed-andrii',
-    author: 'Andrii',
-    petName: 'Белла',
-    species: 'cat',
-    avatarKey: 'cat-2',
-    caption: 'Нова іграшка — і нуль спокою вдома',
-    imageUri: null,
-    imagePath: null,
-    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    likes: 8,
-    liked: true,
-    commentsCount: 0,
-    mine: false,
-    privacy: 'public',
-    petId: null,
-  },
-  {
-    id: 'seed-3',
-    userId: 'seed-marta',
-    author: 'Marta',
-    petName: 'Рекс',
-    species: 'dog',
-    avatarKey: 'dog-1',
-    caption: 'Перша прогулянка після дощу',
-    imageUri: null,
-    imagePath: null,
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    likes: 21,
-    liked: false,
-    commentsCount: 2,
-    mine: false,
-    privacy: 'public',
-    petId: null,
-  },
 ];
 
 const SEED_COMMENTS: StoryComment[] = [
+  {
+    id: 'seed-c-park-1',
+    postId: 'seed-park',
+    userId: 'fu-1',
+    author: 'Оксана',
+    body: 'Який милий парк 😍',
+    createdAt: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'seed-c-park-2',
+    postId: 'seed-park',
+    userId: 'fu-2',
+    author: 'Ігор',
+    body: 'Де саме це, підкажіть адресу?',
+    createdAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+  },
   {
     id: 'seed-c1',
     postId: 'seed-1',
@@ -93,22 +95,6 @@ const SEED_COMMENTS: StoryComment[] = [
     author: 'Оля',
     body: 'Яка красуня 💛',
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    id: 'seed-c2',
-    postId: 'seed-3',
-    userId: 'seed-igor',
-    author: 'Ігор',
-    body: 'Гарна прогулянка!',
-    createdAt: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
-  },
-  {
-    id: 'seed-c3',
-    postId: 'seed-3',
-    userId: 'seed-anya',
-    author: 'Аня',
-    body: 'Рекс зірка 🐶',
-    createdAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
   },
 ];
 
@@ -320,10 +306,10 @@ function withLocalCommentCounts(
   }
   return posts.map((p) => ({
     ...p,
-    commentsCount:
-      p.id.startsWith('seed-') && !counts.has(p.id)
-        ? p.commentsCount
-        : (counts.get(p.id) ?? p.commentsCount ?? 0),
+    commentsCount: Math.max(
+      counts.get(p.id) ?? 0,
+      p.commentsCount ?? 0,
+    ),
   }));
 }
 

@@ -63,12 +63,14 @@ Status: `organic` | `stub` | `missing` · Variant 12 remap = later
 
 | Screen | Status | Route |
 |--|--|--|
-| Feed / comments / DM | done | stories, story-comments, messages |
-| Contests scaffold | done | contests, contest-entry |
-| Spotlight rules / ranking / winners | done | spotlight-hub, spotlight-rules, spotlight-apply, spotlight-ranking, spotlight-winners, spotlight-won |
-| Friends graph | done | friends, friend-requests, friend-search |
-| Walks | done | walk-plan |
-| Activity / global search | done | activity, search |
+| Feed / comments / DM | done | stories, story-comments **04.02**, messages **04.13**, dm **04.14+04.16** |
+| Spotlight hub → guest vote | done | **04.17–04.24** hub/rules/apply/entry/ranking/winners/won/guest-vote |
+| Friends graph | done | friends **04.08**, friend-requests **04.10**, friend-search **04.09** |
+| Invite QR | done | friend-invite **04.11** |
+| Other user + my profile | done | user-profile **04.12**, my-profile **04.25** |
+| Walks | done | walk-plan **04.15**, invite card in DM **04.16** |
+| Activity / global search | done | activity **04.26**, search **04.07** |
+| Post / compose / comments / tag | done | story-post **04.01**, story-compose **04.03**, story-tag **04.04**, story-comments **04.02** |
 
 ## Wave 4 — Спільнота
 

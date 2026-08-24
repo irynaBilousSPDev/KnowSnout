@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   chipActive: {
-    backgroundColor: brand.sageTint,
-    borderColor: brand.sage,
+    backgroundColor: brand.accentTint,
+    borderColor: brand.accentBorder,
   },
   label: {
     fontFamily: fonts.bodySemi,
@@ -65,6 +65,6 @@ const styles = StyleSheet.create({
     color: brand.muted,
   },
   labelActive: {
-    color: brand.sageDeep,
+    color: brand.accent,
   },
 });

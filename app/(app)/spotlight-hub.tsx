@@ -14,6 +14,7 @@ import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import {
+  SPOTLIGHT_PARTICIPANT_COUNT,
   listEntriesForContest,
   listSpotlightContests,
   type SpotlightContest,
@@ -26,7 +27,7 @@ function daysLeft(endsAt: string): number {
   return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
 }
 
-/** HTML phone “25 · SnoutSpotlight, хаб конкурсів”. */
+/** Screenshot 04.17 */
 export default function SpotlightHubScreen() {
   const [contests, setContests] = useState<SpotlightContest[]>([]);
   const [preview, setPreview] = useState<SpotlightEntry[]>([]);
@@ -54,26 +55,35 @@ export default function SpotlightHubScreen() {
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.titlePad}>
-          <Text style={styles.title}>{t('spotlight.title')}</Text>
-        </View>
-
         <View style={styles.pad}>
+          <Text style={styles.title}>{t('spotlight.title')}</Text>
+
           {active ? (
-            <View style={styles.activeCard}>
-              <View style={styles.activeChip}>
-                <Text style={styles.activeChipText}>
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/spotlight-rules',
+                  params: { contestId: active.id },
+                } as never)
+              }
+              style={styles.activeCard}
+            >
+              <View style={styles.activeChipWrap}>
+                <Text style={styles.activeChip}>
                   {t('spotlight.activeContest')}
                 </Text>
               </View>
-              <Text style={styles.activeTitle}>{active.title}</Text>
+              <View style={styles.activeTitleRow}>
+                <Text style={styles.activeTitle}>{active.title}</Text>
+                <Ionicons name="paw" size={16} color={brand.accent} />
+              </View>
               <Text style={styles.activeMeta}>
                 {t('spotlight.hubMeta', {
-                  days: String(left),
-                  count: String(preview.length || 214),
+                  days: String(left || 2),
+                  count: String(SPOTLIGHT_PARTICIPANT_COUNT),
                 })}
               </Text>
-            </View>
+            </Pressable>
           ) : null}
 
           <View style={styles.grid}>
@@ -81,89 +91,35 @@ export default function SpotlightHubScreen() {
               <Pressable
                 key={entry?.id ?? `slot-${i}`}
                 style={styles.gridCell}
-                onPress={() =>
+                onPress={() => {
+                  if (entry) {
+                    router.push({
+                      pathname: '/(app)/spotlight-entry',
+                      params: { id: entry.id },
+                    } as never);
+                    return;
+                  }
                   router.push({
                     pathname: '/(app)/spotlight-ranking',
                     params: { contestId: active?.id ?? '' },
-                  } as never)
-                }
+                  } as never);
+                }}
               >
-                {entry ? (
-                  <View style={styles.gridFill}>
-                    <Ionicons name="paw" size={28} color={brand.accentSoft} />
-                    <Text style={styles.gridName} numberOfLines={1}>
-                      {entry.petName}
-                    </Text>
-                  </View>
-                ) : (
-                  <Ionicons
-                    name="image-outline"
-                    size={28}
-                    color={brand.mutedSoft}
-                  />
-                )}
+                <Ionicons name="image-outline" size={26} color={brand.mutedSoft} />
+                <Text style={styles.gridLabel}>{t('spotlight.participantSlot')}</Text>
               </Pressable>
             ))}
           </View>
 
           <PrimaryButton
             label={t('spotlight.applyCta')}
-            onPress={() => router.push('/(app)/spotlight-apply' as never)}
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/spotlight-rules',
+                params: { contestId: active?.id ?? '' },
+              } as never)
+            }
           />
-
-          <View style={styles.links}>
-            <Pressable
-              style={styles.linkRow}
-              onPress={() => router.push('/(app)/spotlight-rules' as never)}
-            >
-              <Text style={styles.linkText}>{t('spotlight.openRules')}</Text>
-              <Ionicons
-                name="chevron-forward"
-                size={16}
-                color={brand.mutedSoft}
-              />
-            </Pressable>
-            <Pressable
-              style={styles.linkRow}
-              onPress={() =>
-                router.push({
-                  pathname: '/(app)/spotlight-ranking',
-                  params: { contestId: active?.id ?? '' },
-                } as never)
-              }
-            >
-              <Text style={styles.linkText}>{t('spotlight.rankingTitle')}</Text>
-              <Ionicons
-                name="chevron-forward"
-                size={16}
-                color={brand.mutedSoft}
-              />
-            </Pressable>
-            <Pressable
-              style={styles.linkRow}
-              onPress={() => router.push('/(app)/spotlight-winners' as never)}
-            >
-              <Text style={styles.linkText}>{t('spotlight.winnersTitle')}</Text>
-              <Ionicons
-                name="chevron-forward"
-                size={16}
-                color={brand.mutedSoft}
-              />
-            </Pressable>
-            <Pressable
-              style={styles.linkRow}
-              onPress={() => router.push('/spotlight-vote' as never)}
-            >
-              <Text style={styles.linkText}>
-                {t('spotlight.guestVoteLink')}
-              </Text>
-              <Ionicons
-                name="chevron-forward"
-                size={16}
-                color={brand.mutedSoft}
-              />
-            </Pressable>
-          </View>
         </View>
       </ScrollView>
     </AppScreen>
@@ -171,54 +127,46 @@ export default function SpotlightHubScreen() {
 }
 
 const styles = StyleSheet.create({
-  titlePad: {
-    paddingHorizontal: 20,
-    paddingTop: 14,
-    paddingBottom: 8,
-  },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40, gap: 16 },
   title: {
     fontFamily: fonts.title,
     fontSize: 22,
     lineHeight: 28,
     color: brand.ink,
   },
-  pad: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    gap: 14,
-  },
   activeCard: {
-    borderRadius: brand.radius.md,
+    borderRadius: 16,
     backgroundColor: brand.accentTint,
     padding: 14,
     gap: 6,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+  },
+  activeChipWrap: {
+    alignSelf: 'flex-start',
+    borderRadius: 999,
+    backgroundColor: '#FFF6E5',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
   },
   activeChip: {
-    alignSelf: 'flex-start',
-    borderRadius: brand.radius.pill,
-    backgroundColor: brand.accentTint,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    fontFamily: fonts.bodySemi,
+    fontSize: 12,
+    color: brand.accent,
   },
-  activeChipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12.5,
-    color: brand.accentDark,
+  activeTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flexWrap: 'wrap',
   },
   activeTitle: {
     fontFamily: fonts.bodyBold,
     fontSize: 16,
-    color: brand.accentDark,
+    color: brand.accent,
   },
   activeMeta: {
     fontFamily: fonts.body,
     fontSize: 12.5,
-    color: brand.accentDark,
+    color: brand.accent,
   },
   grid: {
     flexDirection: 'row',
@@ -226,50 +174,20 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   gridCell: {
-    width: '47.5%',
-    aspectRatio: 1.35,
-    borderRadius: 16,
+    width: '47.8%',
+    height: 120,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
     backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  gridFill: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
     gap: 6,
-    padding: 10,
   },
-  gridName: {
-    fontFamily: fonts.bodySemi,
-    fontSize: 12,
-    color: brand.ink,
-  },
-  links: {
-    marginTop: 4,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    overflow: 'hidden',
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
-  },
-  linkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: brand.divider,
-  },
-  linkText: {
+  gridLabel: {
     fontFamily: fonts.body,
-    fontSize: 13.5,
-    color: brand.ink,
+    fontSize: 12,
+    color: brand.mutedSoft,
   },
 });

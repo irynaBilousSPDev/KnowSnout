@@ -44,6 +44,11 @@ function normalizeProfile(
     gender: raw.gender ?? 'unspecified',
     avatar_key: raw.avatar_key ?? 'person-1',
     avatar_uri: raw.avatar_uri ?? null,
+    cover_uri: raw.cover_uri ?? null,
+    handle: raw.handle ?? null,
+    bio: raw.bio ?? null,
+    languages: raw.languages ?? 'UA укр • PL пол',
+    privacy_friends_only: raw.privacy_friends_only ?? false,
     updated_at: raw.updated_at ?? new Date().toISOString(),
   };
 }
@@ -51,11 +56,16 @@ function normalizeProfile(
 function emptyProfile(userId: string): UserProfile {
   return {
     user_id: userId,
-    display_name: null,
-    city: null,
-    gender: 'unspecified',
-    avatar_key: 'person-1',
+    display_name: 'Марта Ковальчук',
+    city: 'Варшава',
+    gender: 'woman',
+    avatar_key: 'woman-1',
     avatar_uri: null,
+    cover_uri: null,
+    handle: 'marta.k',
+    bio: null,
+    languages: 'Українська',
+    privacy_friends_only: false,
     updated_at: new Date().toISOString(),
   };
 }
@@ -94,6 +104,18 @@ export async function saveUserProfile(
     }
   }
 
+  let cover_uri =
+    input.cover_uri !== undefined ? input.cover_uri : prev.cover_uri;
+  if (cover_uri) {
+    try {
+      cover_uri = await persistLocalImage(cover_uri, 'user-cover');
+    } catch {
+      if (input.cover_uri === undefined) {
+        cover_uri = prev.cover_uri;
+      }
+    }
+  }
+
   const next: UserProfile = {
     user_id: user.id,
     display_name:
@@ -105,6 +127,18 @@ export async function saveUserProfile(
     gender,
     avatar_key,
     avatar_uri,
+    cover_uri,
+    handle:
+      input.handle !== undefined
+        ? input.handle?.trim().replace(/^@/, '') || null
+        : prev.handle,
+    bio: input.bio !== undefined ? input.bio?.trim() || null : prev.bio,
+    languages:
+      input.languages !== undefined
+        ? input.languages?.trim() || null
+        : prev.languages,
+    privacy_friends_only:
+      input.privacy_friends_only ?? prev.privacy_friends_only,
     updated_at: new Date().toISOString(),
   };
 

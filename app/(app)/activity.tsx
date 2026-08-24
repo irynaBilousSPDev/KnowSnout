@@ -1,10 +1,10 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
 import { listActivityFeed, type ActivityItem } from '@/src/services/activity';
 import { brand, fonts } from '@/src/theme/brand';
@@ -19,26 +19,13 @@ function relativeTime(iso: string): string {
   return t('activity.daysAgo', { count: String(d) });
 }
 
-function iconFor(kind: ActivityItem['kind']): keyof typeof Ionicons.glyphMap {
-  switch (kind) {
-    case 'like':
-      return 'heart';
-    case 'comment':
-      return 'chatbubble';
-    case 'follow':
-      return 'person-add';
-    case 'contest':
-      return 'trophy';
-    case 'walk':
-      return 'walk';
-    case 'friend':
-      return 'people';
-    default:
-      return 'notifications';
-  }
-}
+const AVATARS: Record<string, string> = {
+  Ігор: 'man-1',
+  Оксана: 'woman-1',
+  Марта: 'woman-2',
+};
 
-/** HTML · Активність. */
+/** Screenshot 04.26 */
 export default function ActivityScreen() {
   const [items, setItems] = useState<ActivityItem[]>([]);
 
@@ -56,26 +43,22 @@ export default function ActivityScreen() {
       </View>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          {items.map((item, index) => {
-            const isNew = index === 0;
+          {items.map((item) => {
+            const isNew = item.kind === 'follow';
             return (
               <View
                 key={item.id}
                 style={[styles.card, isNew && styles.cardNew]}
               >
-                <View style={[styles.avatar, isNew && styles.avatarNew]}>
-                  <Ionicons
-                    name={iconFor(item.kind)}
-                    size={16}
-                    color={isNew ? brand.accentDark : brand.muted}
-                  />
-                </View>
-                <View style={styles.copy}>
-                  <Text style={styles.body}>
-                    <Text style={styles.strong}>{item.title}</Text>
-                    {item.body ? ` ${item.body}` : ''}
-                  </Text>
-                </View>
+                <UserAvatar
+                  avatarKey={AVATARS[item.title] ?? 'paw'}
+                  size={36}
+                  name={item.title}
+                />
+                <Text style={styles.body}>
+                  <Text style={styles.strong}>{item.title}</Text>
+                  {item.body ? ` ${item.body}` : ''}
+                </Text>
                 <Text style={[styles.time, isNew && styles.timeNew]}>
                   {isNew ? t('activity.badgeNew') : relativeTime(item.createdAt)}
                 </Text>
@@ -92,73 +75,28 @@ export default function ActivityScreen() {
 }
 
 const styles = StyleSheet.create({
-  titlePad: {
-    paddingHorizontal: 20,
-    paddingTop: 14,
-    paddingBottom: 8,
-  },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 20,
-    lineHeight: 26,
-    color: brand.ink,
-  },
-  pad: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    gap: 10,
-  },
+  titlePad: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 8 },
+  title: { fontFamily: fonts.title, fontSize: 20, color: brand.ink },
+  pad: { paddingHorizontal: 20, paddingBottom: 40, gap: 10 },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    borderRadius: brand.radius.md,
+    borderRadius: 16,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
   },
-  cardNew: {
-    backgroundColor: brand.accentTint,
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: brand.creamDeep,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarNew: {
-    backgroundColor: brand.accentBorder,
-  },
-  copy: { flex: 1, minWidth: 0 },
-  body: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 18,
-    color: brand.ink,
-  },
-  strong: {
-    fontFamily: fonts.bodyBold,
-  },
-  time: {
-    fontFamily: fonts.body,
-    fontSize: 11,
-    color: brand.mutedSoft,
-  },
-  timeNew: {
-    color: brand.accentDark,
-    fontFamily: fonts.bodyBold,
-  },
+  cardNew: { backgroundColor: brand.accentTint },
+  body: { flex: 1, fontFamily: fonts.body, fontSize: 13, color: brand.ink },
+  strong: { fontFamily: fonts.bodyBold },
+  time: { fontFamily: fonts.body, fontSize: 11, color: brand.mutedSoft },
+  timeNew: { color: brand.accent, fontFamily: fonts.bodySemi },
   empty: {
+    textAlign: 'center',
+    marginTop: 24,
     fontFamily: fonts.body,
     fontSize: 14,
     color: brand.muted,
-    marginTop: 12,
   },
 });

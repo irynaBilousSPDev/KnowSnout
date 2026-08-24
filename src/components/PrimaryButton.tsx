@@ -7,6 +7,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import type { ReactNode } from 'react';
 
 import { brand, fonts } from '@/src/theme/brand';
 
@@ -22,6 +23,8 @@ type Props = {
   size?: Size;
   block?: boolean;
   style?: StyleProp<ViewStyle>;
+  /** Optional leading icon (e.g. share / paw from HTML frames). */
+  icon?: ReactNode;
 };
 
 /** HTML kit CTA — pill, accent teal, h~46–48. */
@@ -34,6 +37,7 @@ export function PrimaryButton({
   size = 'md',
   block = true,
   style,
+  icon,
 }: Props) {
   const dim = Boolean(disabled || loading);
   const sizeStyle =
@@ -67,18 +71,21 @@ export function PrimaryButton({
             color={variant === 'primary' ? '#FFFFFF' : brand.accent}
           />
         ) : (
-          <Text
-            style={[
-              styles.label,
-              size === 'sm' && styles.labelSm,
-              variant === 'primary' && styles.labelPrimary,
-              variant === 'secondary' && styles.labelSecondary,
-              variant === 'ghost' && styles.labelGhost,
-              variant === 'danger' && styles.labelDanger,
-            ]}
-          >
-            {label}
-          </Text>
+          <View style={styles.row}>
+            {icon ? <View style={styles.icon}>{icon}</View> : null}
+            <Text
+              style={[
+                styles.label,
+                size === 'sm' && styles.labelSm,
+                variant === 'primary' && styles.labelPrimary,
+                variant === 'secondary' && styles.labelSecondary,
+                variant === 'ghost' && styles.labelGhost,
+                variant === 'danger' && styles.labelDanger,
+              ]}
+            >
+              {label}
+            </Text>
+          </View>
         )}
       </View>
     </Pressable>
@@ -114,6 +121,13 @@ const styles = StyleSheet.create({
   },
   dimmed: { opacity: 0.45 },
   pressed: { opacity: 0.9 },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  icon: { marginTop: 1 },
   label: {
     fontFamily: fonts.bodyBold,
     fontSize: 14,

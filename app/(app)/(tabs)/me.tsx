@@ -1,6 +1,6 @@
 import { Redirect } from 'expo-router';
 
-/** Legacy tab route — profile lives opposite the logo as «Мої дані». */
+/** Profile lives on 04.25 my-profile; account settings stay at my-data. */
 export default function MeTabRedirect() {
-  return <Redirect href="/(app)/my-data" />;
+  return <Redirect href="/(app)/my-profile" />;
 }

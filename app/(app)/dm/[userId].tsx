@@ -19,6 +19,7 @@ import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
+import { notify } from '@/src/lib/notify';
 import {
   listDmMessages,
   openDmThread,
@@ -36,12 +37,14 @@ export default function DmThreadScreen() {
     avatarKey?: string;
   }>();
   const peerId = typeof params.userId === 'string' ? params.userId : '';
-  const peerName =
+  const paramName =
     typeof params.name === 'string' && params.name.trim()
-      ? params.name
-      : t('dm.unknownPeer');
+      ? params.name.trim()
+      : '';
   const avatarKey =
     typeof params.avatarKey === 'string' ? params.avatarKey : 'paw';
+  const seedName =
+    peerId === 'fu-1' ? 'Оксана' : peerId === 'fu-2' ? 'Ігор' : '';
 
   const [thread, setThread] = useState<DmThread | null>(null);
   const [messages, setMessages] = useState<DmMessage[]>([]);
@@ -49,6 +52,10 @@ export default function DmThreadScreen() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [walkOpen, setWalkOpen] = useState(true);
+
+  const peerName =
+    thread?.peer.name || paramName || seedName || t('dm.unknownPeer');
 
   const load = useCallback(async () => {
     if (!peerId) {
@@ -61,7 +68,7 @@ export default function DmThreadScreen() {
     try {
       const nextThread = await openDmThread({
         userId: peerId,
-        name: peerName,
+        name: paramName || seedName || t('dm.unknownPeer'),
         avatarKey,
       });
       setThread(nextThread);
@@ -71,7 +78,7 @@ export default function DmThreadScreen() {
     } finally {
       setLoading(false);
     }
-  }, [peerId, peerName, avatarKey]);
+  }, [peerId, paramName, seedName, avatarKey]);
 
   useFocusEffect(
     useCallback(() => {
@@ -79,6 +86,15 @@ export default function DmThreadScreen() {
     }, [load]),
   );
 
+  const showWalkInvite = peerId === 'fu-1' && walkOpen;
+
+  const onWalkReply = async (coming: boolean) => {
+    setWalkOpen(false);
+    notify(
+      t('common.ok'),
+      coming ? t('walks.comingDone') : t('walks.cantDone'),
+    );
+  };
   const send = async () => {
     if (!thread || !draft.trim() || sending) return;
     setSending(true);
@@ -124,6 +140,32 @@ export default function DmThreadScreen() {
           data={messages}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
+          ListHeaderComponent={
+            showWalkInvite ? (
+              <View style={styles.walkCard}>
+                <View style={styles.walkKickerRow}>
+                  <Ionicons name="calendar-outline" size={15} color={brand.accent} />
+                  <Text style={styles.walkKicker}>{t('walks.kindWalk')}</Text>
+                </View>
+                <Text style={styles.walkTitle}>{t('walks.invitePlace')}</Text>
+                <Text style={styles.walkMeta}>{t('walks.inviteWhen')}</Text>
+                <View style={styles.walkRow}>
+                  <Pressable
+                    onPress={() => void onWalkReply(true)}
+                    style={styles.walkOk}
+                  >
+                    <Text style={styles.walkOkT}>{t('walks.coming')}</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => void onWalkReply(false)}
+                    style={styles.walkGhost}
+                  >
+                    <Text style={styles.walkGhostT}>{t('walks.cant')}</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ) : null
+          }
           ListEmptyComponent={
             <Text style={styles.empty}>{t('dm.threadEmpty')}</Text>
           }
@@ -264,4 +306,46 @@ const styles = StyleSheet.create({
   sendIconDisabled: {
     opacity: 0.45,
   },
+  walkCard: {
+    alignSelf: 'flex-start',
+    width: '82%',
+    backgroundColor: brand.surfaceElevated,
+    borderRadius: 16,
+    padding: 14,
+    gap: 8,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 2,
+  },
+  walkKickerRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  walkKicker: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 12.5,
+    color: brand.accent,
+  },
+  walkTitle: { fontFamily: fonts.bodyBold, fontSize: 13.5, color: brand.ink },
+  walkMeta: { fontFamily: fonts.body, fontSize: 12, color: brand.muted },
+  walkRow: { flexDirection: 'row', gap: 8, marginTop: 2 },
+  walkOk: {
+    flex: 1,
+    backgroundColor: brand.accent,
+    borderRadius: 12,
+    height: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  walkOkT: { fontFamily: fonts.bodySemi, fontSize: 12, color: '#fff' },
+  walkGhost: {
+    flex: 1,
+    borderRadius: 12,
+    height: 34,
+    borderWidth: 1,
+    borderColor: brand.divider,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: brand.creamDeep,
+  },
+  walkGhostT: { fontFamily: fonts.bodySemi, fontSize: 12, color: brand.ink },
 });

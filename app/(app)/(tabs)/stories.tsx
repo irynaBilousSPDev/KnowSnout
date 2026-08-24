@@ -121,6 +121,7 @@ function StoryPostCard({
   dark,
   onToggleLike,
   onShare,
+  onOpenPost,
   onOpenComments,
   onOpenAuthor,
   onDelete,
@@ -130,6 +131,7 @@ function StoryPostCard({
   dark?: boolean;
   onToggleLike: (post: StoryPost) => void;
   onShare: (post: StoryPost) => void;
+  onOpenPost: (post: StoryPost) => void;
   onOpenComments: (post: StoryPost) => void;
   onOpenAuthor: (post: StoryPost) => void;
   onDelete?: (post: StoryPost) => void;
@@ -144,7 +146,7 @@ function StoryPostCard({
   if (compact) {
     return (
       <View style={[styles.cardCompact, darkCard]}>
-        <Pressable onPress={() => onOpenComments(post)}>
+        <Pressable onPress={() => onOpenPost(post)}>
           <View style={styles.compactMedia}>
             {post.imageUri ? (
               <Image
@@ -219,7 +221,7 @@ function StoryPostCard({
 
   return (
     <View style={[styles.card, darkCard]}>
-      <Pressable onPress={() => onOpenComments(post)}>
+      <Pressable onPress={() => onOpenPost(post)}>
         <View style={styles.listMedia}>
           {post.imageUri ? (
             <Image
@@ -399,6 +401,13 @@ export default function StoriesScreen() {
     }
   };
 
+  const openPost = (post: StoryPost) => {
+    router.push({
+      pathname: '/(app)/story-post',
+      params: { postId: post.id },
+    });
+  };
+
   const openComments = (post: StoryPost) => {
     router.push({
       pathname: '/(app)/story-comments',
@@ -407,18 +416,7 @@ export default function StoriesScreen() {
   };
 
   const openCompose = () => {
-    const first = pets[0];
-    if (first && (first.species === 'dog' || first.species === 'cat')) {
-      setPetId(first.id);
-      setSpecies(first.species);
-    } else {
-      setPetId(null);
-      setSpecies('cat');
-    }
-    setTaggedPetIds([]);
-    setTaggedFriendIds([]);
-    setComposeError(null);
-    setComposeOpen(true);
+    router.push('/(app)/story-compose' as never);
   };
 
   const toggleTaggedPet = (id: string) => {
@@ -511,29 +509,15 @@ export default function StoriesScreen() {
   };
 
   const openAuthor = async (post: StoryPost) => {
-    setAuthorCard({
-      userId: post.userId,
-      author: post.author,
-      petName: post.petName,
-      species: post.species,
-      avatarKey: post.avatarKey,
-      postId: post.id,
-      mine: post.mine,
-    });
-    setReportOpen(false);
-    setCareStreak(null);
-    try {
-      const user = await getCurrentUser();
-      const mine = Boolean(post.mine || (user && post.userId === user.id));
-      if (mine) {
-        setAuthorFollowing(false);
-        setCareStreak(await getCareStreak());
-        return;
-      }
-      setAuthorFollowing(await isFollowing(post.userId));
-    } catch {
-      setAuthorFollowing(false);
+    const user = await getCurrentUser();
+    if (post.mine || (user && post.userId === user.id)) {
+      router.push('/(app)/my-profile' as never);
+      return;
     }
+    router.push({
+      pathname: '/(app)/user-profile',
+      params: { userId: post.userId },
+    } as never);
   };
 
   const onToggleAuthorFollow = async () => {
@@ -773,6 +757,7 @@ export default function StoriesScreen() {
                 dark={dark}
                 onToggleLike={(p) => void onToggleLike(p)}
                 onShare={setSharePost}
+                onOpenPost={openPost}
                 onOpenComments={openComments}
                 onOpenAuthor={(p) => void openAuthor(p)}
                 onDelete={(p) => void onDeletePost(p)}

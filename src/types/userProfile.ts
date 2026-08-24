@@ -8,6 +8,11 @@ export type UserProfile = {
   gender: UserGender;
   avatar_key: UserAvatarKey;
   avatar_uri: string | null;
+  cover_uri: string | null;
+  handle: string | null;
+  bio: string | null;
+  languages: string | null;
+  privacy_friends_only: boolean;
   updated_at: string;
 };
 
@@ -17,4 +22,9 @@ export type UserProfileInput = {
   gender?: UserGender;
   avatar_key?: UserAvatarKey;
   avatar_uri?: string | null;
+  cover_uri?: string | null;
+  handle?: string | null;
+  bio?: string | null;
+  languages?: string | null;
+  privacy_friends_only?: boolean;
 };

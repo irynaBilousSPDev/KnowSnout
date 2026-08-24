@@ -1,6 +1,7 @@
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -8,52 +9,87 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
+import { persistPickerAsset } from '@/src/lib/image';
 import { notify } from '@/src/lib/notify';
+import { listPets } from '@/src/services/pets';
 import {
   applySpotlightEntry,
   listSpotlightContests,
-  type SpotlightContest,
 } from '@/src/services/spotlight';
 import { brand, fonts } from '@/src/theme/brand';
+import type { PetRow } from '@/src/types/pet';
 
+/** Screenshot 04.19 — HTML: dashed photo slot only (no gallery/camera row). */
 export default function SpotlightApplyScreen() {
-  const [contests, setContests] = useState<SpotlightContest[]>([]);
-  const [contestId, setContestId] = useState<string | null>(null);
-  const [petName, setPetName] = useState('');
-  const [caption, setCaption] = useState('');
+  const { contestId: contestIdParam } = useLocalSearchParams<{
+    contestId?: string;
+  }>();
+  const [pets, setPets] = useState<PetRow[]>([]);
+  const [petId, setPetId] = useState<string | null>(null);
+  const [caption, setCaption] = useState(
+    'Найкраща поза після відкриття морозива',
+  );
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      const list = listSpotlightContests().filter((c) => c.status === 'active');
-      setContests(list);
-      setContestId(list[0]?.id ?? null);
+      void listPets()
+        .then((rows) => {
+          setPets(rows);
+          const tukan = rows.find((p) => p.name === 'Тукан');
+          setPetId((cur) => cur ?? tukan?.id ?? rows[0]?.id ?? null);
+        })
+        .catch(() => setPets([]));
     }, []),
   );
 
-  const submit = async () => {
-    if (!contestId) return;
-    if (!petName.trim()) {
-      notify(t('common.error'), t('spotlight.petRequired'));
+  const contestId =
+    (typeof contestIdParam === 'string' && contestIdParam) ||
+    listSpotlightContests()[0]?.id ||
+    '';
+
+  const pickPhoto = async () => {
+    const lib = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!lib.granted) {
+      notify(t('common.error'), t('photo.galleryPermission'));
       return;
     }
+    const picked = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.8,
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true,
+    });
+    if (picked.canceled || !picked.assets[0]?.uri) return;
+    const stable = await persistPickerAsset(picked.assets[0], 'spotlight');
+    setPhotoUri(stable);
+  };
+
+  const submit = async () => {
+    const pet = pets.find((p) => p.id === petId);
+    const name = pet?.name?.trim() || 'Тукан';
     if (!caption.trim()) {
       notify(t('common.error'), t('spotlight.captionRequired'));
       return;
     }
     setBusy(true);
     try {
-      await applySpotlightEntry({ contestId, petName, caption });
-      notify(t('common.ok'), t('spotlight.applyDone'));
+      const entry = await applySpotlightEntry({
+        contestId,
+        petName: name,
+        caption,
+        photoUri,
+      });
       router.replace({
-        pathname: '/(app)/spotlight-won',
-        params: { contestId },
+        pathname: '/(app)/spotlight-entry',
+        params: { id: entry.id },
       } as never);
     } catch {
       notify(t('common.error'), t('spotlight.applyError'));
@@ -65,35 +101,33 @@ export default function SpotlightApplyScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrHeader title={t('spotlight.applyTitle')} titleSize={18} />
+      <View style={styles.bar}>
+        <Pressable onPress={() => router.back()} hitSlop={8}>
+          <Text style={styles.cancel}>{t('common.cancel')}</Text>
+        </Pressable>
+        <Text style={styles.barTitle}>{t('spotlight.applyTitle')}</Text>
+        <Pressable onPress={() => void submit()} disabled={busy} hitSlop={8}>
+          <Text style={[styles.send, busy && styles.dim]}>
+            {t('spotlight.submit')}
+          </Text>
+        </Pressable>
+      </View>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.label}>{t('spotlight.pickContest')}</Text>
-          {contests.map((c) => {
-            const active = c.id === contestId;
-            return (
-              <Pressable
-                key={c.id}
-                onPress={() => setContestId(c.id)}
-                style={[styles.chip, active && styles.chipActive]}
-              >
-                <Text style={[styles.chipText, active && styles.chipTextActive]}>
-                  {c.title}
-                </Text>
-              </Pressable>
-            );
-          })}
-
-          <Text style={styles.label}>{t('spotlight.petName')}</Text>
-          <TextInput
-            value={petName}
-            onChangeText={setPetName}
-            placeholder={t('spotlight.petPlaceholder')}
-            placeholderTextColor={brand.mutedSoft}
-            style={styles.input}
-          />
-
-          <Text style={styles.label}>{t('spotlight.caption')}</Text>
+          <Pressable onPress={() => void pickPhoto()} style={styles.photoSlot}>
+            {photoUri ? (
+              <Image source={{ uri: photoUri }} style={styles.photoImg} />
+            ) : (
+              <Text style={styles.photoHint}>{t('spotlight.addPetPhoto')}</Text>
+            )}
+          </Pressable>
+          <Text style={styles.label}>{t('spotlight.pickPet')}</Text>
+          <View style={styles.input}>
+            <Text style={styles.inputT}>
+              {pets.find((p) => p.id === petId)?.name ?? 'Тукан'}
+            </Text>
+          </View>
+          <Text style={styles.label}>{t('spotlight.photoCaption')}</Text>
           <TextInput
             value={caption}
             onChangeText={setCaption}
@@ -102,13 +136,6 @@ export default function SpotlightApplyScreen() {
             multiline
             style={[styles.input, styles.area]}
           />
-
-          <View style={styles.gap} />
-          <PrimaryButton
-            label={t('spotlight.submit')}
-            loading={busy}
-            onPress={() => void submit()}
-          />
         </View>
       </ScrollView>
     </AppScreen>
@@ -116,47 +143,54 @@ export default function SpotlightApplyScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
-  label: {
-    marginTop: 14,
-    marginBottom: 6,
-    fontFamily: fonts.bodySemi,
-    fontSize: 12,
-    color: brand.label,
+  bar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 14,
+    paddingBottom: 8,
   },
-  chip: {
-    marginBottom: 8,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
-  },
-  chipActive: {
-    backgroundColor: brand.accentTint,
-  },
-  chipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
+  cancel: { fontFamily: fonts.bodySemi, fontSize: 13, color: brand.muted },
+  barTitle: {
+    fontFamily: fonts.title,
+    fontSize: 18,
     color: brand.ink,
   },
-  chipTextActive: {
-    fontFamily: fonts.bodyBold,
-    color: brand.accentDark,
+  send: { fontFamily: fonts.bodyBold, fontSize: 13, color: brand.accent },
+  dim: { opacity: 0.45 },
+  pad: { paddingHorizontal: 20, paddingBottom: 40, gap: 12 },
+  photoSlot: {
+    height: 200,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  photoImg: { width: '100%', height: '100%' },
+  photoHint: { fontFamily: fonts.body, fontSize: 13, color: brand.mutedSoft },
+  label: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 12.5,
+    color: brand.muted,
   },
   input: {
-    borderRadius: brand.radius.md,
+    borderRadius: 14,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.ink,
+    minHeight: 46,
+    justifyContent: 'center',
   },
-  area: { minHeight: 88, textAlignVertical: 'top' },
-  gap: { height: 16 },
+  inputT: { fontFamily: fonts.body, fontSize: 14, color: brand.ink },
+  area: {
+    minHeight: 70,
+    alignItems: 'flex-start',
+    paddingTop: 12,
+    textAlignVertical: 'top',
+  },
 });

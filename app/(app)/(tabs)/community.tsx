@@ -38,7 +38,7 @@ const PRIMARY = [
 const SECONDARY = [
   { titleKey: 'community.leaderboard', href: '/(app)/quiz-leaderboard' },
   { titleKey: 'community.achievements', href: '/(app)/achievements' },
-  { titleKey: 'me.title', href: '/(app)/my-data' },
+  { titleKey: 'me.title', href: '/(app)/my-profile' },
 ];
 
 export default function CommunityHubScreen() {

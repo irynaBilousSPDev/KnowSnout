@@ -1,4 +1,4 @@
-export type SearchSectionId = 'people' | 'pets' | 'articles' | 'food';
+export type SearchSectionId = 'people' | 'pets' | 'articles' | 'food' | 'quizzes';
 
 export type SearchHit = {
   id: string;
@@ -9,52 +9,34 @@ export type SearchHit = {
 
 const STATIC: SearchHit[] = [
   {
+    id: 'seed-marta',
+    section: 'people',
+    title: 'Марта та Тукан',
+    subtitle: 'Власниця корги',
+  },
+  {
+    id: 'a-corgi',
+    section: 'articles',
+    title: 'Все, що варто знати про корги',
+    subtitle: 'Блог',
+  },
+  {
+    id: 'q-corgi',
+    section: 'quizzes',
+    title: 'Звідки ця порода?',
+    subtitle: 'Містить «корги»',
+  },
+  {
     id: 'p-1',
     section: 'people',
-    title: 'Ірина К.',
-    subtitle: '@iryna_pets · 2 кішки',
-  },
-  {
-    id: 'p-2',
-    section: 'people',
-    title: 'Максим',
-    subtitle: '@rex_walks · Рекс',
-  },
-  {
-    id: 'pet-1',
-    section: 'pets',
-    title: 'Ада',
-    subtitle: 'Кіт · британська',
-  },
-  {
-    id: 'pet-2',
-    section: 'pets',
-    title: 'Рекс',
-    subtitle: 'Собака · лабрадор',
+    title: 'Оксана Мельник',
+    subtitle: '@oksana · коти',
   },
   {
     id: 'a-1',
     section: 'articles',
     title: 'Як читати склад корму',
     subtitle: 'Блог · 6 хв',
-  },
-  {
-    id: 'a-2',
-    section: 'articles',
-    title: 'Рослини небезпечні для котів',
-    subtitle: 'Блог · 4 хв',
-  },
-  {
-    id: 'f-1',
-    section: 'food',
-    title: 'Royal Canin Indoor',
-    subtitle: 'Корм · демо-оцінка 78',
-  },
-  {
-    id: 'f-2',
-    section: 'food',
-    title: 'Acana Pacifica',
-    subtitle: 'Корм · демо-оцінка 86',
   },
 ];
 
@@ -73,5 +55,6 @@ export function searchGlobal(query: string): Record<SearchSectionId, SearchHit[]
     pets: hits.filter((h) => h.section === 'pets'),
     articles: hits.filter((h) => h.section === 'articles'),
     food: hits.filter((h) => h.section === 'food'),
+    quizzes: hits.filter((h) => h.section === 'quizzes'),
   };
 }

@@ -35,7 +35,8 @@ type Props = {
 
 /**
  * HTML `.app-hd` — logo + Know/Snout + avatar | bell+badge | none.
- * Map v2: bell with counter is the default app chrome; avatar is profile entry elsewhere.
+ * Default trailing is avatar (HTML frames). Bell opens the activity inbox
+ * (likes / comments / follows) — not settings prefs.
  */
 export function AppChromeHeader({
   onBrandPress,
@@ -79,7 +80,7 @@ export function AppChromeHeader({
       {mode === 'avatar' ? (
         <Pressable
           onPress={
-            onAvatarPress ?? (() => router.push('/(app)/my-data' as never))
+            onAvatarPress ?? (() => router.push('/(app)/my-profile' as never))
           }
           style={styles.avatarBtn}
           accessibilityRole="button"
@@ -97,11 +98,11 @@ export function AppChromeHeader({
         <Pressable
           onPress={
             onBellPress ??
-            (() => router.push('/(app)/notifications' as never))
+            (() => router.push('/(app)/activity' as never))
           }
           style={styles.bellBtn}
           accessibilityRole="button"
-          accessibilityLabel={t('notifications.title')}
+          accessibilityLabel={t('activity.title')}
         >
           <Ionicons
             name="notifications-outline"

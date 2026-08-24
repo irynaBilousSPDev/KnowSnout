@@ -1,68 +1,74 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
-import { getSpotlightContest } from '@/src/services/spotlight';
+import { shareText } from '@/src/lib/share';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** Screenshot 04.23 — centered win, no chrome */
 export default function SpotlightWonScreen() {
-  const { contestId } = useLocalSearchParams<{ contestId?: string }>();
-  const contest = contestId ? getSpotlightContest(contestId) : null;
+  const name = 'Тукан';
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.pad}>
-          <ScreenHeader
-            title={t('spotlight.wonTitle')}
-            subtitle={t('spotlight.wonSubtitle')}
-          />
-          <View style={styles.card}>
-            <Text style={styles.body}>
-              {t('spotlight.wonBody', {
-                contest: contest?.title ?? t('spotlight.title'),
-              })}
-            </Text>
-          </View>
-          <View style={styles.gap} />
+      <View style={styles.body}>
+        <View style={styles.avatar} />
+        <View style={styles.badge}>
+          <Text style={styles.badgeT}>{t('spotlight.weekWinner')}</Text>
+        </View>
+        <Text style={styles.headline}>
+          {t('spotlight.wonName', { name })}
+        </Text>
+        <Text style={styles.meta}>{t('spotlight.wonMeta')}</Text>
+        <View style={styles.cta}>
           <PrimaryButton
-            label={t('spotlight.openRanking')}
+            label={t('spotlight.shareWin')}
             onPress={() =>
-              router.replace({
-                pathname: '/(app)/spotlight-ranking',
-                params: { contestId: contestId ?? '' },
-              } as never)
+              void shareText({
+                title: name,
+                message: t('spotlight.shareWinMessage', { name }),
+              })
             }
           />
-          <View style={styles.gap} />
-          <PrimaryButton
-            label={t('spotlight.backHub')}
-            variant="secondary"
-            onPress={() => router.replace('/(app)/spotlight-hub' as never)}
-          />
         </View>
-      </ScrollView>
+      </View>
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  card: {
-    borderRadius: 16,
-        backgroundColor: brand.mist,
-    padding: 16,
-  },
   body: {
-    fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
-    color: brand.ink,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    gap: 16,
   },
-  gap: { height: 10 },
+  avatar: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: brand.creamDeep,
+  },
+  badge: {
+    borderRadius: 999,
+    backgroundColor: brand.successTint,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  badgeT: { fontFamily: fonts.bodySemi, fontSize: 13, color: brand.successDark },
+  headline: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    color: brand.ink,
+    textAlign: 'center',
+  },
+  meta: {
+    fontFamily: fonts.body,
+    fontSize: 13.5,
+    color: brand.muted,
+    textAlign: 'center',
+  },
+  cta: { width: '100%', marginTop: 4 },
 });

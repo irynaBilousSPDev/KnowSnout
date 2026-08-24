@@ -30,6 +30,22 @@ export default function AppLayout() {
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
+        name="story-compose"
+        options={{ headerShown: false, title: t('stories.composeTitle') }}
+      />
+      <Stack.Screen
+        name="story-tag"
+        options={{ headerShown: false, title: t('stories.tagTitle') }}
+      />
+      <Stack.Screen
+        name="story-post"
+        options={{ headerShown: false, title: t('stories.postTitle') }}
+      />
+      <Stack.Screen
+        name="my-profile"
+        options={{ headerShown: false, title: t('profile.mine') }}
+      />
+      <Stack.Screen
         name="scan-food"
         options={{
           headerShown: false,
@@ -285,6 +301,10 @@ export default function AppLayout() {
       <Stack.Screen
         name="spotlight-apply"
         options={{ headerShown: false, title: t('spotlight.applyTitle') }}
+      />
+      <Stack.Screen
+        name="spotlight-entry"
+        options={{ headerShown: false, title: t('spotlight.participantTitle') }}
       />
       <Stack.Screen
         name="spotlight-ranking"
