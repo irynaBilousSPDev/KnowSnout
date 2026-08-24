@@ -1,20 +1,16 @@
 import type { AnalysisResult } from '@/src/types/scan';
 
 export const MOCK_ANALYSIS: AnalysisResult = {
-  productName: 'Acme Adult Dog — Chicken & Rice',
-  score: 72,
+  productName: 'Brit Care Adult Lamb & Rice',
+  score: 86,
   pros: [
-    'Chicken listed as the first ingredient',
-    'Includes omega fatty acids for coat health',
-    'No artificial colors detected on the label',
+    'Ягня дегідратоване 26%',
+    'Рис, батат',
+    'М’ясо першим у списку, без штучних консервантів',
   ],
-  cons: [
-    'Contains multiple plant fillers lower on the list',
-    'Protein percentage is only average for an adult formula',
-    'Ambiguous “meat by-products” wording',
-  ],
+  cons: ['Кукурудзяний глютен'],
   summary:
-    'A solid mid-tier adult dog food: decent animal protein up front, but fillers and vague by-product language keep it from a top score. Fine for healthy adults; not ideal for pets with allergies or high activity needs.',
+    'Добрий склад: м’ясо першим у списку, без штучних консервантів. Зернові в рецепті — зверніть увагу при чутливому травленні.',
 };
 
 export function getScoreTone(score: number): 'poor' | 'fair' | 'good' {

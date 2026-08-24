@@ -17,6 +17,7 @@ import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { guessMimeType, uriToBase64 } from '@/src/lib/image';
+import { canUseAiScan, consumeAiScan } from '@/src/services/aiScanLimit';
 import {
   identifyBreedFromPhoto,
   saveBreedHistoryItem,
@@ -68,6 +69,11 @@ export default function BreedScanScreen() {
       setError(t('breed.photoRequired'));
       return;
     }
+    const allowed = await canUseAiScan();
+    if (!allowed) {
+      router.push('/(app)/ai-limit' as never);
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
@@ -77,6 +83,7 @@ export default function BreedScanScreen() {
         imageBase64,
         mimeType: guessMimeType(photoUri),
       });
+      await consumeAiScan();
       const saved = await saveBreedHistoryItem({
         species,
         breedName: next.primary.name,
@@ -102,8 +109,8 @@ export default function BreedScanScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
-      <ScrHeader title={t('breed.askTitle')} />
+      <AppChromeHeader trailing="bell" bellCount={3} />
+      <ScrHeader title={t('breed.askTitle')} titleSize={18} />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"

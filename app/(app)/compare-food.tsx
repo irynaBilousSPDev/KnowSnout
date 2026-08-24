@@ -85,7 +85,7 @@ function Mark({ ok }: { ok: boolean | null }) {
     <Ionicons
       name={ok ? 'checkmark-circle' : 'close-circle'}
       size={22}
-      color={ok ? brand.forest : brand.score.poor}
+              color={ok ? brand.success : brand.mutedSoft}
     />
   );
 }
@@ -134,7 +134,7 @@ export default function CompareFoodScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+      <AppChromeHeader trailing="bell" bellCount={3} />
       <ScrHeader title={t('compare.title')} titleSize={18} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>

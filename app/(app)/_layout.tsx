@@ -37,6 +37,20 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="food-not-found"
+        options={{
+          headerShown: false,
+          title: t('foodMissing.title'),
+        }}
+      />
+      <Stack.Screen
+        name="ai-limit"
+        options={{
+          headerShown: false,
+          title: t('aiLimit.title'),
+        }}
+      />
+      <Stack.Screen
         name="breed-scan"
         options={{
           headerShown: false,

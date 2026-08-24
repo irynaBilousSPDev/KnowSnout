@@ -1,25 +1,22 @@
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-
-import { AppChromeHeader } from '@/src/components/AppChromeHeader';
-import { AppScreen } from '@/src/components/AppScreen';
-import { BarcodeScanner } from '@/src/components/BarcodeScanner';
-import { CameraCapture } from '@/src/components/CameraCapture';
-import { ErrorState } from '@/src/components/ErrorState';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 import {
-  ScanModeToggle,
-  type ScanMode,
-} from '@/src/components/ScanModeToggle';
-import { ScrHeader } from '@/src/components/ScrHeader';
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 import { useAnalyzeLabel } from '@/src/hooks/useAnalyzeLabel';
-import { useToast } from '@/src/hooks/useToast';
 import { t } from '@/src/i18n';
-import { env } from '@/src/lib/env';
 import { persistLocalImage, persistPickerAsset } from '@/src/lib/image';
-import { notify } from '@/src/lib/notify';
 import {
   clearPendingBarcodeContext,
   getPendingBarcodeContext,
@@ -27,29 +24,56 @@ import {
   setPendingBarcodeContext,
 } from '@/src/lib/resultStore';
 import { resolveSpecies } from '@/src/lib/species';
+import { canUseAiScan, consumeAiScan } from '@/src/services/aiScanLimit';
 import { persistAiProduct, resolveBarcode } from '@/src/services/resolveBarcode';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 
+type Mode = 'barcode' | 'photo';
+
+/**
+ * 02.02 barcode + 02.03 label + 02.04 analyzing.
+ * Unknown barcode → 02.06; AI photo quota → 02.07.
+ */
 export default function ScanFoodScreen() {
+  const insets = useSafeAreaInsets();
+  const params = useLocalSearchParams<{ mode?: string }>();
   const { loading, error, analyze, setError } = useAnalyzeLabel();
-  const { showAiLoading } = useToast();
-  const [mode, setMode] = useState<ScanMode>('barcode');
-  const [pickerError, setPickerError] = useState<string | null>(null);
+  const cameraRef = useRef<CameraView>(null);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [mode, setMode] = useState<Mode>(
+    params.mode === 'photo' ? 'photo' : 'barcode',
+  );
   const [lookupLoading, setLookupLoading] = useState(false);
-  const [lookupHint, setLookupHint] = useState<string | null>(null);
   const [manualBarcode, setManualBarcode] = useState('');
+  const [locked, setLocked] = useState(false);
+  const [capturing, setCapturing] = useState(false);
+  const [pickerError, setPickerError] = useState<string | null>(null);
 
-  const busy = loading || lookupLoading;
+  const busy = loading || lookupLoading || capturing;
   const barcodeContext = getPendingBarcodeContext();
-  const showDevBanners = __DEV__ && (env.useMockAi || env.isDemoMode);
 
   useEffect(() => {
-    showAiLoading(loading);
-    return () => showAiLoading(false);
-  }, [loading, showAiLoading]);
+    if (params.mode === 'photo') setMode('photo');
+    if (params.mode === 'barcode') setMode('barcode');
+  }, [params.mode]);
+
+  useEffect(() => {
+    if (barcodeContext?.barcode) setMode('photo');
+  }, [barcodeContext?.barcode]);
+
+  const ensureAiQuota = async () => {
+    const ok = await canUseAiScan();
+    if (!ok) {
+      router.push('/(app)/ai-limit' as never);
+      return false;
+    }
+    return true;
+  };
 
   const goToResult = async (imageUri?: string | null) => {
     setPickerError(null);
+    if (!(await ensureAiQuota())) return;
+
     try {
       let stableUri = imageUri ?? null;
       if (stableUri) {
@@ -62,6 +86,7 @@ export default function ScanFoodScreen() {
       }
 
       let result = await analyze(stableUri as string);
+      await consumeAiScan();
 
       const ctx = getPendingBarcodeContext();
       if (ctx?.preferredName) {
@@ -99,41 +124,20 @@ export default function ScanFoodScreen() {
         species,
       });
       clearPendingBarcodeContext();
-      router.push('/(app)/result');
+      router.replace('/(app)/result');
     } catch {
-      // error state handled in hook
-    }
-  };
-
-  const pickFromGallery = async () => {
-    setPickerError(null);
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      setPickerError(t('scan.galleryPermission'));
-      return;
-    }
-
-    const picked = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      quality: 0.7,
-      base64: true,
-    });
-
-    if (picked.canceled || !picked.assets[0]?.uri) return;
-    try {
-      const stable = await persistPickerAsset(picked.assets[0], 'scan');
-      await goToResult(stable);
-    } catch {
-      setPickerError(t('photo.persistFailed'));
+      // error in hook
     }
   };
 
   const onBarcode = async (code: string) => {
+    const cleaned = code.replace(/\s/g, '').trim();
+    if (!cleaned || busy || locked) return;
+    setLocked(true);
     setPickerError(null);
-    setLookupHint(null);
     setLookupLoading(true);
     try {
-      const resolved = await resolveBarcode(code);
+      const resolved = await resolveBarcode(cleaned);
       if (resolved.status === 'ready') {
         clearPendingBarcodeContext();
         const species = resolveSpecies(
@@ -148,7 +152,7 @@ export default function ScanFoodScreen() {
           barcode: resolved.barcode,
           species,
         });
-        router.push('/(app)/result');
+        router.replace('/(app)/result');
         return;
       }
 
@@ -157,170 +161,450 @@ export default function ScanFoodScreen() {
         preferredName: resolved.preferredName,
         species: resolved.species,
       });
-      setLookupHint(resolved.reason);
-      setMode('photo');
-      notify(t('scan.alertPhotoTitle'), resolved.reason);
+      router.push({
+        pathname: '/(app)/food-not-found',
+        params: { barcode: resolved.barcode },
+      } as never);
     } catch (err) {
       setPickerError(
         err instanceof Error ? err.message : t('barcode.lookupFailed'),
       );
     } finally {
       setLookupLoading(false);
+      setLocked(false);
     }
   };
 
-  return (
-    <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
-      <ScrHeader
-        title={mode === 'barcode' ? t('scan.barcodeTitle') : t('scan.photoTitle')}
-      />
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-      >
-        {showDevBanners ? (
-          <View style={styles.banner}>
-            <Text style={styles.bannerText}>{t('scan.mockBanner')}</Text>
-          </View>
-        ) : null}
+  const takePhoto = async () => {
+    if (!cameraRef.current || busy) return;
+    if (!(await ensureAiQuota())) return;
+    try {
+      setCapturing(true);
+      const photo = await cameraRef.current.takePictureAsync({ quality: 0.7 });
+      if (photo?.uri) await goToResult(photo.uri);
+    } finally {
+      setCapturing(false);
+    }
+  };
 
-        <ScanModeToggle mode={mode} onChange={setMode} />
+  const pickGallery = async () => {
+    if (!(await ensureAiQuota())) return;
+    const permissionLib =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionLib.granted) {
+      setPickerError(t('scan.galleryPermission'));
+      return;
+    }
+    const picked = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.7,
+    });
+    if (picked.canceled || !picked.assets[0]?.uri) return;
+    try {
+      const stable = await persistPickerAsset(picked.assets[0], 'scan');
+      await goToResult(stable);
+    } catch {
+      setPickerError(t('photo.persistFailed'));
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={[styles.analyzeRoot, { paddingTop: insets.top }]}>
+        <ActivityIndicator size="large" color={brand.accent} />
+        <Text style={styles.analyzeTitle}>{t('scan.analyzingTitle')}</Text>
+        <Text style={styles.analyzeBody}>{t('scan.analyzingBody')}</Text>
+      </View>
+    );
+  }
+
+  const darkHeader = (
+    <View style={[styles.darkHd, { paddingTop: Math.max(insets.top, 12) }]}>
+      <Pressable
+        onPress={() => router.back()}
+        style={styles.darkBack}
+        accessibilityRole="button"
+        accessibilityLabel={t('common.back')}
+      >
+        <Ionicons name="chevron-back" size={20} color="#F4F3F1" />
+      </Pressable>
+      <Text style={styles.darkTitle}>
+        {mode === 'barcode' ? t('scan.barcodeTitle') : t('scan.photoTitle')}
+      </Text>
+      <View style={styles.darkSpacer} />
+    </View>
+  );
+
+  if (!permission) {
+    return (
+      <View style={styles.darkRoot}>
+        {darkHeader}
+        <Text style={styles.helpCenter}>{t('camera.checking')}</Text>
+      </View>
+    );
+  }
+
+  if (!permission.granted) {
+    return (
+      <View style={styles.darkRoot}>
+        {darkHeader}
+        <View style={styles.permBox}>
+          <Text style={styles.helpCenter}>{t('barcode.needPermission')}</Text>
+          <Pressable onPress={requestPermission} style={styles.permBtn}>
+            <Text style={styles.permBtnText}>{t('camera.allow')}</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.darkRoot}>
+      {darkHeader}
+
+      <View style={styles.stage}>
+        {Platform.OS === 'web' && mode === 'barcode' ? (
+          <View style={styles.webBox}>
+            <Text style={styles.helpCenter}>{t('barcode.webHint')}</Text>
+            <TextInput
+              value={manualBarcode}
+              onChangeText={setManualBarcode}
+              placeholder="5905179422086"
+              placeholderTextColor="#8b96a0"
+              keyboardType="number-pad"
+              style={styles.webInput}
+            />
+            <Pressable
+              onPress={() => void onBarcode(manualBarcode)}
+              style={styles.permBtn}
+              disabled={busy || manualBarcode.trim().length < 6}
+            >
+              <Text style={styles.permBtnText}>{t('barcode.lookup')}</Text>
+            </Pressable>
+          </View>
+        ) : Platform.OS === 'web' && mode === 'photo' ? (
+          <View style={styles.webBox}>
+            <Text style={styles.helpCenter}>{t('scan.photoHelp')}</Text>
+            <Pressable onPress={() => void pickGallery()} style={styles.permBtn}>
+              <Text style={styles.permBtnText}>{t('scan.uploadGallery')}</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <View
+            style={[
+              styles.viewfinder,
+              mode === 'barcode' ? styles.vfBarcode : styles.vfLabel,
+            ]}
+          >
+            <CameraView
+              ref={cameraRef}
+              style={StyleSheet.absoluteFill}
+              facing="back"
+              barcodeScannerSettings={
+                mode === 'barcode'
+                  ? {
+                      barcodeTypes: [
+                        'ean13',
+                        'ean8',
+                        'upc_a',
+                        'upc_e',
+                        'code128',
+                      ],
+                    }
+                  : undefined
+              }
+              onBarcodeScanned={
+                mode === 'barcode' && !busy && !locked
+                  ? ({ data }) => {
+                      void onBarcode(data);
+                    }
+                  : undefined
+              }
+            />
+            <View
+              pointerEvents="none"
+              style={[
+                styles.frame,
+                mode === 'barcode' ? styles.frameBarcode : styles.frameLabel,
+              ]}
+            >
+              {mode === 'barcode' ? <View style={styles.scanLine} /> : null}
+              {mode === 'photo' ? (
+                <Text style={styles.frameHint}>{t('scan.photoHelp')}</Text>
+              ) : null}
+            </View>
+          </View>
+        )}
 
         {mode === 'barcode' ? (
           <>
-            <Text style={styles.sectionHelp}>{t('scan.barcodeHelp')}</Text>
-            {lookupHint ? (
-              <View style={styles.hint}>
-                <Text style={styles.hintText}>{lookupHint}</Text>
-                <View style={styles.hintAction}>
-                  <PrimaryButton
-                    label={t('scan.switchToPhoto')}
-                    size="sm"
-                    variant="secondary"
-                    onPress={() => setMode('photo')}
-                  />
-                </View>
+            <Pressable
+              onPress={() => setMode('photo')}
+              style={styles.fallbackLink}
+            >
+              <Text style={styles.fallbackMuted}>
+                + {t('scan.notFoundInDb')}
+                <Text style={styles.fallbackAccent}>
+                  {t('scan.photoLabelLink')}
+                </Text>
+              </Text>
+            </Pressable>
+            <Text style={styles.footerHelp}>{t('scan.barcodeHelp')}</Text>
+            {Platform.OS !== 'web' ? (
+              <View style={styles.manualRow}>
+                <TextInput
+                  value={manualBarcode}
+                  onChangeText={setManualBarcode}
+                  placeholder="590…"
+                  placeholderTextColor="#8b96a0"
+                  keyboardType="number-pad"
+                  style={styles.manualInput}
+                />
+                <Pressable
+                  onPress={() => void onBarcode(manualBarcode)}
+                  style={styles.manualGo}
+                  disabled={busy || manualBarcode.trim().length < 6}
+                >
+                  <Text style={styles.manualGoText}>{t('barcode.lookup')}</Text>
+                </Pressable>
               </View>
             ) : null}
-            <BarcodeScanner
-              onScan={onBarcode}
-              disabled={busy}
-              manualCode={manualBarcode}
-              onManualCodeChange={setManualBarcode}
-            />
           </>
         ) : (
           <>
-            <Text style={styles.sectionHelp}>{t('scan.photoHelp')}</Text>
-
-            {(lookupHint || barcodeContext) && (
-              <View style={styles.hint}>
-                <Text style={styles.hintText}>
-                  {lookupHint ??
-                    t('scan.linkedBarcode', {
-                      code: barcodeContext?.preferredName
-                        ? `${barcodeContext.barcode} (${barcodeContext.preferredName})`
-                        : (barcodeContext?.barcode ?? ''),
-                    })}
-                </Text>
-              </View>
-            )}
-
-            <CameraCapture
+            <Pressable
+              onPress={() => void takePhoto()}
               disabled={busy}
-              onCapture={(uri) => {
-                void goToResult(uri);
-              }}
-            />
-
-            <View style={styles.galleryBtn}>
-              <PrimaryButton
-                label={t('scan.uploadGallery')}
-                variant="secondary"
-                onPress={() => void pickFromGallery()}
-                loading={busy}
-              />
-            </View>
+              style={[styles.shutter, busy && styles.shutterDim]}
+              accessibilityRole="button"
+              accessibilityLabel={t('photo.camera')}
+            >
+              <View style={styles.shutterInner} />
+            </Pressable>
+            <Pressable onPress={() => void pickGallery()} style={styles.gallery}>
+              <Text style={styles.galleryText}>{t('scan.uploadGallery')}</Text>
+            </Pressable>
+            <Pressable onPress={() => setMode('barcode')} style={styles.gallery}>
+              <Text style={styles.galleryText}>{t('scan.modeBarcode')}</Text>
+            </Pressable>
           </>
         )}
 
         {(error || pickerError) && (
-          <View style={styles.error}>
-            <ErrorState
-              message={error ?? pickerError ?? t('common.error')}
-              onRetry={() => {
+          <Text style={styles.err}>
+            {error ?? pickerError}
+            {'  '}
+            <Text
+              style={styles.fallbackAccent}
+              onPress={() => {
                 setError(null);
                 setPickerError(null);
               }}
-            />
-          </View>
+            >
+              {t('common.tryAgain')}
+            </Text>
+          </Text>
         )}
-      </ScrollView>
-    </AppScreen>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: {
+  darkRoot: {
+    flex: 1,
+    backgroundColor: '#0B0F14',
+  },
+  analyzeRoot: {
+    flex: 1,
+    backgroundColor: brand.canvas,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 28,
+    gap: 10,
+  },
+  analyzeTitle: {
+    marginTop: 8,
+    fontFamily: fonts.bodySemi,
+    fontSize: 16,
+    color: brand.ink,
+  },
+  analyzeBody: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+    textAlign: 'center',
+  },
+  darkHd: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  darkBack: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  darkTitle: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: fonts.title,
+    fontSize: 18,
+    color: '#F4F3F1',
+  },
+  darkSpacer: { width: 36 },
+  stage: {
+    flex: 1,
+    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 40,
+    paddingBottom: 28,
   },
-  lead: {
-    marginBottom: 14,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#5A6B7D',
+  viewfinder: {
+    marginTop: 24,
+    overflow: 'hidden',
+    borderRadius: 20,
+    backgroundColor: '#111820',
   },
-  banner: {
-    marginBottom: 14,
+  vfBarcode: { width: '100%', height: 220 },
+  vfLabel: { width: '100%', height: 360 },
+  frame: {
+    ...StyleSheet.absoluteFillObject,
+    margin: 18,
     borderRadius: 16,
-    backgroundColor: 'rgba(10, 122, 110, 0.1)',
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderWidth: 2,
+    borderColor: brand.logoGreen,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  bannerText: {
-    fontFamily: 'Inter_500Medium',
+  frameBarcode: { marginVertical: 48, marginHorizontal: 28 },
+  frameLabel: { margin: 16 },
+  scanLine: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    height: 2,
+    backgroundColor: brand.logoGreen,
+    opacity: 0.85,
+  },
+  frameHint: {
+    paddingHorizontal: 16,
+    textAlign: 'center',
+    fontFamily: fonts.body,
     fontSize: 13,
-    color: brand.ink,
     lineHeight: 18,
+    color: 'rgba(244,243,241,0.92)',
   },
-  sectionTitle: {
-    marginBottom: 6,
-    fontFamily: 'Inter_700Bold',
-    fontSize: 17,
-    color: brand.ink,
+  fallbackLink: { marginTop: 22, paddingHorizontal: 8 },
+  fallbackMuted: {
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: '#B7C0C8',
   },
-  sectionHelp: {
-    marginBottom: 12,
-    fontFamily: 'Inter_400Regular',
+  fallbackAccent: {
+    fontFamily: fonts.bodyBold,
+    color: brand.logoGreen,
+  },
+  footerHelp: {
+    marginTop: 'auto',
+    marginBottom: 8,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: '#8b96a0',
+    textAlign: 'center',
+  },
+  shutter: {
+    marginTop: 28,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shutterInner: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 3,
+    borderColor: '#0B0F14',
+  },
+  shutterDim: { opacity: 0.5 },
+  gallery: { marginTop: 14 },
+  galleryText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
+    color: brand.logoGreen,
+  },
+  helpCenter: {
+    marginTop: 40,
+    paddingHorizontal: 24,
+    textAlign: 'center',
+    fontFamily: fonts.body,
     fontSize: 14,
-    lineHeight: 20,
-    color: '#5A6B7D',
+    color: '#D8E8E2',
   },
-  hint: {
-    marginBottom: 12,
-    borderRadius: 16,
-    backgroundColor: brand.mist,
-    paddingHorizontal: 14,
+  permBox: { flex: 1, justifyContent: 'center', paddingHorizontal: 24 },
+  permBtn: {
+    marginTop: 16,
+    alignSelf: 'center',
+    borderRadius: 14,
+    backgroundColor: brand.accent,
+    paddingHorizontal: 20,
     paddingVertical: 12,
   },
-  hintText: {
-    fontFamily: 'Inter_500Medium',
-    fontSize: 13,
+  permBtnText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: '#fff',
+  },
+  webBox: { marginTop: 40, width: '100%', gap: 12 },
+  webInput: {
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontFamily: fonts.body,
+    fontSize: 16,
     color: brand.ink,
   },
-  hintAction: {
-    marginTop: 10,
+  manualRow: {
+    flexDirection: 'row',
+    gap: 8,
+    width: '100%',
+    marginTop: 12,
   },
-  galleryBtn: {
-    marginTop: 16,
+  manualInput: {
+    flex: 1,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    color: '#F4F3F1',
+    fontFamily: fonts.body,
   },
-  error: {
-    marginTop: 16,
+  manualGo: {
+    borderRadius: 12,
+    backgroundColor: brand.accent,
+    paddingHorizontal: 14,
+    justifyContent: 'center',
+  },
+  manualGoText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: '#fff',
+  },
+  err: {
+    marginTop: 12,
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.error,
   },
 });

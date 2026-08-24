@@ -7,10 +7,9 @@ import { AuthTextField } from '@/src/components/AuthTextField';
 import { GradientButton } from '@/src/components/GradientButton';
 import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
-import { env } from '@/src/lib/env';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML phone “2 · Реєстрація”. */
+/** Screenshot 01.04 · Реєстрація. */
 export default function RegisterScreen() {
   const { user, loading: authLoading, signUp } = useAuth();
   const [displayName, setDisplayName] = useState('');
@@ -36,7 +35,7 @@ export default function RegisterScreen() {
     setLoading(true);
     try {
       await signUp(email, password);
-      router.replace('/(app)/onboarding' as never);
+      router.replace('/(app)/(tabs)');
     } catch (err) {
       setError(err instanceof Error ? err.message : t('auth.registerError'));
     } finally {
@@ -47,25 +46,14 @@ export default function RegisterScreen() {
   return (
     <AuthShell
       headline={t('auth.registerTitle')}
-      badge={env.isDemoMode ? t('auth.demoModeShort') : null}
       onBack={() => router.replace('/(auth)/login')}
       footer={
         <View style={styles.footer}>
           <Text style={styles.legal}>
             {t('auth.legalPrefix')}
-            <Text
-              style={styles.legalLink}
-              onPress={() => router.push('/(app)/data-sources' as never)}
-            >
-              {t('auth.legalTerms')}
-            </Text>
+            <Text style={styles.legalLink}>{t('auth.legalTerms')}</Text>
             {t('auth.legalAnd')}
-            <Text
-              style={styles.legalLink}
-              onPress={() => router.push('/(app)/privacy' as never)}
-            >
-              {t('auth.legalPrivacy')}
-            </Text>
+            <Text style={styles.legalLink}>{t('auth.legalPrivacy')}</Text>
           </Text>
           <GradientButton
             label={t('auth.register')}
@@ -80,9 +68,6 @@ export default function RegisterScreen() {
               </Text>
             </Pressable>
           </Link>
-          {env.isDemoMode ? (
-            <Text style={styles.demoHint}>{t('auth.demoMode')}</Text>
-          ) : null}
         </View>
       }
     >
@@ -132,7 +117,7 @@ const styles = StyleSheet.create({
   },
   linkStrong: {
     fontFamily: fonts.bodyBold,
-    color: brand.accent,
+    color: brand.accentDark,
   },
   legal: {
     fontFamily: fonts.body,
@@ -142,7 +127,8 @@ const styles = StyleSheet.create({
   },
   legalLink: {
     fontFamily: fonts.bodySemi,
-    color: brand.accent,
+    color: brand.accentDark,
+    textDecorationLine: 'underline',
   },
   errorBox: {
     paddingHorizontal: 14,
@@ -157,11 +143,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     color: brand.error,
-  },
-  demoHint: {
-    fontFamily: fonts.body,
-    fontSize: 12,
-    lineHeight: 18,
-    color: brand.muted,
   },
 });

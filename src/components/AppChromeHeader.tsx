@@ -10,6 +10,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
@@ -19,29 +20,43 @@ import type { UserProfile } from '@/src/types/userProfile';
 
 const logoEmerald = require('../../assets/images/logo_emerald.png');
 
+type Trailing = 'avatar' | 'bell' | 'none';
+
 type Props = {
   onBrandPress?: () => void;
   onAvatarPress?: () => void;
+  onBellPress?: () => void;
+  /** @deprecated prefer trailing="avatar" | "bell" | "none" */
   showAvatar?: boolean;
+  trailing?: Trailing;
+  bellCount?: number;
   style?: StyleProp<ViewStyle>;
 };
 
 /**
- * HTML `.app-hd` — logo + Know/Snout + real user avatar (or icon pack).
+ * HTML `.app-hd` — logo + Know/Snout + avatar | bell+badge | none.
+ * Map v2: bell with counter is the default app chrome; avatar is profile entry elsewhere.
  */
 export function AppChromeHeader({
   onBrandPress,
   onAvatarPress,
-  showAvatar = true,
+  onBellPress,
+  showAvatar,
+  trailing,
+  bellCount = 0,
   style,
 }: Props) {
   const insets = useSafeAreaInsets();
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
+  const mode: Trailing =
+    trailing ?? (showAvatar === false ? 'none' : 'avatar');
+
   useFocusEffect(
     useCallback(() => {
+      if (mode !== 'avatar') return;
       void getUserProfile().then(setProfile);
-    }, []),
+    }, [mode]),
   );
 
   return (
@@ -60,7 +75,8 @@ export function AppChromeHeader({
           <Text style={styles.snout}>Snout</Text>
         </Text>
       </Pressable>
-      {showAvatar ? (
+
+      {mode === 'avatar' ? (
         <Pressable
           onPress={
             onAvatarPress ?? (() => router.push('/(app)/my-data' as never))
@@ -76,6 +92,29 @@ export function AppChromeHeader({
             size={36}
             name={profile?.display_name ?? t('me.title')}
           />
+        </Pressable>
+      ) : mode === 'bell' ? (
+        <Pressable
+          onPress={
+            onBellPress ??
+            (() => router.push('/(app)/notifications' as never))
+          }
+          style={styles.bellBtn}
+          accessibilityRole="button"
+          accessibilityLabel={t('notifications.title')}
+        >
+          <Ionicons
+            name="notifications-outline"
+            size={18}
+            color={brand.label}
+          />
+          {bellCount > 0 ? (
+            <View style={styles.dot}>
+              <Text style={styles.dotText}>
+                {bellCount > 99 ? '99' : String(bellCount)}
+              </Text>
+            </View>
+          ) : null}
         </Pressable>
       ) : (
         <View style={styles.avatarSpacer} />
@@ -124,6 +163,39 @@ const styles = StyleSheet.create({
   avatarBtn: {
     borderRadius: 18,
     overflow: 'hidden',
+  },
+  bellBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: brand.surfaceElevated,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  dot: {
+    position: 'absolute',
+    top: -3,
+    right: -3,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 5,
+    borderRadius: 9,
+    backgroundColor: brand.successDark,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: brand.canvas,
+  },
+  dotText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 10.5,
+    lineHeight: 14,
+    color: '#FFFFFF',
   },
   avatarSpacer: {
     width: 36,

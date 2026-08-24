@@ -36,11 +36,13 @@ Status: `organic` | `stub` | `missing` · Variant 12 remap = later
 |--|--|--|
 | Реєстрація / логін | done | `(auth)/*` |
 | Онбординг 1–3 | done | `onboarding` |
-| Хаб Перевір + recent/stats | done | `(tabs)/index` |
-| Історія + фільтри | done | `(tabs)/history` |
-| Порівняти 2 корми | done | `compare-food` |
-| Скан штрихкод / етикетка | done | `scan-food` |
-| Рослина / порода | done | `plant-safety`, `breed-scan` |
+| Хаб Перевір + recent/stats | done | `(tabs)/index` 02.01 |
+| Історія + фільтри | done | `(tabs)/history` 02.11 |
+| Порівняти 2 корми | done | `compare-food` 02.12 |
+| Скан штрихкод / етикетка / AI | done | `scan-food` 02.02–02.05 |
+| Корм не в базі | done | `food-not-found` 02.06 |
+| Ліміт AI-сканів | done | `ai-limit` 02.07 |
+| Рослина / порода | done | `plant-safety`, `plant-result`, `breed-scan`, `breed-result` 02.08–02.10 |
 | Профіль-акордеон форма | done | `pet-form` |
 
 ## Wave 2 — Улюбленці

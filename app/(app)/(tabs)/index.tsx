@@ -14,6 +14,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { t } from '@/src/i18n';
 import { isNativeSafeImageUri } from '@/src/lib/image';
+import {
+  formatRelativeAgo,
+  scoreOutOfFive,
+} from '@/src/lib/relativeTime';
 import { listBreedHistory } from '@/src/services/breedId';
 import { resolveCheckImageUrl } from '@/src/services/checkImages';
 import { listPets } from '@/src/services/pets';
@@ -26,9 +30,10 @@ type ActionKind = 'food' | 'plant' | 'breed' | 'compare';
 type RecentSlot = {
   id: string;
   kind: 'food' | 'plant' | 'breed';
-  label: string;
+  title: string;
+  meta: string;
   imageUri?: string | null;
-  href: string;
+  createdAt: string;
 };
 
 const ACTIONS: {
@@ -37,8 +42,6 @@ const ACTIONS: {
   titleKey: string;
   bodyKey: string;
   href: string;
-  iconBg: string;
-  iconColor: string;
 }[] = [
   {
     kind: 'food',
@@ -46,8 +49,6 @@ const ACTIONS: {
     titleKey: 'check.foodTitle',
     bodyKey: 'check.foodBody',
     href: '/(app)/scan-food',
-    iconBg: brand.accentTint,
-    iconColor: brand.accentDark,
   },
   {
     kind: 'plant',
@@ -55,17 +56,13 @@ const ACTIONS: {
     titleKey: 'check.plantTitle',
     bodyKey: 'check.plantBody',
     href: '/(app)/plant-safety',
-    iconBg: brand.successTint,
-    iconColor: brand.successDark,
   },
   {
     kind: 'breed',
-    icon: 'paw-outline',
+    icon: 'home-outline',
     titleKey: 'check.breedTitle',
     bodyKey: 'check.breedBody',
     href: '/(app)/breed-scan',
-    iconBg: brand.creamDeep,
-    iconColor: brand.ink,
   },
   {
     kind: 'compare',
@@ -73,17 +70,17 @@ const ACTIONS: {
     titleKey: 'check.compareTitle',
     bodyKey: 'check.compareBody',
     href: '/(app)/compare-food',
-    iconBg: brand.creamDeep,
-    iconColor: brand.ink,
   },
 ];
 
 function RecentThumb({
-  label,
+  title,
+  meta,
   imageUri,
   onPress,
 }: {
-  label: string;
+  title: string;
+  meta: string;
   imageUri?: string | null;
   onPress: () => void;
 }) {
@@ -94,16 +91,23 @@ function RecentThumb({
         <Image source={{ uri }} style={styles.recentImage} resizeMode="cover" />
       ) : (
         <View style={styles.recentPlaceholder}>
+          <Ionicons name="image-outline" size={22} color={brand.mutedSoft} />
           <Text style={styles.recentPlaceholderText} numberOfLines={1}>
-            {label}
+            {t('check.photoPlaceholder')}
           </Text>
         </View>
       )}
+      <Text style={styles.recentTitle} numberOfLines={1}>
+        {title}
+      </Text>
+      <Text style={styles.recentMeta} numberOfLines={1}>
+        {meta}
+      </Text>
     </Pressable>
   );
 }
 
-/** HTML phone “6 · Хаб Перевір”. */
+/** 02.01 Hub «Перевір» — recent, stats, menu; logic from local scans/plants/breeds. */
 export default function CheckHubScreen() {
   const [petCount, setPetCount] = useState(0);
   const [checkCount, setCheckCount] = useState(0);
@@ -133,71 +137,71 @@ export default function CheckHubScreen() {
           setCheckCount(total);
           setSafePct(denom > 0 ? Math.round((safeN / denom) * 100) : null);
 
-          const food = scans[0];
-          const plant = plants[0];
-          const breed = breeds[0];
+          const merged: RecentSlot[] = [];
 
-          const slots: RecentSlot[] = [
-            {
-              id: food ? `f-${food.id}` : 'empty-food',
-              kind: 'food',
-              label: t('check.foodTitle'),
-              imageUri: food
-                ? food.image_path
+          await Promise.all(
+            scans.map(async (food) => {
+              const when = formatRelativeAgo(food.created_at);
+              merged.push({
+                id: `f-${food.id}`,
+                kind: 'food',
+                title: food.product_name.split(' ').slice(0, 2).join(' '),
+                meta: t('check.recentScore', {
+                  score: scoreOutOfFive(food.score),
+                  when,
+                }),
+                imageUri: food.image_path
                   ? await resolveCheckImageUrl(food.image_path)
-                  : food.image_path
-                : null,
-              href: '/(app)/scan-food',
-            },
-            {
-              id: plant ? `p-${plant.id}` : 'empty-plant',
-              kind: 'plant',
-              label: t('check.kindPlant'),
-              imageUri: plant
-                ? plant.photo_uri
+                  : food.image_path,
+                createdAt: food.created_at,
+              });
+            }),
+          );
+          await Promise.all(
+            plants.map(async (plant) => {
+              const when = formatRelativeAgo(plant.created_at);
+              merged.push({
+                id: `p-${plant.id}`,
+                kind: 'plant',
+                title: plant.name_uk ?? plant.query_text ?? t('check.kindPlant'),
+                meta:
+                  plant.level === 'safe'
+                    ? t('check.recentSafe', { when })
+                    : `${t('plants.verdictToxicShort')} · ${when}`,
+                imageUri: plant.photo_uri
                   ? await resolveCheckImageUrl(plant.photo_uri)
-                  : plant.photo_uri
-                : null,
-              href: '/(app)/plant-safety',
-            },
-            {
-              id: breed ? `b-${breed.id}` : 'empty-breed',
-              kind: 'breed',
-              label: t('check.kindBreed'),
-              imageUri: breed
-                ? breed.photoUri
+                  : plant.photo_uri,
+                createdAt: plant.created_at,
+              });
+            }),
+          );
+          await Promise.all(
+            breeds.map(async (breed) => {
+              const when = formatRelativeAgo(breed.createdAt);
+              merged.push({
+                id: `b-${breed.id}`,
+                kind: 'breed',
+                title: breed.breedNameUk ?? breed.breedName,
+                meta: t('check.recentBreed', {
+                  pct: Math.round(breed.confidence * 100),
+                  when,
+                }),
+                imageUri: breed.photoUri
                   ? await resolveCheckImageUrl(breed.photoUri)
-                  : breed.photoUri
-                : null,
-              href: '/(app)/breed-scan',
-            },
-          ];
-          setRecent(slots);
+                  : breed.photoUri,
+                createdAt: breed.createdAt,
+              });
+            }),
+          );
+
+          merged.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+          setRecent(merged.slice(0, 4));
         } catch {
           if (!alive) return;
           setPetCount(0);
           setCheckCount(0);
           setSafePct(null);
-          setRecent([
-            {
-              id: 'empty-food',
-              kind: 'food',
-              label: t('check.foodTitle'),
-              href: '/(app)/scan-food',
-            },
-            {
-              id: 'empty-plant',
-              kind: 'plant',
-              label: t('check.kindPlant'),
-              href: '/(app)/plant-safety',
-            },
-            {
-              id: 'empty-breed',
-              kind: 'breed',
-              label: t('check.kindBreed'),
-              href: '/(app)/breed-scan',
-            },
-          ]);
+          setRecent([]);
         }
       })();
       return () => {
@@ -206,41 +210,103 @@ export default function CheckHubScreen() {
     }, []),
   );
 
+  const openRecent = (slot: RecentSlot) => {
+    if (slot.kind === 'food') {
+      void (async () => {
+        const scans = await listScans();
+        const id = slot.id.replace(/^f-/, '');
+        const food = scans.find((s) => s.id === id);
+        if (food) {
+          const { setPendingAnalysis } = await import('@/src/lib/resultStore');
+          setPendingAnalysis({
+            result: {
+              productName: food.product_name,
+              score: food.score,
+              pros: food.pros,
+              cons: food.cons,
+              summary: food.summary,
+            },
+            imageUri: food.image_path,
+            scanId: food.id,
+            saved: true,
+            barcode: food.barcode,
+            productId: food.product_id,
+            species: food.species,
+          });
+        }
+        router.push('/(app)/result');
+      })();
+      return;
+    }
+    if (slot.kind === 'plant') {
+      router.push({
+        pathname: '/(app)/plant-result',
+        params: { id: slot.id.replace(/^p-/, '') },
+      });
+      return;
+    }
+    router.push({
+      pathname: '/(app)/breed-result',
+      params: { id: slot.id.replace(/^b-/, '') },
+    });
+  };
+
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safe} edges={['bottom']}>
-        <AppChromeHeader />
+        <AppChromeHeader
+          trailing="bell"
+          bellCount={3}
+          onBellPress={() => router.push('/(app)/notifications' as never)}
+        />
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scroll}
         >
           <Text style={styles.title}>{t('tabs.scan')}</Text>
 
-          <View>
+          <View style={styles.recentHead}>
             <Text style={styles.recentHeading}>{t('check.recent')}</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.recentRow}
+            <Pressable
+              onPress={() => router.push('/(app)/(tabs)/history')}
+              hitSlop={8}
             >
-              {recent.map((slot) => (
-                <RecentThumb
-                  key={slot.id}
-                  label={slot.label}
-                  imageUri={slot.imageUri}
-                  onPress={() => router.push(slot.href as never)}
-                />
-              ))}
+              <Text style={styles.allHistory}>{t('check.allHistory')}</Text>
+            </Pressable>
+          </View>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.recentRow}
+          >
+            {recent.length === 0 ? (
               <Pressable
                 onPress={() => router.push('/(app)/scan-food')}
-                style={styles.addCard}
-                accessibilityRole="button"
-                accessibilityLabel={t('check.foodTitle')}
+                style={styles.recentItem}
               >
-                <Text style={styles.addPlus}>+</Text>
+                <View style={styles.recentPlaceholder}>
+                  <Ionicons
+                    name="add"
+                    size={24}
+                    color={brand.mutedSoft}
+                  />
+                </View>
+                <Text style={styles.recentTitle}>{t('check.foodTitle')}</Text>
+                <Text style={styles.recentMeta}>{t('check.tabNew')}</Text>
               </Pressable>
-            </ScrollView>
-          </View>
+            ) : (
+              recent.map((slot) => (
+                <RecentThumb
+                  key={slot.id}
+                  title={slot.title}
+                  meta={slot.meta}
+                  imageUri={slot.imageUri}
+                  onPress={() => openRecent(slot)}
+                />
+              ))
+            )}
+          </ScrollView>
 
           <View style={styles.statsRow}>
             <View style={styles.statCard}>
@@ -270,13 +336,11 @@ export default function CheckHubScreen() {
                 pressed && styles.pressed,
               ]}
             >
-              <View
-                style={[styles.actionIcon, { backgroundColor: action.iconBg }]}
-              >
+              <View style={styles.actionIcon}>
                 <Ionicons
                   name={action.icon}
-                  size={24}
-                  color={action.iconColor}
+                  size={22}
+                  color={brand.accentDark}
                 />
               </View>
               <View style={styles.actionCopy}>
@@ -290,18 +354,6 @@ export default function CheckHubScreen() {
               />
             </Pressable>
           ))}
-
-          <Pressable
-            onPress={() => router.push('/(app)/(tabs)/history')}
-            style={styles.historyLink}
-          >
-            <Text style={styles.historyLinkText}>{t('check.tabHistory')}</Text>
-            <Ionicons
-              name="chevron-forward"
-              size={16}
-              color={brand.accentDark}
-            />
-          </Pressable>
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -313,65 +365,73 @@ const styles = StyleSheet.create({
   safe: { flex: 1 },
   scroll: {
     paddingHorizontal: 20,
-    paddingTop: 14,
+    paddingTop: 8,
     paddingBottom: 40,
     gap: 14,
   },
   title: {
     fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: 28,
+    lineHeight: 34,
     color: brand.ink,
-    marginBottom: 2,
+    marginBottom: 4,
+  },
+  recentHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: -4,
   },
   recentHeading: {
-    marginBottom: 8,
     fontFamily: fonts.bodyBold,
-    fontSize: 12,
-    color: brand.muted,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  allHistory: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
+    color: brand.accent,
   },
   recentRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
+    alignItems: 'flex-start',
+    gap: 12,
+    paddingBottom: 2,
   },
-  recentItem: { width: 64 },
+  recentItem: { width: 76 },
   recentPlaceholder: {
-    height: 64,
-    width: 64,
-    borderRadius: brand.radius.md,
+    height: 76,
+    width: 76,
+    borderRadius: 14,
     backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,
+    gap: 2,
   },
   recentPlaceholderText: {
     fontFamily: fonts.body,
-    fontSize: 10,
+    fontSize: 9,
     color: brand.mutedSoft,
     textAlign: 'center',
   },
   recentImage: {
-    height: 64,
-    width: 64,
-    borderRadius: brand.radius.md,
+    height: 76,
+    width: 76,
+    borderRadius: 14,
     backgroundColor: brand.creamDeep,
   },
-  addCard: {
-    height: 64,
-    width: 64,
-    borderRadius: brand.radius.md,
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: brand.mutedSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
+  recentTitle: {
+    marginTop: 6,
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: brand.ink,
   },
-  addPlus: {
+  recentMeta: {
+    marginTop: 1,
     fontFamily: fonts.body,
-    fontSize: 22,
-    color: brand.mutedSoft,
-    lineHeight: 26,
+    fontSize: 11,
+    color: brand.muted,
   },
   statsRow: {
     flexDirection: 'row',
@@ -379,20 +439,17 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    borderRadius: brand.radius.md,
+    borderRadius: 14,
     backgroundColor: brand.surfaceElevated,
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 8,
     alignItems: 'center',
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: brand.mistBorder,
   },
   statValue: {
     fontFamily: fonts.title,
-    fontSize: 18,
+    fontSize: 20,
     color: brand.ink,
   },
   statAccent: { color: brand.accentDark },
@@ -408,22 +465,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    borderRadius: brand.radius.md,
+    borderRadius: 16,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 14,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: brand.mistBorder,
   },
   actionIcon: {
-    height: 52,
-    width: 52,
-    borderRadius: 26,
+    height: 48,
+    width: 48,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: brand.accentTint,
   },
   actionCopy: { flex: 1 },
   actionTitle: {
@@ -439,16 +494,4 @@ const styles = StyleSheet.create({
     color: brand.muted,
   },
   pressed: { opacity: 0.88 },
-  historyLink: {
-    marginTop: 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: 4,
-  },
-  historyLinkText: {
-    fontFamily: fonts.bodySemi,
-    fontSize: 14,
-    color: brand.accentDark,
-  },
 });

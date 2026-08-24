@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&display=swap" rel="stylesheet">
+  <script src="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/_ds_bundle.js"></script>
+  <script src="./image-slot.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap');
+    :root{
+      --color-bg:#F4F3F1; --color-surface:#FFFFFF; --color-text:#152233;
+      --color-accent:#0E6E5D; --color-accent-2:#1EAE5C; --color-divider:rgba(21,34,51,.12);
+      --color-neutral-100:#F4F3F1; --color-neutral-200:#EAE7E2; --color-neutral-300:#D8D5D0;
+      --color-neutral-400:#B0A99D; --color-neutral-500:#8b96a0; --color-neutral-600:#5B6B75;
+      --color-neutral-700:#455460; --color-neutral-800:#2E3A44; --color-neutral-900:#152233;
+      --color-accent-100:#EAF7F3; --color-accent-200:#CBEBE1; --color-accent-300:#9FD8CB;
+      --color-accent-400:#5FBBA6; --color-accent-500:#0E6E5D; --color-accent-600:#0A5346;
+      --color-accent-700:#083F35; --color-accent-800:#062B24; --color-accent-900:#041A16;
+      --color-accent-2-100:#EEFBF0; --color-accent-2-200:#DFF6E3; --color-accent-2-300:#C8F2CE;
+      --color-accent-2-400:#39E07A; --color-accent-2-500:#1EAE5C; --color-accent-2-600:#1A9A50;
+      --color-accent-2-700:#0F6D38; --color-accent-2-800:#0B5029; --color-accent-2-900:#07341A;
+      --font-heading:'Manrope', system-ui, sans-serif; --font-heading-weight:700;
+      --font-body:'Inter', system-ui, sans-serif;
+      --radius-sm:8px; --radius-md:14px; --radius-lg:20px;
+      --shadow-sm:0 1px 3px rgba(21,34,51,.08); --shadow-md:0 3px 10px rgba(21,34,51,.10); --shadow-lg:0 12px 32px rgba(21,34,51,.16);
+    }
+    body{margin:0}
+    .phones-row{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;padding:0 48px 80px}
+    .phone-col{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+    .phone-label{font-family:var(--font-heading);font-size:15px;color:var(--color-text)}
+    .scr-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 6px}
+    .scr-title{font-family:var(--font-heading);font-size:22px;color:var(--color-text);margin:0}
+    .scr-back{width:34px;height:34px;border-radius:999px;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .scr-logo{width:34px;height:34px;border-radius:11px;background:#fff;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+    .scr-logo img{width:27px;height:auto;display:block}
+    .hd-left{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .app-avatar{width:36px;height:36px;border-radius:999px;background:var(--color-accent-2-100);box-shadow:var(--shadow-sm);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .app-right{display:flex;align-items:center;gap:9px;flex-shrink:0}
+    .app-ico{width:36px;height:36px;border-radius:999px;background:#fff;box-shadow:var(--shadow-sm);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+    .app-dot{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:#0F6D38;color:#fff;font:700 10.5px/18px var(--font-body);text-align:center;box-shadow:0 0 0 2px var(--color-neutral-100)}
+    .app-hd{display:flex;align-items:center;justify-content:space-between;padding:50px 20px 8px;gap:12px;flex-shrink:0;background:var(--color-neutral-100);box-shadow:0 1px 0 var(--color-neutral-200),0 6px 14px -10px rgba(32,30,29,.28);position:relative;z-index:2}
+    .app-brand{display:flex;align-items:center;gap:0;min-width:0;cursor:pointer}
+    .app-brand img{width:40px;height:40px;object-fit:contain;display:block;flex-shrink:0;margin-right:-4px}
+    .app-word{font:800 19px 'Manrope',var(--font-body);line-height:1;white-space:nowrap;letter-spacing:-.025em}
+    .app-word b{font-weight:inherit;color:var(--color-text)}
+    .app-word i{font-style:normal;color:#22C57A}
+    .app-me{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0}
+    .app-me-av{width:38px;height:38px;border-radius:999px;overflow:hidden;box-shadow:var(--shadow-sm)}
+    .app-me-lbl{font:600 9.5px var(--font-body);color:var(--color-neutral-600);line-height:1}
+    .kicker{font:600 11px/1.4 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)}
+    .paw-badge{display:flex;align-items:center;gap:6px;background:var(--color-accent-100);color:var(--color-accent-700);border-radius:999px;padding:6px 12px;font:700 13px var(--font-body)}
+    .chip{display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-text);font:500 12.5px var(--font-body)}
+    .chip-warn{background:var(--color-accent-100);color:var(--color-accent-700)}
+    .chip-good{background:var(--color-accent-2-100);color:var(--color-accent-2-700)}
+    .card-sm{background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);padding:14px}
+    .seg-simple{display:flex;background:var(--color-neutral-200);border-radius:999px;padding:4px;gap:4px}
+    .seg-simple-opt{flex:1;text-align:center;padding:8px 10px;border-radius:999px;font:600 13px var(--font-body);color:var(--color-text)}
+    .seg-simple-opt.active{background:#fff;box-shadow:var(--shadow-sm);color:var(--color-accent-700)}
+    .field-lbl{font:600 12px var(--font-body);color:var(--color-neutral-700);margin-bottom:6px}
+    .row-between{display:flex;align-items:center;justify-content:space-between}
+    .tab-bar{display:flex;justify-content:space-around;align-items:center;padding:10px 8px 6px;background:#fff;border-top:1px solid var(--color-neutral-200)}
+    .tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;font:600 10px var(--font-body);color:var(--color-neutral-500)}
+    .tab-item.active{color:var(--color-accent-700)}
+  </style>
+  <style>.code{display:inline-block;font:700 11px var(--font-body);color:var(--color-accent-700);background:var(--color-accent-100);padding:2px 7px;border-radius:6px;margin-right:6px}</style>
+</helmet>
+<div style="max-width:1100px;margin:0 auto;padding:56px 48px 24px">
+  <div class="kicker">KnowSnout · 01 із 08</div>
+  <h1 style="font-size:34px;margin:8px 0 12px">Вхід і онбординг</h1>
+  <p style="max-width:680px;color:var(--color-neutral-700);font-size:15.5px;line-height:1.6">Поза навігацією: усе до входу в застосунок.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+    <a href="KnowSnout Мапа додатку.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-600);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">🗺 Мапа</a>
+    <span style="font:700 12px var(--font-body);color:#fff;background:var(--color-accent);padding:6px 12px;border-radius:999px">01 · Вхід і онбординг</span><a href="KnowSnout 02 Перевір.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-700);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">02 · Перевір</a><a href="KnowSnout 03 Улюбленці.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-700);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">03 · Улюбленці</a><a href="KnowSnout 04 Стрічка.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-700);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">04 · Стрічка</a><a href="KnowSnout 05 Спільнота.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-700);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">05 · Спільнота</a><a href="KnowSnout 06 Довідники.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-700);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">06 · Довідники</a><a href="KnowSnout 07 Налаштування.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-700);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">07 · Налаштування</a><a href="KnowSnout 08 Системні стани.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-700);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">08 · Системні стани</a>
+  </div>
+</div>
+<div class="phones-row">
+
+  <div class="phone-col">
+    <div class="phone-label"><span class="code">01.01</span> Онбординг</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-ico" title="Сповіщення"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 6-3 7-3 7h18s-3-1-3-7"></path><path d="M13.7 21a2 2 0 01-3.4 0"></path></svg><span class="app-dot">3</span></div></div>
+        <div style="padding:14px 20px 0;text-align:right"><span style="font:600 13px var(--font-body);color:var(--color-neutral-500)">Пропустити</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;gap:20px;text-align:center">
+          <image-slot id="onboard-1" style="width:220px;height:220px" shape="circle" placeholder="Ілюстрація"></image-slot>
+          <h2 style="font-size:24px;margin:0">Скануй корм за секунди</h2>
+          <div style="color:var(--color-neutral-600);font-size:14px;max-width:280px">Наведи камеру на штрихкод або етикетку — і отримай оцінку складу.</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <div style="width:22px;height:6px;border-radius:999px;background:var(--color-accent)"></div>
+            <div style="width:6px;height:6px;border-radius:999px;background:var(--color-neutral-300)"></div>
+            <div style="width:6px;height:6px;border-radius:999px;background:var(--color-neutral-300)"></div>
+          </div>
+        </div>
+        <div style="padding:0 20px 24px"><div class="btn btn-primary btn-block" style="height:48px">Далі</div></div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label"><span class="code">01.02</span> Онбординг 2/3</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-ico" title="Сповіщення"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 6-3 7-3 7h18s-3-1-3-7"></path><path d="M13.7 21a2 2 0 01-3.4 0"></path></svg><span class="app-dot">3</span></div></div>
+        <div style="padding:14px 20px 0;text-align:right"><span style="font:600 13px var(--font-body);color:var(--color-neutral-500)">Пропустити</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;gap:20px;text-align:center">
+          <image-slot id="onboard-2" style="width:220px;height:220px" shape="circle" placeholder="Ілюстрація"></image-slot>
+          <h2 style="font-size:24px;margin:0">Веди профіль улюбленця</h2>
+          <div style="color:var(--color-neutral-600);font-size:14px;max-width:280px">Щеплення, ліки, документи для подорожей — усе в одному місці, для будь-якого виду тварини.</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <div style="width:6px;height:6px;border-radius:999px;background:var(--color-neutral-300)"></div>
+            <div style="width:22px;height:6px;border-radius:999px;background:var(--color-accent)"></div>
+            <div style="width:6px;height:6px;border-radius:999px;background:var(--color-neutral-300)"></div>
+          </div>
+        </div>
+        <div style="padding:0 20px 24px"><div class="btn btn-primary btn-block" style="height:48px">Далі</div></div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label"><span class="code">01.03</span> Онбординг 3/3</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-ico" title="Сповіщення"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 6-3 7-3 7h18s-3-1-3-7"></path><path d="M13.7 21a2 2 0 01-3.4 0"></path></svg><span class="app-dot">3</span></div></div>
+        <div style="padding:14px 20px 0;text-align:right"><span style="font:600 13px var(--font-body);color:var(--color-neutral-500)">Пропустити</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;gap:20px;text-align:center">
+          <image-slot id="onboard-3" style="width:220px;height:220px" shape="circle" placeholder="Ілюстрація"></image-slot>
+          <h2 style="font-size:24px;margin:0">Грай і спілкуйся зі спільнотою</h2>
+          <div style="color:var(--color-neutral-600);font-size:14px;max-width:280px">Квізи про породи, форум власників і конкурси фото — все в KnowSnout.</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <div style="width:6px;height:6px;border-radius:999px;background:var(--color-neutral-300)"></div>
+            <div style="width:6px;height:6px;border-radius:999px;background:var(--color-neutral-300)"></div>
+            <div style="width:22px;height:6px;border-radius:999px;background:var(--color-accent)"></div>
+          </div>
+        </div>
+        <div style="padding:0 20px 24px"><div class="btn btn-primary btn-block" style="height:48px">Розпочати</div></div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label"><span class="code">01.04</span> Реєстрація</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-ico" title="Сповіщення"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 6-3 7-3 7h18s-3-1-3-7"></path><path d="M13.7 21a2 2 0 01-3.4 0"></path></svg><span class="app-dot">3</span></div></div>
+        <div class="scr-hd" style="padding-top:14px">
+          <div class="hd-left"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div></div>
+          <h1 class="scr-title">Реєстрація</h1>
+          <div style="width:34px"></div>
+        </div>
+        <div style="flex:1;overflow:auto;padding:12px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div><div class="field-lbl">Ім&apos;я</div><div class="input" style="width:100%;box-sizing:border-box">Марта</div></div>
+          <div><div class="field-lbl">Пошта</div><div class="input" style="width:100%;box-sizing:border-box">marta@пошта.ua</div></div>
+          <div><div class="field-lbl">Пароль</div><div class="input" style="width:100%;box-sizing:border-box">••••••••</div></div>
+          <div style="font-size:11.5px;color:var(--color-neutral-600);line-height:1.5">Реєструючись, ви погоджуєтесь з <a href="#">умовами</a> і <a href="#">приватністю</a></div>
+          <div class="btn btn-primary btn-block" style="height:48px;margin-top:4px">Створити акаунт</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label"><span class="code">01.05</span> Вхід</div>
+    <div class="phone-note">Закриває: з реєстрації не було куди піти вже існуючому користувачу.</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg);padding:0 24px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:96px 0 32px">
+          <img src="assets/logo_emerald.png" alt="" style="width:76px;height:76px;object-fit:contain">
+          <span class="app-word" style="font-size:26px"><b>Know</b><i>Snout</i></span>
+          <div style="font:500 13px var(--font-body);color:var(--color-neutral-600)">З поверненням</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div><div class="field-lbl">Пошта або телефон</div><div class="inp inp-f">marta.k@mail.com</div></div>
+          <div><div class="field-lbl">Пароль</div><div class="inp row-between"><span style="letter-spacing:.18em;color:var(--color-text)">••••••••</span><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-500)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></div></div>
+          <div style="text-align:right;font:600 12px var(--font-body);color:var(--color-accent-700);padding-right:4px">Забули пароль?</div>
+          <div class="btn-p" style="margin-top:4px">Увійти</div>
+          <div style="display:flex;align-items:center;gap:12px;margin:6px 0"><div style="flex:1;height:1px;background:var(--color-neutral-300)"></div><span style="font:500 11.5px var(--font-body);color:var(--color-neutral-500)">або</span><div style="flex:1;height:1px;background:var(--color-neutral-300)"></div></div>
+          <div class="btn-s">Продовжити з Google</div>
+          <div class="btn-s">Продовжити з Apple</div>
+        </div>
+        <div style="margin-top:auto;padding-bottom:28px;text-align:center;font:500 12.5px var(--font-body);color:var(--color-neutral-600)">Немає акаунту? <span style="font-weight:700;color:var(--color-accent-700)">Зареєструватися</span></div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label"><span class="code">01.06</span> Відновлення пароля</div>
+    <div class="phone-note">Закриває: «Забули пароль?» вело в нікуди.</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-ico" title="Сповіщення"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 6-3 7-3 7h18s-3-1-3-7"></path><path d="M13.7 21a2 2 0 01-3.4 0"></path></svg><span class="app-dot">3</span></div></div>
+        <div class="scr-hd"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div><h1 class="scr-title" style="font-size:18px">Відновлення</h1><div style="width:34px"></div></div>
+        <div style="flex:1;padding:14px 24px 24px;display:flex;flex-direction:column;gap:16px">
+          <div style="font:500 13px/1.6 var(--font-body);color:var(--color-neutral-700)">Введіть пошту, з якою реєструвалися. Надішлемо код для скидання пароля.</div>
+          <div><div class="field-lbl">Пошта</div><div class="inp inp-f">marta.k@mail.com</div></div>
+          <div class="btn-p">Надіслати код</div>
+          <div class="card-sm" style="background:var(--color-accent-100);box-shadow:none;font:500 12px/1.55 var(--font-body);color:var(--color-accent-700)">Якщо ви входили через Google або Apple — пароля немає. Скористайтеся тією ж кнопкою на екрані входу.</div>
+          <div class="btn-g" style="margin-top:auto">Згадали пароль? Увійти</div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+  <div class="phone-col">
+    <div class="phone-label"><span class="code">01.07</span> Код підтвердження</div>
+    <div class="phone-note">Закриває: після «Надіслати код» не було екрана введення.</div>
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+      <div style="height:100%;display:flex;flex-direction:column;background:var(--color-bg)">
+        <div class="app-hd"><div class="app-brand" title="На головну"><img src="assets/logo_emerald.png" alt="KnowSnout"><span class="app-word"><b>Know</b><i>Snout</i></span></div><div class="app-ico" title="Сповіщення"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 6-3 7-3 7h18s-3-1-3-7"></path><path d="M13.7 21a2 2 0 01-3.4 0"></path></svg><span class="app-dot">3</span></div></div>
+        <div class="scr-hd"><div class="scr-back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></div><h1 class="scr-title" style="font-size:18px">Код із пошти</h1><div style="width:34px"></div></div>
+        <div style="flex:1;padding:14px 24px 24px;display:flex;flex-direction:column;gap:18px">
+          <div style="font:500 13px/1.6 var(--font-body);color:var(--color-neutral-700)">Надіслали 6 цифр на <b style="color:var(--color-text)">marta.k@mail.com</b>. Код дійсний 10 хвилин.</div>
+          <div style="display:flex;gap:8px">
+            <div class="card-sm" style="flex:1;text-align:center;font:700 20px var(--font-heading);padding:14px 0">4</div>
+            <div class="card-sm" style="flex:1;text-align:center;font:700 20px var(--font-heading);padding:14px 0">1</div>
+            <div class="card-sm" style="flex:1;text-align:center;font:700 20px var(--font-heading);padding:14px 0">9</div>
+            <div class="card-sm" style="flex:1;text-align:center;font:700 20px var(--font-heading);padding:14px 0;box-shadow:var(--shadow-sm),0 0 0 2px var(--color-accent-300)">7</div>
+            <div class="card-sm" style="flex:1;text-align:center;padding:14px 0;color:var(--color-neutral-300);font:700 20px var(--font-heading)">·</div>
+            <div class="card-sm" style="flex:1;text-align:center;padding:14px 0;color:var(--color-neutral-300);font:700 20px var(--font-heading)">·</div>
+          </div>
+          <div class="btn-p">Підтвердити</div>
+          <div style="text-align:center;font:500 12.5px var(--font-body);color:var(--color-neutral-600)">Не отримали? <span style="font-weight:700;color:var(--color-neutral-400)">Надіслати ще раз (0:42)</span></div>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+</x-dc>
+</body>
+</html>

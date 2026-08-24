@@ -18,6 +18,7 @@ import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { guessMimeType, uriToBase64 } from '@/src/lib/image';
+import { canUseAiScan, consumeAiScan } from '@/src/services/aiScanLimit';
 import { getPet } from '@/src/services/pets';
 import {
   checkPlantByName,
@@ -197,6 +198,11 @@ export default function PlantSafetyScreen() {
       setActionError(t('plants.photoRequired'));
       return;
     }
+    const allowed = await canUseAiScan();
+    if (!allowed) {
+      router.push('/(app)/ai-limit' as never);
+      return;
+    }
     setBusy(true);
     setActionError(null);
     try {
@@ -206,6 +212,7 @@ export default function PlantSafetyScreen() {
         mimeType: guessMimeType(photoUri),
         species,
       });
+      await consumeAiScan();
       setQuery(hit.plant.name_uk);
       await applyResult(hit, hit.matchedQuery, photoUri);
     } catch (err) {
@@ -224,7 +231,7 @@ export default function PlantSafetyScreen() {
   if (error) {
     return (
       <AppScreen>
-        <AppChromeHeader />
+        <AppChromeHeader trailing="bell" bellCount={3} />
         <ErrorState message={error} onRetry={() => void load()} />
       </AppScreen>
     );
@@ -232,7 +239,7 @@ export default function PlantSafetyScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+      <AppChromeHeader trailing="bell" bellCount={3} />
       <ScrHeader title={t('plants.title')} />
       <ScrollView
         contentContainerClassName="px-5 pb-12 pt-2"

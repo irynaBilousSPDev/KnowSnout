@@ -22,7 +22,7 @@ function TabIcon({
     <Ionicons
       name={name}
       size={18}
-      color={focused ? brand.accentDark : brand.mutedSoft}
+      color={focused ? brand.logoGreen : brand.mutedSoft}
     />
   );
 }
@@ -58,7 +58,7 @@ export default function TabsLayout() {
           shadowOpacity: 0,
         },
         tabBarItemStyle: { paddingTop: 0 },
-        tabBarActiveTintColor: brand.accentDark,
+        tabBarActiveTintColor: brand.logoGreen,
         tabBarInactiveTintColor: brand.mutedSoft,
       }}
     >
@@ -125,7 +125,7 @@ export default function TabsLayout() {
           title: t('tabs.directories'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name={focused ? 'person-circle' : 'person-circle-outline'}
+              name={focused ? 'book' : 'book-outline'}
               focused={focused}
             />
           ),
@@ -151,6 +151,6 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   labelFocused: {
-    color: brand.accentDark,
+    color: brand.logoGreen,
   },
 });

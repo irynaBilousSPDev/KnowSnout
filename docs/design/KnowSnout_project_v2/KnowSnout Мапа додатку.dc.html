@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="stylesheet" href="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/styles.css">
+  <script src="_ds/organic-991bb88e-1fcb-4723-82ce-3bdd223c37f5/_ds_bundle.js"></script>
+  <style>
+    body{margin:0;background:var(--color-bg)}
+    a{color:var(--color-accent-700)}
+    a:hover{color:var(--color-accent-500)}
+    .kicker{font:600 11px/1.4 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)}
+    .card{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:24px 26px;margin-bottom:20px}
+    .tab-hd{display:flex;align-items:center;gap:11px;margin-bottom:3px}
+    .tab-n{width:28px;height:28px;border-radius:999px;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;font:800 13px var(--font-heading);flex-shrink:0}
+    .tab-t{font-size:19px;margin:0;font-family:var(--font-heading)}
+    .tab-sub{font:500 12.5px/1.55 var(--font-body);color:var(--color-neutral-600);margin:0 0 14px 39px}
+    .lvl1{margin-left:39px;padding-left:16px;border-left:2px solid var(--color-accent-200)}
+    .lvl2{margin-left:14px;padding-left:14px;border-left:2px solid var(--color-neutral-200)}
+    .node{display:flex;align-items:center;gap:8px;padding:5px 0;flex-wrap:wrap}
+    .nm{font:600 13px var(--font-body);color:var(--color-text)}
+    .nm-root{font:700 13.5px var(--font-body);color:var(--color-text)}
+    .ty{font:700 9.5px var(--font-body);letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px;flex-shrink:0}
+    .ty-scr{background:var(--color-accent-2-100);color:var(--color-accent-2-700)}
+    .ty-mod{background:var(--color-accent-100);color:var(--color-accent-700)}
+    .ty-full{background:var(--color-neutral-200);color:var(--color-neutral-700)}
+    .ty-new{background:transparent;color:var(--color-accent-800);box-shadow:inset 0 0 0 1.5px var(--color-accent-700)}
+    .src{font:500 10.5px var(--font-body);color:var(--color-neutral-500)}
+    .legend{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 34px}
+    .legend div{display:flex;align-items:center;gap:7px;font:500 12px var(--font-body);color:var(--color-neutral-700)}
+    .files{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:8px;margin-top:12px}
+    .fchip{display:block;font:600 12px var(--font-body);color:var(--color-text);background:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:10px;padding:9px 11px;text-decoration:none}
+    .fchip span{display:block;font:500 10.5px var(--font-body);color:var(--color-neutral-500);margin-top:2px}
+  </style>
+</helmet>
+<div style="max-width:1080px;margin:0 auto;padding:56px 48px 90px">
+  <div class="kicker">KnowSnout · Мапа додатку</div>
+  <h1 style="font-size:36px;margin:8px 0 12px">Навігація застосунку</h1>
+  <p style="max-width:700px;color:var(--color-neutral-700);font-size:15px;line-height:1.6">
+    Мапа побудована за тим, як користувач ходить застосунком: спершу глобальні елементи, потім п'ять розділів нижньої навігації з вкладеністю екранів. Файл із макетом підписаний біля екрана там, де він лежить не в очевидному місці — один файл часто обслуговує кілька розділів.
+  </p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 26px">
+    <a href="KnowSnout UI Kit.dc.html" style="font:700 12px var(--font-body);color:var(--color-neutral-600);text-decoration:none;padding:6px 12px;border:1px solid var(--color-neutral-300);border-radius:999px">← Огляд</a>
+    <a href="KnowSnout Product Structure.md" style="font:700 12px var(--font-body);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Структура продукту</a>
+    <a href="KnowSnout 01 Вхід і онбординг.dc.html" style="font:700 12px var(--font-body);text-decoration:none;padding:6px 12px;background:var(--color-accent-100);border-radius:999px">Почати з 01</a>
+  </div>
+  <div class="legend">
+    <div><span class="ty ty-scr">Екран</span> окрема сторінка</div>
+    <div><span class="ty ty-mod">Модал</span> шторка або діалог поверх</div>
+    <div><span class="ty ty-full">Повний</span> камера, темне тло</div>
+    <div><span class="ty ty-new">Новий</span> доданий після аудиту прогалин</div>
+  </div>
+
+  <div class="card" style="background:var(--color-accent-100);box-shadow:none">
+    <div class="tab-hd"><span class="tab-n" style="background:var(--color-neutral-700)">◎</span><h2 class="tab-t">Глобальні елементи</h2></div>
+    <p class="tab-sub">Присутні на кожному екрані, крім камери й повноекранних оверлеїв.</p>
+    <div class="lvl1" style="border-left-color:var(--color-neutral-300)">
+      <div class="node"><span class="nm-root">Хедер · логотип ліворуч</span><span class="src">повертає на корінь активного розділу</span></div>
+      <div class="node"><span class="nm-root">Хедер · дзвіночок з лічильником</span><span class="ty ty-scr">Екран</span><span class="src">Сповіщення · файл «Профіль і Службові»</span></div>
+      <div class="node"><span class="nm-root">Нижня навігація · 5 розділів</span><span class="src">Стрічка · Перевір · Улюбленці · Спільнота · Довідники</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tab-hd"><span class="tab-n">1</span><h2 class="tab-t">Стрічка</h2></div>
+    <p class="tab-sub">Соціальне ядро: пости, друзі, чат, конкурси. Тут же вхід у власний профіль і, з нього, у налаштування.</p>
+    <div class="lvl1">
+      <div class="node"><span class="nm-root">Стрічка постів</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Пост із реакціями</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Коментарі під постом</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Створення поста</span><span class="ty ty-scr">Екран</span><span class="ty ty-new">Новий</span></div>
+        <div class="node"><span class="nm">Позначити улюбленців і друзів на фото</span><span class="ty ty-full">Повний</span></div>
+        <div class="node"><span class="nm">Поділитися · Поскаржитися</span><span class="ty ty-mod">Модал</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Глобальний пошук</span><span class="ty ty-scr">Екран</span><span class="src">люди, улюбленці, статті, корми</span></div>
+      <div class="node"><span class="nm-root">Друзі</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Пошук людей</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Вхідні запити в друзі</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Запросити за посиланням або QR</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Профіль іншого користувача</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Чат — список розмов</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Чат — розмова</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Запланувати прогулянку</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Запрошення на прогулянку у чаті</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+      <div class="node"><span class="nm-root">SnoutSpotlight — хаб конкурсів</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Умови конкурсу</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Форма подачі заявки</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Картка учасника</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Повний рейтинг · Історія переможців</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Повідомлення про перемогу</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Гостьове голосування — веб, без акаунту</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Мій профіль</span><span class="ty ty-scr">Екран</span><span class="src">обкладинка, біо, улюбленці, друзі, бейджі, таби контенту</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Активність — лайки, коментарі, підписники</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Редагування акаунта</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm" style="color:var(--color-accent-700);font-weight:700">Налаштування ⚙ → блок 6 нижче</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tab-hd"><span class="tab-n">2</span><h2 class="tab-t">Перевір</h2></div>
+    <p class="tab-sub">Головна функція: корм, рослини, породи. Три сценарії з одного хабу, кожен веде до результату й в історію.</p>
+    <div class="lvl1">
+      <div class="node"><span class="nm-root">Хаб «Перевір»</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Сканувати штрихкод</span><span class="ty ty-full">Повний</span></div>
+        <div class="node"><span class="nm">Сфотографувати етикетку</span><span class="ty ty-full">Повний</span></div>
+        <div class="node"><span class="nm">AI аналізує скан</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Результат: корм знайдено</span><span class="ty ty-scr">Екран</span><span class="ty ty-new">Новий</span></div>
+        <div class="node"><span class="nm">Корму немає в базі → додати</span><span class="ty ty-scr">Екран</span><span class="ty ty-new">Новий</span></div>
+        <div class="node"><span class="nm">Ліміт AI-сканів на Free</span><span class="ty ty-scr">Екран</span><span class="ty ty-new">Новий</span></div>
+        <div class="node"><span class="nm">Результат: рослина</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Порода: завантаження фото → результат</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Історія перевірок</span><span class="ty ty-scr">Екран</span><span class="src">фільтри за типом і видом тварини</span></div>
+      <div class="node"><span class="nm-root">Порівняти 2 корми</span><span class="ty ty-scr">Екран</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tab-hd"><span class="tab-n">3</span><h2 class="tab-t">Улюбленці</h2></div>
+    <p class="tab-sub">Профілі тварин, здоров'я, документи, подорожі. Кожна тварина має власний хаб; вид тварини визначає доступні поля.</p>
+    <div class="lvl1">
+      <div class="node"><span class="nm-root">Список тварин</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Порожній список — перший запуск</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Додати улюбленця — крок 1, вид</span><span class="ty ty-scr">Екран</span><span class="ty ty-new">Новий</span></div>
+        <div class="node"><span class="nm">Профіль тварини — форма, акордеон</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Хаб тварини</span><span class="ty ty-scr">Екран</span><span class="src">перемикач між тваринами вгорі</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Профіль, перегляд — собака та папуга</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Догляд сьогодні</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Щеплення</span><span class="ty ty-scr">Екран</span><span class="src">+ форма додавання</span></div>
+        <div class="node"><span class="nm">Ліки та візити</span><span class="ty ty-scr">Екран</span><span class="src">+ форма додавання</span></div>
+        <div class="node"><span class="nm">Ігри й активності</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Звички</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Календар догляду + Google-синк</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Документи й подорожі</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Чек-лист паспорта</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Подорож — wizard із дедлайнами</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tab-hd"><span class="tab-n">4</span><h2 class="tab-t">Спільнота</h2></div>
+    <p class="tab-sub">Знання і гейміфікація: квізи на відкритих даних, форум, блог. Відділена від «Стрічки» — тут контент, а не соціальні звʼязки.</p>
+    <div class="lvl1">
+      <div class="node"><span class="nm-root">Квіз-хаб</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Звідки порода · Група тварин · Вгадай за фото</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Зум-загадка · Хто важчий · Правда чи міф</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Результати квізу з XP</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Рейтинг гравців</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Досягнення й бейджі</span><span class="ty ty-scr">Екран</span><span class="src">виводяться на «Мій профіль»</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Форум — категорії</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Стрічка категорії · Пошук і теги</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Тред · Нове питання</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Профіль автора · Сповіщення форуму</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Правила спільноти</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Блог — категорії</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Стаття · Стаття з коментарями · Закладки</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tab-hd"><span class="tab-n">5</span><h2 class="tab-t">Довідники</h2></div>
+    <p class="tab-sub">Перевірені контакти навколо тварини. Статус верифікації видно одразу на картці.</p>
+    <div class="lvl1">
+      <div class="node"><span class="nm-root">Хаб довідників</span><span class="ty ty-scr">Екран</span><span class="src">6 категорій</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Ветеринари — список і фільтри</span><span class="ty ty-scr">Екран</span><span class="src">спеціалізація, мова лікаря, місто</span></div>
+        <div class="node"><span class="nm">Заводчики — верифікація FCI</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Перевізники — список і картка</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Петсіттери · Страхування · Житло</span><span class="src">заплановані, макетів ще немає</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Картка закладу</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Залишити відгук</span><span class="ty ty-scr">Екран</span></div>
+        <div class="node"><span class="nm">Повідомити про шахрайство</span><span class="ty ty-mod">Модал</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tab-hd"><span class="tab-n" style="background:var(--color-neutral-700)">6</span><h2 class="tab-t">Налаштування</h2></div>
+    <p class="tab-sub">Не таб. Відкриваються шестернею з «Мого профілю» — низька частота, тому не займають місце в навігації.</p>
+    <div class="lvl1" style="border-left-color:var(--color-neutral-300)">
+      <div class="node"><span class="nm-root">Мова та підписка</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Підписка і платежі</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Приватність і джерела даних</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Заблоковані користувачі</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Вигляд — перемикач теми</span><span class="ty ty-scr">Екран</span><span class="src">+ приклад темної стрічки</span></div>
+      <div class="node"><span class="nm-root">Довідка і підтримка</span><span class="ty ty-scr">Екран</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Детальна стаття · Звернення в підтримку</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Видалення акаунта</span><span class="ty ty-mod">Модал</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tab-hd"><span class="tab-n" style="background:var(--color-neutral-700)">7</span><h2 class="tab-t">Вхід і системні стани</h2></div>
+    <p class="tab-sub">Поза навігацією: до входу в застосунок, і стани, що зʼявляються поверх будь-якого екрана.</p>
+    <div class="lvl1" style="border-left-color:var(--color-neutral-300)">
+      <div class="node"><span class="nm-root">Онбординг 1–3</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Реєстрація</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Вхід</span><span class="ty ty-scr">Екран</span><span class="ty ty-new">Новий</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Відновлення пароля</span><span class="ty ty-scr">Екран</span><span class="ty ty-new">Новий</span></div>
+        <div class="node"><span class="nm">Код підтвердження з пошти</span><span class="ty ty-scr">Екран</span><span class="ty ty-new">Новий</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Дозволи — камера, сповіщення</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Помилка мережі · 404</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Порожні стани · Toast збереження</span><span class="ty ty-mod">Модал</span></div>
+      <div class="node"><span class="nm-root">Камера та галерея</span><span class="ty ty-full">Повний</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="background:var(--color-neutral-100);box-shadow:none">
+    <div class="tab-hd"><span class="tab-n" style="background:var(--color-neutral-700)">8</span><h2 class="tab-t">Адмінка — окремий веб-продукт</h2></div>
+    <p class="tab-sub">Не частина мобільного застосунку. Роль визначає доступ: супер-адмін, адміністратор, контент-менеджер.</p>
+    <div class="lvl1" style="border-left-color:var(--color-neutral-300)">
+      <div class="node"><span class="nm-root">Дашборд</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Єдина черга модерації</span><span class="ty ty-scr">Екран</span><span class="src">заклади, пости, контент, скарги</span></div>
+      <div class="lvl2">
+        <div class="node"><span class="nm">Картка заявки — рішення</span><span class="ty ty-scr">Екран</span></div>
+      </div>
+      <div class="node"><span class="nm-root">Контент-CMS — версії правил</span><span class="ty ty-scr">Екран</span><span class="src">вакцинація, токсичність, подорожі</span></div>
+      <div class="node"><span class="nm-root">Конкурси Spotlight</span><span class="ty ty-scr">Екран</span><span class="src">список · заявки · переможець</span></div>
+      <div class="node"><span class="nm-root">Блог · Каталог продуктів · Банк питань квізів</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Монетизація — підписки й affiliate</span><span class="ty ty-scr">Екран</span></div>
+      <div class="node"><span class="nm-root">Внутрішня команда та ролі</span><span class="ty ty-scr">Екран</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:17px;margin:0 0 4px;font-family:var(--font-heading)">Файли з макетами</h2>
+    <p style="font:500 12.5px/1.55 var(--font-body);color:var(--color-neutral-600);margin:0">Файли пронумеровані за цією мапою. Кожен екран має код виду <b>04.11</b> — перше число це файл, друге порядок у ньому.</p>
+    <div class="files">
+      <a class="fchip" href="KnowSnout 01 Вхід і онбординг.dc.html">01 · Вхід і онбординг<span>7 екранів · до входу в застосунок</span></a>
+      <a class="fchip" href="KnowSnout 02 Перевір.dc.html">02 · Перевір<span>12 екранів · корм, рослини, породи</span></a>
+      <a class="fchip" href="KnowSnout 03 Улюбленці.dc.html">03 · Улюбленці<span>17 екранів · тварини, здоров'я, подорожі</span></a>
+      <a class="fchip" href="KnowSnout 04 Стрічка.dc.html">04 · Стрічка<span>26 екранів · пости, друзі, чат, Spotlight, профіль</span></a>
+      <a class="fchip" href="KnowSnout 05 Спільнота.dc.html">05 · Спільнота<span>23 екрани · квізи, форум, блог</span></a>
+      <a class="fchip" href="KnowSnout 06 Довідники.dc.html">06 · Довідники<span>8 екранів · ветеринари, заводчики, перевізники</span></a>
+      <a class="fchip" href="KnowSnout 07 Налаштування.dc.html">07 · Налаштування<span>12 екранів · акаунт, приватність, підписка</span></a>
+      <a class="fchip" href="KnowSnout 08 Системні стани.dc.html">08 · Системні стани<span>8 екранів · дозволи, помилки, порожні стани</span></a>
+      <a class="fchip" href="KnowSnout - Адмінка.dc.html">Адмінка<span>Веб-панель модерації та контенту</span></a>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:26px;font:500 12.5px var(--font-body);color:var(--color-neutral-500)">≈ 100 екранів · 5 розділів навігації + налаштування, системні стани й адмінка</div>
+</div>
+
+</x-dc>
+</body>
+</html>

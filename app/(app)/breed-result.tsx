@@ -99,7 +99,7 @@ export default function BreedResultScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+      <AppChromeHeader trailing="bell" bellCount={3} />
       <ScrHeader title={t('breed.resultTitle')} titleSize={18} />
       <ScrollView
         contentContainerStyle={styles.scroll}

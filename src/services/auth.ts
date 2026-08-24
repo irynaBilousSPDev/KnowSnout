@@ -87,6 +87,50 @@ export async function signOut(): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
+/** Demo-friendly password reset request (UI flow 01.06 → 01.07). */
+export async function requestPasswordReset(email: string): Promise<void> {
+  const trimmed = email.trim();
+  if (!trimmed) throw new Error('Email required');
+
+  if (env.isDemoMode || !supabase) {
+    await AsyncStorage.setItem(
+      'knowsnout.auth.reset.email',
+      trimmed.toLowerCase(),
+    );
+    return;
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(trimmed);
+  if (error) throw new Error(error.message);
+}
+
+/** Demo accepts any 6-digit code; live Supabase OTP wiring comes later. */
+export async function verifyResetCode(
+  email: string,
+  code: string,
+): Promise<void> {
+  const trimmed = email.trim().toLowerCase();
+  const digits = code.replace(/\D/g, '');
+  if (digits.length !== 6) throw new Error('Invalid code');
+
+  if (env.isDemoMode || !supabase) {
+    const stored = await AsyncStorage.getItem('knowsnout.auth.reset.email');
+    if (stored && stored !== trimmed) {
+      throw new Error('Email mismatch');
+    }
+    await AsyncStorage.removeItem('knowsnout.auth.reset.email');
+    return;
+  }
+
+  // Live path: email OTP verification for recovery will be wired with Supabase settings.
+  const { error } = await supabase.auth.verifyOtp({
+    email: trimmed,
+    token: digits,
+    type: 'recovery',
+  });
+  if (error) throw new Error(error.message);
+}
+
 export function onAuthStateChange(
   callback: (user: AuthUser | null) => void,
 ): () => void {

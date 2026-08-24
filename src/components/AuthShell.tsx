@@ -17,31 +17,43 @@ import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   headline: string;
+  headlineSize?: number;
   subtitle?: string | null;
   children: ReactNode;
   footer?: ReactNode;
   badge?: string | null;
   showBack?: boolean;
   onBack?: () => void;
+  /** Design kit on auth phones shows bell+badge */
+  showBell?: boolean;
+  bellCount?: number;
 };
 
 /**
- * Auth layout from HTML phone “2 · Реєстрація”:
- * app-hd → scr-hd (back + title) → fields + legal + CTA in one column.
+ * Auth layout from screenshots 01.04 / 01.06 / 01.07:
+ * app-hd (logo + bell) → scr-hd (back + title) → form.
  */
 export function AuthShell({
   headline,
+  headlineSize = 22,
   subtitle,
   children,
   footer,
   badge,
   showBack = true,
   onBack,
+  showBell = true,
+  bellCount = 3,
 }: Props) {
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safe} edges={['bottom']}>
-        <AppChromeHeader showAvatar={false} />
+        <AppChromeHeader
+          trailing={showBell ? 'bell' : 'none'}
+          bellCount={bellCount}
+          onBrandPress={() => undefined}
+          onBellPress={() => undefined}
+        />
         <KeyboardAvoidingView
           style={styles.flex}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -60,7 +72,12 @@ export function AuthShell({
             ) : (
               <View style={styles.backSpacer} />
             )}
-            <Text style={styles.scrTitle}>{headline}</Text>
+            <Text
+              style={[styles.scrTitle, { fontSize: headlineSize }]}
+              numberOfLines={1}
+            >
+              {headline}
+            </Text>
             <View style={styles.backSpacer} />
           </View>
 
@@ -111,7 +128,6 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontFamily: fonts.title,
-    fontSize: 22,
     lineHeight: 28,
     color: brand.ink,
   },
@@ -123,9 +139,9 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: brand.muted,
+    fontSize: 13,
+    lineHeight: 21,
+    color: brand.label,
   },
   badge: {
     alignSelf: 'flex-start',

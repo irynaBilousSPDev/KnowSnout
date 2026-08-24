@@ -23,6 +23,7 @@ import { getScoreTone, SCORE_COLORS } from '@/src/constants/analysis';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
 import { isNativeSafeImageUri } from '@/src/lib/image';
+import { formatRelativeAgo, scoreOutOfFive } from '@/src/lib/relativeTime';
 import { setPendingAnalysis } from '@/src/lib/resultStore';
 import {
   deleteBreedHistoryItem,
@@ -50,15 +51,6 @@ type HistoryRow =
   | { type: 'food'; item: ScanRow }
   | { type: 'plant'; item: PlantHistoryItem }
   | { type: 'breed'; item: BreedHistoryItem };
-
-function timeAgo(iso: string): string {
-  const ms = Date.now() - new Date(iso).getTime();
-  const days = Math.max(0, Math.floor(ms / (24 * 60 * 60 * 1000)));
-  if (days <= 1) return t('check.agoDays', { count: Math.max(1, days || 1) });
-  if (days < 7) return t('check.agoDays', { count: days });
-  if (days < 14) return t('check.agoWeek');
-  return t('check.agoWeeks', { count: Math.round(days / 7) });
-}
 
 function plantLevelLabel(level: string) {
   switch (level as PlantToxicityLevel) {
@@ -253,7 +245,11 @@ export default function JournalScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+      <AppChromeHeader
+        trailing="bell"
+        bellCount={3}
+        onBellPress={() => router.push('/(app)/notifications' as never)}
+      />
       <View style={styles.header}>
         <Text style={styles.title}>{t('tabs.scan')}</Text>
 
@@ -392,14 +388,14 @@ export default function JournalScreen() {
                         ? t('check.foodForPet', { name: petName })
                         : t('journal.kindFood')}
                       {' · '}
-                      {timeAgo(item.created_at)}
+                      {formatRelativeAgo(item.created_at)}
                     </Text>
                   </View>
                   <View
                     style={[styles.badge, { backgroundColor: `${color}22` }]}
                   >
                     <Text style={[styles.badgeText, { color }]}>
-                      {(item.score / 20).toFixed(1)}
+                      {scoreOutOfFive(item.score)}
                     </Text>
                   </View>
                 </Pressable>
@@ -427,7 +423,7 @@ export default function JournalScreen() {
                       {item.name_uk ?? item.query_text ?? t('plants.title')}
                     </Text>
                     <Text style={styles.cardMeta}>
-                      {t('check.kindPlant')} · {timeAgo(item.created_at)}
+                      {t('check.kindPlant')} · {formatRelativeAgo(item.created_at)}
                     </Text>
                   </View>
                   <View
@@ -480,7 +476,7 @@ export default function JournalScreen() {
                     {item.breedNameUk ?? item.breedName}
                   </Text>
                   <Text style={styles.cardMeta}>
-                    {t('check.kindBreed')} · {timeAgo(item.createdAt)}
+                    {t('check.kindBreed')} · {formatRelativeAgo(item.createdAt)}
                   </Text>
                 </View>
                 <View style={styles.badgeMuted}>
@@ -501,10 +497,10 @@ const styles = StyleSheet.create({
   header: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 8, gap: 12 },
   title: {
     fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: 28,
+    lineHeight: 34,
     color: brand.ink,
-    marginBottom: 0,
+    marginBottom: 4,
   },
   chipRow: { flexDirection: 'row', gap: 8, paddingBottom: 0 },
   chip: {

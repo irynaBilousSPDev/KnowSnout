@@ -134,7 +134,11 @@ function toxicityCards(
     },
     {
       key: 'bird',
-      level: 'unknown',
+      // Calcium-oxalate houseplants are unsafe for birds in kit copy (02.08).
+      level:
+        forCat?.level === 'toxic' || forDog?.level === 'toxic'
+          ? 'toxic'
+          : 'unknown',
       notes: null,
     },
   ];
@@ -205,12 +209,12 @@ export default function PlantResultScreen() {
 
   const showPhoto = isNativeSafeImageUri(photoUrl);
   const displayName = item.name_uk ?? item.query_text ?? t('plants.resultTitle');
-  const latinLine = [item.latin, item.name_en].filter(Boolean).join(' · ');
+  const latin = item.latin ?? item.name_en ?? '';
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
-      <ScrHeader title={t('plants.resultTitle')} />
+      <AppChromeHeader trailing="bell" bellCount={3} />
+      <ScrHeader title={t('plants.resultTitle')} titleSize={18} />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
@@ -224,15 +228,20 @@ export default function PlantResultScreen() {
           />
         ) : (
           <View style={styles.photoEmpty}>
-            <Text style={styles.photoEmptyText}>{t('journal.noPhoto')}</Text>
+            <Text style={styles.photoEmptyText}>
+              {t('plants.photoPlaceholder')}
+            </Text>
           </View>
         )}
 
         <View>
           <Text style={styles.heroName}>{displayName}</Text>
-          {latinLine ? (
-            <Text style={styles.heroMeta}>{latinLine}</Text>
-          ) : null}
+          <Text style={styles.heroMeta}>
+            {t('plants.careLine', {
+              latin: latin || '—',
+              care: t('plants.careMedium'),
+            })}
+          </Text>
         </View>
 
         <Text style={styles.sectionLabel}>
@@ -252,12 +261,12 @@ export default function PlantResultScreen() {
               <Ionicons
                 name={safe ? 'checkmark' : 'warning-outline'}
                 size={17}
-                color={safe ? brand.successDark : brand.accent}
+                color={safe ? brand.successDark : brand.error}
               />
               <Text
                 style={[
                   styles.toxText,
-                  { color: safe ? brand.successDark : brand.accentDark },
+                  { color: safe ? brand.successDark : brand.ink },
                 ]}
               >
                 {cardTitle(card)}
@@ -266,30 +275,19 @@ export default function PlantResultScreen() {
           );
         })}
 
-        <View style={styles.ctaRow}>
-          <View style={styles.ctaHalf}>
-            <PrimaryButton
-              label={t('plants.saveToHistory')}
-              variant="secondary"
-              onPress={() => router.replace('/(app)/(tabs)/history')}
-            />
-          </View>
-          <View style={styles.ctaHalf}>
-            <PrimaryButton
-              label={t('plants.attachToPet')}
-              onPress={() => router.push('/(app)/(tabs)/pets')}
-            />
-          </View>
-        </View>
+        <PrimaryButton
+          label={t('plants.saveToHistory')}
+          variant="secondary"
+          onPress={() => router.replace('/(app)/(tabs)/history')}
+        />
+        <PrimaryButton
+          label={t('plants.attachToPet')}
+          onPress={() => router.push('/(app)/(tabs)/pets')}
+        />
 
-        <View style={styles.disclaimerRow}>
-          <Ionicons
-            name="information-circle-outline"
-            size={12}
-            color={brand.mutedSoft}
-          />
-          <Text style={styles.disclaimer}>{t('plants.resultDisclaimer')}</Text>
-        </View>
+        <Text style={styles.disclaimerSolo}>
+          {t('plants.disclaimerShort')}
+        </Text>
       </ScrollView>
     </AppScreen>
   );
@@ -351,7 +349,7 @@ const styles = StyleSheet.create({
     backgroundColor: brand.successTint,
   },
   toxCardRisk: {
-    backgroundColor: brand.accentTint,
+    backgroundColor: brand.roseTint,
   },
   toxText: {
     flex: 1,
@@ -359,24 +357,12 @@ const styles = StyleSheet.create({
     fontSize: 13.5,
     lineHeight: 18,
   },
-  ctaRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 4,
-  },
-  ctaHalf: {
-    flex: 1,
-  },
-  disclaimerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  disclaimer: {
-    flex: 1,
+  disclaimerSolo: {
+    marginTop: 8,
+    textAlign: 'center',
     fontFamily: fonts.body,
-    fontSize: 10.5,
-    lineHeight: 14,
+    fontSize: 11,
+    lineHeight: 15,
     color: brand.mutedSoft,
   },
 });

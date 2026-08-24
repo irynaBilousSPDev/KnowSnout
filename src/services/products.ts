@@ -84,6 +84,10 @@ export function isPublicMatchRich(analysis: AnalysisResult): boolean {
   return analysis.pros.length + analysis.cons.length >= 3;
 }
 
+export async function listLocalProducts(): Promise<ProductRow[]> {
+  return readLocalProducts();
+}
+
 export async function getProductByBarcode(
   barcode: string,
 ): Promise<ProductRow | null> {

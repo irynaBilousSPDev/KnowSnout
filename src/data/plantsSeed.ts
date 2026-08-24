@@ -64,20 +64,20 @@ export const PLANTS_SEED: PlantRecord[] = [
   {
     id: 'seed-monstera',
     latin: 'Monstera deliciosa',
-    name_uk: 'Монстера',
+    name_uk: 'Монстера деліціоза',
     name_en: 'Monstera / Swiss cheese plant',
     name_pl: 'Monstera dziurawa',
-    aliases: ['swiss cheese', 'монстера деліціоза'],
+    aliases: ['swiss cheese', 'монстера', 'monstera deliciosa'],
     toxicity: [
       {
         species: 'cat',
         level: 'toxic',
-        notes: 'Оксалати кальцію — подразнення слизових.',
+        notes: 'нудота, блювання',
       },
       {
         species: 'dog',
-        level: 'toxic',
-        notes: 'Оксалати кальцію — подразнення слизових.',
+        level: 'safe',
+        notes: null,
       },
     ],
   },
