@@ -4,17 +4,20 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
+  ActivityIndicator,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   listDmMessages,
@@ -25,7 +28,7 @@ import {
 } from '@/src/services/dm';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML kit · Чат — розмова. Accent bubbles, soft canvas. */
+/** HTML · Чат — розмова. */
 export default function DmThreadScreen() {
   const params = useLocalSearchParams<{
     userId?: string;
@@ -93,7 +96,7 @@ export default function DmThreadScreen() {
   if (loading) {
     return (
       <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+        <AppChromeHeader />
         <LoadingState message={t('dm.loading')} />
       </AppScreen>
     );
@@ -102,23 +105,21 @@ export default function DmThreadScreen() {
   if (error && !thread) {
     return (
       <AppScreen>
+        <AppChromeHeader />
         <ErrorState message={error} onRetry={() => void load()} />
       </AppScreen>
     );
   }
 
   return (
-    <AppScreen edges={['top', 'bottom']}>
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={peerName} titleSize={18} />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={80}
+        keyboardVerticalOffset={88}
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>{peerName}</Text>
-          <Text style={styles.hint}>{t('dm.threadHint')}</Text>
-        </View>
-
         <FlatList
           data={messages}
           keyExtractor={(item) => item.id}
@@ -155,14 +156,22 @@ export default function DmThreadScreen() {
             multiline
             style={styles.input}
           />
-          <View style={styles.sendBtn}>
-            <PrimaryButton
-              label={t('dm.send')}
-              size="sm"
-              loading={sending}
-              onPress={() => void send()}
-            />
-          </View>
+          <Pressable
+            onPress={() => void send()}
+            disabled={sending || !draft.trim()}
+            style={[
+              styles.sendIcon,
+              (!draft.trim() || sending) && styles.sendIconDisabled,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={t('dm.send')}
+          >
+            {sending ? (
+              <ActivityIndicator color="#fff" size="small" />
+            ) : (
+              <Ionicons name="send" size={18} color="#FFFFFF" />
+            )}
+          </Pressable>
         </View>
       </KeyboardAvoidingView>
     </AppScreen>
@@ -171,30 +180,12 @@ export default function DmThreadScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  header: {
+  list: {
     paddingHorizontal: 20,
     paddingTop: 8,
-    paddingBottom: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: brand.mistBorder,
-  },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
-  },
-  hint: {
-    marginTop: 4,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: brand.muted,
-  },
-  list: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
     paddingBottom: 24,
     flexGrow: 1,
+    gap: 8,
   },
   empty: {
     marginTop: 40,
@@ -204,19 +195,21 @@ const styles = StyleSheet.create({
     color: brand.muted,
   },
   bubble: {
-    marginBottom: 8,
-    maxWidth: '85%',
-    borderRadius: brand.radius.md,
+    maxWidth: '75%',
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
   bubbleMine: {
     alignSelf: 'flex-end',
     backgroundColor: brand.accent,
+    borderRadius: 16,
+    borderBottomRightRadius: 4,
   },
   bubblePeer: {
     alignSelf: 'flex-start',
     backgroundColor: brand.surfaceElevated,
+    borderRadius: 16,
+    borderBottomLeftRadius: 4,
     shadowColor: brand.shadow.color,
     shadowOpacity: brand.shadow.opacity,
     shadowRadius: brand.shadow.radius,
@@ -225,38 +218,50 @@ const styles = StyleSheet.create({
   },
   bubbleText: {
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 18,
   },
   bubbleTextMine: { color: '#FFFFFF' },
   bubbleTextPeer: { color: brand.ink },
   composer: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: brand.mistBorder,
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
     backgroundColor: brand.canvas,
   },
   error: {
-    marginBottom: 8,
+    position: 'absolute',
+    top: -18,
+    left: 20,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 11,
     color: brand.score.poor,
   },
   input: {
+    flex: 1,
     minHeight: 44,
     maxHeight: 112,
     borderRadius: brand.radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 14,
     color: brand.ink,
     textAlignVertical: 'top',
   },
-  sendBtn: { marginTop: 10 },
+  sendIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: brand.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sendIconDisabled: {
+    opacity: 0.45,
+  },
 });

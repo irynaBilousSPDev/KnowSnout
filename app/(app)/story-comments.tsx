@@ -1,9 +1,9 @@
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   FlatList,
-  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -19,20 +19,18 @@ import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   addStoryComment,
   deleteStoryComment,
-  formatStoryTimeAgo,
   getStoryPost,
   listStoryComments,
 } from '@/src/services/stories';
 import { brand, fonts } from '@/src/theme/brand';
 import type { StoryComment, StoryPost } from '@/src/types/story';
 
-/** HTML kit · Коментарі — Manrope title, white r14 cards, accent CTA. */
+/** HTML phone “24 · Коментарі під постом”. */
 export default function StoryCommentsScreen() {
   const params = useLocalSearchParams<{ postId?: string }>();
   const postId = typeof params.postId === 'string' ? params.postId : undefined;
@@ -88,9 +86,7 @@ export default function StoryCommentsScreen() {
       setComments((prev) => [...prev, row]);
       setDraft('');
       setPost((prev) =>
-        prev
-          ? { ...prev, commentsCount: prev.commentsCount + 1 }
-          : prev,
+        prev ? { ...prev, commentsCount: prev.commentsCount + 1 } : prev,
       );
     } catch (err) {
       const message =
@@ -141,6 +137,7 @@ export default function StoryCommentsScreen() {
   if (loading) {
     return (
       <AppScreen>
+        <AppChromeHeader />
         <LoadingState message={t('stories.loading')} />
       </AppScreen>
     );
@@ -149,6 +146,7 @@ export default function StoryCommentsScreen() {
   if (error || !post) {
     return (
       <AppScreen>
+        <AppChromeHeader />
         <ErrorState
           message={error ?? t('stories.postNotFound')}
           onRetry={() => void load()}
@@ -160,7 +158,7 @@ export default function StoryCommentsScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrHeader title={t('stories.commentsTitle')} titleSize={20} />
+      <ScrHeader title={t('stories.commentsTitle')} titleSize={18} />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -170,72 +168,25 @@ export default function StoryCommentsScreen() {
           data={comments}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
-          ListHeaderComponent={
-            <View style={styles.headerBlock}>
-              <View style={styles.authorRow}>
-                <PetAvatar
-                  avatarKey={post.avatarKey}
-                  species={post.species}
-                  size={40}
-                  name={post.petName}
-                />
-                <View style={styles.authorCopy}>
-                  <Text style={styles.authorName}>{post.author}</Text>
-                  <Text style={styles.authorMeta}>
-                    {post.petName} · {formatStoryTimeAgo(post.createdAt)}
-                  </Text>
-                </View>
-              </View>
-
-              {post.imageUri ? (
-                <View style={styles.imageWrap}>
-                  <Image
-                    source={{ uri: post.imageUri }}
-                    style={styles.image}
-                    resizeMode="cover"
-                  />
-                </View>
-              ) : null}
-
-              <Text style={styles.caption}>
-                <Text style={styles.captionAuthor}>{post.author} </Text>
-                {post.caption}
-              </Text>
-
-              <Text style={styles.sectionTitle}>
-                {t('stories.commentsTitle')}
-                {post.commentsCount > 0 ? ` · ${post.commentsCount}` : ''}
-              </Text>
-            </View>
-          }
           ListEmptyComponent={
             <Text style={styles.empty}>{t('stories.commentsEmpty')}</Text>
           }
           renderItem={({ item }) => (
-            <View style={styles.commentCard}>
-              <View style={styles.commentRow}>
-                <View style={styles.commentCopy}>
-                  <Text style={styles.commentAuthor}>{item.author}</Text>
-                  <Text style={styles.commentBody}>{item.body}</Text>
-                  <Text style={styles.commentTime}>
-                    {formatStoryTimeAgo(item.createdAt)}
-                  </Text>
-                </View>
-                {item.mine ? (
-                  <Pressable
-                    onPress={() => void onDelete(item)}
-                    hitSlop={8}
-                    accessibilityLabel={t('pets.delete')}
-                  >
-                    <Ionicons
-                      name="trash-outline"
-                      size={18}
-                      color={brand.score.poor}
-                    />
-                  </Pressable>
-                ) : null}
+            <Pressable
+              onLongPress={item.mine ? () => void onDelete(item) : undefined}
+              style={styles.comment}
+            >
+              <PetAvatar
+                avatarKey="paw"
+                species="dog"
+                size={32}
+                name={item.author}
+              />
+              <View style={styles.commentCopy}>
+                <Text style={styles.commentAuthor}>{item.author}</Text>
+                <Text style={styles.commentBody}>{item.body}</Text>
               </View>
-            </View>
+            </Pressable>
           )}
         />
 
@@ -248,13 +199,22 @@ export default function StoryCommentsScreen() {
             style={styles.input}
             placeholderTextColor={brand.mutedSoft}
           />
-          <View style={styles.sendBtn}>
-            <PrimaryButton
-              label={t('stories.commentSend')}
-              loading={sending}
-              onPress={() => void send()}
-            />
-          </View>
+          <Pressable
+            onPress={() => void send()}
+            disabled={sending || !draft.trim()}
+            style={[
+              styles.sendIcon,
+              (!draft.trim() || sending) && styles.sendIconDisabled,
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={t('stories.commentSend')}
+          >
+            {sending ? (
+              <ActivityIndicator color="#fff" size="small" />
+            ) : (
+              <Ionicons name="send" size={18} color="#FFFFFF" />
+            )}
+          </Pressable>
         </View>
       </KeyboardAvoidingView>
     </AppScreen>
@@ -267,106 +227,62 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 16,
-  },
-  headerBlock: { marginBottom: 16 },
-  authorRow: { flexDirection: 'row', alignItems: 'center' },
-  authorCopy: { flex: 1, marginLeft: 12 },
-  authorName: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 14,
-    color: brand.ink,
-  },
-  authorMeta: {
-    marginTop: 2,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: brand.muted,
-  },
-  imageWrap: {
-    marginTop: 12,
-    overflow: 'hidden',
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.accentTint,
-  },
-  image: { width: '100%', aspectRatio: 4 / 3 },
-  caption: {
-    marginTop: 12,
-    fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 22,
-    color: brand.ink,
-  },
-  captionAuthor: { fontFamily: fonts.bodyBold },
-  sectionTitle: {
-    marginTop: 18,
-    fontFamily: fonts.title,
-    fontSize: 18,
-    lineHeight: 24,
-    color: brand.ink,
+    gap: 12,
+    flexGrow: 1,
   },
   empty: {
-    paddingVertical: 32,
-    textAlign: 'center',
+    marginTop: 24,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 13,
     color: brand.muted,
+    textAlign: 'center',
   },
-  commentCard: {
-    marginBottom: 10,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
-  },
-  commentRow: {
+  comment: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 8,
+    gap: 10,
   },
-  commentCopy: { flex: 1 },
+  commentCopy: { flex: 1, minWidth: 0 },
   commentAuthor: {
     fontFamily: fonts.bodyBold,
-    fontSize: 13,
+    fontSize: 12.5,
     color: brand.ink,
   },
   commentBody: {
-    marginTop: 4,
+    marginTop: 2,
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 12.5,
+    lineHeight: 18,
     color: brand.label,
   },
-  commentTime: {
-    marginTop: 6,
-    fontFamily: fonts.body,
-    fontSize: 11,
-    color: brand.mutedSoft,
-  },
   composer: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: brand.mistBorder,
-    backgroundColor: brand.canvas,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 10,
+    paddingBottom: 20,
+    backgroundColor: brand.canvas,
   },
   input: {
-    minHeight: 72,
+    flex: 1,
+    minHeight: 44,
+    maxHeight: 100,
     borderRadius: brand.radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 10,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 14,
     color: brand.ink,
-    textAlignVertical: 'top',
   },
-  sendBtn: { marginTop: 12 },
+  sendIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: brand.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sendIconDisabled: { opacity: 0.45 },
 });

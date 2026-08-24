@@ -12,7 +12,7 @@ import {
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import {
@@ -65,13 +65,9 @@ export default function SpotlightApplyScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('spotlight.applyTitle')} titleSize={18} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
-            title={t('spotlight.applyTitle')}
-            subtitle={t('spotlight.applySubtitle')}
-          />
-
           <Text style={styles.label}>{t('spotlight.pickContest')}</Text>
           {contests.map((c) => {
             const active = c.id === contestId;
@@ -120,40 +116,47 @@ export default function SpotlightApplyScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
   label: {
     marginTop: 14,
     marginBottom: 6,
-    fontFamily: fonts.bodyBold,
-    fontSize: 13,
-    color: brand.muted,
+    fontFamily: fonts.bodySemi,
+    fontSize: 12,
+    color: brand.label,
   },
   chip: {
     marginBottom: 8,
-    borderRadius: 14,
-        backgroundColor: brand.surfaceElevated,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   chipActive: {
-    backgroundColor: brand.mist,
-    borderColor: brand.navy,
+    backgroundColor: brand.accentTint,
   },
   chipText: {
     fontFamily: fonts.bodyMedium,
-    fontSize: 15,
+    fontSize: 14,
     color: brand.ink,
   },
-  chipTextActive: { color: brand.navy },
+  chipTextActive: {
+    fontFamily: fonts.bodyBold,
+    color: brand.accentDark,
+  },
   input: {
-    borderRadius: 14,
-        backgroundColor: brand.surfaceElevated,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontFamily: fonts.body,
-    fontSize: 15,
+    fontSize: 14,
     color: brand.ink,
   },
-  area: { minHeight: 96, textAlignVertical: 'top' },
+  area: { minHeight: 88, textAlignVertical: 'top' },
   gap: { height: 16 },
 });

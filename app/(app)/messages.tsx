@@ -7,7 +7,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
@@ -17,6 +16,12 @@ import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { listDmThreads, type DmThread } from '@/src/services/dm';
 import { brand, fonts } from '@/src/theme/brand';
+
+function formatThreadTime(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+}
 
 /** HTML · Чат — список розмов. */
 export default function MessagesScreen() {
@@ -81,7 +86,7 @@ export default function MessagesScreen() {
                 },
               })
             }
-            style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+            style={({ pressed }) => [styles.card, pressed && styles.pressed]}
           >
             <PetAvatar
               avatarKey={item.peer.avatarKey || 'paw'}
@@ -89,17 +94,13 @@ export default function MessagesScreen() {
               size={44}
               name={item.peer.name}
             />
-            <View style={styles.rowCopy}>
-              <Text style={styles.rowTitle}>{item.peer.name}</Text>
-              <Text numberOfLines={1} style={styles.rowMeta}>
+            <View style={styles.copy}>
+              <Text style={styles.name}>{item.peer.name}</Text>
+              <Text numberOfLines={1} style={styles.preview}>
                 {item.lastBody || t('dm.noPreview')}
               </Text>
             </View>
-            <Ionicons
-              name="chevron-forward"
-              size={16}
-              color={brand.mutedSoft}
-            />
+            <Text style={styles.time}>{formatThreadTime(item.updatedAt)}</Text>
           </Pressable>
         )}
       />
@@ -113,13 +114,14 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 40,
     flexGrow: 1,
+    gap: 10,
   },
   title: {
     fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: 20,
+    lineHeight: 26,
     color: brand.ink,
-    marginBottom: 12,
+    marginBottom: 8,
   },
   empty: {
     marginTop: 48,
@@ -142,10 +144,10 @@ const styles = StyleSheet.create({
     color: brand.mutedSoft,
   },
   emptyBtn: { marginTop: 24, width: '100%' },
-  row: {
-    marginBottom: 10,
+  card: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
@@ -157,16 +159,21 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   pressed: { opacity: 0.9 },
-  rowCopy: { flex: 1, marginLeft: 12, marginRight: 8 },
-  rowTitle: {
+  copy: { flex: 1, minWidth: 0 },
+  name: {
     fontFamily: fonts.bodyBold,
-    fontSize: 14,
+    fontSize: 13,
     color: brand.ink,
   },
-  rowMeta: {
+  preview: {
     marginTop: 2,
     fontFamily: fonts.body,
     fontSize: 12,
     color: brand.muted,
+  },
+  time: {
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.mutedSoft,
   },
 });

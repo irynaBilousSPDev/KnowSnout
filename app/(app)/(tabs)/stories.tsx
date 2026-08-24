@@ -12,7 +12,6 @@ import { brand, fonts } from '@/src/theme/brand';
 import {
   createStoryPost,
   deleteStoryPost,
-  formatLikedBy,
   formatStoryTags,
   formatStoryTimeAgo,
   listStoryFeed,
@@ -105,7 +104,7 @@ const tagStyles = StyleSheet.create({
   },
   chip: {
     borderRadius: brand.radius.sm,
-    backgroundColor: brand.terracottaTint,
+    backgroundColor: brand.accentTint,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
@@ -136,7 +135,6 @@ function StoryPostCard({
   onDelete?: (post: StoryPost) => void;
 }) {
   const timeAgo = formatStoryTimeAgo(post.createdAt);
-  const likedBy = formatLikedBy(post.likes, post.liked);
   const darkCard = dark
     ? { backgroundColor: STORIES_DARK.card }
     : undefined;
@@ -221,124 +219,101 @@ function StoryPostCard({
 
   return (
     <View style={[styles.card, darkCard]}>
-      <Pressable
-        onPress={() => onOpenAuthor(post)}
-        style={({ pressed }) => [
-          styles.cardAuthorRow,
-          pressed && styles.pressed,
-        ]}
-      >
-        <PetAvatar
-          avatarKey={post.avatarKey}
-          species={post.species}
-          size={40}
-          name={post.petName}
-        />
-        <View style={styles.cardAuthorCopy}>
-          <Text style={[styles.cardAuthorName, darkTitle]}>{post.author}</Text>
-          <Text style={[styles.cardAuthorMeta, darkMuted]}>
-            {post.petName}
-            {post.privacy === 'private'
-              ? ` · ${t('stories.privacyPrivate')}`
-              : ''}
-          </Text>
+      <Pressable onPress={() => onOpenComments(post)}>
+        <View style={styles.listMedia}>
+          {post.imageUri ? (
+            <Image
+              source={{ uri: post.imageUri }}
+              style={styles.fillImage}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={styles.noImage}>
+              <PetAvatar
+                avatarKey={post.avatarKey}
+                species={post.species}
+                size={96}
+                name={post.petName}
+              />
+            </View>
+          )}
         </View>
-        <Ionicons
-          name="chevron-forward"
-          size={16}
-          color={dark ? STORIES_DARK.muted : brand.mutedSoft}
-        />
       </Pressable>
 
-      <View style={styles.listMedia}>
-        {post.imageUri ? (
-          <Image
-            source={{ uri: post.imageUri }}
-            style={styles.fillImage}
-            resizeMode="cover"
+      <View style={styles.cardBody}>
+        <Pressable
+          onPress={() => onOpenAuthor(post)}
+          style={({ pressed }) => [
+            styles.cardAuthorRow,
+            pressed && styles.pressed,
+          ]}
+        >
+          <PetAvatar
+            avatarKey={post.avatarKey}
+            species={post.species}
+            size={26}
+            name={post.petName}
           />
-        ) : (
-          <View style={styles.noImage}>
-            <PetAvatar
-              avatarKey={post.avatarKey}
-              species={post.species}
-              size={96}
-              name={post.petName}
-            />
-            <Text style={[styles.noImageCaption, darkMuted]}>
-              {post.caption}
-            </Text>
-          </View>
-        )}
-      </View>
-      <View style={styles.tagsUnderImage}>
-        <StoryTagsRow post={post} />
-      </View>
+          <Text style={[styles.cardAuthorName, darkTitle]} numberOfLines={1}>
+            {post.author} · {post.petName}
+          </Text>
+        </Pressable>
 
-      <View style={styles.cardFooter}>
-        <Text style={[styles.timeAgo, darkMuted]}>{timeAgo}</Text>
-        <View style={styles.actionsIcons}>
+        <Text style={[styles.captionLine, darkMuted]}>{post.caption}</Text>
+        <StoryTagsRow post={post} />
+
+        <View style={styles.actionsBar}>
           <Pressable
             onPress={() => onToggleLike(post)}
-            style={({ pressed }) => pressed && styles.pressed}
+            style={styles.actionItem}
           >
             <Ionicons
               name={post.liked ? 'heart' : 'heart-outline'}
-              size={26}
-              color={post.liked ? brand.terracotta : brand.muted}
+              size={17}
+              color={post.liked ? brand.accent : brand.muted}
             />
+            <Text
+              style={[
+                styles.actionCount,
+                post.liked && styles.actionCountActive,
+                darkMuted,
+              ]}
+            >
+              {post.likes}
+            </Text>
           </Pressable>
           <Pressable
             onPress={() => onOpenComments(post)}
-            style={({ pressed }) => pressed && styles.pressed}
+            style={styles.actionItem}
           >
             <Ionicons
               name="chatbubble-outline"
-              size={24}
-              color={brand.accent}
+              size={17}
+              color={brand.muted}
             />
+            <Text style={[styles.actionCount, darkMuted]}>
+              {post.commentsCount}
+            </Text>
           </Pressable>
-          <Pressable
-            onPress={() => onShare(post)}
-            style={({ pressed }) => pressed && styles.pressed}
-          >
-            <Ionicons name="share-outline" size={24} color={brand.accent} />
+          <Pressable onPress={() => onShare(post)} style={styles.actionItem}>
+            <Ionicons name="share-social-outline" size={17} color={brand.muted} />
           </Pressable>
           {post.mine && onDelete ? (
             <Pressable
               onPress={() => onDelete(post)}
-              style={({ pressed }) => pressed && styles.pressed}
+              style={styles.actionItem}
               accessibilityRole="button"
               accessibilityLabel={t('stories.delete')}
             >
               <Ionicons
                 name="trash-outline"
-                size={24}
+                size={17}
                 color={brand.score.poor}
               />
             </Pressable>
           ) : null}
+          <Text style={[styles.timeAgoInline, darkMuted]}>{timeAgo}</Text>
         </View>
-        <View style={styles.likedRow}>
-          <Ionicons
-            name="heart"
-            size={14}
-            color={dark ? STORIES_DARK.text : brand.ink}
-          />
-          <Text style={[styles.likedBy, darkTitle]}>{likedBy}</Text>
-        </View>
-        <Text style={[styles.captionLine, darkMuted]}>
-          <Text style={[styles.captionAuthor, darkTitle]}>{post.author}</Text>{' '}
-          {post.caption}
-        </Text>
-        <Pressable onPress={() => onOpenComments(post)}>
-          <Text style={[styles.commentsLink, darkMuted]}>
-            {post.likes} {t('stories.likes')}
-            {post.commentsCount > 0
-              ? ` · ${t('stories.commentsCount', { count: String(post.commentsCount) })}`
-              : ` · ${t('stories.commentsOpen')}`}
-          </Text>
-        </Pressable>
       </View>
     </View>
   );
@@ -659,14 +634,14 @@ export default function StoriesScreen() {
               href: '/(app)/friends',
             },
             {
-              label: t('activity.title'),
-              icon: 'notifications-outline' as const,
-              href: '/(app)/activity',
-            },
-            {
               label: t('dm.title'),
               icon: 'chatbubble-ellipses-outline' as const,
               href: '/(app)/messages',
+            },
+            {
+              label: t('activity.title'),
+              icon: 'notifications-outline' as const,
+              href: '/(app)/activity',
             },
             {
               label: t('search.title'),
@@ -687,6 +662,26 @@ export default function StoriesScreen() {
           </Pressable>
         ))}
       </ScrollView>
+
+      <View style={styles.seg}>
+        {filters.map((f) => {
+          const active = filter === f.id;
+          return (
+            <Pressable
+              key={f.id}
+              onPress={() => setFilter(f.id)}
+              style={[styles.segOpt, active && styles.segOptActive]}
+            >
+              <Text
+                style={[styles.segOptText, active && styles.segOptTextActive]}
+                numberOfLines={1}
+              >
+                {f.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
 
       <View style={styles.actionsRow}>
         <View style={styles.actionsPrimary}>
@@ -711,88 +706,6 @@ export default function StoriesScreen() {
           />
         </Pressable>
       </View>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.quickRow}
-      >
-        {(
-          [
-            {
-              href: '/(app)/friends',
-              icon: 'people-outline' as const,
-              label: t('stories.openFriends'),
-            },
-            {
-              href: '/(app)/messages',
-              icon: 'chatbubble-ellipses-outline' as const,
-              label: t('stories.openMessages'),
-            },
-            {
-              href: '/(app)/spotlight-hub',
-              icon: 'sparkles-outline' as const,
-              label: t('stories.openSpotlight'),
-            },
-            {
-              href: '/(app)/search',
-              icon: 'search-outline' as const,
-              label: t('stories.openSearch'),
-            },
-            {
-              href: '/(app)/activity',
-              icon: 'notifications-outline' as const,
-              label: t('stories.openActivity'),
-            },
-          ] as const
-        ).map((item) => (
-          <Pressable
-            key={item.href}
-            onPress={() => router.push(item.href as never)}
-            style={[styles.quickChip, dark && styles.quickChipDark]}
-            accessibilityRole="button"
-            accessibilityLabel={item.label}
-          >
-            <Ionicons name={item.icon} size={16} color={brand.accent} />
-            <Text
-              style={[styles.quickChipText, dark && styles.quickChipTextDark]}
-            >
-              {item.label}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filterRow}
-      >
-        {filters.map((f) => {
-          const active = filter === f.id;
-          return (
-            <Pressable
-              key={f.id}
-              onPress={() => setFilter(f.id)}
-              style={[
-                styles.filterChip,
-                dark && styles.filterChipDark,
-                active && styles.filterChipActive,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.filterChipText,
-                  dark && styles.filterChipTextDark,
-                  active && styles.filterChipTextActive,
-                ]}
-              >
-                {f.label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
     </View>
   );
 
@@ -1339,50 +1252,35 @@ const styles = StyleSheet.create({
     ...softCard,
   },
   contestsBtnDark: { backgroundColor: STORIES_DARK.card },
-  quickRow: {
+  seg: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingTop: 10,
+    backgroundColor: brand.creamDeep,
+    borderRadius: brand.radius.pill,
+    padding: 4,
+    gap: 4,
+    marginBottom: 8,
   },
-  quickChip: {
-    flexDirection: 'row',
+  segOpt: {
+    flex: 1,
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
     paddingVertical: 8,
+    paddingHorizontal: 4,
     borderRadius: brand.radius.pill,
-    backgroundColor: brand.chipTrack,
   },
-  quickChipDark: { backgroundColor: STORIES_DARK.card },
-  quickChipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12.5,
-    color: brand.accentDark,
+  segOptActive: {
+    backgroundColor: brand.surfaceElevated,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
-  quickChipTextDark: { color: brand.terracotta },
-  filterRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingTop: 12,
-    paddingBottom: 4,
-  },
-  filterChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: brand.radius.pill,
-    backgroundColor: brand.chipTrack,
-  },
-  filterChipDark: { backgroundColor: STORIES_DARK.card },
-  filterChipActive: { backgroundColor: brand.accentTint },
-  filterChipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12.5,
+  segOptText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
     color: brand.ink,
   },
-  filterChipTextDark: { color: STORIES_DARK.muted },
-  filterChipTextActive: {
+  segOptTextActive: {
     fontFamily: fonts.bodyBold,
     color: brand.accentDark,
   },
@@ -1451,75 +1349,60 @@ const styles = StyleSheet.create({
   cardAuthorRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    gap: 8,
   },
-  cardAuthorCopy: { flex: 1, marginLeft: 12 },
   cardAuthorName: {
+    flex: 1,
     fontFamily: fonts.bodyBold,
-    fontSize: 14,
+    fontSize: 13,
     color: brand.ink,
-  },
-  cardAuthorMeta: {
-    marginTop: 2,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: brand.muted,
   },
   listMedia: {
     width: '100%',
-    aspectRatio: 4 / 3,
+    height: 220,
     backgroundColor: brand.mist,
     alignItems: 'center',
     justifyContent: 'center',
   },
   noImage: { alignItems: 'center', paddingHorizontal: 24 },
-  noImageCaption: {
-    marginTop: 12,
-    textAlign: 'center',
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.muted,
-  },
-  tagsUnderImage: { paddingHorizontal: 14, paddingBottom: 4 },
   fillImage: { width: '100%', height: '100%' },
-  cardFooter: { paddingHorizontal: 14, paddingVertical: 12 },
-  timeAgo: {
-    fontFamily: fonts.body,
-    fontSize: 11,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    color: brand.muted,
-  },
-  actionsIcons: {
-    marginTop: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
-  },
-  likedRow: {
-    marginTop: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  likedBy: {
-    marginLeft: 8,
-    flex: 1,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.ink,
+  cardBody: {
+    paddingHorizontal: 14,
+    paddingTop: 12,
+    paddingBottom: 14,
+    gap: 10,
   },
   captionLine: {
-    marginTop: 8,
     fontFamily: fonts.body,
-    fontSize: 14,
+    fontSize: 13.5,
+    lineHeight: 20,
     color: brand.label,
   },
-  captionAuthor: { fontFamily: fonts.bodyBold, color: brand.ink },
-  commentsLink: {
-    marginTop: 4,
+  actionsBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 18,
+    paddingTop: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: brand.divider,
+  },
+  actionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  actionCount: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 12.5,
+    color: brand.muted,
+  },
+  actionCountActive: {
+    color: brand.accentDark,
+  },
+  timeAgoInline: {
+    marginLeft: 'auto',
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 11,
     color: brand.muted,
   },
   modalRoot: { flex: 1, justifyContent: 'flex-end' },
