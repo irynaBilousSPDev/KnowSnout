@@ -12,8 +12,10 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AvatarNotifyBadge } from '@/src/components/AvatarNotifyBadge';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
+import { getActivityUnreadCount } from '@/src/services/activity';
 import { getUserProfile } from '@/src/services/userProfile';
 import { brand, fonts } from '@/src/theme/brand';
 import type { UserProfile } from '@/src/types/userProfile';
@@ -34,9 +36,8 @@ type Props = {
 };
 
 /**
- * HTML `.app-hd` — logo + Know/Snout + avatar | bell+badge | none.
- * Default trailing is avatar (HTML frames). Bell opens the activity inbox
- * (likes / comments / follows) — not settings prefs.
+ * HTML `.app-hd` — logo + Know/Snout + avatar (46) with optional paw notify.
+ * Unread > 0 → paw; unread > 1 → terracotta counter. Tap: activity if unread, else profile.
  */
 export function AppChromeHeader({
   onBrandPress,
@@ -49,6 +50,7 @@ export function AppChromeHeader({
 }: Props) {
   const insets = useSafeAreaInsets();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [unread, setUnread] = useState(0);
 
   const mode: Trailing =
     trailing ?? (showAvatar === false ? 'none' : 'avatar');
@@ -57,8 +59,21 @@ export function AppChromeHeader({
     useCallback(() => {
       if (mode !== 'avatar') return;
       void getUserProfile().then(setProfile);
+      void getActivityUnreadCount().then(setUnread);
     }, [mode]),
   );
+
+  const openAvatar = () => {
+    if (onAvatarPress) {
+      onAvatarPress();
+      return;
+    }
+    if (unread > 0) {
+      router.push('/(app)/activity' as never);
+      return;
+    }
+    router.push('/(app)/my-profile' as never);
+  };
 
   return (
     <View style={[styles.hd, { paddingTop: Math.max(insets.top, 12) }, style]}>
@@ -79,20 +94,23 @@ export function AppChromeHeader({
 
       {mode === 'avatar' ? (
         <Pressable
-          onPress={
-            onAvatarPress ?? (() => router.push('/(app)/my-profile' as never))
-          }
+          onPress={openAvatar}
           style={styles.avatarBtn}
           accessibilityRole="button"
-          accessibilityLabel={t('me.title')}
+          accessibilityLabel={
+            unread > 0
+              ? `${t('activity.title')}, ${unread}`
+              : t('me.title')
+          }
         >
           <UserAvatar
             avatarKey={profile?.avatar_key}
             avatarUri={profile?.avatar_uri}
             gender={profile?.gender}
-            size={36}
+            size={46}
             name={profile?.display_name ?? t('me.title')}
           />
+          <AvatarNotifyBadge unreadCount={unread} />
         </Pressable>
       ) : mode === 'bell' ? (
         <Pressable
@@ -162,8 +180,10 @@ const styles = StyleSheet.create({
     color: brand.logoGreen,
   },
   avatarBtn: {
-    borderRadius: 18,
-    overflow: 'hidden',
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    // overflow visible so paw / counter can hang outside
   },
   bellBtn: {
     width: 36,
@@ -199,7 +219,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   avatarSpacer: {
-    width: 36,
-    height: 36,
+    width: 46,
+    height: 46,
   },
 });

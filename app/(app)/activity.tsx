@@ -6,7 +6,7 @@ import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
-import { listActivityFeed, type ActivityItem } from '@/src/services/activity';
+import { listActivityFeed, markActivitySeen, type ActivityItem } from '@/src/services/activity';
 import { brand, fonts } from '@/src/theme/brand';
 
 function relativeTime(iso: string): string {
@@ -31,7 +31,10 @@ export default function ActivityScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      void listActivityFeed().then(setItems);
+      void (async () => {
+        await markActivitySeen();
+        setItems(await listActivityFeed());
+      })();
     }, []),
   );
 

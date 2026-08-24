@@ -113,3 +113,4 @@
 - Проєкт: `docs/design/KnowSnout_project/` (+ `docs/design/html/`).
 - Organic `_ds/…` = класи/spacing only; `ref-*.png` = ignore for look.
 - Поточний UI застосунку **не** орієнтир.
+- **2026-08-24:** сповіщення на аватарці — лапка `#0F6D38` (unread>0) + terracotta лічильник (unread>1); зникає після Активності.
