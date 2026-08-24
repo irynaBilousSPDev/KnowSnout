@@ -1,6 +1,8 @@
 import { MOCK_ANALYSIS } from '@/src/constants/analysis';
 import { env } from '@/src/lib/env';
+import { RecognitionError } from '@/src/lib/recognition';
 import { resolveSpecies } from '@/src/lib/species';
+import { t } from '@/src/i18n';
 import { supabase } from '@/src/services/supabase';
 import type { AnalysisResult, AnalyzeLabelPayload, PetSpecies } from '@/src/types/scan';
 
@@ -13,9 +15,12 @@ function parseSpecies(value: unknown): PetSpecies | undefined {
   return undefined;
 }
 
-function isValidResult(value: unknown): value is AnalysisResult {
+type RemoteAnalysis = AnalysisResult & { identified?: boolean };
+
+function isValidResult(value: unknown): value is RemoteAnalysis {
   if (!value || typeof value !== 'object') return false;
   const v = value as Record<string, unknown>;
+  if (v.identified === false) return true;
   return (
     typeof v.productName === 'string' &&
     typeof v.score === 'number' &&
@@ -25,11 +30,33 @@ function isValidResult(value: unknown): value is AnalysisResult {
   );
 }
 
+function looksUnidentified(result: RemoteAnalysis): boolean {
+  if (result.identified === false) return true;
+  const name = (result.productName ?? '').trim();
+  if (!name) return true;
+  const blob = `${name} ${result.summary}`.toLowerCase();
+  if (
+    blob.includes('not a pet food') ||
+    blob.includes('not pet food') ||
+    blob.includes('не корм') ||
+    blob.includes('не є етикетк')
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export async function analyzeLabel(
   payload: AnalyzeLabelPayload,
 ): Promise<AnalysisResult> {
+  const hasImage = Boolean(payload.imageBase64?.trim());
+
+  // Mock: never invent a product from a random photo. Empty payload = explicit demo only.
   if (env.useMockAi || env.isDemoMode || !supabase) {
-    await delay(900);
+    await delay(600);
+    if (hasImage) {
+      throw new RecognitionError('not_found', t('scan.notRecognized'));
+    }
     return {
       ...MOCK_ANALYSIS,
       species: resolveSpecies(
@@ -54,6 +81,10 @@ export async function analyzeLabel(
   const result = (data?.result ?? data) as unknown;
   if (!isValidResult(result)) {
     throw new Error('Unexpected response from analysis service');
+  }
+
+  if (looksUnidentified(result)) {
+    throw new RecognitionError('not_relevant', t('scan.notRecognized'));
   }
 
   const productName = result.productName;

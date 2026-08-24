@@ -53,7 +53,7 @@ export const DATA_SOURCES: DataSourceEntry[] = [
     name: 'OpenAI (GPT Vision)',
     kind: 'ai',
     usedForUk:
-      'Розбір фото етикетки корму; рослин; порід собак/котів (Edge)',
+      'Розбір фото етикетки / рослини / породи (Edge). Якщо це не те — «не розпізнано», без вигадки',
     codePaths: [
       'supabase/functions/analyze-label',
       'supabase/functions/identify-plant',

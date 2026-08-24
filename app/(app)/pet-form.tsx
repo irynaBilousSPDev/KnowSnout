@@ -117,14 +117,24 @@ export default function PetFormScreen() {
     id?: string;
     breed?: string;
     species?: string;
+    profileKind?: string;
   }>();
   const petId = typeof params.id === 'string' ? params.id : undefined;
   const isEdit = Boolean(petId);
   const prefillBreed =
     typeof params.breed === 'string' ? params.breed.trim() : '';
-  const prefillSpecies =
-    params.species === 'cat' || params.species === 'dog'
+  const prefillSpecies: CompanionSpecies | null =
+    params.species === 'cat' ||
+    params.species === 'dog' ||
+    params.species === 'bird' ||
+    params.species === 'other'
       ? params.species
+      : null;
+  const profileKind =
+    params.profileKind === 'rodent' ||
+    params.profileKind === 'rabbit' ||
+    params.profileKind === 'other'
+      ? params.profileKind
       : null;
 
   const [loading, setLoading] = useState(isEdit);
@@ -162,9 +172,16 @@ export default function PetFormScreen() {
   const [passport, setPassport] = useState('');
   const [vetName, setVetName] = useState('');
   const [vetPhone, setVetPhone] = useState('');
-  const [avatarKey, setAvatarKey] = useState<AvatarKey>(defaultAvatarKey('dog'));
+  const [avatarKey, setAvatarKey] = useState<AvatarKey>(
+    defaultAvatarKey(prefillSpecies ?? 'dog'),
+  );
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
   const [usedKeys, setUsedKeys] = useState<string[]>([]);
+  const [wingspan, setWingspan] = useState('');
+  const [cageSize, setCageSize] = useState('');
+  const [storedProfileKind, setStoredProfileKind] = useState<string | null>(
+    profileKind,
+  );
 
   const avatarChoices = useMemo(() => avatarsForSpecies(species), [species]);
 
@@ -325,6 +342,18 @@ export default function PetFormScreen() {
           (pet.avatar_key as AvatarKey | null) ?? defaultAvatarKey(pet.species),
         );
         setAvatarUri(pet.avatar_uri ?? null);
+        const extras = pet.extras ?? {};
+        setWingspan(
+          extras.wingspan_cm != null ? String(extras.wingspan_cm) : '',
+        );
+        setCageSize(
+          extras.cage_size != null ? String(extras.cage_size) : '',
+        );
+        setStoredProfileKind(
+          typeof extras.profile_kind === 'string'
+            ? extras.profile_kind
+            : null,
+        );
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : t('pets.loadError'));
@@ -426,6 +455,17 @@ export default function PetFormScreen() {
         passport_number: passport,
         vet_name: vetName,
         vet_phone: vetPhone,
+        extras_patch: {
+          ...(storedProfileKind
+            ? { profile_kind: storedProfileKind }
+            : {}),
+          ...(species === 'bird'
+            ? {
+                wingspan_cm: wingspan.trim() || null,
+                cage_size: cageSize.trim() || null,
+              }
+            : {}),
+        },
       };
       if (isEdit && petId) {
         await updatePet(petId, payload);
@@ -582,6 +622,22 @@ export default function PetFormScreen() {
             placeholder={t('pets.breedPlaceholder')}
             autoCapitalize="words"
           />
+          {species === 'bird' ? (
+            <>
+              <TextField
+                label={t('pets.wingspan')}
+                value={wingspan}
+                onChangeText={setWingspan}
+                placeholder={t('pets.wingspanPlaceholder')}
+              />
+              <TextField
+                label={t('pets.cage')}
+                value={cageSize}
+                onChangeText={setCageSize}
+                placeholder={t('pets.cagePlaceholder')}
+              />
+            </>
+          ) : null}
           <FieldLabel>{t('pets.sex')}</FieldLabel>
           <OptionChips
             value={sex}
@@ -829,6 +885,7 @@ export default function PetFormScreen() {
             options={[
               { id: 'home', label: t('pets.originHome') },
               { id: 'shelter', label: t('pets.originShelter') },
+              { id: 'breeder', label: t('pets.originBreeder') },
             ]}
           />
           <TextField
@@ -845,7 +902,11 @@ export default function PetFormScreen() {
 
   return (
     <AppScreen edges={['top', 'bottom']}>
-      <AppChromeHeader />
+      <AppChromeHeader
+        trailing="bell"
+        bellCount={3}
+        onBellPress={() => router.push('/(app)/notifications' as never)}
+      />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

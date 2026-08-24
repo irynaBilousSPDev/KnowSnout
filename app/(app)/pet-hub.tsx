@@ -160,7 +160,11 @@ export default function PetHubScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+      <AppChromeHeader
+        trailing="bell"
+        bellCount={3}
+        onBellPress={() => router.push('/(app)/notifications' as never)}
+      />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.topBar}>
           <Pressable
@@ -216,7 +220,7 @@ export default function PetHubScreen() {
             );
           })}
           <Pressable
-            onPress={() => router.push('/(app)/pet-form')}
+            onPress={() => router.push('/(app)/pet-species' as never)}
             style={styles.switchAdd}
             accessibilityRole="button"
             accessibilityLabel={t('pets.add')}

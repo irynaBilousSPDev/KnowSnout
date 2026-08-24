@@ -15,7 +15,7 @@
 | Source | Used for |
 |--|--|
 | Open Pet Food Facts / Open Food Facts | Food barcode / ingredients |
-| OpenAI (server Edge only) | Label / plant / **breed** vision |
+| OpenAI (server Edge only) | Label / plant / **breed** vision — refuse unrelated photos (no invented hit) |
 | TheDogAPI / TheCatAPI | Breed search + enrich after vision + photo quiz (dog list often needs free `x-api-key`) |
 | Wikidata (CC0) | Quiz origin / animal group + enrich |
 | Open Trivia DB (CC BY-SA) | Animals trivia quiz |

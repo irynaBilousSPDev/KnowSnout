@@ -144,6 +144,8 @@ const uk: Dict = {
 
   'scan.analyzingTitle': 'Аналізуємо склад…',
   'scan.analyzingBody': 'Порівнюємо з базою Open Pet Food Facts',
+  'scan.notRecognized':
+    'Не розпізнано. Це не схоже на етикетку корму — краще сказати чесно, ніж вигадати продукт.',
   'scan.notFoundInDb': 'Не знайдено в базі? ',
   'scan.photoLabelLink': 'Сфотографувати етикетку',
   'scan.manualIngredients': 'Ввести склад вручну',
@@ -431,9 +433,11 @@ const uk: Dict = {
   'breed.photoRequired': 'Спочатку додай фото',
   'breed.checking': 'Визначаємо…',
   'breed.checkError': 'Не вдалося визначити породу',
+  'breed.notRecognized':
+    'Не розпізнано. На фото немає собаки чи кота, породу не вигадуємо.',
   'breed.confidence': 'Впевненість ~{pct}%',
   'breed.mockHint':
-    'Після фото натисни «Визначити з фото» — AI підкаже породу, деталі з TheDogAPI/TheCatAPI; збережемо в Журнал.',
+    'Після фото натисни «Визначити з фото». Якщо це не собака/кіт — скажемо «не розпізнано», без вигаданої породи.',
   'breed.photoTapHint': 'Спочатку обери кіт/собака, потім фото.',
   'breed.disclaimer':
     'Суміші й схожі породи часті. Це інформаційна підказка (AI + відкриті бази) — не офіційний родовід і не ДНК-тест.',
@@ -744,10 +748,33 @@ const uk: Dict = {
 
   'pets.title': 'Улюбленці',
   'pets.subtitle': 'Профілі для кормів, щеплень і подорожей',
-  'pets.emptyTitle': 'Додай першого улюбленця',
+  'pets.emptyTitle': 'Ще немає жодного улюбленця',
   'pets.emptyBody':
-    'Тут з’являться профілі собак і котів — далі календар щеплень, документи й підбір корму.',
+    'Додай першого — і отримаєш підказки з догляду, харчування та щеплень',
+  'pets.emptyIllustration': 'Ілюстрація',
   'pets.add': 'Додати улюбленця',
+  'pets.pickDog': 'Собака',
+  'pets.pickCat': 'Кіт',
+  'pets.pickBird': 'Птах',
+  'pets.pickRodent': 'Гризун',
+  'pets.pickRabbit': 'Кролик',
+  'pets.pickOther': 'Інший',
+  'pets.supportFull': 'Повна підтримка',
+  'pets.supportProfile': 'Профіль і документи',
+  'pets.supportCustom': 'Опишете самі',
+  'pets.speciesAsk': 'Хто у вас?',
+  'pets.speciesLead':
+    'Від виду залежать поля профілю, календар щеплень і перевірка рослин на токсичність.',
+  'pets.speciesInfo':
+    'Перевірка кормів і рослин на токсичність поки доступна для собак і котів. Для решти видів працюють профілі, документи й нагадування.',
+  'pets.speciesNext': 'Далі — ім’я й вік',
+  'pets.speciesStep': '{n} із {total}',
+  'pets.wingspan': 'Розмах крил',
+  'pets.wingspanPlaceholder': 'Наприклад, 52 см',
+  'pets.cage': 'Клітка',
+  'pets.cagePlaceholder': 'Наприклад, 80×50×80 см',
+  'pets.originBreeder': 'Заводчик',
+  'care.openDetail': 'Детальніше по улюбленцю',
   'pets.edit': 'Редагувати',
   'pets.editShort': 'Редаг.',
   'pets.about': 'Про {name}',
@@ -785,7 +812,7 @@ const uk: Dict = {
   'care.title': 'Догляд сьогодні',
   'care.subtitle': 'Вода, гра, годування',
   'care.open': 'Відкрити догляд на сьогодні',
-  'care.cardHint': 'Вода, гра, годування',
+  'care.cardHint': 'Вода, гра, годування', 'Вода, гра, годування',
   'care.disclaimer':
     'Це нагадування для турботи, не ветеринарна порада. Якщо тварина млява або не п’є — звернись до вета.',
   'care.progress': 'Сьогодні зроблено {done} з {total}',
@@ -840,6 +867,8 @@ const uk: Dict = {
   'plants.queryShort': 'Введи щонайменше 2 літери',
   'plants.notFound':
     'Не знайшли в каталозі. Спробуй латинську назву або інше написання.',
+  'plants.notRecognized':
+    'Не розпізнано. На фото немає рослини, яку можна визначити — не підставляємо випадковий вазон.',
   'plants.checking': 'Перевіряємо…',
   'plants.checkError': 'Не вдалося перевірити рослину',
   'plants.loading': 'Завантаження…',
@@ -851,7 +880,7 @@ const uk: Dict = {
   'plants.forSpecies': 'Вердикт для: {species}',
   'plants.confidence': 'впевненість ~{pct}%',
   'plants.mockHint':
-    'Після фото натисни «Розпізнати з фото» — вердикт збережеться в Журнал.',
+    'Після фото натисни «Розпізнати з фото». Якщо це не рослина — «не розпізнано», без випадкового вазона.',
   'plants.photoTapHint': 'Велика кнопка нижче після фото.',
   'plants.disclaimer':
     'Інформаційно, не діагноз вета. Якщо тварина з’їла рослину — негайно до клініки / гарячої лінії отрут. Каталог неповний.',
@@ -928,8 +957,8 @@ const uk: Dict = {
   'pets.albumEmpty': 'Додай перше фото до альбому',
   'pets.albumAdd': 'Додати фото',
   'pets.openProfile': 'Профіль',
-  'pets.originHome': 'Домашній улюбленець',
-  'pets.originShelter': 'З притулку',
+  'pets.originHome': 'Дім',
+  'pets.originShelter': 'Притулок',
   'pets.origin': 'Походження',
   'pets.sectionBasics': 'Основне',
   'pets.sectionLook': 'Зовнішність',

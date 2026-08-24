@@ -1,6 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { t } from '@/src/i18n';
 import { env } from '@/src/lib/env';
+import {
+  MIN_VISION_CONFIDENCE,
+  RecognitionError,
+} from '@/src/lib/recognition';
 import { persistCheckPhoto } from '@/src/services/checkImages';
 import { supabase } from '@/src/services/supabase';
 import type {
@@ -56,6 +61,7 @@ type CatApiBreed = {
 };
 
 type VisionRemote = {
+  identified?: boolean;
   breedName?: string;
   confidence?: number;
   alternatives?: { breedName?: string; confidence?: number }[];
@@ -175,92 +181,85 @@ export async function searchBreeds(
   }
 }
 
-function mockPhotoResult(species: CompanionBreedSpecies): BreedCheckResult {
-  const primary = species === 'dog' ? MOCK_DOG : MOCK_CAT;
-  return {
-    species,
-    primary,
-    alternatives: [],
-    disclaimer: true,
-  };
-}
-
 /**
  * Photo ID: OpenAI Vision via Edge Function → enrich from TheDogAPI / TheCatAPI.
- * Falls back to mock when mock/demo mode or function unavailable.
+ * Never invent a breed from an unrelated photo (mock or live).
  */
 export async function identifyBreedFromPhoto(input: {
   species: CompanionBreedSpecies;
   imageBase64?: string;
   mimeType?: string;
 }): Promise<BreedCheckResult> {
-  if (env.useMockAi || env.isDemoMode || !supabase || !input.imageBase64) {
-    await delay(800);
-    return mockPhotoResult(input.species);
+  if (!input.imageBase64) {
+    throw new RecognitionError('not_found', t('breed.photoRequired'));
   }
 
-  try {
-    const { data, error } = await supabase.functions.invoke('identify-breed', {
-      body: {
-        imageBase64: input.imageBase64,
-        mimeType: input.mimeType ?? 'image/jpeg',
-        species: input.species,
-      },
-    });
-
-    if (error) {
-      await delay(400);
-      return mockPhotoResult(input.species);
-    }
-
-    const remote = (data?.result ?? data) as VisionRemote;
-    const breedName =
-      typeof remote.breedName === 'string' ? remote.breedName.trim() : '';
-    const confidence =
-      typeof remote.confidence === 'number'
-        ? Math.max(0, Math.min(1, remote.confidence))
-        : 0.55;
-
-    if (!breedName || breedName.toLowerCase() === 'unknown') {
-      return mockPhotoResult(input.species);
-    }
-
-    let catalog: BreedGuess[] = [];
-    try {
-      catalog = await loadCatalog(input.species);
-    } catch {
-      catalog = [];
-    }
-
-    const primary = enrichFromCatalog(
-      breedName,
-      confidence,
-      input.species,
-      catalog,
-    );
-    const alternatives = (remote.alternatives ?? [])
-      .filter((a) => typeof a.breedName === 'string' && a.breedName.trim())
-      .slice(0, 3)
-      .map((a) =>
-        enrichFromCatalog(
-          a.breedName!.trim(),
-          typeof a.confidence === 'number' ? a.confidence : 0.4,
-          input.species,
-          catalog,
-        ),
-      )
-      .filter((a) => a.name.toLowerCase() !== primary.name.toLowerCase());
-
-    return {
-      species: input.species,
-      primary,
-      alternatives,
-      disclaimer: true,
-    };
-  } catch {
+  if (env.useMockAi || env.isDemoMode || !supabase) {
     await delay(400);
-    return mockPhotoResult(input.species);
+    throw new RecognitionError('not_found', t('breed.notRecognized'));
   }
+
+  const { data, error } = await supabase.functions.invoke('identify-breed', {
+    body: {
+      imageBase64: input.imageBase64,
+      mimeType: input.mimeType ?? 'image/jpeg',
+      species: input.species,
+    },
+  });
+
+  if (error) {
+    throw new Error(error.message || t('breed.checkError'));
+  }
+
+  const remote = (data?.result ?? data) as VisionRemote;
+  const breedName =
+    typeof remote.breedName === 'string' ? remote.breedName.trim() : '';
+  const confidence =
+    typeof remote.confidence === 'number'
+      ? Math.max(0, Math.min(1, remote.confidence))
+      : 0;
+
+  if (
+    remote.identified === false ||
+    !breedName ||
+    breedName.toLowerCase() === 'unknown' ||
+    confidence < MIN_VISION_CONFIDENCE
+  ) {
+    throw new RecognitionError('not_relevant', t('breed.notRecognized'));
+  }
+
+  let catalog: BreedGuess[] = [];
+  try {
+    catalog = await loadCatalog(input.species);
+  } catch {
+    catalog = [];
+  }
+
+  const primary = enrichFromCatalog(
+    breedName,
+    confidence,
+    input.species,
+    catalog,
+  );
+  const alternatives = (remote.alternatives ?? [])
+    .filter((a) => typeof a.breedName === 'string' && a.breedName.trim())
+    .slice(0, 3)
+    .map((a) =>
+      enrichFromCatalog(
+        a.breedName!.trim(),
+        typeof a.confidence === 'number' ? a.confidence : 0.4,
+        input.species,
+        catalog,
+      ),
+    )
+    .filter((a) => a.name.toLowerCase() !== primary.name.toLowerCase());
+
+  return {
+    species: input.species,
+    primary,
+    alternatives,
+    disclaimer: true,
+  };
 }
 
 export type BreedHistoryAlternative = {

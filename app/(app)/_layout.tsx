@@ -107,6 +107,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="pet-species"
+        options={{
+          headerShown: false,
+          title: t('pets.speciesAsk'),
+        }}
+      />
+      <Stack.Screen
         name="pet-profile"
         options={{
           headerShown: false,

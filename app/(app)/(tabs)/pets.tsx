@@ -15,7 +15,7 @@ import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
-import { Section } from '@/src/components/Section';
+import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
 import { petAgeLabel, speciesLabel } from '@/src/lib/petMeta';
@@ -29,11 +29,14 @@ function petMeta(pet: PetRow) {
   else parts.push(speciesLabel(pet.species));
   const age = petAgeLabel(pet.birth_date);
   if (age) parts.push(age);
-  else if (pet.breed?.trim()) parts.push(speciesLabel(pet.species));
   return parts.join(' · ');
 }
 
-/** HTML phone “12 · Список тварин”. */
+function goAdd() {
+  router.push('/(app)/pet-species' as never);
+}
+
+/** 03.01 list · 03.02 empty — tap opens hub. */
 export default function PetsScreen() {
   const [pets, setPets] = useState<PetRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,8 +49,7 @@ export default function PetsScreen() {
     else setLoading(true);
     setError(null);
     try {
-      const data = await listPets();
-      setPets(data);
+      setPets(await listPets());
     } catch (err) {
       setError(err instanceof Error ? err.message : t('pets.loadError'));
     } finally {
@@ -71,7 +73,6 @@ export default function PetsScreen() {
       destructive: true,
     });
     if (!ok) return;
-
     setDeletingId(pet.id);
     try {
       await deletePet(pet.id);
@@ -89,11 +90,15 @@ export default function PetsScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+      <AppChromeHeader
+        trailing="bell"
+        bellCount={3}
+        onBellPress={() => router.push('/(app)/notifications' as never)}
+      />
       <View style={styles.header}>
         <Text style={styles.title}>{t('pets.title')}</Text>
         <Pressable
-          onPress={() => router.push('/(app)/pet-form')}
+          onPress={goAdd}
           style={styles.addCircle}
           accessibilityRole="button"
           accessibilityLabel={t('pets.add')}
@@ -104,6 +109,20 @@ export default function PetsScreen() {
 
       {error ? (
         <ErrorState message={error} onRetry={() => void load()} />
+      ) : pets.length === 0 ? (
+        <View style={styles.emptyWrap}>
+          <View style={styles.emptyHero}>
+            <Ionicons name="paw-outline" size={40} color={brand.mutedSoft} />
+            <Text style={styles.emptyHeroHint}>{t('pets.emptyIllustration')}</Text>
+          </View>
+          <Text style={styles.emptyTitle}>{t('pets.emptyTitle')}</Text>
+          <Text style={styles.emptyBody}>{t('pets.emptyBody')}</Text>
+          <PrimaryButton
+            label={`+ ${t('pets.add')}`}
+            onPress={goAdd}
+            style={styles.emptyCta}
+          />
+        </View>
       ) : (
         <FlatList
           data={pets}
@@ -116,17 +135,11 @@ export default function PetsScreen() {
               tintColor={brand.accent}
             />
           }
-          ListEmptyComponent={
-            <Section tone="mist" title={t('pets.emptyTitle')}>
-              <Text style={styles.emptyBody}>{t('pets.emptyBody')}</Text>
-            </Section>
-          }
           ListFooterComponent={
             <Pressable
-              onPress={() => router.push('/(app)/pet-form')}
+              onPress={goAdd}
               style={styles.addBtn}
               accessibilityRole="button"
-              accessibilityLabel={t('pets.add')}
             >
               <Text style={styles.addBtnText}>+ {t('pets.add')}</Text>
             </Pressable>
@@ -173,13 +186,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 14,
+    paddingTop: 8,
     paddingBottom: 8,
   },
   title: {
     fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: 28,
+    lineHeight: 34,
     color: brand.ink,
   },
   addCircle: {
@@ -202,24 +215,54 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     gap: 12,
   },
+  emptyWrap: {
+    flex: 1,
+    paddingHorizontal: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 80,
+  },
+  emptyHero: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    gap: 6,
+  },
+  emptyHeroHint: {
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.mutedSoft,
+    textAlign: 'center',
+    paddingHorizontal: 12,
+  },
+  emptyTitle: {
+    fontFamily: fonts.title,
+    fontSize: 20,
+    color: brand.ink,
+    textAlign: 'center',
+  },
   emptyBody: {
+    marginTop: 8,
     fontFamily: fonts.body,
     fontSize: 14,
     lineHeight: 20,
     color: brand.muted,
+    textAlign: 'center',
   },
+  emptyCta: { marginTop: 22, alignSelf: 'stretch' },
   petCard: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    borderRadius: brand.radius.md,
+    borderRadius: 16,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: brand.mistBorder,
   },
   pressed: { opacity: 0.9 },
   petCopy: { flex: 1, minWidth: 0 },
@@ -238,7 +281,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     marginBottom: 16,
     minHeight: 46,
-    borderRadius: brand.radius.md,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: brand.divider,
     backgroundColor: brand.surfaceElevated,

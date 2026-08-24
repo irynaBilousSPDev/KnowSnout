@@ -367,10 +367,22 @@ export default function PetProfileScreen() {
     .filter(Boolean)
     .join('\n\n');
   const isShelter = pet.origin === 'shelter';
+  const isBreeder = pet.origin === 'breeder';
+  const wingspan =
+    pet.extras?.wingspan_cm != null
+      ? String(pet.extras.wingspan_cm)
+      : null;
+  const cageSize =
+    pet.extras?.cage_size != null ? String(pet.extras.cage_size) : null;
+  const isBird = pet.species === 'bird';
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+      <AppChromeHeader
+        trailing="bell"
+        bellCount={3}
+        onBellPress={() => router.push('/(app)/notifications' as never)}
+      />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
@@ -438,19 +450,36 @@ export default function PetProfileScreen() {
           <View
             style={[
               styles.chip,
-              isShelter ? styles.chipGood : styles.chipNeutral,
+              isShelter || isBreeder ? styles.chipGood : styles.chipNeutral,
             ]}
           >
             <Text
               style={[
                 styles.chipText,
-                isShelter ? styles.chipTextGood : null,
+                isShelter || isBreeder ? styles.chipTextGood : null,
               ]}
             >
-              {isShelter ? t('pets.originShelter') : t('pets.originHome')}
+              {isShelter
+                ? t('pets.originShelter')
+                : isBreeder
+                  ? t('pets.originBreeder')
+                  : t('pets.originHome')}
             </Text>
           </View>
         </View>
+
+        {isBird && wingspan ? (
+          <View style={styles.rowCard}>
+            <Text style={styles.rowLabel}>{t('pets.wingspan')}</Text>
+            <Text style={styles.rowValue}>{wingspan}</Text>
+          </View>
+        ) : null}
+        {isBird && cageSize ? (
+          <View style={styles.rowCard}>
+            <Text style={styles.rowLabel}>{t('pets.cage')}</Text>
+            <Text style={styles.rowValue}>{cageSize}</Text>
+          </View>
+        ) : null}
 
         <Section title={t('pets.sectionBasics')}>
           <Fact label={t('pets.sex')} value={sexLabel(pet.sex)} />

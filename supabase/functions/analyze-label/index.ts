@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 type AnalysisResult = {
+  identified: boolean;
   productName: string;
   species?: 'dog' | 'cat' | 'unknown';
   score: number;
@@ -15,9 +16,10 @@ type AnalysisResult = {
   summary: string;
 };
 
-const SYSTEM_PROMPT = `You are a veterinary nutritionist specializing in dog and cat commercial pet food.
-Analyze the pet food label image and return ONLY valid JSON (no markdown) with this exact shape:
+const SYSTEM_PROMPT = `You analyze commercial PET FOOD labels (dog/cat kibble, wet food, treats) for a pet app.
+Return ONLY valid JSON (no markdown) with this exact shape:
 {
+  "identified": boolean,
   "productName": "string",
   "species": "dog" | "cat" | "unknown",
   "score": number between 0 and 100,
@@ -25,18 +27,16 @@ Analyze the pet food label image and return ONLY valid JSON (no markdown) with t
   "cons": ["string"],
   "summary": "string"
 }
-Species rules:
-- "dog" if the food is for dogs / puppies / canine.
-- "cat" if the food is for cats / kittens / feline.
-- "unknown" if unclear or for multiple/other species.
-Scoring guidance:
-- Reward named animal proteins high in the ingredient list, clear guaranteed analysis, useful nutrients.
-- Penalize vague meat by-products, excessive fillers/sugars, artificial colors, concerning additives, incomplete information.
-- If the image is not a pet food label, still return JSON with a low score and explain in summary.`;
+Rules:
+- identified=true ONLY if the photo clearly shows a pet food / treat package or ingredient label for dogs or cats.
+- If the image is perfume, cosmetics, human food, a plant, a random object, unreadable, or not a pet-food label: identified=false, productName="", score=0, pros=[], cons=[], summary="not a pet food label". NEVER invent a pet food product name.
+- Never guess a "closest" food. Honesty over completeness.
+Species: dog / cat / unknown as on the pack.`;
 
 function isValidResult(value: unknown): value is AnalysisResult {
   if (!value || typeof value !== 'object') return false;
   const v = value as Record<string, unknown>;
+  if (v.identified === false) return true;
   return (
     typeof v.productName === 'string' &&
     typeof v.score === 'number' &&
@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
               content: [
                 {
                   type: 'text',
-                  text: 'Analyze this pet food label and return the JSON score object.',
+                  text: 'Is this a pet food label? If yes, score it. If not, identified=false. Never invent a product.',
                 },
                 {
                   type: 'image_url',
@@ -179,18 +179,22 @@ Deno.serve(async (req) => {
       );
     }
 
+    const identified = parsed.identified !== false && Boolean(parsed.productName?.trim());
     const result: AnalysisResult = {
-      productName: parsed.productName,
+      identified,
+      productName: identified ? parsed.productName : '',
       species:
         parsed.species === 'dog' ||
         parsed.species === 'cat' ||
         parsed.species === 'unknown'
           ? parsed.species
           : 'unknown',
-      score: Math.max(0, Math.min(100, Math.round(parsed.score))),
-      pros: parsed.pros.map(String),
-      cons: parsed.cons.map(String),
-      summary: parsed.summary,
+      score: identified
+        ? Math.max(0, Math.min(100, Math.round(Number(parsed.score) || 0)))
+        : 0,
+      pros: identified && Array.isArray(parsed.pros) ? parsed.pros.map(String) : [],
+      cons: identified && Array.isArray(parsed.cons) ? parsed.cons.map(String) : [],
+      summary: parsed.summary || (identified ? '' : 'not a pet food label'),
     };
 
     return new Response(JSON.stringify({ result }), {

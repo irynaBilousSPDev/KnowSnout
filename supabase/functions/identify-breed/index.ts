@@ -9,27 +9,25 @@ const corsHeaders = {
 type Alt = { breedName: string; confidence: number };
 
 type IdentifyResult = {
+  identified: boolean;
   breedName: string;
   confidence: number;
   alternatives: Alt[];
 };
 
 const SYSTEM_PROMPT = `You identify dog or cat breeds from photos for a pet companion app.
-The user will tell you whether the animal is a dog or a cat — respect that species.
-Return ONLY valid JSON (no markdown) with this exact shape:
+The user will tell you whether they expect a dog or a cat — if the photo is not that animal, do not guess.
+Return ONLY valid JSON (no markdown):
 {
-  "breedName": "string — best-effort English breed name matching common kennel/registry names when possible",
+  "identified": boolean,
+  "breedName": "string — English breed name",
   "confidence": number between 0 and 1,
-  "alternatives": [
-    { "breedName": "string", "confidence": number between 0 and 1 }
-  ]
+  "alternatives": [ { "breedName": "string", "confidence": number } ]
 }
 Rules:
-- alternatives: 0–3 other plausible breeds, lower confidence than the primary.
-- If mixed / unclear, still pick the closest breed name and lower confidence (e.g. 0.35–0.55).
-- If the image is not a dog/cat, set confidence below 0.25 and breedName to "Unknown".
-- Never claim pedigree, DNA, or veterinary diagnosis.
-- Prefer widely used English names (e.g. "Labrador Retriever", "British Shorthair").`;
+- identified=true ONLY if the photo clearly shows the requested species (dog or cat) and a breed can be named with reasonable confidence.
+- If perfume, plant, food, person, wrong species, or unreadable: identified=false, breedName="", confidence=0, alternatives=[]. NEVER invent a "closest" breed.
+- alternatives only when identified=true (0–3). Never claim pedigree or DNA.`;
 
 function isValidAlt(value: unknown): value is Alt {
   if (!value || typeof value !== 'object') return false;
@@ -40,6 +38,7 @@ function isValidAlt(value: unknown): value is Alt {
 function isValidResult(value: unknown): value is IdentifyResult {
   if (!value || typeof value !== 'object') return false;
   const v = value as Record<string, unknown>;
+  if (v.identified === false) return true;
   if (typeof v.breedName !== 'string' || typeof v.confidence !== 'number') {
     return false;
   }
@@ -132,7 +131,7 @@ Deno.serve(async (req) => {
               content: [
                 {
                   type: 'text',
-                  text: `This photo is a ${species}. Identify the breed and return the JSON object.`,
+                  text: `Expected a ${species}. If this photo is clearly that animal, identify the breed. If not, identified=false. Never invent a closest breed.`,
                 },
                 {
                   type: 'image_url',
@@ -181,15 +180,25 @@ Deno.serve(async (req) => {
       );
     }
 
+    const name = (parsed.breedName ?? '').trim();
+    const conf = Number(parsed.confidence) || 0;
+    const identified =
+      parsed.identified !== false &&
+      Boolean(name) &&
+      name.toLowerCase() !== 'unknown' &&
+      conf >= 0.55;
     const result: IdentifyResult = {
-      breedName: parsed.breedName.trim(),
-      confidence: Math.max(0, Math.min(1, parsed.confidence)),
-      alternatives: (parsed.alternatives ?? [])
-        .slice(0, 3)
-        .map((a) => ({
-          breedName: a.breedName.trim(),
-          confidence: Math.max(0, Math.min(1, a.confidence)),
-        })),
+      identified,
+      breedName: identified ? name : '',
+      confidence: identified ? Math.max(0, Math.min(1, conf)) : 0,
+      alternatives: identified
+        ? (parsed.alternatives ?? [])
+            .slice(0, 3)
+            .map((a) => ({
+              breedName: a.breedName.trim(),
+              confidence: Math.max(0, Math.min(1, a.confidence)),
+            }))
+        : [],
     };
 
     return new Response(JSON.stringify({ result }), {

@@ -248,13 +248,25 @@ Architecture: keep `species` extensible; UI copy «Собака / Кіт / Ін�
 
 ---
 
+## Captured 2026-08-24 — Trust: never invent a scan result
+
+**Rule (locked):** if barcode / photo / AI cannot identify the thing **as what the user asked** (pet food label, plant, dog/cat breed), the UI must say **не знайдено / не розпізнано**. Do **not** invent a “close” product, plant, or breed (perfume photo ≠ Brit Care / monstera / labrador).
+
+Better empty than a confident lie — trust drops otherwise.
+
+Applies to mock **and** live Edge (`analyze-label`, `identify-plant`, `identify-breed`). Mock photo must not return a canned hit. Explicit demo with empty image / barcode catalog is separate.
+
+---
+
 ## Legal / trust (always)
+
 - Chip = private owner note, never public registry search
 - Vaccines / borders = informational; verify with vet / carrier
 - Adoption & sponsorship = shelter-led; no false “instant adopt” promises
 - GDPR / UA privacy for photos & chat
 - Charity listings curated to reduce fraud
 - **Buy links / prices:** informational only; availability & price can be stale; never scrape review *text* into our UI; respect each marketplace ToS / robots; prefer official partner APIs where they exist; attribute source; no “we sell this” claim unless we do.
+- **Scan / photo ID:** if we cannot identify the subject as pet food, a plant, or a dog/cat breed, say **не розпізнано**. Never invent a nearby catalog hit (trust > fake completeness).
 
 ---
 

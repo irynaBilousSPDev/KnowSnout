@@ -49,13 +49,15 @@ Status: `organic` | `stub` | `missing` · Variant 12 remap = later
 
 | Screen | Status | Route |
 |--|--|--|
-| Список / профіль / догляд | done | pets, pet-profile, pet-care |
-| Щеплення / ліки | done | pet-vaccines, pet-vet-log |
-| Ігри | done | play-guides |
-| Звички | done | `pet-habits` |
-| Календар + Google template / ICS export | done | `pet-calendar` |
-| Travel wizard | done | `pet-travel-wizard` |
-| Passport / travel checklist | done | pet-passport, pet-travel |
+| Список / empty / вид wizard | done | pets 03.01–03.02, `pet-species` 03.03 |
+| Профіль-акордеон + хаб + перегляд | done | `pet-form` 03.04, `pet-hub` 03.05, `pet-profile` 03.06–03.07 |
+| Догляд сьогодні | done | `care-hub` 03.08 |
+| Щеплення / ліки | done | pet-vaccines, pet-vet-log 03.09–03.12 |
+| Ігри | done | play-guides 03.13 |
+| Звички | done | `pet-habits` 03.14 |
+| Календар + Google template / ICS export | done | `pet-calendar` 03.15 |
+| Travel wizard | done | `pet-travel-wizard` 03.17 |
+| Passport / travel checklist | done | pet-passport 03.16, pet-travel |
 
 ## Wave 3 — Стрічка
 

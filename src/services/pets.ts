@@ -80,7 +80,9 @@ function asSex(value: unknown): PetSex | null {
 }
 
 function asOrigin(value: unknown): PetOrigin {
-  return value === 'shelter' ? 'shelter' : 'home';
+  if (value === 'shelter') return 'shelter';
+  if (value === 'breeder') return 'breeder';
+  return 'home';
 }
 
 function asCoatType(value: unknown): CoatType | null {
@@ -387,7 +389,9 @@ export async function createPet(input: PetInput): Promise<PetRow> {
   };
   const payload = normalizeInput(withStablePhoto, usedKeys);
   const now = new Date().toISOString();
-  const extras: Record<string, unknown> = {};
+  const extras: Record<string, unknown> = {
+    ...(withStablePhoto.extras_patch ?? {}),
+  };
   if (withStablePhoto.avatar_uri) extras.avatar_uri = withStablePhoto.avatar_uri;
   if (payload.life_stage) extras.life_stage = payload.life_stage;
 
@@ -459,6 +463,7 @@ export async function updatePet(id: string, input: PetInput): Promise<PetRow> {
     if (index < 0) throw new Error('Pet not found');
     const extras: Record<string, unknown> = {
       ...pets[index].extras,
+      ...(input.extras_patch ?? {}),
       ...(stableAvatarUri ? { avatar_uri: stableAvatarUri } : {}),
     };
     if (!stableAvatarUri && input.avatar_key) {
@@ -483,6 +488,7 @@ export async function updatePet(id: string, input: PetInput): Promise<PetRow> {
   const existing = await getPet(id);
   const extras: Record<string, unknown> = {
     ...(existing?.extras ?? {}),
+    ...(input.extras_patch ?? {}),
     ...(stableAvatarUri ? { avatar_uri: stableAvatarUri } : {}),
   };
   if (!stableAvatarUri && input.avatar_key) {

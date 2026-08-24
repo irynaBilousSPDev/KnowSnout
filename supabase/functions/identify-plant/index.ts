@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 type IdentifyResult = {
+  identified: boolean;
   latin: string;
   commonName: string;
   confidence: number;
@@ -15,16 +16,20 @@ type IdentifyResult = {
 const SYSTEM_PROMPT = `You identify houseplants and garden plants from photos for a pet-safety app.
 Return ONLY valid JSON (no markdown) with this exact shape:
 {
-  "latin": "string — best-effort scientific name, use spp. if genus only",
+  "identified": boolean,
+  "latin": "string — scientific name, spp. if genus only",
   "commonName": "string — common English name",
   "confidence": number between 0 and 1
 }
-If the image is not a plant, still return JSON with latin/commonName describing what you see and confidence below 0.3.
-Prefer genus+species when clear. Never invent veterinary advice.`;
+Rules:
+- identified=true ONLY if the photo clearly shows a plant (leaf, flower, houseplant, garden plant).
+- If perfume, food, animal, packaging, or unclear: identified=false, latin="", commonName="", confidence=0. NEVER invent a plant name or pick a "closest" species.
+- Prefer genus+species when clear. Never invent veterinary advice.`;
 
 function isValidResult(value: unknown): value is IdentifyResult {
   if (!value || typeof value !== 'object') return false;
   const v = value as Record<string, unknown>;
+  if (v.identified === false) return true;
   return (
     typeof v.latin === 'string' &&
     typeof v.commonName === 'string' &&
@@ -116,7 +121,7 @@ Deno.serve(async (req) => {
               content: [
                 {
                   type: 'text',
-                  text: 'Identify this plant and return the JSON object.',
+                  text: 'Is this a plant? If yes, identify it. If not, identified=false. Never invent a species.',
                 },
                 {
                   type: 'image_url',
@@ -165,10 +170,16 @@ Deno.serve(async (req) => {
       );
     }
 
+    const identified =
+      parsed.identified !== false &&
+      (Boolean(parsed.latin?.trim()) || Boolean(parsed.commonName?.trim()));
     const result: IdentifyResult = {
-      latin: parsed.latin.trim(),
-      commonName: parsed.commonName.trim(),
-      confidence: Math.max(0, Math.min(1, parsed.confidence)),
+      identified,
+      latin: identified ? (parsed.latin ?? '').trim() : '',
+      commonName: identified ? (parsed.commonName ?? '').trim() : '',
+      confidence: identified
+        ? Math.max(0, Math.min(1, Number(parsed.confidence) || 0))
+        : 0,
     };
 
     return new Response(JSON.stringify({ result }), {

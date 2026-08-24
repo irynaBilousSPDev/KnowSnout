@@ -2,7 +2,7 @@ export type CompanionSpecies = 'dog' | 'cat' | 'bird' | 'other';
 
 export type PetSex = 'female' | 'male' | 'unknown';
 
-export type PetOrigin = 'home' | 'shelter';
+export type PetOrigin = 'home' | 'shelter' | 'breeder';
 
 export type CoatType = 'short' | 'long' | 'wire' | 'curly' | 'hairless' | 'unknown';
 
@@ -89,6 +89,8 @@ export type PetInput = {
   vet_name?: string | null;
   vet_phone?: string | null;
   ideal_weight_kg?: number | null;
+  /** Merged into extras (bird wingspan, cage, rodent/rabbit kind, …) */
+  extras_patch?: Record<string, unknown> | null;
 };
 
 export type PetPhotoRow = {
