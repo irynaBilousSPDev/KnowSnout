@@ -10,6 +10,14 @@ import { brand, fonts } from '@/src/theme/brand';
 /** HTML · Спільнота hub — квизи / форум / блог. */
 const PRIMARY = [
   {
+    key: 'spotlight',
+    titleKey: 'spotlight.title',
+    bodyKey: 'contests.teaserBody',
+    icon: 'sparkles-outline' as const,
+    href: '/(app)/spotlight-hub',
+    tone: 'accent' as const,
+  },
+  {
     key: 'quiz',
     titleKey: 'community.quizHub',
     bodyKey: 'community.quizHubBody',

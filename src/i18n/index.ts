@@ -1243,7 +1243,7 @@ const uk: Dict = {
   'travelWizard.loading': 'Завантаження…',
   'travelWizard.loadError': 'Не вдалося відкрити майстер',
 
-  'community.lead': 'Квізи, форум і блог — спільнота власників',
+  'community.lead': 'Конкурси, квізи, форум і блог — спільнота власників',
   'community.sectionQuiz': 'Квізи',
   'community.quizHub': 'Хаб квізів',
   'community.quizHubBody': 'Породи, факти, Zoom і міфи',

@@ -32,14 +32,38 @@ const SEED_POSTS: StoryPost[] = [
     petName: 'Лапка',
     species: 'dog',
     avatarKey: 'woman-1',
-    caption: 'Лапка вперше спробувала новий корм — реакція на 10/10 😄',
+    caption:
+      'Лапка вперше спробувала новий корм — оцінка 4.3, склад чистий',
     location: 'Варшава',
     imageUri: null,
     imagePath: null,
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    likes: 24,
+    likes: 42,
     liked: false,
-    commentsCount: 5,
+    commentsCount: 7,
+    mine: false,
+    privacy: 'public',
+    petId: null,
+    taggedPetIds: [],
+    taggedFriendIds: [],
+    taggedPetNames: [],
+    taggedFriendNames: [],
+  },
+  {
+    id: 'seed-ihor-walk',
+    userId: 'fu-2',
+    author: 'Ігор Шевчук',
+    petName: 'Рекс',
+    species: 'dog',
+    avatarKey: 'man-1',
+    caption: 'Ранкова прогулянка біля Вісли — Рекс у захваті',
+    location: 'Краків',
+    imageUri: null,
+    imagePath: null,
+    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+    likes: 18,
+    liked: false,
+    commentsCount: 3,
     mine: false,
     privacy: 'public',
     petId: null,
@@ -428,13 +452,22 @@ async function listStoryFeedDemo(
 ) {
   const local = await readLocal();
   const localComments = await readLocalComments();
-  const mine = local.map((p) => ({ ...p, mine: true }));
-  const all = withLocalCommentCounts([...mine, ...SEED_POSTS], [
+  const mine = local
+    .filter((p) => !String(p.id).startsWith('seed-'))
+    .map((p) => ({ ...p, mine: true }));
+  // Prefer fresh seed copy so demo captions/counts stay in sync with mocks.
+  const all = withLocalCommentCounts([...SEED_POSTS, ...mine], [
     ...SEED_COMMENTS,
     ...localComments,
   ]);
   const following = new Set(followingIds);
-  return all.filter((p) => matchesFeedFilter(p, filter, following, blocked));
+  const seen = new Set<string>();
+  const deduped = all.filter((p) => {
+    if (seen.has(p.id)) return false;
+    seen.add(p.id);
+    return true;
+  });
+  return deduped.filter((p) => matchesFeedFilter(p, filter, following, blocked));
 }
 
 function localPost(input: {

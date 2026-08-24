@@ -16,10 +16,12 @@ import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
+import { SharePhotoSheet } from '@/src/components/SharePhotoSheet';
 import { StoryReportSheet } from '@/src/components/StoryReportSheet';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
+import { buildStoryDeepLink, buildStoryShareMessage } from '@/src/lib/share';
 import {
   formatStoryTimeAgo,
   listStoryFeed,
@@ -39,57 +41,57 @@ const TABS: { id: FeedTab; labelKey: string }[] = [
   { id: 'nearby', labelKey: 'stories.filterNearby' },
 ];
 
-function displayName(post: StoryPost): string {
-  if (post.author.includes(' та ') || !post.petName) return post.author;
-  if (post.author.includes(post.petName)) return post.author;
-  return `${post.author}`;
-}
-
 function FeedCard({
   post,
   onLike,
   onReport,
+  onShare,
 }: {
   post: StoryPost;
   onLike: () => void;
   onReport: () => void;
+  onShare: () => void;
 }) {
+  const openPost = () =>
+    router.push({
+      pathname: '/(app)/story-post',
+      params: { postId: post.id },
+    } as never);
+
+  const meta = [post.location, formatStoryTimeAgo(post.createdAt)]
+    .filter(Boolean)
+    .join(' · ');
+
   return (
-    <Pressable
-      onPress={() =>
-        router.push({
-          pathname: '/(app)/story-post',
-          params: { postId: post.id },
-        } as never)
-      }
-      style={styles.card}
-    >
+    <View style={styles.card}>
       <View style={styles.cardHead}>
-        <UserAvatar
-          avatarKey={post.avatarKey}
-          size={36}
-          name={post.author}
-        />
-        <View style={styles.cardHeadText}>
-          <Text style={styles.cardName} numberOfLines={1}>
-            {displayName(post)}
-          </Text>
-          <Text style={styles.cardMeta} numberOfLines={1}>
-            {[post.location, formatStoryTimeAgo(post.createdAt)]
-              .filter(Boolean)
-              .join(' · ')}
-          </Text>
-        </View>
-        <Pressable
-          hitSlop={8}
-          style={styles.menuBtn}
-          onPress={onReport}
-        >
-          <Ionicons name="ellipsis-horizontal" size={18} color={brand.muted} />
+        <Pressable onPress={openPost} style={styles.cardHeadMain}>
+          <UserAvatar
+            avatarKey={post.avatarKey}
+            size={40}
+            name={post.author}
+          />
+          <View style={styles.cardHeadText}>
+            <Text style={styles.cardName} numberOfLines={1}>
+              {post.author}
+            </Text>
+            {meta ? (
+              <Text style={styles.cardMeta} numberOfLines={1}>
+                {meta}
+              </Text>
+            ) : null}
+          </View>
+        </Pressable>
+        <Pressable hitSlop={12} onPress={onReport} style={styles.menuBtn}>
+          <Ionicons
+            name="ellipsis-horizontal"
+            size={18}
+            color={brand.mutedSoft}
+          />
         </Pressable>
       </View>
 
-      <View style={styles.photo}>
+      <Pressable onPress={openPost} style={styles.photo}>
         {post.imageUri ? (
           <Image source={{ uri: post.imageUri }} style={styles.photoImg} />
         ) : (
@@ -98,12 +100,14 @@ function FeedCard({
             <Text style={styles.photoHint}>{t('stories.photoPlaceholder')}</Text>
           </>
         )}
-      </View>
+      </Pressable>
 
-      <Text style={styles.caption}>{post.caption}</Text>
+      <Pressable onPress={openPost}>
+        <Text style={styles.caption}>{post.caption}</Text>
+      </Pressable>
 
       <View style={styles.actions}>
-        <Pressable onPress={onLike} style={styles.action} hitSlop={6}>
+        <Pressable onPress={onLike} style={styles.action} hitSlop={10}>
           <Ionicons
             name={post.liked ? 'paw' : 'paw-outline'}
             size={18}
@@ -121,29 +125,21 @@ function FeedCard({
             } as never)
           }
           style={styles.action}
-          hitSlop={6}
+          hitSlop={10}
         >
           <Ionicons name="chatbubble-outline" size={17} color={brand.muted} />
           <Text style={styles.actionN}>{post.commentsCount}</Text>
         </Pressable>
-        <Pressable
-          onPress={() =>
-            router.push({
-              pathname: '/(app)/story-post',
-              params: { postId: post.id },
-            } as never)
-          }
-          style={styles.action}
-          hitSlop={6}
-        >
-          <Ionicons name="share-social-outline" size={17} color={brand.muted} />
+        <View style={{ flex: 1 }} />
+        <Pressable onPress={onShare} hitSlop={10} style={styles.shareBtn}>
+          <Ionicons name="arrow-redo-outline" size={18} color={brand.muted} />
         </Pressable>
       </View>
-    </Pressable>
+    </View>
   );
 }
 
-/** Screenshot 04.00 — Стрічка корінь */
+/** Screenshot 04.00 — feed layout */
 export default function StoriesScreen() {
   const [tab, setTab] = useState<FeedTab>('friends');
   const [posts, setPosts] = useState<StoryPost[]>([]);
@@ -152,32 +148,36 @@ export default function StoriesScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reportPost, setReportPost] = useState<StoryPost | null>(null);
+  const [sharePost, setSharePost] = useState<StoryPost | null>(null);
 
-  const load = useCallback(async (soft?: boolean) => {
-    if (!soft) setLoading(true);
-    setError(null);
-    try {
-      const filter: StoryFeedFilter =
-        tab === 'friends'
-          ? 'friends'
-          : tab === 'myBreed'
-            ? 'myBreed'
-            : tab === 'nearby'
-              ? 'nearby'
-              : 'all';
-      const [feed, me] = await Promise.all([
-        listStoryFeed(filter),
-        getUserProfile(),
-      ]);
-      setPosts(feed);
-      setProfile(me);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t('stories.loadError'));
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [tab]);
+  const load = useCallback(
+    async (soft?: boolean) => {
+      if (!soft) setLoading(true);
+      setError(null);
+      try {
+        const filter: StoryFeedFilter =
+          tab === 'friends'
+            ? 'friends'
+            : tab === 'myBreed'
+              ? 'myBreed'
+              : tab === 'nearby'
+                ? 'nearby'
+                : 'all';
+        const [feed, me] = await Promise.all([
+          listStoryFeed(filter),
+          getUserProfile(),
+        ]);
+        setPosts(feed);
+        setProfile(me);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : t('stories.loadError'));
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [tab],
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -197,27 +197,33 @@ export default function StoriesScreen() {
     }
   };
 
-  return (
-    <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+  const listHeader = (
+    <View style={styles.headerBlock}>
       <View style={styles.titleRow}>
         <Text style={styles.title}>{t('tabs.stories')}</Text>
         <View style={styles.titleIcons}>
           <Pressable
+            onPress={() => router.push('/(app)/spotlight-hub' as never)}
+            style={styles.iconBtn}
+            accessibilityLabel={t('spotlight.title')}
+          >
+            <Ionicons name="trophy-outline" size={18} color={brand.ink} />
+          </Pressable>
+          <Pressable
             onPress={() => router.push('/(app)/search' as never)}
             style={styles.iconBtn}
-            hitSlop={8}
+            accessibilityLabel={t('search.placeholder')}
           >
-            <Ionicons name="search-outline" size={20} color={brand.ink} />
+            <Ionicons name="search-outline" size={18} color={brand.ink} />
           </Pressable>
           <Pressable
             onPress={() => router.push('/(app)/messages' as never)}
             style={styles.iconBtn}
-            hitSlop={8}
+            accessibilityLabel={t('dm.title')}
           >
             <Ionicons
               name="chatbubble-ellipses-outline"
-              size={20}
+              size={18}
               color={brand.ink}
             />
           </Pressable>
@@ -263,15 +269,27 @@ export default function StoriesScreen() {
           <Ionicons name="add" size={22} color="#FFFFFF" />
         </View>
       </Pressable>
+    </View>
+  );
 
+  return (
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
       {loading && posts.length === 0 ? (
-        <LoadingState />
+        <>
+          {listHeader}
+          <LoadingState />
+        </>
       ) : error && posts.length === 0 ? (
-        <ErrorState message={error} onRetry={() => void load()} />
+        <>
+          {listHeader}
+          <ErrorState message={error} onRetry={() => void load()} />
+        </>
       ) : (
         <FlatList
           data={posts}
           keyExtractor={(item) => item.id}
+          ListHeaderComponent={listHeader}
           contentContainerStyle={styles.list}
           refreshControl={
             <RefreshControl
@@ -288,11 +306,13 @@ export default function StoriesScreen() {
               post={item}
               onLike={() => void onLike(item)}
               onReport={() => setReportPost(item)}
+              onShare={() => setSharePost(item)}
             />
           )}
           ListEmptyComponent={
             <Text style={styles.empty}>{t('stories.emptyFilter')}</Text>
           }
+          ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
         />
       )}
 
@@ -310,43 +330,72 @@ export default function StoriesScreen() {
           }}
         />
       ) : null}
+
+      {sharePost ? (
+        <SharePhotoSheet
+          visible
+          onClose={() => setSharePost(null)}
+          imageUri={sharePost.imageUri}
+          title={sharePost.author}
+          message={buildStoryShareMessage({
+            author: sharePost.author,
+            caption: sharePost.caption,
+            postId: sharePost.id,
+          })}
+          linkUrl={buildStoryDeepLink(sharePost.id)}
+        />
+      ) : null}
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
+  headerBlock: {
+    paddingHorizontal: 20,
+    paddingBottom: 4,
+  },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 8,
+    paddingTop: 6,
+    paddingBottom: 14,
+    gap: 12,
   },
   title: {
     flex: 1,
-    fontFamily: fonts.title,
+    fontFamily: fonts.titleExtra,
     fontSize: 26,
+    lineHeight: 32,
     color: brand.ink,
+    letterSpacing: -0.3,
   },
-  titleIcons: { flexDirection: 'row', gap: 4 },
+  titleIcons: { flexDirection: 'row', gap: 8 },
   iconBtn: {
-    width: 36,
-    height: 36,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
   },
   tabs: {
-    paddingHorizontal: 20,
+    flexDirection: 'row',
     gap: 8,
-    paddingBottom: 10,
+    paddingBottom: 14,
+    paddingRight: 4,
   },
   tab: {
     borderRadius: 999,
     backgroundColor: brand.creamDeep,
     paddingHorizontal: 14,
     paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
-  tabOn: { backgroundColor: brand.accentTint },
+  tabOn: {
+    backgroundColor: brand.accentTint,
+    borderColor: brand.accentBorder,
+  },
   tabT: {
     fontFamily: fonts.bodySemi,
     fontSize: 13,
@@ -354,21 +403,25 @@ const styles = StyleSheet.create({
   },
   tabTOn: { color: brand.accent },
   composer: {
-    marginHorizontal: 20,
-    marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
     backgroundColor: brand.surfaceElevated,
-    borderRadius: 18,
-    paddingVertical: 8,
-    paddingLeft: 10,
-    paddingRight: 8,
+    borderRadius: 999,
+    paddingVertical: 6,
+    paddingLeft: 6,
+    paddingRight: 6,
+    marginBottom: 16,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
   composerHint: {
     flex: 1,
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 13.5,
     color: brand.mutedSoft,
   },
   composerPlus: {
@@ -379,34 +432,50 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  list: { paddingHorizontal: 20, paddingBottom: 32, gap: 12 },
-  card: {
-    backgroundColor: brand.surfaceElevated,
-    borderRadius: 18,
-    padding: 12,
-    gap: 10,
+  list: {
+    paddingBottom: 40,
   },
-  cardHead: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  card: {
+    marginHorizontal: 20,
+    backgroundColor: brand.surfaceElevated,
+    borderRadius: 22,
+    padding: 14,
+    gap: 12,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: 0.07,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
+  },
+  cardHead: { flexDirection: 'row', alignItems: 'center' },
+  cardHeadMain: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    minWidth: 0,
+  },
   cardHeadText: { flex: 1, minWidth: 0 },
   cardName: {
     fontFamily: fonts.bodyBold,
-    fontSize: 14,
+    fontSize: 14.5,
     color: brand.ink,
   },
   cardMeta: {
     fontFamily: fonts.body,
     fontSize: 12,
     color: brand.mutedSoft,
-    marginTop: 1,
+    marginTop: 2,
   },
-  menuBtn: { padding: 4 },
+  menuBtn: { padding: 6, marginRight: -4 },
   photo: {
-    height: 200,
-    borderRadius: 14,
-    borderWidth: 1,
+    width: '100%',
+    aspectRatio: 1.35,
+    borderRadius: 16,
+    borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: brand.mistBorder,
-    backgroundColor: brand.creamDeep,
+    backgroundColor: '#EEEBE6',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
@@ -415,13 +484,13 @@ const styles = StyleSheet.create({
   photoImg: { width: '100%', height: '100%' },
   photoHint: {
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 13,
     color: brand.mutedSoft,
   },
   caption: {
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 14.5,
+    lineHeight: 21,
     color: brand.ink,
   },
   actions: {
@@ -430,16 +499,18 @@ const styles = StyleSheet.create({
     gap: 18,
     paddingTop: 2,
   },
-  action: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  action: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   actionN: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 12.5,
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
     color: brand.muted,
   },
   actionOn: { color: brand.accent },
+  shareBtn: { padding: 2 },
   empty: {
     textAlign: 'center',
-    marginTop: 40,
+    marginTop: 32,
+    marginHorizontal: 20,
     fontFamily: fonts.body,
     fontSize: 14,
     color: brand.muted,
