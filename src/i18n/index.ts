@@ -513,7 +513,6 @@ const uk: Dict = {
   'stories.composeTitle': 'Новий пост',
   'stories.postTitle': 'Пост',
   'stories.andPet': 'та {name}',
-  'stories.photoPlaceholder': 'Фото',
   'stories.location': 'Локація',
   'stories.locationPlaceholder': 'Парк, район…',
   'stories.submitSpotlight': 'Подати на SnoutSpotlight',

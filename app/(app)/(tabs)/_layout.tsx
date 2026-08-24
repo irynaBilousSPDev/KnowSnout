@@ -1,12 +1,16 @@
 import { Tabs } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML kit tab order: Стрічка · Перевір · Улюбленці · Спільнота · Довідники */
+/**
+ * Bottom tabs from design sheets 2026-08-24 (04.00 pack):
+ * Стрічка · Перевір · Улюбленці · Спільнота · Довідники
+ * @see docs/design/screenshots/2026-08-24/04.00-04.02-feed-post-comments.png
+ */
 export const unstable_settings = {
   initialRouteName: 'stories',
 };
@@ -22,7 +26,7 @@ function TabIcon({
     <Ionicons
       name={name}
       size={18}
-      color={focused ? brand.logoGreen : brand.mutedSoft}
+      color={focused ? brand.accent : brand.mutedSoft}
     />
   );
 }
@@ -58,7 +62,7 @@ export default function TabsLayout() {
           shadowOpacity: 0,
         },
         tabBarItemStyle: { paddingTop: 0 },
-        tabBarActiveTintColor: brand.logoGreen,
+        tabBarActiveTintColor: brand.accent,
         tabBarInactiveTintColor: brand.mutedSoft,
       }}
     >
@@ -68,7 +72,7 @@ export default function TabsLayout() {
           title: t('tabs.stories'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name={focused ? 'home' : 'home-outline'}
+              name={focused ? 'newspaper' : 'newspaper-outline'}
               focused={focused}
             />
           ),
@@ -83,7 +87,7 @@ export default function TabsLayout() {
           title: t('tabs.scan'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name={focused ? 'search' : 'search-outline'}
+              name={focused ? 'scan' : 'scan-outline'}
               focused={focused}
             />
           ),
@@ -110,7 +114,7 @@ export default function TabsLayout() {
           title: t('tabs.community'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name={focused ? 'chatbubble' : 'chatbubble-outline'}
+              name={focused ? 'chatbubbles' : 'chatbubbles-outline'}
               focused={focused}
             />
           ),
@@ -151,6 +155,6 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   labelFocused: {
-    color: brand.logoGreen,
+    color: brand.accent,
   },
 });

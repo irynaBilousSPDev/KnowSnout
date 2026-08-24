@@ -346,13 +346,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
   },
-  tabOn: { backgroundColor: brand.accent },
+  tabOn: { backgroundColor: brand.accentTint },
   tabT: {
     fontFamily: fonts.bodySemi,
     fontSize: 13,
-    color: brand.ink,
+    color: brand.muted,
   },
-  tabTOn: { color: '#FFFFFF' },
+  tabTOn: { color: brand.accent },
   composer: {
     marginHorizontal: 20,
     marginBottom: 12,
