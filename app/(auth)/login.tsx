@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AuthTextField } from '@/src/components/AuthTextField';
+import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
@@ -23,7 +24,7 @@ import { brand, fonts } from '@/src/theme/brand';
 const logoEmerald = require('../../assets/images/logo_emerald.png');
 const ONBOARDING_KEY = 'knowsnout.onboarding.seen';
 
-/** Screenshot 01.05 · Вхід — centered logo, no app-hd. */
+/** 01.05 · Вхід — centered logo, no app-hd. */
 export default function LoginScreen() {
   const { user, loading: authLoading, signIn } = useAuth();
   const [email, setEmail] = useState('');
@@ -134,16 +135,13 @@ export default function LoginScreen() {
                 </View>
               ) : null}
 
-              <Pressable
+              <PrimaryButton
+                label={t('auth.signIn')}
                 onPress={() => void onSubmit()}
-                disabled={loading}
-                style={styles.textCta}
-                accessibilityRole="button"
-              >
-                <Text style={styles.textCtaLabel}>
-                  {loading ? t('common.loading') : t('auth.signIn')}
-                </Text>
-              </Pressable>
+                loading={loading}
+                size="md"
+                style={styles.cta}
+              />
 
               <View style={styles.orRow}>
                 <View style={styles.orLine} />
@@ -214,16 +212,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: brand.accentDark,
   },
-  textCta: {
-    alignItems: 'center',
-    paddingVertical: 12,
-    marginTop: 4,
-  },
-  textCtaLabel: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: brand.accentDark,
-  },
+  cta: { marginTop: 4 },
   orRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -242,7 +231,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
     minHeight: 48,
-    borderRadius: brand.radius.md,
+    borderRadius: brand.radius.pill,
     borderWidth: 1,
     borderColor: brand.divider,
     backgroundColor: brand.surfaceElevated,

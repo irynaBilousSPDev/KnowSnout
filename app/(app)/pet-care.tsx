@@ -19,6 +19,7 @@ import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { googleCalendarUrl } from '@/src/lib/deviceCalendar';
 import {
@@ -280,10 +281,9 @@ export default function PetCareScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('care.title')} titleSize={22} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.title}>{t('care.title')}</Text>
-
           <CheckRow
             done={log.water_done}
             title={t('care.waterAction')}
@@ -372,14 +372,7 @@ export default function PetCareScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 40 },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
-    marginBottom: 12,
-  },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
   subtitle: {
     marginTop: 4,
     fontFamily: fonts.body,
@@ -436,15 +429,15 @@ const styles = StyleSheet.create({
   },
   chip: {
     borderRadius: brand.radius.pill,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   chipGood: { backgroundColor: brand.successTint },
   chipNeutral: { backgroundColor: brand.chipTrack },
   chipText: {
-    fontFamily: fonts.bodySemi,
-    fontSize: 11,
-    color: brand.muted,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.ink,
   },
   chipTextGood: { color: brand.successDark },
   note: {

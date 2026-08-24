@@ -42,6 +42,8 @@ const ACTIONS: {
   titleKey: string;
   bodyKey: string;
   href: string;
+  iconBg: string;
+  iconColor: string;
 }[] = [
   {
     kind: 'food',
@@ -49,6 +51,8 @@ const ACTIONS: {
     titleKey: 'check.foodTitle',
     bodyKey: 'check.foodBody',
     href: '/(app)/scan-food',
+    iconBg: brand.accentTint,
+    iconColor: brand.accentDark,
   },
   {
     kind: 'plant',
@@ -56,13 +60,17 @@ const ACTIONS: {
     titleKey: 'check.plantTitle',
     bodyKey: 'check.plantBody',
     href: '/(app)/plant-safety',
+    iconBg: brand.successTint,
+    iconColor: brand.successDark,
   },
   {
     kind: 'breed',
-    icon: 'home-outline',
+    icon: 'paw-outline',
     titleKey: 'check.breedTitle',
     bodyKey: 'check.breedBody',
     href: '/(app)/breed-scan',
+    iconBg: brand.creamDeep,
+    iconColor: brand.ink,
   },
   {
     kind: 'compare',
@@ -70,6 +78,8 @@ const ACTIONS: {
     titleKey: 'check.compareTitle',
     bodyKey: 'check.compareBody',
     href: '/(app)/compare-food',
+    iconBg: brand.creamDeep,
+    iconColor: brand.ink,
   },
 ];
 
@@ -254,11 +264,7 @@ export default function CheckHubScreen() {
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safe} edges={['bottom']}>
-        <AppChromeHeader
-          trailing="bell"
-          bellCount={3}
-          onBellPress={() => router.push('/(app)/notifications' as never)}
-        />
+        <AppChromeHeader />
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scroll}
@@ -285,15 +291,9 @@ export default function CheckHubScreen() {
                 onPress={() => router.push('/(app)/scan-food')}
                 style={styles.recentItem}
               >
-                <View style={styles.recentPlaceholder}>
-                  <Ionicons
-                    name="add"
-                    size={24}
-                    color={brand.mutedSoft}
-                  />
+                <View style={styles.recentDashed}>
+                  <Ionicons name="add" size={22} color={brand.mutedSoft} />
                 </View>
-                <Text style={styles.recentTitle}>{t('check.foodTitle')}</Text>
-                <Text style={styles.recentMeta}>{t('check.tabNew')}</Text>
               </Pressable>
             ) : (
               recent.map((slot) => (
@@ -336,11 +336,16 @@ export default function CheckHubScreen() {
                 pressed && styles.pressed,
               ]}
             >
-              <View style={styles.actionIcon}>
+              <View
+                style={[
+                  styles.actionIcon,
+                  { backgroundColor: action.iconBg },
+                ]}
+              >
                 <Ionicons
                   name={action.icon}
                   size={22}
-                  color={brand.accentDark}
+                  color={action.iconColor}
                 />
               </View>
               <View style={styles.actionCopy}>
@@ -384,8 +389,8 @@ const styles = StyleSheet.create({
   },
   recentHeading: {
     fontFamily: fonts.bodyBold,
-    fontSize: 13,
-    color: brand.ink,
+    fontSize: 12,
+    color: brand.muted,
   },
   allHistory: {
     fontFamily: fonts.bodySemi,
@@ -395,19 +400,29 @@ const styles = StyleSheet.create({
   recentRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 12,
+    gap: 10,
     paddingBottom: 2,
   },
-  recentItem: { width: 76 },
+  recentItem: { width: 64 },
   recentPlaceholder: {
-    height: 76,
-    width: 76,
+    height: 64,
+    width: 64,
     borderRadius: 14,
     backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,
     gap: 2,
+  },
+  recentDashed: {
+    height: 64,
+    width: 64,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: '#B0A99D',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   recentPlaceholderText: {
     fontFamily: fonts.body,
@@ -416,8 +431,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   recentImage: {
-    height: 76,
-    width: 76,
+    height: 64,
+    width: 64,
     borderRadius: 14,
     backgroundColor: brand.creamDeep,
   },
@@ -439,17 +454,20 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    borderRadius: 14,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    paddingVertical: 14,
+    paddingVertical: 12,
     paddingHorizontal: 8,
     alignItems: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: brand.mistBorder,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   statValue: {
     fontFamily: fonts.title,
-    fontSize: 20,
+    fontSize: 18,
     color: brand.ink,
   },
   statAccent: { color: brand.accentDark },
@@ -465,20 +483,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    borderRadius: 16,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 14,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: brand.mistBorder,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   actionIcon: {
-    height: 48,
-    width: 48,
-    borderRadius: 14,
+    height: 52,
+    width: 52,
+    borderRadius: brand.radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: brand.accentTint,
   },
   actionCopy: { flex: 1 },
   actionTitle: {

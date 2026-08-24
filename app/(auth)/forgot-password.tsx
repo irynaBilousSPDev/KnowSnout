@@ -4,11 +4,12 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AuthShell } from '@/src/components/AuthShell';
 import { AuthTextField } from '@/src/components/AuthTextField';
+import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { requestPasswordReset } from '@/src/services/auth';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** Screenshot 01.06 · Відновлення пароля. */
+/** 01.06 · Відновлення пароля. */
 export default function ForgotPasswordScreen() {
   const params = useLocalSearchParams<{ email?: string }>();
   const [email, setEmail] = useState(
@@ -65,16 +66,12 @@ export default function ForgotPasswordScreen() {
         onSubmitEditing={() => void onSend()}
       />
 
-      <Pressable
+      <PrimaryButton
+        label={t('auth.sendCode')}
         onPress={() => void onSend()}
-        disabled={loading}
-        style={styles.textCta}
-        accessibilityRole="button"
-      >
-        <Text style={styles.textCtaLabel}>
-          {loading ? t('common.loading') : t('auth.sendCode')}
-        </Text>
-      </Pressable>
+        loading={loading}
+        size="md"
+      />
 
       <View style={styles.infoBox}>
         <Text style={styles.infoText}>{t('auth.resetOauthHint')}</Text>
@@ -90,15 +87,6 @@ export default function ForgotPasswordScreen() {
 }
 
 const styles = StyleSheet.create({
-  textCta: {
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  textCtaLabel: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: brand.accentDark,
-  },
   infoBox: {
     borderRadius: brand.radius.md,
     backgroundColor: brand.accentTint,

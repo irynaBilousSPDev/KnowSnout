@@ -109,8 +109,8 @@ export default function BreedScanScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader trailing="bell" bellCount={3} />
-      <ScrHeader title={t('breed.askTitle')} titleSize={18} />
+      <AppChromeHeader />
+      <ScrHeader title={t('breed.askTitle')} />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
@@ -149,15 +149,6 @@ export default function BreedScanScreen() {
           emptyHint={t('breed.photoEmpty')}
         />
 
-        <View style={styles.cta}>
-          <PrimaryButton
-            label={t('breed.identifyCta')}
-            onPress={() => void onPhoto()}
-            disabled={busy || !photoUri}
-            loading={busy}
-          />
-        </View>
-
         <Pressable
           onPress={() => setManualOpen((v) => !v)}
           style={styles.manualBtn}
@@ -189,6 +180,15 @@ export default function BreedScanScreen() {
           </View>
         ) : null}
 
+        <View style={styles.cta}>
+          <PrimaryButton
+            label={t('breed.identifyCta')}
+            onPress={() => void onPhoto()}
+            disabled={busy || !photoUri}
+            loading={busy}
+          />
+        </View>
+
         {busy ? (
           <View style={styles.busyRow}>
             <ActivityIndicator color={brand.accent} />
@@ -219,19 +219,19 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: 'center',
   },
-  speciesActive: { backgroundColor: brand.accent },
+  speciesActive: { backgroundColor: brand.successTint },
   speciesText: {
     fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.ink,
   },
-  speciesTextActive: { color: '#FFFFFF' },
-  cta: { marginTop: 14 },
+  speciesTextActive: { color: brand.successDark },
+  cta: { marginTop: 16 },
   manualBtn: {
-    marginTop: 14,
+    marginTop: 16,
     minHeight: 46,
     borderRadius: brand.radius.pill,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: brand.mistBorder,
     backgroundColor: brand.surfaceElevated,
     alignItems: 'center',

@@ -1,10 +1,10 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { InviteQrCard } from '@/src/components/InviteQrCard';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
@@ -32,21 +32,21 @@ export default function FriendInviteScreen() {
     }, []),
   );
 
+  const link = `https://${PUBLIC_URL}`;
+
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
       <ScrHeader title={t('friends.inviteTitle')} titleSize={19} />
       <View style={styles.pad}>
-        <View style={styles.qrCard}>
-          <Ionicons name="qr-code-outline" size={120} color={brand.ink} />
-        </View>
+        <InviteQrCard url={link} />
         <Text style={styles.url}>{PUBLIC_URL}</Text>
         <View style={styles.row}>
           <View style={{ flex: 1 }}>
             <PrimaryButton
               label={t('friends.inviteCopyShort')}
               variant="secondary"
-              onPress={() => void copyText(`https://${PUBLIC_URL}`)}
+              onPress={() => void copyText(link)}
             />
           </View>
           <View style={{ flex: 1 }}>
@@ -55,7 +55,7 @@ export default function FriendInviteScreen() {
               onPress={() =>
                 void shareText({
                   title: t('friends.inviteTitle'),
-                  message: `https://${PUBLIC_URL}`,
+                  message: link,
                 })
               }
             />
@@ -78,19 +78,6 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     alignItems: 'center',
     gap: 16,
-  },
-  qrCard: {
-    width: 180,
-    height: 180,
-    borderRadius: 20,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 2,
   },
   url: {
     fontFamily: fonts.bodyBold,

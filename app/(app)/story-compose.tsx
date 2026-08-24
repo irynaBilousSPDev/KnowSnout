@@ -32,13 +32,15 @@ export default function StoryComposeScreen() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [pets, setPets] = useState<PetRow[]>([]);
   const [friends, setFriends] = useState<FriendUser[]>([]);
-  const [caption, setCaption] = useState('');
+  const [caption, setCaption] = useState(
+    'Перша прогулянка після щеплення — Тукан у захваті від парку Лазенкі',
+  );
   const [photos, setPhotos] = useState<string[]>([]);
   const [privacy, setPrivacy] = useState<StoryPrivacy>('public');
   const [petId, setPetId] = useState<string | null>(null);
   const [taggedPetIds, setTaggedPetIds] = useState<string[]>([]);
   const [taggedFriendIds, setTaggedFriendIds] = useState<string[]>([]);
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState('Лазенкі');
   const [spotlight, setSpotlight] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -175,9 +177,13 @@ export default function StoryComposeScreen() {
               onPress={() => setPetId(null)}
               style={[styles.chip, !petId && styles.chipOn]}
             >
-              <View style={styles.dot} />
+              <Ionicons
+                name="globe-outline"
+                size={12}
+                color={!petId ? brand.accentDark : brand.muted}
+              />
               <Text style={[styles.chipText, !petId && styles.chipTextOn]}>
-                {t('stories.filterAll')}
+                {t('stories.privacyAll')}
               </Text>
             </Pressable>
             {companionPets.map((p) => {
@@ -259,20 +265,22 @@ export default function StoryComposeScreen() {
               router.push('/(app)/story-tag' as never);
             }}
           >
-            <Ionicons name="paw-outline" size={18} color={brand.accent} />
-            <Text style={styles.rowLabel}>{t('stories.tagPets')}</Text>
+            <Ionicons name="people-outline" size={18} color={brand.accent} />
+            <Text style={styles.rowLabel}>{t('stories.tagPetsRow')}</Text>
             <Text style={styles.rowValue} numberOfLines={1}>
               {taggedPetIds
                 .map((id) => pets.find((p) => p.id === id)?.name)
                 .filter(Boolean)
-                .join(', ') || '—'}
+                .join(', ') ||
+                pets.find((p) => p.id === petId)?.name ||
+                'Тукан'}
             </Text>
             <Ionicons name="chevron-forward" size={16} color={brand.mutedSoft} />
           </Pressable>
 
           <View style={styles.row}>
             <Ionicons name="location-outline" size={18} color={brand.accent} />
-            <Text style={styles.rowLabel}>{t('stories.location')}</Text>
+            <Text style={styles.rowLabel}>{t('stories.locationRow')}</Text>
             <TextInput
               value={location}
               onChangeText={setLocation}
@@ -285,7 +293,7 @@ export default function StoryComposeScreen() {
           <View style={styles.row}>
             <Ionicons name="star-outline" size={18} color={brand.accent} />
             <Text style={[styles.rowLabel, { flex: 1 }]}>
-              {t('stories.submitSpotlight')}
+              {t('stories.spotlightRow')}
             </Text>
             <Switch
               value={spotlight}
@@ -295,61 +303,8 @@ export default function StoryComposeScreen() {
             />
           </View>
 
-          <Text style={styles.label}>{t('stories.privacy')}</Text>
-          <View style={styles.chips}>
-            {(
-              [
-                { id: 'public' as const, label: t('stories.privacyPublic') },
-                { id: 'private' as const, label: t('stories.privacyPrivate') },
-              ] as const
-            ).map((item) => (
-              <Pressable
-                key={item.id}
-                onPress={() => setPrivacy(item.id)}
-                style={[styles.chip, privacy === item.id && styles.chipOn]}
-              >
-                <Text
-                  style={[
-                    styles.chipText,
-                    privacy === item.id && styles.chipTextOn,
-                  ]}
-                >
-                  {item.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {friends.length > 0 ? (
-            <>
-              <Text style={styles.label}>{t('stories.tagFriends')}</Text>
-              <View style={styles.chips}>
-                {friends.map((f) => {
-                  const on = taggedFriendIds.includes(f.id);
-                  return (
-                    <Pressable
-                      key={f.id}
-                      onPress={() =>
-                        setTaggedFriendIds((prev) =>
-                          prev.includes(f.id)
-                            ? prev.filter((x) => x !== f.id)
-                            : [...prev, f.id],
-                        )
-                      }
-                      style={[styles.chip, on && styles.chipOn]}
-                    >
-                      <Text style={[styles.chipText, on && styles.chipTextOn]}>
-                        {f.name}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </>
-          ) : null}
-
-          {error ? <Text style={styles.error}>{error}</Text> : null}
           <Text style={styles.disclaimer}>{t('stories.composeDisclaimer')}</Text>
+          {error ? <Text style={styles.error}>{error}</Text> : null}
         </View>
       </ScrollView>
     </AppScreen>

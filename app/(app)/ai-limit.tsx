@@ -1,10 +1,11 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
@@ -23,7 +24,7 @@ export default function AiLimitScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader trailing="bell" bellCount={3} />
+      <AppChromeHeader />
       <ScrHeader title={t('aiLimit.title')} titleSize={18} />
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.usageCard}>
@@ -58,15 +59,16 @@ export default function AiLimitScreen() {
               <Text style={styles.checkText}>{t(key)}</Text>
             </View>
           ))}
-          <Pressable
+          <PrimaryButton
+            label={t('aiLimit.trial')}
             onPress={() => router.push('/(app)/subscription' as never)}
             style={styles.trial}
-          >
-            <Text style={styles.trialText}>{t('aiLimit.trial')}</Text>
-          </Pressable>
+          />
         </View>
 
-        <Pressable
+        <PrimaryButton
+          label={t('aiLimit.barcodeUnlimited')}
+          variant="secondary"
           onPress={() =>
             router.replace({
               pathname: '/(app)/scan-food',
@@ -74,16 +76,13 @@ export default function AiLimitScreen() {
             })
           }
           style={styles.alt}
-        >
-          <Text style={styles.altText}>{t('aiLimit.barcodeUnlimited')}</Text>
-        </Pressable>
+        />
 
-        <Pressable
+        <PrimaryButton
+          label={t('aiLimit.remind')}
+          variant="ghost"
           onPress={() => router.replace('/(app)/(tabs)')}
-          style={styles.remind}
-        >
-          <Text style={styles.remindText}>{t('aiLimit.remind')}</Text>
-        </Pressable>
+        />
       </ScrollView>
     </AppScreen>
   );
@@ -94,14 +93,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 40,
+    gap: 14,
   },
   usageCard: {
-    borderRadius: 16,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
     padding: 16,
-    marginBottom: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   usageRow: {
     flexDirection: 'row',
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
     color: brand.muted,
   },
   plusBox: {
-    borderRadius: 16,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.successTint,
     padding: 16,
     gap: 8,
@@ -153,30 +155,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: brand.ink,
   },
-  trial: { marginTop: 10, paddingVertical: 4 },
-  trialText: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 14,
-    color: brand.accentDark,
-  },
-  alt: {
-    marginTop: 22,
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  altText: {
-    fontFamily: fonts.bodySemi,
-    fontSize: 14,
-    color: brand.ink,
-  },
-  remind: {
-    marginTop: 8,
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  remindText: {
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.muted,
-  },
+  trial: { marginTop: 10 },
+  alt: { marginTop: 4 },
 });

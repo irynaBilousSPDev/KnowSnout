@@ -4,9 +4,14 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
-import { listActivityFeed, markActivitySeen, type ActivityItem } from '@/src/services/activity';
+import {
+  listActivityFeed,
+  markActivitySeen,
+  type ActivityItem,
+} from '@/src/services/activity';
 import { brand, fonts } from '@/src/theme/brand';
 
 function relativeTime(iso: string): string {
@@ -25,7 +30,7 @@ const AVATARS: Record<string, string> = {
   Марта: 'woman-2',
 };
 
-/** Screenshot 04.26 */
+/** Screenshot 04.26 — Активність */
 export default function ActivityScreen() {
   const [items, setItems] = useState<ActivityItem[]>([]);
 
@@ -41,9 +46,7 @@ export default function ActivityScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <View style={styles.titlePad}>
-        <Text style={styles.title}>{t('activity.title')}</Text>
-      </View>
+      <ScrHeader title={t('activity.title')} titleSize={18} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           {items.map((item) => {
@@ -55,7 +58,7 @@ export default function ActivityScreen() {
               >
                 <UserAvatar
                   avatarKey={AVATARS[item.title] ?? 'paw'}
-                  size={36}
+                  size={40}
                   name={item.title}
                 />
                 <Text style={styles.body}>
@@ -78,22 +81,32 @@ export default function ActivityScreen() {
 }
 
 const styles = StyleSheet.create({
-  titlePad: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 8 },
-  title: { fontFamily: fonts.title, fontSize: 20, color: brand.ink },
-  pad: { paddingHorizontal: 20, paddingBottom: 40, gap: 10 },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40, gap: 10 },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    borderRadius: 16,
+    borderRadius: 18,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 14,
   },
   cardNew: { backgroundColor: brand.accentTint },
-  body: { flex: 1, fontFamily: fonts.body, fontSize: 13, color: brand.ink },
+  body: {
+    flex: 1,
+    fontFamily: fonts.body,
+    fontSize: 13.5,
+    lineHeight: 19,
+    color: brand.ink,
+  },
   strong: { fontFamily: fonts.bodyBold },
-  time: { fontFamily: fonts.body, fontSize: 11, color: brand.mutedSoft },
+  time: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+    alignSelf: 'flex-start',
+    marginTop: 2,
+  },
   timeNew: { color: brand.accent, fontFamily: fonts.bodySemi },
   empty: {
     textAlign: 'center',

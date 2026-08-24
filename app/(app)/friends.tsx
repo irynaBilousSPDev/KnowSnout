@@ -4,6 +4,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { SegmentedControl } from '@/src/components/SegmentedControl';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
@@ -35,9 +36,9 @@ export default function FriendsScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('friends.title')} titleSize={19} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.title}>{t('friends.title')}</Text>
           <SegmentedControl
             options={[
               {
@@ -87,13 +88,7 @@ export default function FriendsScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 40, gap: 10 },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    color: brand.ink,
-    marginBottom: 2,
-  },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40, gap: 10 },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -108,8 +103,8 @@ const styles = StyleSheet.create({
   meta: { marginTop: 2, fontFamily: fonts.body, fontSize: 12, color: brand.muted },
   unfollow: {
     height: 34,
-    paddingHorizontal: 14,
-    borderRadius: 12,
+    paddingHorizontal: 16,
+    borderRadius: brand.radius.pill,
     backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',

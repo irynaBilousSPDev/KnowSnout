@@ -1,6 +1,13 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
@@ -22,7 +29,7 @@ const SECTIONS: {
   { id: 'quizzes', titleKey: 'search.quizzes' },
 ];
 
-/** HTML 04.07 · Глобальний пошук */
+/** Screenshot 04.07 · Глобальний пошук */
 export default function GlobalSearchScreen() {
   const [query, setQuery] = useState('корги');
   const results = useMemo(() => searchGlobal(query), [query]);
@@ -30,6 +37,16 @@ export default function GlobalSearchScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <View style={styles.backRow}>
+        <Pressable
+          onPress={() => router.back()}
+          style={styles.back}
+          accessibilityRole="button"
+          accessibilityLabel="Назад"
+        >
+          <Ionicons name="chevron-back" size={18} color={brand.ink} />
+        </Pressable>
+      </View>
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <View style={styles.search}>
@@ -83,11 +100,18 @@ export default function GlobalSearchScreen() {
                       <Text style={styles.title}>{h.title}</Text>
                     ) : (
                       <>
-                        <Text style={[styles.title, { flex: 1 }]}>{h.title}</Text>
+                        <Text style={[styles.title, { flex: 1 }]}>
+                          {h.title}
+                        </Text>
                         <View style={styles.tag}>
                           <Text style={styles.tagT}>
                             {t('search.contains', { q: query || 'корги' })}
                           </Text>
+                          <Ionicons
+                            name="chevron-forward"
+                            size={14}
+                            color={brand.mutedSoft}
+                          />
                         </View>
                       </>
                     )}
@@ -103,7 +127,20 @@ export default function GlobalSearchScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40, gap: 16 },
+  backRow: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 4,
+  },
+  back: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pad: { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 40, gap: 16 },
   search: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -135,22 +172,17 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 12,
   },
-  icon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: brand.accentTint,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   title: { fontFamily: fonts.bodySemi, fontSize: 14, color: brand.ink },
   sub: { fontFamily: fonts.body, fontSize: 12, color: brand.muted, marginTop: 2 },
   tag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     backgroundColor: brand.chipTrack,
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    maxWidth: 110,
+    maxWidth: 130,
   },
-  tagT: { fontFamily: fonts.body, fontSize: 10, color: brand.muted },
+  tagT: { fontFamily: fonts.body, fontSize: 10, color: brand.muted, flexShrink: 1 },
 });

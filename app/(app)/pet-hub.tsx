@@ -160,11 +160,7 @@ export default function PetHubScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader
-        trailing="bell"
-        bellCount={3}
-        onBellPress={() => router.push('/(app)/notifications' as never)}
-      />
+      <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.topBar}>
           <Pressable
@@ -251,7 +247,13 @@ export default function PetHubScreen() {
           />
           <ListRow
             title={t('vaccines.title')}
-            subtitle={vaxHint}
+            subtitle={
+              vaxHint === t('petHub.vaccinesOk') ? undefined : vaxHint
+            }
+            meta={
+              vaxHint === t('petHub.vaccinesOk') ? vaxHint : undefined
+            }
+            metaTone="success"
             leading={<IconCircle name="checkmark" tone="success" />}
             onPress={() => go('/(app)/pet-vaccines')}
           />
@@ -403,14 +405,14 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     borderWidth: 2,
     borderStyle: 'dashed',
-    borderColor: brand.mutedSoft,
+    borderColor: '#B0A99D',
     alignItems: 'center',
     justifyContent: 'center',
   },
   switchAddText: {
     fontFamily: fonts.body,
     fontSize: 16,
-    color: brand.mutedSoft,
+    color: '#B0A99D',
   },
   birdNote: {
     marginHorizontal: 20,

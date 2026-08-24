@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import {
   ActivityIndicator,
+  Linking,
   Modal,
   Pressable,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { t } from '@/src/i18n';
-import { copyText, shareText, shareToTelegram } from '@/src/lib/share';
-import { saveImageToLibrary, shareImageFile } from '@/src/lib/shareMedia';
-import { brand } from '@/src/theme/brand';
+import { copyText, shareText } from '@/src/lib/share';
+import { brand, fonts } from '@/src/theme/brand';
 
 type Props = {
   visible: boolean;
@@ -22,21 +23,17 @@ type Props = {
   linkUrl?: string | null;
 };
 
-type Action = 'social' | 'link' | 'download' | 'copy' | 'telegram';
-
-/** Web share sheet — no view-shot (keeps the app from going blank). */
+/** Screenshot 04.05 — Поділитися: Друзям · Instagram · Копіювати */
 export function SharePhotoSheet({
   visible,
   onClose,
-  imageUri,
   message,
   title,
   linkUrl,
 }: Props) {
-  const [busy, setBusy] = useState<Action | null>(null);
-  const hasPhoto = Boolean(imageUri);
+  const [busy, setBusy] = useState<string | null>(null);
 
-  const run = async (action: Action) => {
+  const run = async (action: 'friends' | 'instagram' | 'copy') => {
     if (busy) return;
     setBusy(action);
     try {
@@ -45,23 +42,16 @@ export function SharePhotoSheet({
         onClose();
         return;
       }
-      if (action === 'telegram') {
-        await shareToTelegram(message);
+      if (action === 'instagram') {
+        const url = 'https://www.instagram.com/';
+        const can = await Linking.canOpenURL(url);
+        if (can) await Linking.openURL(url);
+        else await shareText({ title: title ?? t('share.sheetTitle'), message });
         onClose();
         return;
       }
-      if (action === 'link' || !imageUri) {
-        await shareText({ title: title ?? t('share.dialogTitle'), message });
-        onClose();
-        return;
-      }
-      if (action === 'social') {
-        const ok = await shareImageFile(imageUri, title ?? t('share.dialogTitle'));
-        if (ok) onClose();
-        return;
-      }
-      const saved = await saveImageToLibrary(imageUri);
-      if (saved) onClose();
+      await shareText({ title: title ?? t('share.sheetTitle'), message });
+      onClose();
     } finally {
       setBusy(null);
     }
@@ -70,126 +60,112 @@ export function SharePhotoSheet({
   return (
     <Modal
       visible={visible}
-      animationType="fade"
+      animationType="slide"
       transparent
       onRequestClose={onClose}
     >
-      <Pressable className="flex-1 justify-end bg-black/45" onPress={onClose}>
-        <Pressable
-          className="rounded-t-3xl bg-sand-50 px-5 pb-10 pt-4"
-          onPress={(e) => e.stopPropagation()}
-        >
-          <View className="mb-4 items-center">
-            <View className="h-1.5 w-10 rounded-full bg-forest-200" />
-          </View>
-
-          <Text className="font-display text-2xl text-forest-900">
-            {t('share.sheetTitle')}
-          </Text>
-          <Text className="mt-1 font-body text-sm text-forest-600">
-            {hasPhoto ? t('share.sheetHintPhoto') : t('share.sheetHintText')}
-          </Text>
-
-          <View className="mt-5 gap-2">
-            {hasPhoto ? (
-              <ActionRow
-                icon="share-social-outline"
-                label={t('share.toSocials')}
-                hint={t('share.toSocialsHintWeb')}
-                busy={busy === 'social'}
-                disabled={Boolean(busy)}
-                onPress={() => void run('social')}
-              />
-            ) : null}
-
-            <ActionRow
-              icon="paper-plane-outline"
-              label={t('share.telegram')}
-              hint={t('share.telegramHint')}
-              busy={busy === 'telegram'}
-              disabled={Boolean(busy)}
-              onPress={() => void run('telegram')}
+      <Pressable style={styles.backdrop} onPress={onClose}>
+        <Pressable style={styles.sheet} onPress={(e) => e.stopPropagation()}>
+          <Text style={styles.title}>{t('share.sheetTitle')}</Text>
+          <View style={styles.row}>
+            <Action
+              label={t('share.toFriends')}
+              icon="share-social"
+              tint={brand.accentTint}
+              iconColor={brand.accent}
+              busy={busy === 'friends'}
+              onPress={() => void run('friends')}
             />
-
-            <ActionRow
-              icon="copy-outline"
-              label={t('share.copyLink')}
-              hint={t('share.copyLinkHint')}
+            <Action
+              label={t('share.instagram')}
+              icon="logo-instagram"
+              tint={brand.creamDeep}
+              iconColor={brand.ink}
+              busy={busy === 'instagram'}
+              onPress={() => void run('instagram')}
+            />
+            <Action
+              label={t('share.copy')}
+              icon="link-outline"
+              tint={brand.creamDeep}
+              iconColor={brand.ink}
               busy={busy === 'copy'}
-              disabled={Boolean(busy)}
               onPress={() => void run('copy')}
             />
-
-            <ActionRow
-              icon="link-outline"
-              label={t('share.sendLink')}
-              hint={t('share.sendLinkHint')}
-              busy={busy === 'link'}
-              disabled={Boolean(busy)}
-              onPress={() => void run('link')}
-            />
-
-            {hasPhoto ? (
-              <ActionRow
-                icon="download-outline"
-                label={t('share.download')}
-                hint={t('share.downloadHintWeb')}
-                busy={busy === 'download'}
-                disabled={Boolean(busy)}
-                onPress={() => void run('download')}
-              />
-            ) : null}
           </View>
-
-          <Pressable
-            onPress={onClose}
-            disabled={Boolean(busy)}
-            className="mt-4 items-center py-3 active:opacity-70"
-          >
-            <Text className="font-body-medium text-base text-forest-600">
-              {t('share.cancel')}
-            </Text>
-          </Pressable>
         </Pressable>
       </Pressable>
     </Modal>
   );
 }
 
-function ActionRow({
-  icon,
+function Action({
   label,
-  hint,
+  icon,
+  tint,
+  iconColor,
   busy,
-  disabled,
   onPress,
 }: {
-  icon: keyof typeof Ionicons.glyphMap;
   label: string;
-  hint: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  tint: string;
+  iconColor: string;
   busy: boolean;
-  disabled: boolean;
   onPress: () => void;
 }) {
   return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      className="flex-row items-center rounded-2xl border border-forest-100 bg-white px-4 py-3.5 active:opacity-80"
-      style={{ opacity: disabled && !busy ? 0.55 : 1 }}
-    >
-      <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-mist">
+    <Pressable onPress={onPress} style={styles.action} disabled={busy}>
+      <View style={[styles.circle, { backgroundColor: tint }]}>
         {busy ? (
-          <ActivityIndicator color={brand.navy} />
+          <ActivityIndicator color={iconColor} />
         ) : (
-          <Ionicons name={icon} size={22} color={brand.navy} />
+          <Ionicons name={icon} size={22} color={iconColor} />
         )}
       </View>
-      <View className="flex-1">
-        <Text className="font-body-bold text-sm text-forest-900">{label}</Text>
-        <Text className="mt-0.5 font-body text-xs text-forest-500">{hint}</Text>
-      </View>
-      <Ionicons name="chevron-forward" size={18} color={brand.mistBorder} />
+      <Text style={styles.actionLabel}>{label}</Text>
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(21,34,51,0.35)',
+  },
+  sheet: {
+    backgroundColor: brand.surfaceElevated,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 36,
+  },
+  title: {
+    textAlign: 'center',
+    fontFamily: fonts.title,
+    fontSize: 18,
+    color: brand.ink,
+    marginBottom: 22,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+  },
+  action: { alignItems: 'center', width: 96, gap: 8 },
+  circle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionLabel: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 12,
+    color: brand.ink,
+    textAlign: 'center',
+  },
+});

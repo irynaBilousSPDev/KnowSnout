@@ -116,11 +116,7 @@ export default function CareHubScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader
-        trailing="bell"
-        bellCount={3}
-        onBellPress={() => router.push('/(app)/notifications' as never)}
-      />
+      <AppChromeHeader />
       <ScrHeader title={t('care.hubTitle')} titleSize={22} showBack={false} />
       <ScrollView
         refreshControl={
@@ -206,8 +202,8 @@ export default function CareHubScreen() {
                       <View style={styles.taskIcon}>
                         <Ionicons
                           name={row.icon}
-                          size={20}
-                          color={brand.accentDark}
+                          size={16}
+                          color={brand.ink}
                         />
                       </View>
                       <Text style={styles.taskLabel}>{row.label}</Text>
@@ -257,12 +253,12 @@ export default function CareHubScreen() {
 
 const styles = StyleSheet.create({
   scroll: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
-  pickerRow: { flexDirection: 'row', gap: 14, paddingBottom: 16 },
+  pickerRow: { flexDirection: 'row', gap: 10, paddingBottom: 16 },
   petPick: {
     width: 72,
     alignItems: 'center',
     gap: 6,
-    opacity: 0.72,
+    opacity: 0.5,
   },
   petPickActive: { opacity: 1 },
   petPickName: {
@@ -271,43 +267,44 @@ const styles = StyleSheet.create({
     color: brand.ink,
     textAlign: 'center',
   },
-  tasks: { gap: 10 },
+  tasks: { gap: 12 },
   taskRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: 16,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: brand.mistBorder,
     paddingHorizontal: 14,
     paddingVertical: 14,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
-  taskLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
+  taskLeft: { flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 },
   taskIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: brand.accentTint,
+    width: 16,
+    height: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
   taskLabel: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 15,
+    fontFamily: fonts.bodySemi,
+    fontSize: 13.5,
     color: brand.ink,
   },
   statusChip: {
-    borderRadius: 20,
+    borderRadius: brand.radius.pill,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 6,
   },
   statusDone: { backgroundColor: brand.successTint },
-  statusPending: { backgroundColor: brand.creamDeep },
+  statusPending: { backgroundColor: brand.chipTrack },
   statusText: {
     fontFamily: fonts.bodySemi,
-    fontSize: 12,
-    color: brand.muted,
+    fontSize: 12.5,
+    color: brand.ink,
   },
   statusTextDone: { color: brand.successDark },
   detailLink: { marginTop: 8, alignItems: 'center', paddingVertical: 8 },

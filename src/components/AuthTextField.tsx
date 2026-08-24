@@ -25,7 +25,7 @@ type Props = {
   onSubmitEditing?: () => void;
 };
 
-/** Screenshot field: label + bordered input (optional eye toggle). */
+/** Auth field: label + pill input (white + thin border), h~48. */
 export function AuthTextField({
   label,
   value,
@@ -91,13 +91,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: brand.divider,
     backgroundColor: brand.surfaceElevated,
-    borderRadius: brand.radius.md,
-    minHeight: 42,
-    paddingHorizontal: 12,
+    borderRadius: brand.radius.pill,
+    minHeight: 48,
+    paddingHorizontal: 16,
   },
   input: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 12,
     fontFamily: fonts.body,
     fontSize: 14,
     color: brand.ink,

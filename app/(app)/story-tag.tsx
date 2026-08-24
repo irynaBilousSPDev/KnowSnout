@@ -14,13 +14,22 @@ import {
   getStoryTagPhoto,
   getStoryTagResult,
   setStoryTagResult,
+  type StoryTagPin,
 } from '@/src/lib/storyTagDraft';
 import { brand, fonts } from '@/src/theme/brand';
+
+const SEED_TAGS: StoryTagPin[] = [
+  { name: 'Тукан', x: 0.28, y: 0.38 },
+  { name: 'Оксана', x: 0.6, y: 0.55 },
+];
 
 /** Screenshot 04.04 — dark tag overlay */
 export default function StoryTagScreen() {
   const insets = useSafeAreaInsets();
-  const [tags, setTags] = useState(getStoryTagResult);
+  const existing = getStoryTagResult();
+  const [tags, setTags] = useState<StoryTagPin[]>(
+    existing.length ? existing : SEED_TAGS,
+  );
   const [size, setSize] = useState({ w: 1, h: 1 });
   const uri = getStoryTagPhoto();
 
@@ -114,14 +123,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1a1a1a',
   },
-  phT: { fontFamily: fonts.body, fontSize: 13, color: 'rgba(255,255,255,0.45)' },
+  phT: { fontFamily: fonts.body, fontSize: 13, color: '#888' },
   pin: {
     position: 'absolute',
+    marginLeft: -5,
+    marginTop: -5,
     alignItems: 'center',
     gap: 4,
-    marginLeft: -20,
   },
   dot: {
     width: 10,
@@ -129,7 +138,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#fff',
     shadowColor: '#fff',
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.35,
     shadowRadius: 4,
   },
   pill: {
@@ -139,15 +148,15 @@ const styles = StyleSheet.create({
     fontSize: 11,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    overflow: 'hidden',
     borderRadius: 999,
+    overflow: 'hidden',
   },
   hint: {
-    paddingHorizontal: 20,
-    paddingVertical: 14,
     textAlign: 'center',
-    color: 'rgba(255,255,255,0.7)',
     fontFamily: fonts.body,
     fontSize: 12,
+    color: '#aaa',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
   },
 });

@@ -8,7 +8,7 @@ import { brand, fonts } from '@/src/theme/brand';
 
 /** HTML kit tab order: Стрічка · Перевір · Улюбленці · Спільнота · Довідники */
 export const unstable_settings = {
-  initialRouteName: 'index',
+  initialRouteName: 'stories',
 };
 
 function TabIcon({
@@ -44,7 +44,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
-      initialRouteName="index"
+      initialRouteName="stories"
       screenOptions={{
         headerShown: false,
         tabBarStyle: {

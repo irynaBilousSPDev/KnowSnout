@@ -453,7 +453,7 @@ export default function PetVaccinesScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 },
+  header: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 8 },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',

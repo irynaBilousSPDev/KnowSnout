@@ -24,7 +24,7 @@ import { brand, fonts } from '@/src/theme/brand';
 const DEFAULT_WHEN = 'Субота, 2 серпня · 10:00';
 const DEFAULT_PLACE = 'Парк на Оболоні';
 
-/** Screenshot 04.15 */
+/** Screenshot 04.15 — pill inputs, text bar Cancel/Create */
 export default function WalkPlanScreen() {
   const [kind, setKind] = useState<'walk' | 'trip'>('walk');
   const [whenLabel, setWhenLabel] = useState(DEFAULT_WHEN);
@@ -60,11 +60,16 @@ export default function WalkPlanScreen() {
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
       <View style={styles.bar}>
-        <Pressable onPress={() => router.back()} hitSlop={8}>
+        <Pressable onPress={() => router.back()} hitSlop={8} style={styles.barSide}>
           <Text style={styles.cancel}>{t('common.cancel')}</Text>
         </Pressable>
         <Text style={styles.barTitle}>{t('walks.title')}</Text>
-        <Pressable onPress={() => void submit()} disabled={busy} hitSlop={8}>
+        <Pressable
+          onPress={() => void submit()}
+          disabled={busy}
+          hitSlop={8}
+          style={styles.barSide}
+        >
           <Text style={[styles.create, busy && styles.dim]}>
             {t('walks.create')}
           </Text>
@@ -113,7 +118,7 @@ export default function WalkPlanScreen() {
                   style={styles.person}
                 >
                   <View style={[styles.ring, on && styles.ringOn]}>
-                    <UserAvatar avatarKey={f.avatarKey} name={f.name} size={44} />
+                    <UserAvatar avatarKey={f.avatarKey} name={f.name} size={48} />
                   </View>
                   <Text style={styles.personName} numberOfLines={1}>
                     {f.name.split(' ')[0]}
@@ -123,13 +128,14 @@ export default function WalkPlanScreen() {
             })}
             <Pressable
               onPress={() => router.push('/(app)/friend-search' as never)}
-              style={styles.addDash}
+              style={styles.addWrap}
             >
-              <Text style={styles.plus}>+</Text>
+              <View style={styles.addDash}>
+                <Ionicons name="add" size={22} color={brand.accent} />
+              </View>
             </Pressable>
           </View>
 
-          <View style={{ height: 4 }} />
           <Pressable
             onPress={() => {
               const url = googleCalendarUrl({
@@ -142,7 +148,7 @@ export default function WalkPlanScreen() {
             }}
             style={styles.calBtn}
           >
-            <Ionicons name="calendar-outline" size={16} color={brand.ink} />
+            <Ionicons name="calendar-outline" size={17} color={brand.ink} />
             <Text style={styles.calT}>{t('walks.addCalendar')}</Text>
           </Pressable>
         </View>
@@ -162,14 +168,14 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 14,
-    paddingBottom: 6,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
+  barSide: { width: 88 },
   cancel: {
-    width: 88,
     fontFamily: fonts.bodySemi,
-    fontSize: 13,
+    fontSize: 14,
     color: brand.muted,
   },
   barTitle: {
@@ -180,56 +186,73 @@ const styles = StyleSheet.create({
     color: brand.ink,
   },
   create: {
-    width: 88,
     textAlign: 'right',
     fontFamily: fonts.bodyBold,
-    fontSize: 13,
+    fontSize: 14,
     color: brand.accent,
   },
   dim: { opacity: 0.4 },
-  pad: { paddingHorizontal: 20, paddingBottom: 40, gap: 10 },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40, gap: 8 },
   label: {
-    marginTop: 6,
-    fontFamily: fonts.bodySemi,
-    fontSize: 13,
-    color: brand.ink,
+    marginTop: 10,
+    marginBottom: 2,
+    fontFamily: fonts.body,
+    fontSize: 12.5,
+    color: brand.mutedSoft,
   },
   input: {
-    borderRadius: 14,
+    borderRadius: brand.radius.pill,
     backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    paddingHorizontal: 18,
     paddingVertical: 14,
     fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },
-  avatars: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
-  person: { width: 52, alignItems: 'center', gap: 4 },
-  ring: { borderRadius: 999 },
-  ringOn: {},
-  personName: { fontFamily: fonts.body, fontSize: 10.5, color: brand.ink },
-  addDash: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  avatars: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 14,
+    marginTop: 4,
+  },
+  person: { width: 56, alignItems: 'center', gap: 6 },
+  ring: {
+    borderRadius: 999,
+    padding: 2,
     borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  ringOn: { borderColor: brand.accent },
+  personName: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.ink,
+  },
+  addWrap: { paddingTop: 2 },
+  addDash: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: brand.mutedSoft,
+    borderColor: brand.accentSoft,
+    backgroundColor: brand.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  plus: { fontSize: 20, color: brand.muted, lineHeight: 22 },
   calBtn: {
-    marginTop: 4,
-    height: 44,
-    borderRadius: 14,
+    marginTop: 18,
+    height: 48,
+    borderRadius: brand.radius.pill,
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.divider,
+    borderWidth: 1.5,
+    borderColor: brand.mistBorder,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: 8,
   },
   calT: { fontFamily: fonts.bodySemi, fontSize: 14, color: brand.ink },
 });

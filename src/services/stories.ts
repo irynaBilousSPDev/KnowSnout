@@ -26,6 +26,29 @@ const LOCAL_COMMENTS_KEY = 'knowsnout.story_comments.v2';
 
 const SEED_POSTS: StoryPost[] = [
   {
+    id: 'seed-oksana-food',
+    userId: 'fu-1',
+    author: 'Оксана Мельник',
+    petName: 'Лапка',
+    species: 'dog',
+    avatarKey: 'woman-1',
+    caption: 'Лапка вперше спробувала новий корм — реакція на 10/10 😄',
+    location: 'Варшава',
+    imageUri: null,
+    imagePath: null,
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    likes: 24,
+    liked: false,
+    commentsCount: 5,
+    mine: false,
+    privacy: 'public',
+    petId: null,
+    taggedPetIds: [],
+    taggedFriendIds: [],
+    taggedPetNames: [],
+    taggedFriendNames: [],
+  },
+  {
     id: 'seed-park',
     userId: 'seed-marta',
     author: 'Марта',
@@ -33,9 +56,10 @@ const SEED_POSTS: StoryPost[] = [
     species: 'dog',
     avatarKey: 'woman-1',
     caption: 'Знайшли новий парк для вигулу біля Оболоні!',
+    location: 'Київ',
     imageUri: null,
     imagePath: null,
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
     likes: 48,
     liked: true,
     commentsCount: 12,
@@ -46,28 +70,6 @@ const SEED_POSTS: StoryPost[] = [
     taggedFriendIds: [],
     taggedPetNames: [],
     taggedFriendNames: [],
-  },
-  {
-    id: 'seed-1',
-    userId: 'seed-iryna',
-    author: 'Iryna',
-    petName: 'Ада',
-    species: 'cat',
-    avatarKey: 'cat-1',
-    caption: 'Сонячний ранок на підвіконні',
-    imageUri: null,
-    imagePath: null,
-    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    likes: 12,
-    liked: false,
-    commentsCount: 1,
-    mine: false,
-    privacy: 'public',
-    petId: null,
-    taggedPetIds: [],
-    taggedFriendIds: ['fu-1'],
-    taggedPetNames: [],
-    taggedFriendNames: ['Ірина К.'],
   },
 ];
 
@@ -90,7 +92,7 @@ const SEED_COMMENTS: StoryComment[] = [
   },
   {
     id: 'seed-c1',
-    postId: 'seed-1',
+    postId: 'seed-oksana-food',
     userId: 'seed-olya',
     author: 'Оля',
     body: 'Яка красуня 💛',
@@ -209,6 +211,24 @@ async function uploadStoryImage(userId: string, uri: string): Promise<string> {
   return path;
 }
 
+function matchesFeedFilter(
+  p: StoryPost,
+  filter: StoryFeedFilter,
+  following: Set<string>,
+  blocked: Set<string>,
+): boolean {
+  if (filter === 'mine') return Boolean(p.mine);
+  if (blocked.has(p.userId) && !p.mine) return false;
+  if (filter === 'following' || filter === 'friends') {
+    return following.has(p.userId) || p.userId === 'fu-1' || p.userId === 'fu-2';
+  }
+  if (p.mine && p.privacy === 'private' && filter !== 'mine') return false;
+  if (filter === 'cat' || filter === 'myBreed') return p.species === 'cat' || p.species === 'dog';
+  if (filter === 'dog') return p.species === 'dog';
+  if (filter === 'nearby') return Boolean(p.location);
+  return true;
+}
+
 function filterLocalPosts(
   posts: StoryPost[],
   filter: StoryFeedFilter,
@@ -218,15 +238,7 @@ function filterLocalPosts(
   const following = new Set(followingIds);
   return posts
     .map((p) => ({ ...p, mine: true }))
-    .filter((p) => {
-      if (filter === 'mine') return true;
-      if (blocked.has(p.userId) && !p.mine) return false;
-      if (filter === 'following') return following.has(p.userId);
-      if (p.privacy === 'private') return false;
-      if (filter === 'cat') return p.species === 'cat';
-      if (filter === 'dog') return p.species === 'dog';
-      return true;
-    });
+    .filter((p) => matchesFeedFilter(p, filter, following, blocked));
 }
 
 function mergeLocalAndCloud(
@@ -318,7 +330,9 @@ export async function listStoryFeed(
 ): Promise<StoryPost[]> {
   const user = await getCurrentUser();
   const followingIds =
-    filter === 'following' ? await listFollowingIds() : [];
+    filter === 'following' || filter === 'friends'
+      ? await listFollowingIds()
+      : [];
   const blockedIds = await listBlockedUserIds();
   const blocked = new Set(blockedIds);
 
@@ -420,15 +434,7 @@ async function listStoryFeedDemo(
     ...localComments,
   ]);
   const following = new Set(followingIds);
-  return all.filter((p) => {
-    if (filter === 'mine') return p.mine;
-    if (blocked.has(p.userId) && !p.mine) return false;
-    if (filter === 'following') return following.has(p.userId);
-    if (p.mine && p.privacy === 'private') return false;
-    if (filter === 'cat') return p.species === 'cat';
-    if (filter === 'dog') return p.species === 'dog';
-    return true;
-  });
+  return all.filter((p) => matchesFeedFilter(p, filter, following, blocked));
 }
 
 function localPost(input: {

@@ -12,6 +12,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   SPOTLIGHT_PARTICIPANT_COUNT,
@@ -27,7 +28,7 @@ function daysLeft(endsAt: string): number {
   return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
 }
 
-/** Screenshot 04.17 */
+/** Screenshot 04.17 — SnoutSpotlight hub */
 export default function SpotlightHubScreen() {
   const [contests, setContests] = useState<SpotlightContest[]>([]);
   const [preview, setPreview] = useState<SpotlightEntry[]>([]);
@@ -54,10 +55,9 @@ export default function SpotlightHubScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('spotlight.title')} titleSize={18} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.title}>{t('spotlight.title')}</Text>
-
           {active ? (
             <Pressable
               onPress={() =>
@@ -68,21 +68,23 @@ export default function SpotlightHubScreen() {
               }
               style={styles.activeCard}
             >
-              <View style={styles.activeChipWrap}>
-                <Text style={styles.activeChip}>
-                  {t('spotlight.activeContest')}
+              <Text style={styles.activeChip}>
+                {t('spotlight.activeContest')}
+              </Text>
+              <Text style={styles.activeTitle}>
+                {active.title.includes('🐶')
+                  ? active.title
+                  : `${active.title} 🐶`}
+              </Text>
+              <View style={styles.metaRow}>
+                <Ionicons name="time-outline" size={14} color={brand.accent} />
+                <Text style={styles.activeMeta}>
+                  {t('spotlight.hubMeta', {
+                    days: String(left || 2),
+                    count: String(SPOTLIGHT_PARTICIPANT_COUNT),
+                  })}
                 </Text>
               </View>
-              <View style={styles.activeTitleRow}>
-                <Text style={styles.activeTitle}>{active.title}</Text>
-                <Ionicons name="paw" size={16} color={brand.accent} />
-              </View>
-              <Text style={styles.activeMeta}>
-                {t('spotlight.hubMeta', {
-                  days: String(left || 2),
-                  count: String(SPOTLIGHT_PARTICIPANT_COUNT),
-                })}
-              </Text>
             </Pressable>
           ) : null}
 
@@ -105,21 +107,30 @@ export default function SpotlightHubScreen() {
                   } as never);
                 }}
               >
-                <Ionicons name="image-outline" size={26} color={brand.mutedSoft} />
-                <Text style={styles.gridLabel}>{t('spotlight.participantSlot')}</Text>
+                <Ionicons
+                  name="image-outline"
+                  size={28}
+                  color={brand.mutedSoft}
+                />
+                <Text style={styles.gridLabel}>
+                  {t('spotlight.participantSlot')}
+                </Text>
               </Pressable>
             ))}
           </View>
 
-          <PrimaryButton
-            label={t('spotlight.applyCta')}
-            onPress={() =>
-              router.push({
-                pathname: '/(app)/spotlight-rules',
-                params: { contestId: active?.id ?? '' },
-              } as never)
-            }
-          />
+          <View style={styles.cta}>
+            <PrimaryButton
+              label={t('spotlight.applyCta')}
+              size="lg"
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/spotlight-rules',
+                  params: { contestId: active?.id ?? '' },
+                } as never)
+              }
+            />
+          </View>
         </View>
       </ScrollView>
     </AppScreen>
@@ -127,43 +138,37 @@ export default function SpotlightHubScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40, gap: 16 },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 40,
+    gap: 16,
   },
   activeCard: {
-    borderRadius: 16,
+    borderRadius: 18,
     backgroundColor: brand.accentTint,
-    padding: 14,
-    gap: 6,
-  },
-  activeChipWrap: {
-    alignSelf: 'flex-start',
-    borderRadius: 999,
-    backgroundColor: '#FFF6E5',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    padding: 16,
+    gap: 8,
   },
   activeChip: {
     fontFamily: fonts.bodySemi,
-    fontSize: 12,
+    fontSize: 13,
     color: brand.accent,
   },
-  activeTitleRow: {
+  activeTitle: {
+    fontFamily: fonts.title,
+    fontSize: 18,
+    lineHeight: 24,
+    color: brand.ink,
+  },
+  metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    flexWrap: 'wrap',
-  },
-  activeTitle: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: brand.accent,
+    marginTop: 2,
   },
   activeMeta: {
+    flex: 1,
     fontFamily: fonts.body,
     fontSize: 12.5,
     color: brand.accent,
@@ -171,23 +176,24 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 12,
   },
   gridCell: {
-    width: '47.8%',
-    height: 120,
-    borderRadius: 14,
-    borderWidth: 1,
+    width: '47.2%',
+    aspectRatio: 1,
+    borderRadius: 16,
+    borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: brand.mistBorder,
     backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: 8,
   },
   gridLabel: {
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 13,
     color: brand.mutedSoft,
   },
+  cta: { marginTop: 4 },
 });

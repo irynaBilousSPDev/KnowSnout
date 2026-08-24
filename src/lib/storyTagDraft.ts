@@ -1,5 +1,7 @@
+export type StoryTagPin = { name: string; x: number; y: number };
+
 let pendingPhotoUri: string | null = null;
-let pendingTags: { name: string; x: number; y: number }[] = [
+let pendingTags: StoryTagPin[] = [
   { name: 'Тукан', x: 0.28, y: 0.38 },
   { name: 'Оксана', x: 0.6, y: 0.55 },
 ];
@@ -12,7 +14,7 @@ export function getStoryTagPhoto() {
   return pendingPhotoUri;
 }
 
-export function setStoryTagResult(tags: { name: string; x: number; y: number }[]) {
+export function setStoryTagResult(tags: StoryTagPin[]) {
   pendingTags = tags;
 }
 

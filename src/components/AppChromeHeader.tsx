@@ -10,7 +10,6 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AvatarNotifyBadge } from '@/src/components/AvatarNotifyBadge';
 import { UserAvatar } from '@/src/components/UserAvatar';
@@ -22,30 +21,26 @@ import type { UserProfile } from '@/src/types/userProfile';
 
 const logoEmerald = require('../../assets/images/logo_emerald.png');
 
-type Trailing = 'avatar' | 'bell' | 'none';
+type Trailing = 'avatar' | 'none';
 
 type Props = {
   onBrandPress?: () => void;
   onAvatarPress?: () => void;
-  onBellPress?: () => void;
-  /** @deprecated prefer trailing="avatar" | "bell" | "none" */
+  /** @deprecated use trailing="none" */
   showAvatar?: boolean;
   trailing?: Trailing;
-  bellCount?: number;
   style?: StyleProp<ViewStyle>;
 };
 
 /**
  * HTML `.app-hd` — logo + Know/Snout + avatar (46) with optional paw notify.
- * Unread > 0 → paw; unread > 1 → terracotta counter. Tap: activity if unread, else profile.
+ * Bell chrome is removed: unread = paw on avatar (never a separate bell).
  */
 export function AppChromeHeader({
   onBrandPress,
   onAvatarPress,
-  onBellPress,
   showAvatar,
   trailing,
-  bellCount = 0,
   style,
 }: Props) {
   const insets = useSafeAreaInsets();
@@ -112,29 +107,6 @@ export function AppChromeHeader({
           />
           <AvatarNotifyBadge unreadCount={unread} />
         </Pressable>
-      ) : mode === 'bell' ? (
-        <Pressable
-          onPress={
-            onBellPress ??
-            (() => router.push('/(app)/activity' as never))
-          }
-          style={styles.bellBtn}
-          accessibilityRole="button"
-          accessibilityLabel={t('activity.title')}
-        >
-          <Ionicons
-            name="notifications-outline"
-            size={18}
-            color={brand.label}
-          />
-          {bellCount > 0 ? (
-            <View style={styles.dot}>
-              <Text style={styles.dotText}>
-                {bellCount > 99 ? '99' : String(bellCount)}
-              </Text>
-            </View>
-          ) : null}
-        </Pressable>
       ) : (
         <View style={styles.avatarSpacer} />
       )}
@@ -183,40 +155,6 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 23,
-    // overflow visible so paw / counter can hang outside
-  },
-  bellBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: brand.surfaceElevated,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
-  },
-  dot: {
-    position: 'absolute',
-    top: -3,
-    right: -3,
-    minWidth: 18,
-    height: 18,
-    paddingHorizontal: 5,
-    borderRadius: 9,
-    backgroundColor: brand.successDark,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: brand.canvas,
-  },
-  dotText: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 10.5,
-    lineHeight: 14,
-    color: '#FFFFFF',
   },
   avatarSpacer: {
     width: 46,

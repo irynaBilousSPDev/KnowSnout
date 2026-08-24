@@ -1,6 +1,14 @@
 export type StorySpecies = 'dog' | 'cat';
 export type StoryPrivacy = 'public' | 'private';
-export type StoryFeedFilter = 'all' | 'following' | 'cat' | 'dog' | 'mine';
+export type StoryFeedFilter =
+  | 'all'
+  | 'following'
+  | 'cat'
+  | 'dog'
+  | 'mine'
+  | 'friends'
+  | 'myBreed'
+  | 'nearby';
 
 export type StoryPost = {
   id: string;
@@ -10,6 +18,8 @@ export type StoryPost = {
   species: StorySpecies;
   avatarKey: string;
   caption: string;
+  /** City / place line under author (feed cards). */
+  location?: string | null;
   /** Resolved URL for Image */
   imageUri?: string | null;
   /** Storage path when cloud */

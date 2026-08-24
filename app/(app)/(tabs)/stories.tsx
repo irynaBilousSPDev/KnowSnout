@@ -1,398 +1,194 @@
-import { AppChromeHeader } from '@/src/components/AppChromeHeader';
-import { AppScreen } from '@/src/components/AppScreen';
-import { SharePhotoSheet } from '@/src/components/SharePhotoSheet';
-import { PetAvatar } from '@/src/components/PetAvatar';
-import { PhotoAttachField } from '@/src/components/PhotoAttachField';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { LoadingState } from '@/src/components/LoadingState';
-import { ErrorState } from '@/src/components/ErrorState';
-import { t } from '@/src/i18n';
-import { buildStoryDeepLink, buildStoryShareMessage } from '@/src/lib/share';
-import { brand, fonts } from '@/src/theme/brand';
-import {
-  createStoryPost,
-  deleteStoryPost,
-  formatStoryTags,
-  formatStoryTimeAgo,
-  listStoryFeed,
-  toggleStoryLike,
-} from '@/src/services/stories';
-import {
-  isFollowing,
-  syncLocalFollowsToCloud,
-  toggleFollow,
-  unfollowUser,
-} from '@/src/services/storyFollows';
-import {
-  blockUser,
-  reportStoryTarget,
-  type StoryReportReason,
-} from '@/src/services/storyModeration';
-import { getCareStreak, type CareStreakState } from '@/src/services/careStreak';
-import { listPets } from '@/src/services/pets';
-import { listFriends, type FriendUser } from '@/src/services/friends';
-import { getCurrentUser } from '@/src/services/auth';
-import { confirmAction } from '@/src/lib/confirm';
-import {
-  getSettingsPrefs,
-  type ThemePref,
-} from '@/src/services/settingsPrefs';
-import type {
-  StoryFeedFilter,
-  StoryPost,
-  StoryPrivacy,
-  StorySpecies,
-} from '@/src/types/story';
-import type { PetRow } from '@/src/types/pet';
 import { useFocusEffect, router } from 'expo-router';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useCallback, useState } from 'react';
 import {
   FlatList,
   Image,
-  Modal,
   Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+import { AppChromeHeader } from '@/src/components/AppChromeHeader';
+import { AppScreen } from '@/src/components/AppScreen';
+import { ErrorState } from '@/src/components/ErrorState';
+import { LoadingState } from '@/src/components/LoadingState';
+import { StoryReportSheet } from '@/src/components/StoryReportSheet';
+import { UserAvatar } from '@/src/components/UserAvatar';
+import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
+import {
+  formatStoryTimeAgo,
+  listStoryFeed,
+  toggleStoryLike,
+} from '@/src/services/stories';
+import { getUserProfile } from '@/src/services/userProfile';
+import { brand, fonts } from '@/src/theme/brand';
+import type { StoryFeedFilter, StoryPost } from '@/src/types/story';
+import type { UserProfile } from '@/src/types/userProfile';
 
-const STORIES_DARK = {
-  bg: brand.navyDeep,
-  card: '#152A45',
-  border: '#2A4060',
-  text: brand.surface,
-  muted: '#9AA8B8',
-} as const;
+type FeedTab = 'friends' | 'all' | 'myBreed' | 'nearby';
 
-type AuthorCard = {
-  userId: string;
-  author: string;
-  petName: string;
-  species: StorySpecies;
-  avatarKey: string;
-  postId?: string;
-  mine?: boolean;
-};
+const TABS: { id: FeedTab; labelKey: string }[] = [
+  { id: 'friends', labelKey: 'stories.filterFriends' },
+  { id: 'all', labelKey: 'stories.filterAll' },
+  { id: 'myBreed', labelKey: 'stories.filterMyBreed' },
+  { id: 'nearby', labelKey: 'stories.filterNearby' },
+];
 
-type ViewMode = 'list' | 'grid';
-
-function StoryTagsRow({ post }: { post: StoryPost }) {
-  const tags = formatStoryTags(post);
-  if (tags.length === 0) return null;
-  return (
-    <View style={tagStyles.row}>
-      {tags.map((label) => (
-        <View key={label} style={tagStyles.chip}>
-          <Text style={tagStyles.chipText}>{label}</Text>
-        </View>
-      ))}
-    </View>
-  );
+function displayName(post: StoryPost): string {
+  if (post.author.includes(' та ') || !post.petName) return post.author;
+  if (post.author.includes(post.petName)) return post.author;
+  return `${post.author}`;
 }
 
-const tagStyles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginTop: 8,
-  },
-  chip: {
-    borderRadius: brand.radius.sm,
-    backgroundColor: brand.accentTint,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  chipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 11,
-    color: brand.accentDark,
-  },
-});
-
-function StoryPostCard({
+function FeedCard({
   post,
-  compact,
-  dark,
-  onToggleLike,
-  onShare,
-  onOpenPost,
-  onOpenComments,
-  onOpenAuthor,
-  onDelete,
+  onLike,
+  onReport,
 }: {
   post: StoryPost;
-  compact?: boolean;
-  dark?: boolean;
-  onToggleLike: (post: StoryPost) => void;
-  onShare: (post: StoryPost) => void;
-  onOpenPost: (post: StoryPost) => void;
-  onOpenComments: (post: StoryPost) => void;
-  onOpenAuthor: (post: StoryPost) => void;
-  onDelete?: (post: StoryPost) => void;
+  onLike: () => void;
+  onReport: () => void;
 }) {
-  const timeAgo = formatStoryTimeAgo(post.createdAt);
-  const darkCard = dark
-    ? { backgroundColor: STORIES_DARK.card }
-    : undefined;
-  const darkTitle = dark ? { color: STORIES_DARK.text } : undefined;
-  const darkMuted = dark ? { color: STORIES_DARK.muted } : undefined;
-
-  if (compact) {
-    return (
-      <View style={[styles.cardCompact, darkCard]}>
-        <Pressable onPress={() => onOpenPost(post)}>
-          <View style={styles.compactMedia}>
-            {post.imageUri ? (
-              <Image
-                source={{ uri: post.imageUri }}
-                style={styles.fillImage}
-                resizeMode="cover"
-              />
-            ) : (
-              <PetAvatar
-                avatarKey={post.avatarKey}
-                species={post.species}
-                size={56}
-                name={post.petName}
-              />
-            )}
-          </View>
-        </Pressable>
-        <View style={styles.compactBody}>
-          <Pressable onPress={() => onOpenAuthor(post)}>
-            <Text numberOfLines={1} style={[styles.compactAuthor, darkTitle]}>
-              {post.author}
-            </Text>
-          </Pressable>
-          <Text numberOfLines={2} style={[styles.compactCaption, darkMuted]}>
-            {post.caption}
-          </Text>
-          <View style={styles.compactActions}>
-            <Pressable
-              onPress={() => onToggleLike(post)}
-              style={styles.compactAction}
-            >
-              <Ionicons
-                name={post.liked ? 'heart' : 'heart-outline'}
-                size={16}
-                color={post.liked ? brand.terracotta : brand.muted}
-              />
-              <Text style={[styles.compactActionText, darkMuted]}>
-                {post.likes}
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => onOpenComments(post)}
-              style={styles.compactAction}
-            >
-              <Ionicons
-                name="chatbubble-outline"
-                size={15}
-                color={brand.accent}
-              />
-              <Text style={[styles.compactActionText, darkMuted]}>
-                {post.commentsCount}
-              </Text>
-            </Pressable>
-            {post.mine && onDelete ? (
-              <Pressable
-                onPress={() => onDelete(post)}
-                accessibilityRole="button"
-                accessibilityLabel={t('stories.delete')}
-              >
-                <Ionicons
-                  name="trash-outline"
-                  size={15}
-                  color={brand.score.poor}
-                />
-              </Pressable>
-            ) : null}
-          </View>
-        </View>
-      </View>
-    );
-  }
-
   return (
-    <View style={[styles.card, darkCard]}>
-      <Pressable onPress={() => onOpenPost(post)}>
-        <View style={styles.listMedia}>
-          {post.imageUri ? (
-            <Image
-              source={{ uri: post.imageUri }}
-              style={styles.fillImage}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={styles.noImage}>
-              <PetAvatar
-                avatarKey={post.avatarKey}
-                species={post.species}
-                size={96}
-                name={post.petName}
-              />
-            </View>
-          )}
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: '/(app)/story-post',
+          params: { postId: post.id },
+        } as never)
+      }
+      style={styles.card}
+    >
+      <View style={styles.cardHead}>
+        <UserAvatar
+          avatarKey={post.avatarKey}
+          size={36}
+          name={post.author}
+        />
+        <View style={styles.cardHeadText}>
+          <Text style={styles.cardName} numberOfLines={1}>
+            {displayName(post)}
+          </Text>
+          <Text style={styles.cardMeta} numberOfLines={1}>
+            {[post.location, formatStoryTimeAgo(post.createdAt)]
+              .filter(Boolean)
+              .join(' · ')}
+          </Text>
         </View>
-      </Pressable>
-
-      <View style={styles.cardBody}>
         <Pressable
-          onPress={() => onOpenAuthor(post)}
-          style={({ pressed }) => [
-            styles.cardAuthorRow,
-            pressed && styles.pressed,
-          ]}
+          hitSlop={8}
+          style={styles.menuBtn}
+          onPress={onReport}
         >
-          <PetAvatar
-            avatarKey={post.avatarKey}
-            species={post.species}
-            size={26}
-            name={post.petName}
+          <Ionicons name="ellipsis-horizontal" size={18} color={brand.muted} />
+        </Pressable>
+      </View>
+
+      <View style={styles.photo}>
+        {post.imageUri ? (
+          <Image source={{ uri: post.imageUri }} style={styles.photoImg} />
+        ) : (
+          <>
+            <Ionicons name="image-outline" size={28} color={brand.mutedSoft} />
+            <Text style={styles.photoHint}>{t('stories.photoPlaceholder')}</Text>
+          </>
+        )}
+      </View>
+
+      <Text style={styles.caption}>{post.caption}</Text>
+
+      <View style={styles.actions}>
+        <Pressable onPress={onLike} style={styles.action} hitSlop={6}>
+          <Ionicons
+            name={post.liked ? 'paw' : 'paw-outline'}
+            size={18}
+            color={post.liked ? brand.accent : brand.muted}
           />
-          <Text style={[styles.cardAuthorName, darkTitle]} numberOfLines={1}>
-            {post.author} · {post.petName}
+          <Text style={[styles.actionN, post.liked && styles.actionOn]}>
+            {post.likes}
           </Text>
         </Pressable>
-
-        <Text style={[styles.captionLine, darkMuted]}>{post.caption}</Text>
-        <StoryTagsRow post={post} />
-
-        <View style={styles.actionsBar}>
-          <Pressable
-            onPress={() => onToggleLike(post)}
-            style={styles.actionItem}
-          >
-            <Ionicons
-              name={post.liked ? 'heart' : 'heart-outline'}
-              size={17}
-              color={post.liked ? brand.accent : brand.muted}
-            />
-            <Text
-              style={[
-                styles.actionCount,
-                post.liked && styles.actionCountActive,
-                darkMuted,
-              ]}
-            >
-              {post.likes}
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => onOpenComments(post)}
-            style={styles.actionItem}
-          >
-            <Ionicons
-              name="chatbubble-outline"
-              size={17}
-              color={brand.muted}
-            />
-            <Text style={[styles.actionCount, darkMuted]}>
-              {post.commentsCount}
-            </Text>
-          </Pressable>
-          <Pressable onPress={() => onShare(post)} style={styles.actionItem}>
-            <Ionicons name="share-social-outline" size={17} color={brand.muted} />
-          </Pressable>
-          {post.mine && onDelete ? (
-            <Pressable
-              onPress={() => onDelete(post)}
-              style={styles.actionItem}
-              accessibilityRole="button"
-              accessibilityLabel={t('stories.delete')}
-            >
-              <Ionicons
-                name="trash-outline"
-                size={17}
-                color={brand.score.poor}
-              />
-            </Pressable>
-          ) : null}
-          <Text style={[styles.timeAgoInline, darkMuted]}>{timeAgo}</Text>
-        </View>
+        <Pressable
+          onPress={() =>
+            router.push({
+              pathname: '/(app)/story-comments',
+              params: { postId: post.id },
+            } as never)
+          }
+          style={styles.action}
+          hitSlop={6}
+        >
+          <Ionicons name="chatbubble-outline" size={17} color={brand.muted} />
+          <Text style={styles.actionN}>{post.commentsCount}</Text>
+        </Pressable>
+        <Pressable
+          onPress={() =>
+            router.push({
+              pathname: '/(app)/story-post',
+              params: { postId: post.id },
+            } as never)
+          }
+          style={styles.action}
+          hitSlop={6}
+        >
+          <Ionicons name="share-social-outline" size={17} color={brand.muted} />
+        </Pressable>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
+/** Screenshot 04.00 — Стрічка корінь */
 export default function StoriesScreen() {
+  const [tab, setTab] = useState<FeedTab>('friends');
   const [posts, setPosts] = useState<StoryPost[]>([]);
-  const [pets, setPets] = useState<PetRow[]>([]);
-  const [filter, setFilter] = useState<StoryFeedFilter>('all');
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [composeOpen, setComposeOpen] = useState(false);
-  const [publishing, setPublishing] = useState(false);
-  const [caption, setCaption] = useState('');
-  const [imageUri, setImageUri] = useState<string | null>(null);
-  const [privacy, setPrivacy] = useState<StoryPrivacy>('public');
-  const [species, setSpecies] = useState<StorySpecies>('cat');
-  const [petId, setPetId] = useState<string | null>(null);
-  const [taggedPetIds, setTaggedPetIds] = useState<string[]>([]);
-  const [taggedFriendIds, setTaggedFriendIds] = useState<string[]>([]);
-  const [friends, setFriends] = useState<FriendUser[]>([]);
-  const [sharePost, setSharePost] = useState<StoryPost | null>(null);
-  const [authorCard, setAuthorCard] = useState<AuthorCard | null>(null);
-  const [authorFollowing, setAuthorFollowing] = useState(false);
-  const [followBusy, setFollowBusy] = useState(false);
-  const [modBusy, setModBusy] = useState(false);
-  const [reportOpen, setReportOpen] = useState(false);
-  const [composeError, setComposeError] = useState<string | null>(null);
-  const [careStreak, setCareStreak] = useState<CareStreakState | null>(null);
-  const [theme, setTheme] = useState<ThemePref>('light');
-  const dark = theme === 'dark';
+  const [reportPost, setReportPost] = useState<StoryPost | null>(null);
 
-  const closeCompose = () => {
-    setComposeOpen(false);
-    setComposeError(null);
-    setTaggedPetIds([]);
-    setTaggedFriendIds([]);
-  };
-
-  const load = useCallback(
-    async (isRefresh = false) => {
-      if (isRefresh) setRefreshing(true);
-      else setLoading(true);
-      setError(null);
-      try {
-        void syncLocalFollowsToCloud();
-        const [feed, nextPets, nextFriends] = await Promise.all([
-          listStoryFeed(filter),
-          listPets().catch(() => [] as PetRow[]),
-          listFriends().catch(() => [] as FriendUser[]),
-        ]);
-        setPosts(feed);
-        setPets(nextPets);
-        setFriends(nextFriends);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : t('stories.loadError'));
-      } finally {
-        setLoading(false);
-        setRefreshing(false);
-      }
-    },
-    [filter],
-  );
+  const load = useCallback(async (soft?: boolean) => {
+    if (!soft) setLoading(true);
+    setError(null);
+    try {
+      const filter: StoryFeedFilter =
+        tab === 'friends'
+          ? 'friends'
+          : tab === 'myBreed'
+            ? 'myBreed'
+            : tab === 'nearby'
+              ? 'nearby'
+              : 'all';
+      const [feed, me] = await Promise.all([
+        listStoryFeed(filter),
+        getUserProfile(),
+      ]);
+      setPosts(feed);
+      setProfile(me);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('stories.loadError'));
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [tab]);
 
   useFocusEffect(
     useCallback(() => {
       void load();
-      void getSettingsPrefs().then((prefs) => setTheme(prefs.theme));
     }, [load]),
   );
 
-  const onToggleLike = async (post: StoryPost) => {
+  const onLike = async (post: StoryPost) => {
     try {
       const next = await toggleStoryLike(post);
-      setPosts((prev) => prev.map((p) => (p.id === post.id ? next : p)));
+      setPosts((cur) => cur.map((p) => (p.id === next.id ? next : p)));
     } catch (err) {
       notify(
         t('common.error'),
@@ -400,1142 +196,252 @@ export default function StoriesScreen() {
       );
     }
   };
-
-  const openPost = (post: StoryPost) => {
-    router.push({
-      pathname: '/(app)/story-post',
-      params: { postId: post.id },
-    });
-  };
-
-  const openComments = (post: StoryPost) => {
-    router.push({
-      pathname: '/(app)/story-comments',
-      params: { postId: post.id },
-    });
-  };
-
-  const openCompose = () => {
-    router.push('/(app)/story-compose' as never);
-  };
-
-  const toggleTaggedPet = (id: string) => {
-    setTaggedPetIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
-  };
-
-  const toggleTaggedFriend = (id: string) => {
-    setTaggedFriendIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
-  };
-
-  const publish = async () => {
-    const text = caption.trim();
-    if (!imageUri) {
-      setComposeError(t('stories.photoRequired'));
-      return;
-    }
-    if (!text) {
-      setComposeError(t('stories.captionRequired'));
-      return;
-    }
-    setComposeError(null);
-    setPublishing(true);
-    try {
-      const pet = pets.find((p) => p.id === petId) ?? null;
-      const taggedPetNames = taggedPetIds
-        .map((id) => pets.find((p) => p.id === id)?.name)
-        .filter((n): n is string => Boolean(n));
-      const taggedFriendNames = taggedFriendIds
-        .map((id) => friends.find((f) => f.id === id)?.name)
-        .filter((n): n is string => Boolean(n));
-      await createStoryPost({
-        caption: text,
-        imageUri,
-        species: pet?.species === 'dog' || pet?.species === 'cat' ? pet.species : species,
-        privacy,
-        petId: pet?.id ?? null,
-        petName: pet?.name ?? null,
-        avatarKey: pet?.avatar_key ?? null,
-        taggedPetIds,
-        taggedFriendIds,
-        taggedPetNames,
-        taggedFriendNames,
-      });
-      setCaption('');
-      setImageUri(null);
-      closeCompose();
-      setFilter('mine');
-      await load(true);
-    } catch (err) {
-      const message =
-        err instanceof Error && err.message === 'PHOTO_REQUIRED'
-          ? t('stories.photoRequired')
-          : err instanceof Error && err.message === 'CAPTION_REQUIRED'
-            ? t('stories.captionRequired')
-            : err instanceof Error
-              ? err.message
-              : t('stories.publishError');
-      setComposeError(message);
-      notify(t('common.error'), message);
-    } finally {
-      setPublishing(false);
-    }
-  };
-
-  const onDeletePost = async (post: StoryPost) => {
-    if (!post.mine) return;
-    const ok = await confirmAction({
-      title: t('stories.deleteTitle'),
-      message: t('stories.deleteMessage'),
-      confirmLabel: t('stories.delete'),
-      cancelLabel: t('common.cancel'),
-      destructive: true,
-    });
-    if (!ok) return;
-    try {
-      await deleteStoryPost(post);
-      setPosts((prev) => prev.filter((p) => p.id !== post.id));
-      if (authorCard?.postId === post.id) setAuthorCard(null);
-      notify(t('stories.deleteDone'));
-    } catch (err) {
-      notify(
-        t('common.error'),
-        err instanceof Error ? err.message : t('stories.deleteError'),
-      );
-    }
-  };
-
-  const openAuthor = async (post: StoryPost) => {
-    const user = await getCurrentUser();
-    if (post.mine || (user && post.userId === user.id)) {
-      router.push('/(app)/my-profile' as never);
-      return;
-    }
-    router.push({
-      pathname: '/(app)/user-profile',
-      params: { userId: post.userId },
-    } as never);
-  };
-
-  const onToggleAuthorFollow = async () => {
-    if (!authorCard || authorCard.mine) return;
-    setFollowBusy(true);
-    try {
-      const result = await toggleFollow(authorCard.userId);
-      setAuthorFollowing(result.following);
-      if (filter === 'following') void load(true);
-    } catch (err) {
-      notify(
-        t('common.error'),
-        err instanceof Error ? err.message : t('common.error'),
-      );
-    } finally {
-      setFollowBusy(false);
-    }
-  };
-
-  const onBlockAuthor = async () => {
-    if (!authorCard || authorCard.mine) return;
-    const ok = await confirmAction({
-      title: t('stories.blockTitle'),
-      message: t('stories.blockMessage', { name: authorCard.author }),
-      confirmLabel: t('stories.block'),
-      cancelLabel: t('common.cancel'),
-      destructive: true,
-    });
-    if (!ok) return;
-    setModBusy(true);
-    try {
-      await blockUser(authorCard.userId);
-      await unfollowUser(authorCard.userId);
-      setAuthorFollowing(false);
-      setAuthorCard(null);
-      notify(t('stories.blockDone'));
-      await load(true);
-    } catch (err) {
-      notify(
-        t('common.error'),
-        err instanceof Error ? err.message : t('common.error'),
-      );
-    } finally {
-      setModBusy(false);
-    }
-  };
-
-  const onReportAuthor = async (reason: StoryReportReason) => {
-    if (!authorCard || authorCard.mine) return;
-    setModBusy(true);
-    try {
-      await reportStoryTarget({
-        targetUserId: authorCard.userId,
-        postId: authorCard.postId,
-        reason,
-      });
-      setReportOpen(false);
-      notify(t('stories.reportDone'));
-    } catch (err) {
-      notify(
-        t('common.error'),
-        err instanceof Error ? err.message : t('common.error'),
-      );
-    } finally {
-      setModBusy(false);
-    }
-  };
-
-  const filters: { id: StoryFeedFilter; label: string }[] = [
-    { id: 'all', label: t('stories.filterAll') },
-    { id: 'following', label: t('stories.filterFollowing') },
-    { id: 'cat', label: t('stories.filterCats') },
-    { id: 'dog', label: t('stories.filterDogs') },
-    { id: 'mine', label: t('stories.filterMine') },
-  ];
-
-  const feedHeader = (
-    <View style={[styles.feedHeader, dark && styles.feedHeaderDark]}>
-      <Text style={[styles.pageTitle, dark && styles.pageTitleDark]}>
-        {t('tabs.stories')}
-      </Text>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.moduleNav}
-      >
-        {(
-          [
-            {
-              label: t('spotlight.title'),
-              icon: 'sparkles-outline' as const,
-              href: '/(app)/spotlight-hub',
-            },
-            {
-              label: t('friends.title'),
-              icon: 'people-outline' as const,
-              href: '/(app)/friends',
-            },
-            {
-              label: t('dm.title'),
-              icon: 'chatbubble-ellipses-outline' as const,
-              href: '/(app)/messages',
-            },
-            {
-              label: t('activity.title'),
-              icon: 'notifications-outline' as const,
-              href: '/(app)/activity',
-            },
-            {
-              label: t('search.title'),
-              icon: 'search-outline' as const,
-              href: '/(app)/search',
-            },
-          ] as const
-        ).map((item) => (
-          <Pressable
-            key={item.href}
-            onPress={() => router.push(item.href as never)}
-            style={[styles.moduleChip, dark && styles.moduleChipDark]}
-          >
-            <Ionicons name={item.icon} size={16} color={brand.accent} />
-            <Text style={styles.moduleChipText} numberOfLines={1}>
-              {item.label}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
-
-      <View style={styles.seg}>
-        {filters.map((f) => {
-          const active = filter === f.id;
-          return (
-            <Pressable
-              key={f.id}
-              onPress={() => setFilter(f.id)}
-              style={[styles.segOpt, active && styles.segOptActive]}
-            >
-              <Text
-                style={[styles.segOptText, active && styles.segOptTextActive]}
-                numberOfLines={1}
-              >
-                {f.label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      <View style={styles.actionsRow}>
-        <View style={styles.actionsPrimary}>
-          <PrimaryButton
-            label={t('stories.addPost')}
-            size="sm"
-            onPress={openCompose}
-          />
-        </View>
-        <Pressable
-          onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
-          style={[styles.contestsBtn, dark && styles.contestsBtnDark]}
-          accessibilityRole="button"
-          accessibilityLabel={
-            viewMode === 'list' ? t('stories.viewGrid') : t('stories.viewList')
-          }
-        >
-          <Ionicons
-            name={viewMode === 'list' ? 'grid-outline' : 'list'}
-            size={18}
-            color={brand.accent}
-          />
-        </Pressable>
-      </View>
-    </View>
-  );
 
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <View style={[styles.flex, dark && styles.darkScreen]}>
-      {loading ? (
-        <View style={styles.flex}>
-          {feedHeader}
-          <LoadingState message={t('stories.loading')} />
+      <View style={styles.titleRow}>
+        <Text style={styles.title}>{t('tabs.stories')}</Text>
+        <View style={styles.titleIcons}>
+          <Pressable
+            onPress={() => router.push('/(app)/search' as never)}
+            style={styles.iconBtn}
+            hitSlop={8}
+          >
+            <Ionicons name="search-outline" size={20} color={brand.ink} />
+          </Pressable>
+          <Pressable
+            onPress={() => router.push('/(app)/messages' as never)}
+            style={styles.iconBtn}
+            hitSlop={8}
+          >
+            <Ionicons
+              name="chatbubble-ellipses-outline"
+              size={20}
+              color={brand.ink}
+            />
+          </Pressable>
         </View>
-      ) : error ? (
-        <View style={styles.flex}>
-          {feedHeader}
-          <ErrorState message={error} onRetry={() => void load()} />
+      </View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.tabs}
+      >
+        {TABS.map((item) => {
+          const on = tab === item.id;
+          return (
+            <Pressable
+              key={item.id}
+              onPress={() => setTab(item.id)}
+              style={[styles.tab, on && styles.tabOn]}
+            >
+              <Text style={[styles.tabT, on && styles.tabTOn]}>
+                {t(item.labelKey)}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      <Pressable
+        onPress={() => router.push('/(app)/story-compose' as never)}
+        style={styles.composer}
+      >
+        <UserAvatar
+          avatarKey={profile?.avatar_key}
+          avatarUri={profile?.avatar_uri}
+          gender={profile?.gender}
+          size={36}
+          name={profile?.display_name ?? t('me.title')}
+        />
+        <Text style={styles.composerHint} numberOfLines={1}>
+          {t('stories.composerHint')}
+        </Text>
+        <View style={styles.composerPlus}>
+          <Ionicons name="add" size={22} color="#FFFFFF" />
         </View>
+      </Pressable>
+
+      {loading && posts.length === 0 ? (
+        <LoadingState />
+      ) : error && posts.length === 0 ? (
+        <ErrorState message={error} onRetry={() => void load()} />
       ) : (
         <FlatList
-          key={viewMode}
-          style={styles.flex}
           data={posts}
           keyExtractor={(item) => item.id}
-          numColumns={viewMode === 'grid' ? 2 : 1}
-          columnWrapperStyle={
-            viewMode === 'grid' ? styles.gridRow : undefined
-          }
-          contentContainerStyle={
-            viewMode === 'grid' ? styles.gridContent : styles.listContent
-          }
-          ListHeaderComponent={feedHeader}
+          contentContainerStyle={styles.list}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => void load(true)}
+              onRefresh={() => {
+                setRefreshing(true);
+                void load(true);
+              }}
               tintColor={brand.accent}
             />
           }
-          ListEmptyComponent={
-            <View style={styles.emptyWrap}>
-              <Text style={[styles.emptyText, dark && styles.emptyTextDark]}>
-                {filter === 'mine'
-                  ? t('stories.emptyMine')
-                  : filter === 'following'
-                    ? t('stories.emptyFollowing')
-                    : t('stories.emptyFilter')}
-              </Text>
-              <View style={styles.emptyBtn}>
-                <PrimaryButton
-                  label={t('stories.addPost')}
-                  onPress={openCompose}
-                />
-              </View>
-            </View>
-          }
           renderItem={({ item }) => (
-            <View
-              style={
-                viewMode === 'grid' ? styles.gridItem : styles.listItem
-              }
-            >
-              <StoryPostCard
-                post={item}
-                compact={viewMode === 'grid'}
-                dark={dark}
-                onToggleLike={(p) => void onToggleLike(p)}
-                onShare={setSharePost}
-                onOpenPost={openPost}
-                onOpenComments={openComments}
-                onOpenAuthor={(p) => void openAuthor(p)}
-                onDelete={(p) => void onDeletePost(p)}
-              />
-            </View>
+            <FeedCard
+              post={item}
+              onLike={() => void onLike(item)}
+              onReport={() => setReportPost(item)}
+            />
           )}
+          ListEmptyComponent={
+            <Text style={styles.empty}>{t('stories.emptyFilter')}</Text>
+          }
         />
       )}
 
-      <Modal
-        visible={composeOpen}
-        animationType="slide"
-        transparent
-        onRequestClose={closeCompose}
-      >
-        <View style={styles.modalRoot}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('common.close')}
-            onPress={closeCompose}
-            style={styles.modalScrim}
-          />
-          <View style={styles.modalSheet}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t('stories.composeTitle')}</Text>
-              <Pressable
-                onPress={closeCompose}
-                accessibilityRole="button"
-                accessibilityLabel={t('common.close')}
-                style={styles.modalClose}
-              >
-                <Ionicons name="close" size={22} color={brand.ink} />
-              </Pressable>
-            </View>
-
-            <ScrollView keyboardShouldPersistTaps="handled">
-              <View style={styles.composePhoto}>
-                <PhotoAttachField
-                  label={t('stories.photo')}
-                  uri={imageUri}
-                  onChange={(uri) => {
-                    setImageUri(uri);
-                    if (uri) setComposeError(null);
-                  }}
-                  emptyHint={t('stories.photoHint')}
-                  filePrefix="story"
-                  aspect={[4, 3]}
-                  height={200}
-                />
-              </View>
-
-              {pets.length > 0 ? (
-                <>
-                  <Text style={styles.fieldLabel}>{t('stories.pickPet')}</Text>
-                  <View style={styles.chipWrap}>
-                    {pets
-                      .filter(
-                        (p) => p.species === 'dog' || p.species === 'cat',
-                      )
-                      .map((p) => {
-                        const active = petId === p.id;
-                        return (
-                          <Pressable
-                            key={p.id}
-                            onPress={() => {
-                              setPetId(p.id);
-                              if (p.species === 'dog' || p.species === 'cat') {
-                                setSpecies(p.species);
-                              }
-                            }}
-                            style={[styles.pickChip, active && styles.pickChipActive]}
-                          >
-                            <Text
-                              style={[
-                                styles.pickChipText,
-                                active && styles.pickChipTextActive,
-                              ]}
-                            >
-                              {p.name}
-                            </Text>
-                          </Pressable>
-                        );
-                      })}
-                  </View>
-                </>
-              ) : (
-                <>
-                  <Text style={styles.fieldLabel}>{t('stories.species')}</Text>
-                  <View style={styles.rowGap}>
-                    {(['cat', 'dog'] as StorySpecies[]).map((s) => (
-                      <Pressable
-                        key={s}
-                        onPress={() => setSpecies(s)}
-                        style={[
-                          styles.pickChipFlex,
-                          species === s && styles.pickChipActive,
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.pickChipText,
-                            species === s && styles.pickChipTextActive,
-                          ]}
-                        >
-                          {s === 'cat'
-                            ? t('stories.filterCats')
-                            : t('stories.filterDogs')}
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                </>
-              )}
-
-              <Text style={styles.fieldLabel}>{t('stories.privacy')}</Text>
-              <View style={styles.rowGap}>
-                {(
-                  [
-                    { id: 'public' as const, label: t('stories.privacyPublic') },
-                    {
-                      id: 'private' as const,
-                      label: t('stories.privacyPrivate'),
-                    },
-                  ] as const
-                ).map((item) => (
-                  <Pressable
-                    key={item.id}
-                    onPress={() => setPrivacy(item.id)}
-                    style={[
-                      styles.pickChipFlex,
-                      privacy === item.id && styles.pickChipActive,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.pickChipTextSm,
-                        privacy === item.id && styles.pickChipTextActive,
-                      ]}
-                    >
-                      {item.label}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-
-              <Text style={styles.fieldLabel}>{t('stories.tagPets')}</Text>
-              {pets.length === 0 ? (
-                <Text style={styles.fieldHint}>{t('stories.tagPetsEmpty')}</Text>
-              ) : (
-                <View style={styles.chipWrap}>
-                  {pets.map((p) => {
-                    const active = taggedPetIds.includes(p.id);
-                    return (
-                      <Pressable
-                        key={p.id}
-                        onPress={() => toggleTaggedPet(p.id)}
-                        style={[
-                          styles.pickChip,
-                          active && styles.tagPetActive,
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.pickChipText,
-                            active && styles.pickChipTextActive,
-                          ]}
-                        >
-                          {p.name}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-              )}
-
-              <Text style={styles.fieldLabel}>{t('stories.tagFriends')}</Text>
-              {friends.length === 0 ? (
-                <Text style={styles.fieldHint}>
-                  {t('stories.tagFriendsEmpty')}
-                </Text>
-              ) : (
-                <View style={styles.chipWrap}>
-                  {friends.map((f) => {
-                    const active = taggedFriendIds.includes(f.id);
-                    return (
-                      <Pressable
-                        key={f.id}
-                        onPress={() => toggleTaggedFriend(f.id)}
-                        style={[
-                          styles.pickChip,
-                          active && styles.pickChipActive,
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.pickChipText,
-                            active && styles.pickChipTextActive,
-                          ]}
-                        >
-                          {f.name}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-              )}
-
-              <Text style={styles.fieldLabel}>{t('stories.caption')}</Text>
-              <TextInput
-                value={caption}
-                onChangeText={(text) => {
-                  setCaption(text);
-                  if (text.trim()) setComposeError(null);
-                }}
-                placeholder={t('stories.captionPlaceholder')}
-                multiline
-                style={styles.captionInput}
-                placeholderTextColor={brand.mutedSoft}
-              />
-
-              {composeError ? (
-                <Text style={styles.composeError}>{composeError}</Text>
-              ) : null}
-
-              <View style={styles.modalActions}>
-                <PrimaryButton
-                  label={t('stories.publish')}
-                  loading={publishing}
-                  onPress={() => void publish()}
-                />
-                <PrimaryButton
-                  label={t('common.cancel')}
-                  variant="ghost"
-                  onPress={() => {
-                    closeCompose();
-                    setImageUri(null);
-                  }}
-                />
-              </View>
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        visible={Boolean(authorCard)}
-        animationType="slide"
-        transparent
-        onRequestClose={() => {
-          setReportOpen(false);
-          setAuthorCard(null);
-        }}
-      >
-        <View style={styles.authorModalRoot}>
-          <View style={styles.modalSheet}>
-            {authorCard ? (
-              <>
-                <View style={styles.authorHeader}>
-                  <PetAvatar
-                    avatarKey={authorCard.avatarKey}
-                    species={authorCard.species}
-                    size={56}
-                    name={authorCard.petName}
-                  />
-                  <View style={styles.authorHeaderCopy}>
-                    <Text style={styles.modalTitle}>{authorCard.author}</Text>
-                    <Text style={styles.authorPet}>
-                      {t('stories.authorPet', { name: authorCard.petName })}
-                    </Text>
-                  </View>
-                </View>
-                <Text style={styles.authorHint}>{t('stories.authorHint')}</Text>
-                {authorCard.mine && careStreak ? (
-                  <View style={styles.streakCard}>
-                    <Text style={styles.streakTitle}>
-                      {t('stories.careStreakTitle', {
-                        count: careStreak.currentStreak,
-                      })}
-                    </Text>
-                    <Text style={styles.streakBest}>
-                      {t('stories.careStreakBest', {
-                        count: careStreak.bestStreak,
-                      })}
-                    </Text>
-                  </View>
-                ) : null}
-                <View style={styles.modalActions}>
-                  {authorCard.mine ? (
-                    <>
-                      <Text style={styles.selfHint}>{t('stories.authorSelf')}</Text>
-                      {authorCard.postId ? (
-                        <PrimaryButton
-                          label={t('stories.delete')}
-                          variant="danger"
-                          onPress={() => {
-                            const post = posts.find(
-                              (p) => p.id === authorCard.postId,
-                            );
-                            if (post) void onDeletePost(post);
-                          }}
-                        />
-                      ) : null}
-                    </>
-                  ) : (
-                    <>
-                      <PrimaryButton
-                        label={t('profile.open')}
-                        variant="secondary"
-                        onPress={() => {
-                          const card = authorCard;
-                          setAuthorCard(null);
-                          router.push({
-                            pathname: '/(app)/user-profile',
-                            params: { userId: card.userId },
-                          } as never);
-                        }}
-                      />
-                      <PrimaryButton
-                        label={
-                          authorFollowing
-                            ? t('stories.unfollow')
-                            : t('stories.follow')
-                        }
-                        variant={authorFollowing ? 'secondary' : 'primary'}
-                        loading={followBusy}
-                        onPress={() => void onToggleAuthorFollow()}
-                      />
-                      <PrimaryButton
-                        label={t('dm.message')}
-                        variant="secondary"
-                        onPress={() => {
-                          const card = authorCard;
-                          setAuthorCard(null);
-                          router.push({
-                            pathname: '/(app)/dm/[userId]',
-                            params: {
-                              userId: card.userId,
-                              name: card.author,
-                              avatarKey: card.avatarKey,
-                            },
-                          });
-                        }}
-                      />
-                      {reportOpen ? (
-                        <View style={styles.reportBlock}>
-                          <Text style={styles.fieldLabel}>
-                            {t('stories.reportPick')}
-                          </Text>
-                          {(
-                            [
-                              ['spam', 'stories.reportSpam'],
-                              ['abuse', 'stories.reportAbuse'],
-                              ['inappropriate', 'stories.reportInappropriate'],
-                              ['other', 'stories.reportOther'],
-                            ] as const
-                          ).map(([reason, key]) => (
-                            <PrimaryButton
-                              key={reason}
-                              label={t(key)}
-                              variant="secondary"
-                              loading={modBusy}
-                              onPress={() => void onReportAuthor(reason)}
-                            />
-                          ))}
-                          <PrimaryButton
-                            label={t('common.cancel')}
-                            variant="ghost"
-                            onPress={() => setReportOpen(false)}
-                          />
-                        </View>
-                      ) : (
-                        <>
-                          <PrimaryButton
-                            label={t('stories.report')}
-                            variant="secondary"
-                            onPress={() => setReportOpen(true)}
-                          />
-                          <PrimaryButton
-                            label={t('stories.block')}
-                            variant="ghost"
-                            loading={modBusy}
-                            onPress={() => void onBlockAuthor()}
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
-                  <PrimaryButton
-                    label={t('common.close')}
-                    variant="ghost"
-                    onPress={() => {
-                      setReportOpen(false);
-                      setAuthorCard(null);
-                    }}
-                  />
-                </View>
-              </>
-            ) : null}
-          </View>
-        </View>
-      </Modal>
-
-      <SharePhotoSheet
-        visible={Boolean(sharePost)}
-        onClose={() => setSharePost(null)}
-        imageUri={sharePost?.imageUri}
-        title={t('share.dialogTitle')}
-        linkUrl={sharePost ? buildStoryDeepLink(sharePost.id) : null}
-        message={
-          sharePost
-            ? buildStoryShareMessage({
-                petName: sharePost.petName,
-                caption: sharePost.caption,
-                postId: sharePost.id,
-              })
-            : ''
-        }
-      />
-      </View>
+      {reportPost ? (
+        <StoryReportSheet
+          visible
+          targetUserId={reportPost.userId}
+          postId={reportPost.id}
+          onClose={() => setReportPost(null)}
+          onBlocked={() => {
+            setPosts((cur) =>
+              cur.filter((p) => p.userId !== reportPost.userId),
+            );
+            setReportPost(null);
+          }}
+        />
+      ) : null}
     </AppScreen>
   );
 }
 
-const softCard = {
-  backgroundColor: brand.surfaceElevated,
-  shadowColor: brand.shadow.color,
-  shadowOpacity: brand.shadow.opacity,
-  shadowRadius: brand.shadow.radius,
-  shadowOffset: brand.shadow.offset,
-  elevation: 1,
-} as const;
-
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  pressed: { opacity: 0.9 },
-  darkScreen: { backgroundColor: STORIES_DARK.bg },
-  feedHeader: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 8 },
-  feedHeaderDark: { backgroundColor: STORIES_DARK.bg },
-  pageTitle: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
-    marginBottom: 12,
-  },
-  pageTitleDark: { color: STORIES_DARK.text },
-  moduleNav: { flexDirection: 'row', gap: 8, paddingBottom: 12 },
-  moduleChip: {
+  titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    borderRadius: brand.radius.pill,
-    backgroundColor: brand.chipTrack,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  moduleChipDark: { backgroundColor: STORIES_DARK.card },
-  moduleChipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12.5,
-    color: brand.ink,
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 4,
+    paddingHorizontal: 20,
+    paddingTop: 10,
     paddingBottom: 8,
   },
-  actionsPrimary: { flex: 1 },
-  contestsBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: brand.radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...softCard,
-  },
-  contestsBtnDark: { backgroundColor: STORIES_DARK.card },
-  seg: {
-    flexDirection: 'row',
-    backgroundColor: brand.creamDeep,
-    borderRadius: brand.radius.pill,
-    padding: 4,
-    gap: 4,
-    marginBottom: 8,
-  },
-  segOpt: {
+  title: {
     flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    borderRadius: brand.radius.pill,
-  },
-  segOptActive: {
-    backgroundColor: brand.surfaceElevated,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
-  },
-  segOptText: {
-    fontFamily: fonts.bodySemi,
-    fontSize: 11,
+    fontFamily: fonts.title,
+    fontSize: 26,
     color: brand.ink,
   },
-  segOptTextActive: {
-    fontFamily: fonts.bodyBold,
-    color: brand.accentDark,
-  },
-  listContent: { paddingBottom: 24 },
-  listItem: { paddingHorizontal: 20 },
-  gridContent: { paddingBottom: 24 },
-  gridRow: { gap: 10, paddingHorizontal: 20 },
-  gridItem: { flex: 1 },
-  emptyWrap: {
-    marginTop: 32,
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
-  emptyText: {
-    textAlign: 'center',
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: brand.muted,
-  },
-  emptyTextDark: { color: STORIES_DARK.muted },
-  emptyBtn: { marginTop: 16, width: '100%', paddingHorizontal: 20 },
-  card: {
-    marginBottom: 16,
-    overflow: 'hidden',
-    borderRadius: brand.radius.md,
-    ...softCard,
-  },
-  cardCompact: {
-    marginBottom: 10,
-    overflow: 'hidden',
-    borderRadius: brand.radius.md,
-    ...softCard,
-  },
-  compactMedia: {
-    width: '100%',
-    aspectRatio: 1,
-    backgroundColor: brand.mist,
+  titleIcons: { flexDirection: 'row', gap: 4 },
+  iconBtn: {
+    width: 36,
+    height: 36,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  compactBody: { paddingHorizontal: 10, paddingVertical: 8 },
-  compactAuthor: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 11,
-    color: brand.ink,
-  },
-  compactCaption: {
-    marginTop: 2,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: brand.ink,
-  },
-  compactActions: {
-    marginTop: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  compactAction: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  compactActionText: {
-    fontFamily: fonts.body,
-    fontSize: 11,
-    color: brand.muted,
-  },
-  cardAuthorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  tabs: {
+    paddingHorizontal: 20,
     gap: 8,
+    paddingBottom: 10,
   },
-  cardAuthorName: {
-    flex: 1,
-    fontFamily: fonts.bodyBold,
+  tab: {
+    borderRadius: 999,
+    backgroundColor: brand.creamDeep,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  tabOn: { backgroundColor: brand.accent },
+  tabT: {
+    fontFamily: fonts.bodySemi,
     fontSize: 13,
     color: brand.ink,
   },
-  listMedia: {
-    width: '100%',
-    height: 220,
-    backgroundColor: brand.mist,
+  tabTOn: { color: '#FFFFFF' },
+  composer: {
+    marginHorizontal: 20,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: brand.surfaceElevated,
+    borderRadius: 18,
+    paddingVertical: 8,
+    paddingLeft: 10,
+    paddingRight: 8,
+  },
+  composerHint: {
+    flex: 1,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.mutedSoft,
+  },
+  composerPlus: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: brand.accent,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  noImage: { alignItems: 'center', paddingHorizontal: 24 },
-  fillImage: { width: '100%', height: '100%' },
-  cardBody: {
-    paddingHorizontal: 14,
-    paddingTop: 12,
-    paddingBottom: 14,
+  list: { paddingHorizontal: 20, paddingBottom: 32, gap: 12 },
+  card: {
+    backgroundColor: brand.surfaceElevated,
+    borderRadius: 18,
+    padding: 12,
     gap: 10,
   },
-  captionLine: {
-    fontFamily: fonts.body,
-    fontSize: 13.5,
-    lineHeight: 20,
-    color: brand.label,
+  cardHead: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  cardHeadText: { flex: 1, minWidth: 0 },
+  cardName: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
   },
-  actionsBar: {
+  cardMeta: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+    marginTop: 1,
+  },
+  menuBtn: { padding: 4 },
+  photo: {
+    height: 200,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    overflow: 'hidden',
+  },
+  photoImg: { width: '100%', height: '100%' },
+  photoHint: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  caption: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+    color: brand.ink,
+  },
+  actions: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 18,
-    paddingTop: 10,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: brand.divider,
+    paddingTop: 2,
   },
-  actionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  actionCount: {
+  action: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  actionN: {
     fontFamily: fonts.bodyBold,
     fontSize: 12.5,
     color: brand.muted,
   },
-  actionCountActive: {
-    color: brand.accentDark,
-  },
-  timeAgoInline: {
-    marginLeft: 'auto',
-    fontFamily: fonts.body,
-    fontSize: 11,
-    color: brand.muted,
-  },
-  modalRoot: { flex: 1, justifyContent: 'flex-end' },
-  modalScrim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(21, 34, 51, 0.4)',
-  },
-  modalSheet: {
-    maxHeight: '90%',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    backgroundColor: brand.canvas,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 40,
-  },
-  modalHeader: {
-    marginBottom: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  modalTitle: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
-  },
-  modalClose: {
-    height: 40,
-    width: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: brand.chipTrack,
-  },
-  composePhoto: { marginTop: 8 },
-  fieldLabel: {
-    marginTop: 16,
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: brand.accentDark,
-  },
-  fieldHint: {
-    marginTop: 8,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: brand.muted,
-  },
-  chipWrap: {
-    marginTop: 8,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  rowGap: { marginTop: 8, flexDirection: 'row', gap: 8 },
-  pickChip: {
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.chipTrack,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  pickChipFlex: {
-    flex: 1,
-    alignItems: 'center',
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.chipTrack,
-    paddingVertical: 12,
-  },
-  pickChipActive: { backgroundColor: brand.accent },
-  tagPetActive: { backgroundColor: brand.terracotta },
-  pickChipText: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 14,
-    color: brand.ink,
-  },
-  pickChipTextSm: {
+  actionOn: { color: brand.accent },
+  empty: {
     textAlign: 'center',
-    fontFamily: fonts.bodyBold,
-    fontSize: 12,
-    color: brand.ink,
-  },
-  pickChipTextActive: { color: '#FFFFFF' },
-  captionInput: {
-    marginTop: 8,
-    minHeight: 96,
-    borderRadius: brand.radius.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontFamily: fonts.body,
-    fontSize: 15,
-    color: brand.ink,
-    textAlignVertical: 'top',
-  },
-  composeError: {
-    marginTop: 12,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: brand.score.poor,
-  },
-  modalActions: { marginTop: 20, gap: 12 },
-  authorModalRoot: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(21, 34, 51, 0.4)',
-  },
-  authorHeader: { flexDirection: 'row', alignItems: 'center' },
-  authorHeaderCopy: { flex: 1, marginLeft: 12 },
-  authorPet: {
-    marginTop: 4,
+    marginTop: 40,
     fontFamily: fonts.body,
     fontSize: 14,
     color: brand.muted,
   },
-  authorHint: {
-    marginTop: 16,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    lineHeight: 18,
-    color: brand.muted,
-  },
-  streakCard: {
-    marginTop: 12,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.mist,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-  },
-  streakTitle: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 14,
-    color: brand.ink,
-  },
-  streakBest: {
-    marginTop: 4,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: brand.muted,
-  },
-  selfHint: {
-    textAlign: 'center',
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.muted,
-  },
-  reportBlock: { gap: 8 },
 });

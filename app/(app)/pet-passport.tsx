@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   segOpt: {
     flex: 1,
     alignItems: 'center',
-    borderRadius: 12,
+    borderRadius: brand.radius.pill,
     paddingVertical: 10,
     paddingHorizontal: 4,
   },

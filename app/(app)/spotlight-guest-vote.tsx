@@ -13,7 +13,7 @@ import {
 } from '@/src/services/spotlight';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** Screenshot 04.24 — guest landing (in-app), same as public /vote */
+/** Screenshot 04.24 — guest vote landing */
 export default function SpotlightGuestVoteScreen() {
   const name = 'Тукана';
 
@@ -41,12 +41,14 @@ export default function SpotlightGuestVoteScreen() {
           <Text style={styles.photoT}>{t('spotlight.entryPhoto')}</Text>
         </View>
         <Text style={styles.count}>{t('spotlight.votesNow', { n: '128' })}</Text>
-        <PrimaryButton
-          label={t('spotlight.guestVoteCta')}
-          size="lg"
-          icon={<Ionicons name="paw" size={16} color="#FFFFFF" />}
-          onPress={() => void onVote()}
-        />
+        <View style={styles.cta}>
+          <PrimaryButton
+            label={t('spotlight.guestVoteCta')}
+            size="lg"
+            icon={<Ionicons name="paw" size={16} color="#FFFFFF" />}
+            onPress={() => void onVote()}
+          />
+        </View>
         <Text style={styles.foot}>
           {t('spotlight.guestFoot')}{' '}
           <Text
@@ -66,29 +68,28 @@ const styles = StyleSheet.create({
   pad: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 6,
-    gap: 14,
+    paddingTop: 10,
+    gap: 16,
     alignItems: 'center',
   },
   url: {
     textAlign: 'center',
     fontFamily: fonts.bodySemi,
-    fontSize: 11,
-    letterSpacing: 0.6,
+    fontSize: 12,
+    letterSpacing: 0.4,
     color: brand.mutedSoft,
   },
   title: {
     fontFamily: fonts.title,
-    fontSize: 22,
+    fontSize: 24,
     color: brand.ink,
     textAlign: 'center',
-    marginTop: 6,
   },
   photo: {
     width: '100%',
-    height: 220,
-    borderRadius: 20,
-    borderWidth: 1,
+    height: 240,
+    borderRadius: 18,
+    borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: brand.mistBorder,
     backgroundColor: brand.creamDeep,
@@ -100,16 +101,21 @@ const styles = StyleSheet.create({
   count: {
     textAlign: 'center',
     fontFamily: fonts.bodyBold,
-    fontSize: 15,
+    fontSize: 16,
     color: brand.ink,
   },
+  cta: { width: '100%', marginTop: 2 },
   foot: {
     textAlign: 'center',
     fontFamily: fonts.body,
-    fontSize: 11.5,
+    fontSize: 12,
     color: brand.muted,
     lineHeight: 18,
-    marginTop: 4,
+    paddingHorizontal: 8,
   },
-  link: { textDecorationLine: 'underline', color: brand.accent },
+  link: {
+    textDecorationLine: 'underline',
+    color: brand.accent,
+    fontFamily: fonts.bodySemi,
+  },
 });

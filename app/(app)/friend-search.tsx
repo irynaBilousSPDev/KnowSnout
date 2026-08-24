@@ -1,11 +1,17 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { FilterChips } from '@/src/components/FilterChips';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
@@ -19,7 +25,13 @@ import { brand, fonts } from '@/src/theme/brand';
 
 type Filter = 'contacts' | 'nearby' | 'breeds';
 
-/** HTML 04.09 · Пошук людей */
+const FILTERS: { id: Filter; labelKey: string }[] = [
+  { id: 'contacts', labelKey: 'friends.filterContacts' },
+  { id: 'nearby', labelKey: 'friends.filterNearby' },
+  { id: 'breeds', labelKey: 'friends.filterSameBreeds' },
+];
+
+/** Screenshot 04.09 · Пошук людей */
 export default function FriendSearchScreen() {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<Filter>('contacts');
@@ -42,29 +54,52 @@ export default function FriendSearchScreen() {
       <AppChromeHeader />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <View style={styles.search}>
-            <Ionicons name="search" size={16} color={brand.mutedSoft} />
-            <TextInput
-              value={query}
-              onChangeText={(q) => {
-                setQuery(q);
-                void run(q);
-              }}
-              placeholder={t('friends.searchPlaceholder')}
-              placeholderTextColor={brand.mutedSoft}
-              style={styles.searchInput}
-              autoCapitalize="none"
-            />
+          <View style={styles.searchRow}>
+            <Pressable
+              onPress={() => router.back()}
+              style={styles.back}
+              accessibilityRole="button"
+              accessibilityLabel="Назад"
+            >
+              <Ionicons name="chevron-back" size={18} color={brand.ink} />
+            </Pressable>
+            <View style={styles.search}>
+              <Ionicons name="search" size={16} color={brand.mutedSoft} />
+              <TextInput
+                value={query}
+                onChangeText={(q) => {
+                  setQuery(q);
+                  void run(q);
+                }}
+                placeholder={t('friends.searchPlaceholder')}
+                placeholderTextColor={brand.mutedSoft}
+                style={styles.searchInput}
+                autoCapitalize="none"
+              />
+            </View>
           </View>
-          <FilterChips
-            options={[
-              { id: 'contacts', label: t('friends.filterContacts') },
-              { id: 'nearby', label: t('friends.filterNearby') },
-              { id: 'breeds', label: t('friends.filterSameBreeds') },
-            ]}
-            value={filter}
-            onChange={setFilter}
-          />
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.chips}
+          >
+            {FILTERS.map((f) => {
+              const active = filter === f.id;
+              return (
+                <Pressable
+                  key={f.id}
+                  onPress={() => setFilter(f.id)}
+                  style={[styles.chip, active && styles.chipOn]}
+                >
+                  <Text style={[styles.chipT, active && styles.chipTOn]}>
+                    {t(f.labelKey)}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
           {rows
             .filter((row) => {
               if (filter === 'breeds') {
@@ -94,18 +129,10 @@ export default function FriendSearchScreen() {
                 />
                 <View style={styles.copy}>
                   <Text style={styles.name}>{row.user.name}</Text>
-                  <Text style={styles.meta}>
-                    {row.relation === 'friends'
-                      ? row.user.handle
-                      : row.user.mutualCount
-                        ? `${row.user.handle} · ${t('profile.mutual', { n: String(row.user.mutualCount) })}`
-                        : `${row.user.handle}${row.user.bio ? ` · ${row.user.bio}` : ''}`}
-                  </Text>
+                  <Text style={styles.meta}>{row.user.handle}</Text>
                 </View>
                 {row.relation === 'friends' ? (
-                  <View style={styles.friendChip}>
-                    <Text style={styles.friendChipT}>{t('friends.already')}</Text>
-                  </View>
+                  <Text style={styles.friendLabel}>{t('friends.already')}</Text>
                 ) : row.relation === 'invited' ? (
                   <View style={styles.invited}>
                     <Text style={styles.invitedT}>{t('friends.invited')}</Text>
@@ -135,8 +162,18 @@ export default function FriendSearchScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40, gap: 10 },
+  pad: { paddingHorizontal: 20, paddingTop: 10, paddingBottom: 40, gap: 10 },
+  searchRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  back: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   search: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
@@ -151,6 +188,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: brand.ink,
   },
+  chips: { flexDirection: 'row', gap: 8, paddingVertical: 2 },
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: brand.creamDeep,
+  },
+  chipOn: { backgroundColor: brand.accent },
+  chipT: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  chipTOn: { color: '#FFFFFF' },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -162,29 +213,24 @@ const styles = StyleSheet.create({
   copy: { flex: 1, minWidth: 0 },
   name: { fontFamily: fonts.bodySemi, fontSize: 14, color: brand.ink },
   meta: { fontFamily: fonts.body, fontSize: 12, color: brand.muted, marginTop: 2 },
-  already: { fontFamily: fonts.bodySemi, fontSize: 13, color: brand.accent },
-  friendChip: {
-    borderRadius: 999,
-    backgroundColor: brand.accentTint,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  friendChipT: {
+  friendLabel: {
     fontFamily: fonts.bodySemi,
-    fontSize: 12,
+    fontSize: 13,
     color: brand.accent,
   },
   invited: {
-    borderRadius: 10,
-    backgroundColor: brand.creamDeep,
+    borderRadius: brand.radius.pill,
+    borderWidth: 1.5,
+    borderColor: brand.accent,
+    backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 8,
   },
-  invitedT: { fontFamily: fonts.body, fontSize: 12, color: brand.muted },
+  invitedT: { fontFamily: fonts.bodySemi, fontSize: 12, color: brand.accent },
   add: {
     backgroundColor: brand.accent,
-    borderRadius: 10,
-    height: 32,
+    borderRadius: brand.radius.pill,
+    height: 34,
     paddingHorizontal: 14,
     alignItems: 'center',
     justifyContent: 'center',

@@ -19,7 +19,6 @@ import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { Section } from '@/src/components/Section';
 import { SegmentedControl } from '@/src/components/SegmentedControl';
-import { getScoreTone, SCORE_COLORS } from '@/src/constants/analysis';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
 import { isNativeSafeImageUri } from '@/src/lib/image';
@@ -40,7 +39,7 @@ import {
 import { deleteScan, listScans } from '@/src/services/scans';
 import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
-import type { PetSpecies, ScanRow } from '@/src/types/scan';
+import type { ScanRow } from '@/src/types/scan';
 import type { PlantToxicityLevel } from '@/src/types/plant';
 
 type Mode = 'new' | 'history';
@@ -245,11 +244,7 @@ export default function JournalScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader
-        trailing="bell"
-        bellCount={3}
-        onBellPress={() => router.push('/(app)/notifications' as never)}
-      />
+      <AppChromeHeader />
       <View style={styles.header}>
         <Text style={styles.title}>{t('tabs.scan')}</Text>
 
@@ -347,8 +342,6 @@ export default function JournalScreen() {
           renderItem={({ item: row }) => {
             if (row.type === 'food') {
               const item = row.item;
-              const tone = getScoreTone(item.score);
-              const color = SCORE_COLORS[tone];
               const petName =
                 pets.find((p) => p.favorite_product_id === item.product_id)
                   ?.name ?? pets[0]?.name;
@@ -391,10 +384,8 @@ export default function JournalScreen() {
                       {formatRelativeAgo(item.created_at)}
                     </Text>
                   </View>
-                  <View
-                    style={[styles.badge, { backgroundColor: `${color}22` }]}
-                  >
-                    <Text style={[styles.badgeText, { color }]}>
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>
                       {scoreOutOfFive(item.score)}
                     </Text>
                   </View>

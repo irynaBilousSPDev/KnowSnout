@@ -106,11 +106,11 @@ export default function MyProfileScreen() {
               </View>
               <View style={styles.count}>
                 <Text style={styles.countN}>64</Text>
-                <Text style={styles.countL}>{t('friends.title')}</Text>
+                <Text style={styles.countL}>{t('profile.statFriends')}</Text>
               </View>
               <View style={styles.count}>
                 <Text style={styles.countN}>{Math.max(pets.length, 3)}</Text>
-                <Text style={styles.countL}>{t('tabs.pets')}</Text>
+                <Text style={styles.countL}>{t('profile.statPets')}</Text>
               </View>
             </View>
           </View>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 14,
+    paddingTop: 12,
     paddingBottom: 6,
   },
   headSpacer: { width: 72 },
@@ -254,7 +254,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: brand.ink,
   },
-  headIcons: { width: 72, flexDirection: 'row', justifyContent: 'flex-end', gap: 8 },
+  headIcons: {
+    width: 72,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 8,
+  },
   iconBtn: {
     width: 34,
     height: 34,
@@ -264,28 +269,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pad: { paddingHorizontal: 20, paddingBottom: 40, gap: 8 },
-  hero: { flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 8 },
+  hero: { flexDirection: 'row', alignItems: 'center', gap: 16, marginTop: 6 },
   counts: { flex: 1, flexDirection: 'row', justifyContent: 'space-around' },
-  count: { alignItems: 'center' },
-  countN: { fontFamily: fonts.title, fontSize: 17, color: brand.ink },
+  count: { alignItems: 'center', gap: 2 },
+  countN: { fontFamily: fonts.title, fontSize: 18, color: brand.ink },
   countL: { fontFamily: fonts.body, fontSize: 11, color: brand.muted },
-  name: { fontFamily: fonts.title, fontSize: 16, color: brand.ink, marginTop: 8 },
-  handle: { fontFamily: fonts.body, fontSize: 12.5, color: brand.muted },
-  section: {
-    marginTop: 14,
+  name: {
     fontFamily: fonts.title,
-    fontSize: 13,
+    fontSize: 17,
+    color: brand.ink,
+    marginTop: 10,
+  },
+  handle: { fontFamily: fonts.body, fontSize: 13, color: brand.muted },
+  section: {
+    marginTop: 16,
+    fontFamily: fonts.title,
+    fontSize: 14,
     color: brand.ink,
   },
   sectionRow: {
-    marginTop: 14,
+    marginTop: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  link: { fontFamily: fonts.bodyBold, fontSize: 11.5, color: brand.accent },
+  link: { fontFamily: fonts.bodyBold, fontSize: 12, color: brand.accent },
   card: {
-    borderRadius: 16,
+    borderRadius: 18,
     backgroundColor: brand.surfaceElevated,
     overflow: 'hidden',
   },
@@ -293,37 +303,40 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
-  rowBorder: { borderTopWidth: 1, borderTopColor: brand.divider },
-  rowL: { fontFamily: fonts.body, fontSize: 12.5, color: brand.muted },
-  rowV: { fontFamily: fonts.bodySemi, fontSize: 12.5, color: brand.ink },
+  rowBorder: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: brand.divider },
+  rowL: { fontFamily: fonts.body, fontSize: 13, color: brand.muted },
+  rowV: { fontFamily: fonts.bodySemi, fontSize: 13, color: brand.ink },
   plusChip: {
     borderRadius: 999,
     backgroundColor: brand.accentTint,
     paddingHorizontal: 10,
-    paddingVertical: 3,
+    paddingVertical: 4,
   },
-  plusT: { fontFamily: fonts.bodySemi, fontSize: 11, color: brand.accent },
-  petRow: { flexDirection: 'row', gap: 8, paddingVertical: 4 },
+  plusT: { fontFamily: fonts.bodySemi, fontSize: 12, color: brand.accent },
+  petRow: { flexDirection: 'row', gap: 10, paddingVertical: 4 },
   petCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 9,
-    borderRadius: 14,
+    gap: 10,
+    borderRadius: 16,
     backgroundColor: brand.surfaceElevated,
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    minWidth: 148,
   },
-  petName: { fontFamily: fonts.bodyBold, fontSize: 12, color: brand.ink },
-  petMeta: { fontFamily: fonts.body, fontSize: 10.5, color: brand.muted },
+  petName: { fontFamily: fonts.bodyBold, fontSize: 13, color: brand.ink },
+  petMeta: { fontFamily: fonts.body, fontSize: 11, color: brand.muted },
   friendCard: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    borderRadius: 14,
+    borderRadius: 16,
     backgroundColor: brand.surfaceElevated,
-    padding: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
   },
-  friendName: { fontFamily: fonts.bodyBold, fontSize: 13, color: brand.ink },
+  friendName: { fontFamily: fonts.bodyBold, fontSize: 14, color: brand.ink },
 });

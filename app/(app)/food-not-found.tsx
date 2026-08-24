@@ -79,7 +79,7 @@ export default function FoodNotFoundScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader trailing="bell" bellCount={3} />
+      <AppChromeHeader />
       <ScrHeader title={t('foodMissing.title')} titleSize={18} />
       <ScrollView
         contentContainerStyle={styles.scroll}
@@ -199,24 +199,27 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    padding: 12,
+    padding: 14,
     marginBottom: 10,
     gap: 12,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   thumb: {
-    width: 48,
-    height: 48,
-    borderRadius: 10,
+    width: 52,
+    height: 52,
+    borderRadius: 12,
     backgroundColor: brand.creamDeep,
   },
   cardCopy: { flex: 1 },
   cardTitle: {
     fontFamily: fonts.bodyBold,
-    fontSize: 14,
+    fontSize: 13.5,
     color: brand.ink,
   },
   cardMeta: {
@@ -226,15 +229,15 @@ const styles = StyleSheet.create({
     color: brand.muted,
   },
   badge: {
-    borderRadius: 10,
-    backgroundColor: brand.successTint,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.accentTint,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
   },
   badgeText: {
     fontFamily: fonts.bodyBold,
     fontSize: 13,
-    color: brand.successDark,
+    color: brand.accentDark,
   },
   skip: {
     marginTop: 28,

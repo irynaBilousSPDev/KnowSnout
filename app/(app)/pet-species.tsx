@@ -83,11 +83,7 @@ export default function PetSpeciesScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader
-        trailing="bell"
-        bellCount={3}
-        onBellPress={() => router.push('/(app)/notifications' as never)}
-      />
+      <AppChromeHeader />
       <View style={styles.topBar}>
         <Pressable onPress={() => router.back()} hitSlop={8}>
           <Text style={styles.cancel}>{t('common.cancel')}</Text>
@@ -184,8 +180,8 @@ const styles = StyleSheet.create({
     minHeight: 88,
   },
   cardActive: {
-    borderColor: brand.logoGreen,
-    backgroundColor: brand.successTint,
+    borderColor: brand.accent,
+    backgroundColor: brand.accentTint,
   },
   cardTitle: {
     fontFamily: fonts.bodyBold,
@@ -201,8 +197,8 @@ const styles = StyleSheet.create({
   },
   info: {
     marginTop: 16,
-    borderRadius: 14,
-    backgroundColor: brand.successTint,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
     padding: 14,
   },
   infoText: {

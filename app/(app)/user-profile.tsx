@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
@@ -33,7 +34,7 @@ const DEMO_PETS = [
   { name: 'Мурчик', meta: 'Кіт · 7 р.' },
 ];
 
-/** Screenshot 04.12 */
+/** Screenshot 04.12 — pixel: pills, underline tabs, 3-col dashed grid */
 export default function UserProfileScreen() {
   const { userId } = useLocalSearchParams<{ userId?: string }>();
   const [user, setUser] = useState<FriendUser | null>(null);
@@ -89,6 +90,8 @@ export default function UserProfileScreen() {
     );
   }
 
+  const postSlots = Array.from({ length: 6 }, (_, i) => posts[i] ?? null);
+
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
@@ -96,8 +99,8 @@ export default function UserProfileScreen() {
         title={t('profile.title')}
         titleSize={18}
         right={
-          <Pressable style={styles.more}>
-            <Text style={styles.moreT}>⋯</Text>
+          <Pressable style={styles.more} accessibilityRole="button">
+            <Ionicons name="ellipsis-horizontal" size={16} color={brand.ink} />
           </Pressable>
         }
       />
@@ -106,7 +109,7 @@ export default function UserProfileScreen() {
           <View style={styles.hero}>
             <UserAvatar
               avatarKey={user?.avatarKey}
-              size={76}
+              size={78}
               name={user?.name}
             />
             <View style={styles.counts}>
@@ -116,34 +119,43 @@ export default function UserProfileScreen() {
               </View>
               <View style={styles.count}>
                 <Text style={styles.countN}>128</Text>
-                <Text style={styles.countL}>{t('friends.title')}</Text>
+                <Text style={styles.countL}>{t('profile.statFriends')}</Text>
               </View>
               <View style={styles.count}>
                 <Text style={styles.countN}>2</Text>
-                <Text style={styles.countL}>{t('tabs.pets')}</Text>
+                <Text style={styles.countL}>{t('profile.statPets')}</Text>
               </View>
             </View>
           </View>
 
-          <Text style={styles.name}>{user?.name}</Text>
-          <Text style={styles.bio}>{user?.bio}</Text>
+          <Text style={styles.name}>{user?.name ?? 'Оксана Мельник'}</Text>
+          <Text style={styles.bio}>
+            {user?.bio ||
+              'Волонтерка притулку «На Палюху». Кокер-спанієль і два коти вдома.'}
+          </Text>
+
           <View style={styles.pills}>
-            <View style={styles.pill}>
-              <Text style={styles.pillT}>📍 {user?.city ?? 'Варшава'}</Text>
+            <View style={[styles.pill, styles.pillRose]}>
+              <Ionicons name="location" size={11} color={brand.rose} />
+              <Text style={styles.pillRoseT}>
+                {user?.city ?? 'Варшава'}
+              </Text>
             </View>
             <View style={styles.pill}>
-              <Text style={styles.pillT}>🇺🇦 укр · 🇵🇱 пол</Text>
+              <Text style={styles.pillT}>{t('profile.langs')}</Text>
             </View>
-            <View style={[styles.pill, styles.pillMint]}>
-              <Text style={styles.pillMintT}>{t('profile.withUs')}</Text>
+            <View style={[styles.pill, styles.pillGreen]}>
+              <Text style={styles.pillGreenT}>{t('profile.withUs')}</Text>
             </View>
           </View>
 
           <View style={styles.actions}>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1.15 }}>
               <PrimaryButton
                 label={
-                  isFriend ? t('profile.alreadyFriend') : t('friends.addPlus')
+                  isFriend
+                    ? t('profile.alreadyFriend')
+                    : t('friends.addToFriends')
                 }
                 disabled={isFriend}
                 loading={busy}
@@ -178,20 +190,24 @@ export default function UserProfileScreen() {
           </View>
 
           <View style={styles.sectionRow}>
-            <Text style={styles.section}>{t('tabs.pets')}</Text>
+            <Text style={styles.section}>{t('profile.petsSection')}</Text>
             <Text style={styles.link}>{t('profile.allPets', { n: '2' })}</Text>
           </View>
-          <View style={styles.petRow}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.petRow}
+          >
             {DEMO_PETS.map((p) => (
               <View key={p.name} style={styles.petCard}>
-                <UserAvatar size={38} name={p.name} />
-                <View>
+                <UserAvatar size={40} name={p.name} />
+                <View style={styles.petCopy}>
                   <Text style={styles.petName}>{p.name}</Text>
                   <Text style={styles.petMeta}>{p.meta}</Text>
                 </View>
               </View>
             ))}
-          </View>
+          </ScrollView>
 
           <View style={styles.sectionRow}>
             <Text style={styles.section}>{t('profile.mutualFriends')}</Text>
@@ -204,7 +220,7 @@ export default function UserProfileScreen() {
                   key={i}
                   style={[styles.stackAv, { marginLeft: i === 0 ? 0 : -10 }]}
                 >
-                  <UserAvatar size={34} name={`F${i}`} />
+                  <UserAvatar size={32} name={`F${i}`} />
                 </View>
               ))}
             </View>
@@ -214,45 +230,52 @@ export default function UserProfileScreen() {
           <View style={styles.tabs}>
             {(
               [
-                { id: 'posts' as const, label: t('profile.statPosts') },
+                { id: 'posts' as const, label: t('profile.tabPosts') },
                 { id: 'tagged' as const, label: t('profile.tabTagged') },
                 { id: 'contests' as const, label: t('profile.tabContests') },
               ] as const
-            ).map((item) => (
-              <Pressable
-                key={item.id}
-                onPress={() => setTab(item.id)}
-                style={[styles.tab, tab === item.id && styles.tabOn]}
-              >
-                <Text style={[styles.tabT, tab === item.id && styles.tabTOn]}>
-                  {item.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-          {tab === 'posts' && posts.length === 0 ? (
-            <Text style={styles.empty}>{t('profile.postsEmpty')}</Text>
-          ) : null}
-          {tab === 'posts'
-            ? posts.slice(0, 6).map((p) => (
+            ).map((item) => {
+              const on = tab === item.id;
+              return (
                 <Pressable
-                  key={p.id}
-                  onPress={() =>
+                  key={item.id}
+                  onPress={() => setTab(item.id)}
+                  style={[styles.tab, on && styles.tabOn]}
+                >
+                  <Text style={[styles.tabT, on && styles.tabTOn]}>
+                    {item.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {tab === 'posts' ? (
+            <View style={styles.grid}>
+              {postSlots.map((p, i) => (
+                <Pressable
+                  key={p?.id ?? `slot-${i}`}
+                  onPress={() => {
+                    if (!p) return;
                     router.push({
                       pathname: '/(app)/story-post',
                       params: { postId: p.id },
-                    } as never)
-                  }
-                  style={styles.postCard}
+                    } as never);
+                  }}
+                  style={styles.gridCell}
                 >
-                  <Text style={styles.postCap} numberOfLines={2}>
-                    {p.caption}
-                  </Text>
+                  <Ionicons
+                    name="image-outline"
+                    size={22}
+                    color={brand.mutedSoft}
+                  />
+                  <Text style={styles.gridLabel}>{t('profile.postCell')}</Text>
                 </Pressable>
-              ))
-            : (
-              <Text style={styles.empty}>{t('profile.tabEmpty')}</Text>
-            )}
+              ))}
+            </View>
+          ) : (
+            <Text style={styles.empty}>{t('profile.tabEmpty')}</Text>
+          )}
         </View>
       </ScrollView>
     </AppScreen>
@@ -268,75 +291,138 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  moreT: { fontSize: 16, color: brand.ink },
-  pad: { paddingHorizontal: 20, paddingBottom: 40, gap: 8 },
-  hero: { flexDirection: 'row', alignItems: 'center', gap: 14 },
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 4,
+    paddingBottom: 40,
+    gap: 10,
+  },
+  hero: { flexDirection: 'row', alignItems: 'center', gap: 16 },
   counts: { flex: 1, flexDirection: 'row', justifyContent: 'space-around' },
-  count: { alignItems: 'center' },
-  countN: { fontFamily: fonts.title, fontSize: 17, color: brand.ink },
+  count: { alignItems: 'center', gap: 2 },
+  countN: {
+    fontFamily: fonts.title,
+    fontSize: 18,
+    color: brand.ink,
+  },
   countL: { fontFamily: fonts.body, fontSize: 11, color: brand.muted },
-  name: { fontFamily: fonts.title, fontSize: 16, color: brand.ink, marginTop: 4 },
+  name: {
+    fontFamily: fonts.title,
+    fontSize: 17,
+    color: brand.ink,
+    marginTop: 2,
+  },
   bio: {
     fontFamily: fonts.body,
-    fontSize: 12.5,
+    fontSize: 13,
     lineHeight: 19,
     color: brand.muted,
+    marginTop: -2,
   },
-  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 },
+  pills: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 2,
+  },
   pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     borderRadius: 999,
-    backgroundColor: brand.chipTrack,
+    backgroundColor: brand.creamDeep,
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 5,
   },
   pillT: { fontFamily: fonts.body, fontSize: 11, color: brand.ink },
-  pillMint: { backgroundColor: brand.accentTint },
-  pillMintT: { fontFamily: fonts.bodySemi, fontSize: 11, color: brand.accent },
-  actions: { flexDirection: 'row', gap: 8, marginTop: 8 },
+  pillRose: { backgroundColor: brand.roseTint },
+  pillRoseT: { fontFamily: fonts.bodySemi, fontSize: 11, color: brand.ink },
+  pillGreen: { backgroundColor: brand.accent },
+  pillGreenT: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
+    color: '#FFFFFF',
+  },
+  actions: { flexDirection: 'row', gap: 10, marginTop: 6 },
   sectionRow: {
-    marginTop: 12,
+    marginTop: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  section: { fontFamily: fonts.title, fontSize: 13, color: brand.ink },
-  link: { fontFamily: fonts.bodyBold, fontSize: 11.5, color: brand.accent },
-  petRow: { flexDirection: 'row', gap: 8 },
+  section: { fontFamily: fonts.title, fontSize: 14, color: brand.ink },
+  link: { fontFamily: fonts.bodyBold, fontSize: 12, color: brand.accent },
+  petRow: { flexDirection: 'row', gap: 10, paddingRight: 8 },
   petCard: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 9,
-    borderRadius: 14,
+    gap: 10,
+    borderRadius: 16,
     backgroundColor: brand.surfaceElevated,
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    minWidth: 148,
   },
-  petName: { fontFamily: fonts.bodyBold, fontSize: 12, color: brand.ink },
-  petMeta: { fontFamily: fonts.body, fontSize: 10.5, color: brand.muted },
-  mutual: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  petCopy: { gap: 1 },
+  petName: { fontFamily: fonts.bodyBold, fontSize: 13, color: brand.ink },
+  petMeta: { fontFamily: fonts.body, fontSize: 11, color: brand.muted },
+  mutual: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   stack: { flexDirection: 'row' },
   stackAv: {
-    borderRadius: 17,
+    borderRadius: 16,
     borderWidth: 2,
     borderColor: brand.canvas,
     overflow: 'hidden',
   },
-  mutualT: { flex: 1, fontFamily: fonts.body, fontSize: 12, color: brand.muted },
-  tabs: { flexDirection: 'row', gap: 6, marginTop: 8 },
+  mutualT: {
+    flex: 1,
+    fontFamily: fonts.body,
+    fontSize: 12.5,
+    color: brand.muted,
+  },
+  tabs: {
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: brand.divider,
+  },
   tab: {
-    borderRadius: 999,
-    backgroundColor: brand.chipTrack,
-    paddingHorizontal: 13,
-    paddingVertical: 5,
+    paddingHorizontal: 4,
+    paddingBottom: 10,
+    marginRight: 18,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
   },
-  tabOn: { backgroundColor: brand.accentTint },
-  tabT: { fontFamily: fonts.body, fontSize: 11.5, color: brand.muted },
+  tabOn: { borderBottomColor: brand.accent },
+  tabT: { fontFamily: fonts.body, fontSize: 13, color: brand.muted },
   tabTOn: { fontFamily: fonts.bodySemi, color: brand.accent },
-  empty: { fontFamily: fonts.body, fontSize: 13, color: brand.muted, marginTop: 8 },
-  postCard: {
-    borderRadius: 14,
-    backgroundColor: brand.surfaceElevated,
-    padding: 12,
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 4,
   },
-  postCap: { fontFamily: fonts.body, fontSize: 13, color: brand.ink },
+  gridCell: {
+    width: '31.5%',
+    aspectRatio: 1,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
+  gridLabel: {
+    fontFamily: fonts.body,
+    fontSize: 10,
+    color: brand.mutedSoft,
+  },
+  empty: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+    marginTop: 12,
+  },
 });

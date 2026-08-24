@@ -11,12 +11,13 @@ import {
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { LoadingState } from '@/src/components/LoadingState';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
 import { listDmThreads, type DmThread } from '@/src/services/dm';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** Screenshot 04.13 */
+/** Screenshot 04.13 — Чат список */
 export default function MessagesScreen() {
   const [threads, setThreads] = useState<DmThread[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,13 +49,11 @@ export default function MessagesScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('dm.title')} titleSize={18} />
       <FlatList
         data={threads}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
-        ListHeaderComponent={
-          <Text style={styles.title}>{t('dm.title')}</Text>
-        }
         renderItem={({ item }) => (
           <Pressable
             onPress={() =>
@@ -71,7 +70,7 @@ export default function MessagesScreen() {
           >
             <UserAvatar
               avatarKey={item.peer.avatarKey || 'paw'}
-              size={44}
+              size={46}
               name={item.peer.name}
             />
             <View style={styles.copy}>
@@ -89,6 +88,9 @@ export default function MessagesScreen() {
             )}
           </Pressable>
         )}
+        ListEmptyComponent={
+          <Text style={styles.empty}>{t('dm.empty')}</Text>
+        }
       />
     </AppScreen>
   );
@@ -97,49 +99,51 @@ export default function MessagesScreen() {
 const styles = StyleSheet.create({
   list: {
     paddingHorizontal: 20,
-    paddingTop: 14,
+    paddingTop: 8,
     paddingBottom: 40,
     flexGrow: 1,
     gap: 10,
-  },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 20,
-    lineHeight: 26,
-    color: brand.ink,
-    marginBottom: 8,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    borderRadius: 16,
+    borderRadius: 18,
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 14,
   },
-  pressed: { opacity: 0.9 },
+  pressed: { opacity: 0.92 },
   copy: { flex: 1, minWidth: 0 },
   name: {
     fontFamily: fonts.bodyBold,
-    fontSize: 13,
+    fontSize: 14,
     color: brand.ink,
   },
   preview: {
-    marginTop: 2,
+    marginTop: 3,
     fontFamily: fonts.body,
-    fontSize: 12,
+    fontSize: 13,
     color: brand.muted,
   },
   time: {
     fontFamily: fonts.body,
-    fontSize: 11,
+    fontSize: 12,
     color: brand.mutedSoft,
+    alignSelf: 'flex-start',
+    marginTop: 2,
   },
   unread: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 9,
+    height: 9,
+    borderRadius: 5,
     backgroundColor: brand.accent,
+  },
+  empty: {
+    marginTop: 24,
+    textAlign: 'center',
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.muted,
   },
 });

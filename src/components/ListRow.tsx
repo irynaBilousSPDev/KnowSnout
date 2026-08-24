@@ -8,6 +8,8 @@ type Props = {
   title: string;
   subtitle?: string | null;
   meta?: string | null;
+  /** Default accent; success matches hub “Актуально” green. */
+  metaTone?: 'accent' | 'success';
   leading?: ReactNode;
   trailing?: ReactNode;
   onPress?: () => void;
@@ -20,6 +22,7 @@ export function ListRow({
   title,
   subtitle,
   meta,
+  metaTone = 'accent',
   leading,
   trailing,
   onPress,
@@ -39,7 +42,13 @@ export function ListRow({
           </Text>
         ) : null}
         {meta ? (
-          <Text style={styles.meta} numberOfLines={1}>
+          <Text
+            style={[
+              styles.meta,
+              metaTone === 'success' && styles.metaSuccess,
+            ]}
+            numberOfLines={1}
+          >
             {meta}
           </Text>
         ) : null}
@@ -112,6 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: brand.accentDark,
   },
+  metaSuccess: { color: brand.successDark },
   trailing: {
     marginLeft: 8,
     flexDirection: 'row',

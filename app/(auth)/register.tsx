@@ -1,15 +1,15 @@
-import { Link, Redirect, router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { AuthShell } from '@/src/components/AuthShell';
 import { AuthTextField } from '@/src/components/AuthTextField';
-import { GradientButton } from '@/src/components/GradientButton';
+import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** Screenshot 01.04 · Реєстрація. */
+/** 01.04 · Реєстрація. */
 export default function RegisterScreen() {
   const { user, loading: authLoading, signUp } = useAuth();
   const [displayName, setDisplayName] = useState('');
@@ -47,29 +47,6 @@ export default function RegisterScreen() {
     <AuthShell
       headline={t('auth.registerTitle')}
       onBack={() => router.replace('/(auth)/login')}
-      footer={
-        <View style={styles.footer}>
-          <Text style={styles.legal}>
-            {t('auth.legalPrefix')}
-            <Text style={styles.legalLink}>{t('auth.legalTerms')}</Text>
-            {t('auth.legalAnd')}
-            <Text style={styles.legalLink}>{t('auth.legalPrivacy')}</Text>
-          </Text>
-          <GradientButton
-            label={t('auth.register')}
-            onPress={() => void onSubmit()}
-            loading={loading}
-          />
-          <Link href="/(auth)/login" asChild>
-            <Pressable style={styles.linkWrap} accessibilityRole="link">
-              <Text style={styles.linkMuted}>
-                {t('auth.haveAccount')}{' '}
-                <Text style={styles.linkStrong}>{t('auth.signIn')}</Text>
-              </Text>
-            </Pressable>
-          </Link>
-        </View>
-      }
     >
       <AuthTextField
         label={t('auth.displayName')}
@@ -97,28 +74,31 @@ export default function RegisterScreen() {
         onSubmitEditing={() => void onSubmit()}
       />
 
+      <Text style={styles.legal}>
+        {t('auth.legalPrefix')}
+        <Text style={styles.legalLink}>{t('auth.legalTerms')}</Text>
+        {t('auth.legalAnd')}
+        <Text style={styles.legalLink}>{t('auth.legalPrivacy')}</Text>
+      </Text>
+
       {error ? (
         <View style={styles.errorBox}>
           <Text style={styles.errorText}>{error}</Text>
         </View>
       ) : null}
+
+      <PrimaryButton
+        label={t('auth.register')}
+        onPress={() => void onSubmit()}
+        loading={loading}
+        size="md"
+        style={styles.cta}
+      />
     </AuthShell>
   );
 }
 
 const styles = StyleSheet.create({
-  footer: { gap: 12 },
-  linkWrap: { paddingVertical: 4 },
-  linkMuted: {
-    textAlign: 'center',
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.muted,
-  },
-  linkStrong: {
-    fontFamily: fonts.bodyBold,
-    color: brand.accentDark,
-  },
   legal: {
     fontFamily: fonts.body,
     fontSize: 11.5,
@@ -130,6 +110,7 @@ const styles = StyleSheet.create({
     color: brand.accentDark,
     textDecorationLine: 'underline',
   },
+  cta: { marginTop: 4 },
   errorBox: {
     paddingHorizontal: 14,
     paddingVertical: 12,

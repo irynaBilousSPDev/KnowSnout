@@ -367,7 +367,6 @@ export default function PetProfileScreen() {
     .filter(Boolean)
     .join('\n\n');
   const isShelter = pet.origin === 'shelter';
-  const isBreeder = pet.origin === 'breeder';
   const wingspan =
     pet.extras?.wingspan_cm != null
       ? String(pet.extras.wingspan_cm)
@@ -378,11 +377,7 @@ export default function PetProfileScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader
-        trailing="bell"
-        bellCount={3}
-        onBellPress={() => router.push('/(app)/notifications' as never)}
-      />
+      <AppChromeHeader />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
@@ -450,18 +445,18 @@ export default function PetProfileScreen() {
           <View
             style={[
               styles.chip,
-              isShelter || isBreeder ? styles.chipGood : styles.chipNeutral,
+              isShelter ? styles.chipGood : styles.chipNeutral,
             ]}
           >
             <Text
               style={[
                 styles.chipText,
-                isShelter || isBreeder ? styles.chipTextGood : null,
+                isShelter ? styles.chipTextGood : null,
               ]}
             >
               {isShelter
                 ? t('pets.originShelter')
-                : isBreeder
+                : pet.origin === 'breeder'
                   ? t('pets.originBreeder')
                   : t('pets.originHome')}
             </Text>
@@ -996,8 +991,8 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
     shadowColor: brand.shadow.color,
     shadowOpacity: brand.shadow.opacity,
     shadowRadius: brand.shadow.radius,
@@ -1034,7 +1029,7 @@ const styles = StyleSheet.create({
     gap: 12,
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 14,
     shadowColor: brand.shadow.color,
     shadowOpacity: brand.shadow.opacity,
@@ -1057,15 +1052,15 @@ const styles = StyleSheet.create({
   },
   chip: {
     borderRadius: brand.radius.pill,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   chipGood: { backgroundColor: brand.successTint },
   chipNeutral: { backgroundColor: brand.chipTrack },
   chipText: {
-    fontFamily: fonts.bodySemi,
-    fontSize: 11,
-    color: brand.muted,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.ink,
   },
   chipTextGood: { color: brand.successDark },
   fact: { marginBottom: 12 },

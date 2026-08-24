@@ -213,7 +213,7 @@ export default function PlantResultScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader trailing="bell" bellCount={3} />
+      <AppChromeHeader />
       <ScrHeader title={t('plants.resultTitle')} titleSize={18} />
       <ScrollView
         contentContainerStyle={styles.scroll}
@@ -261,12 +261,12 @@ export default function PlantResultScreen() {
               <Ionicons
                 name={safe ? 'checkmark' : 'warning-outline'}
                 size={17}
-                color={safe ? brand.successDark : brand.error}
+                color={safe ? brand.successDark : brand.accentDark}
               />
               <Text
                 style={[
                   styles.toxText,
-                  { color: safe ? brand.successDark : brand.ink },
+                  { color: safe ? brand.successDark : brand.accentDark },
                 ]}
               >
                 {cardTitle(card)}
@@ -275,19 +275,32 @@ export default function PlantResultScreen() {
           );
         })}
 
-        <PrimaryButton
-          label={t('plants.saveToHistory')}
-          variant="secondary"
-          onPress={() => router.replace('/(app)/(tabs)/history')}
-        />
-        <PrimaryButton
-          label={t('plants.attachToPet')}
-          onPress={() => router.push('/(app)/(tabs)/pets')}
-        />
+        <View style={styles.actions}>
+          <View style={styles.actionHalf}>
+            <PrimaryButton
+              label={t('plants.saveToHistory')}
+              variant="secondary"
+              onPress={() => router.replace('/(app)/(tabs)/history')}
+            />
+          </View>
+          <View style={styles.actionHalf}>
+            <PrimaryButton
+              label={t('plants.attachToPet')}
+              onPress={() => router.push('/(app)/(tabs)/pets')}
+            />
+          </View>
+        </View>
 
-        <Text style={styles.disclaimerSolo}>
-          {t('plants.disclaimerShort')}
-        </Text>
+        <View style={styles.disclaimerRow}>
+          <Ionicons
+            name="information-circle-outline"
+            size={12}
+            color={brand.mutedSoft}
+          />
+          <Text style={styles.disclaimerSolo}>
+            {t('plants.disclaimerShort')}
+          </Text>
+        </View>
       </ScrollView>
     </AppScreen>
   );
@@ -303,12 +316,12 @@ const styles = StyleSheet.create({
   photo: {
     width: '100%',
     height: 160,
-    borderRadius: brand.radius.lg,
+    borderRadius: 18,
     backgroundColor: brand.creamDeep,
   },
   photoEmpty: {
-    height: 120,
-    borderRadius: brand.radius.lg,
+    height: 160,
+    borderRadius: 18,
     borderWidth: 1,
     borderStyle: 'dashed',
     borderColor: brand.mistBorder,
@@ -349,7 +362,7 @@ const styles = StyleSheet.create({
     backgroundColor: brand.successTint,
   },
   toxCardRisk: {
-    backgroundColor: brand.roseTint,
+    backgroundColor: brand.accentTint,
   },
   toxText: {
     flex: 1,
@@ -357,11 +370,21 @@ const styles = StyleSheet.create({
     fontSize: 13.5,
     lineHeight: 18,
   },
+  actions: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  actionHalf: { flex: 1 },
+  disclaimerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+    marginTop: 4,
+  },
   disclaimerSolo: {
-    marginTop: 8,
-    textAlign: 'center',
+    flex: 1,
     fontFamily: fonts.body,
-    fontSize: 11,
+    fontSize: 10.5,
     lineHeight: 15,
     color: brand.mutedSoft,
   },

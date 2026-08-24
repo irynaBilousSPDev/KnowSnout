@@ -102,7 +102,7 @@ export default function ResultScreen() {
   if (!pending?.result || !view) {
     return (
       <AppScreen>
-        <AppChromeHeader trailing="bell" bellCount={3} />
+        <AppChromeHeader />
         <ErrorState
           title={t('result.noResultTitle')}
           message={t('result.noResultBody')}
@@ -158,7 +158,7 @@ export default function ResultScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader trailing="bell" bellCount={3} />
+      <AppChromeHeader />
       <ScrHeader
         title={t('result.navTitle')}
         titleSize={18}
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    borderRadius: 16,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.successTint,
     padding: 14,
     marginBottom: 18,
@@ -409,6 +409,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   scoreNum: {
     fontFamily: fonts.bodyBold,
@@ -533,16 +538,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   speciesChip: {
-    borderRadius: 20,
+    borderRadius: brand.radius.pill,
     backgroundColor: brand.creamDeep,
     paddingHorizontal: 14,
     paddingVertical: 8,
   },
-  speciesActive: { backgroundColor: brand.accent },
+  speciesActive: { backgroundColor: brand.successTint },
   speciesText: {
     fontFamily: fonts.bodySemi,
     fontSize: 12,
     color: brand.ink,
   },
-  speciesTextActive: { color: '#fff' },
+  speciesTextActive: { color: brand.successDark },
 });

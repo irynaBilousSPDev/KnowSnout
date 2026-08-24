@@ -8,13 +8,13 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { confirmAction } from '@/src/lib/confirm';
 import { notify } from '@/src/lib/notify';
 import { t } from '@/src/i18n';
@@ -128,22 +128,23 @@ export default function PetHabitsScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader
+        title={t('habits.titleFor', { name: pet.name })}
+        titleSize={19}
+        right={
+          <Pressable
+            onPress={() => setComposeOpen((v) => !v)}
+            style={styles.addCircle}
+            accessibilityRole="button"
+            accessibilityLabel={t('habits.add')}
+          >
+            <Text style={styles.addPlus}>+</Text>
+          </Pressable>
+        }
+      />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <View style={styles.headerRow}>
-            <Text style={styles.title}>
-              {t('habits.titleFor', { name: pet.name })}
-            </Text>
-            <Pressable
-              onPress={() => setComposeOpen((v) => !v)}
-              style={styles.addCircle}
-              accessibilityRole="button"
-              accessibilityLabel={t('habits.add')}
-            >
-              <Ionicons name="add" size={22} color={brand.ink} />
-            </Pressable>
-          </View>
-
           {composeOpen ? (
             <View style={styles.form}>
               <TextInput
@@ -238,27 +239,20 @@ export default function PetHabitsScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 14,
-  },
-  title: {
-    flex: 1,
-    fontFamily: fonts.title,
-    fontSize: 19,
-    lineHeight: 24,
-    color: brand.ink,
-  },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
   addCircle: {
     height: 34,
     width: 34,
     borderRadius: 17,
-    backgroundColor: brand.chipTrack,
+    backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  addPlus: {
+    fontFamily: fonts.body,
+    fontSize: 20,
+    lineHeight: 22,
+    color: brand.ink,
   },
   form: {
     marginBottom: 18,
@@ -335,14 +329,18 @@ const styles = StyleSheet.create({
   },
   chip: {
     borderRadius: brand.radius.pill,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   chipGood: { backgroundColor: brand.successTint },
-  chipWarn: { backgroundColor: brand.terracottaTint },
-  chipText: { fontFamily: fonts.bodySemi, fontSize: 11 },
+  chipWarn: { backgroundColor: brand.accentTint },
+  chipText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.ink,
+  },
   chipTextGood: { color: brand.successDark },
-  chipTextWarn: { color: brand.terracotta },
+  chipTextWarn: { color: brand.accentDark },
   empty: {
     marginBottom: 8,
     fontFamily: fonts.body,

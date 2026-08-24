@@ -3,20 +3,22 @@
 Source: `docs/design/*.pdf` · Organic PDF visual active · Variant 12 colors later  
 Admin = Wave 7 (last).
 
-## Visual pass (Organic PDF · 2026-08-21)
+## Visual pass (brand kit · screenshots · 2026-08-24)
 
 | Module | visual |
 |--|--|
-| Design system (tokens, fonts Caprasimo/Figtree, ListRow, HubHero, auth shell) | organic |
-| Вхід і Перевір | organic |
-| Улюбленці | organic |
-| Стрічка / Spotlight / friends | organic |
-| Спільнота (quiz / forum / blog) | organic |
-| Профіль і службові | organic |
-| Довідники | organic |
-| Адмінка | organic |
+| Design system (tokens Manrope/Inter, PrimaryButton pill, AuthShell) | brand |
+| 01 Вхід і онбординг | brand |
+| 02 Перевір | brand |
+| 03 Улюбленці | brand |
+| 04 Стрічка / Spotlight / friends | brand |
+| Спільнота (quiz / forum / blog) | organic → next |
+| Профіль і службові | organic → next |
+| Довідники | organic → next |
+| Адмінка | later |
 
-Status: `organic` | `stub` | `missing` · Variant 12 remap = later
+Status: `brand` = matched to brandbook + user/HTML screens · `organic` = old pass · next = when screenshots arrive  
+**Header locked:** do not remap `AppChromeHeader` per-screen.
 
 ## Navigation (Wave 0)
 

@@ -321,7 +321,7 @@ export default function PetVetLogScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 },
+  header: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 8 },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -401,12 +401,12 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     flexShrink: 0,
   },
-  chipWarn: { backgroundColor: brand.terracottaTint },
+  chipWarn: { backgroundColor: brand.accentTint },
   chipGood: { backgroundColor: brand.successTint },
   typeChipText: {
-    fontFamily: fonts.bodySemi,
-    fontSize: 11,
-    color: brand.terracotta,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.accentDark,
   },
   typeChipTextGood: { color: brand.successDark },
   cardCopy: { flex: 1, minWidth: 0 },

@@ -59,12 +59,7 @@ export default function OnboardingScreen() {
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safe} edges={['bottom']}>
-        <AppChromeHeader
-          trailing="bell"
-          bellCount={3}
-          onBrandPress={() => undefined}
-          onBellPress={() => undefined}
-        />
+        <AppChromeHeader onBrandPress={() => undefined} />
         <View style={styles.skipRow}>
           <Pressable onPress={() => void finish()} disabled={saving}>
             <Text style={styles.skip}>{t('onboarding.skip')}</Text>
@@ -89,13 +84,13 @@ export default function OnboardingScreen() {
               label={t('onboarding.done')}
               onPress={() => void finish()}
               loading={saving}
-              size="lg"
+              size="md"
             />
           ) : (
             <PrimaryButton
               label={t('onboarding.next')}
               onPress={() => setStep((s) => Math.min(s + 1, STEPS.length - 1))}
-              size="lg"
+              size="md"
             />
           )}
         </View>

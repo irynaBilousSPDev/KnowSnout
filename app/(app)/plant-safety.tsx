@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   View,
@@ -24,12 +25,11 @@ import {
   checkPlantByName,
   identifyPlantFromPhoto,
   listPlantsCatalog,
-  plantLevelTone,
   savePlantCheck,
   searchPlants,
 } from '@/src/services/plants';
 import { PLANTS_SEED_COUNT } from '@/src/data/plantsSeed';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 import type {
   PlantCheckResult,
@@ -56,25 +56,38 @@ function levelLabel(level: PlantToxicityLevel) {
 }
 
 function ResultCard({ result }: { result: PlantCheckResult }) {
-  const tone = plantLevelTone(result.level);
+  const safe = result.level === 'safe';
   return (
-    <View className={`mt-4 rounded-3xl border px-5 py-5 ${tone.bg} ${tone.border}`}>
-      <Text className={`font-body-bold text-lg ${tone.text}`}>
+    <View
+      style={[
+        styles.resultCard,
+        safe ? styles.resultSafe : styles.resultRisk,
+      ]}
+    >
+      <Text
+        style={[
+          styles.resultLevel,
+          { color: safe ? brand.successDark : brand.accentDark },
+        ]}
+      >
         {levelLabel(result.level)}
       </Text>
-      <Text className="mt-2 font-body-bold text-base text-forest-900">
-        {result.plant.name_uk}
-      </Text>
-      <Text className="mt-1 font-body text-sm text-forest-600">
+      <Text style={styles.resultName}>{result.plant.name_uk}</Text>
+      <Text style={styles.resultLatin}>
         {result.plant.latin}
         {result.plant.name_en ? ` · ${result.plant.name_en}` : ''}
       </Text>
       {result.notes ? (
-        <Text className={`mt-3 font-body text-base leading-6 ${tone.text}`}>
+        <Text
+          style={[
+            styles.resultNotes,
+            { color: safe ? brand.successDark : brand.accentDark },
+          ]}
+        >
           {result.notes}
         </Text>
       ) : null}
-      <Text className="mt-3 font-body text-xs text-forest-500">
+      <Text style={styles.resultMeta}>
         {t('plants.forSpecies', {
           species:
             result.forSpecies === 'cat'
@@ -231,7 +244,7 @@ export default function PlantSafetyScreen() {
   if (error) {
     return (
       <AppScreen>
-        <AppChromeHeader trailing="bell" bellCount={3} />
+        <AppChromeHeader />
         <ErrorState message={error} onRetry={() => void load()} />
       </AppScreen>
     );
@@ -239,28 +252,24 @@ export default function PlantSafetyScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader trailing="bell" bellCount={3} />
-      <ScrHeader title={t('plants.title')} />
+      <AppChromeHeader />
+      <ScrHeader title={t('plants.title')} titleSize={18} />
       <ScrollView
-        contentContainerClassName="px-5 pb-12 pt-2"
+        contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
-        <Text className="font-body text-base leading-6 text-forest-600">
-          {t('plants.subtitle')}
-        </Text>
-        <Text className="mt-1 font-body text-xs text-forest-500">
+        <Text style={styles.subtitle}>{t('plants.subtitle')}</Text>
+        <Text style={styles.hint}>
           {t('plants.catalogHint', { count: String(catalogCount) })}
         </Text>
         {pet ? (
-          <Text className="mt-2 font-body-bold text-base text-forest-800">
+          <Text style={styles.forPet}>
             {t('plants.forPet', { name: pet.name })}
           </Text>
         ) : null}
 
-        <Text className="mb-2 mt-5 font-body-bold text-sm text-forest-700">
-          {t('plants.speciesLabel')}
-        </Text>
-        <View className="mb-4 flex-row gap-2">
+        <Text style={styles.label}>{t('plants.speciesLabel')}</Text>
+        <View style={styles.speciesRow}>
           {(['dog', 'cat'] as PlantSpeciesTarget[]).map((s) => {
             const active = species === s;
             return (
@@ -271,16 +280,13 @@ export default function PlantSafetyScreen() {
                   setResult(null);
                   setSuggestions([]);
                 }}
-                className={`flex-1 rounded-2xl border px-3 py-3 ${
-                  active
-                    ? 'border-forest-700 bg-forest-700'
-                    : 'border-forest-100 bg-white'
-                }`}
+                style={[styles.speciesChip, active && styles.speciesActive]}
               >
                 <Text
-                  className={`text-center font-body-bold text-sm ${
-                    active ? 'text-white' : 'text-forest-800'
-                  }`}
+                  style={[
+                    styles.speciesText,
+                    active && styles.speciesTextActive,
+                  ]}
                 >
                   {s === 'cat' ? t('plants.speciesCat') : t('plants.speciesDog')}
                 </Text>
@@ -289,32 +295,26 @@ export default function PlantSafetyScreen() {
           })}
         </View>
 
-        <Text className="mb-2 font-body-bold text-sm text-forest-700">
-          {t('plants.searchLabel')}
-        </Text>
+        <Text style={styles.label}>{t('plants.searchLabel')}</Text>
         <TextInput
           value={query}
           onChangeText={(text) => void onSearchChange(text)}
           placeholder={t('plants.searchPlaceholder')}
-          placeholderTextColor="#9bbba5"
-          className="mb-2 rounded-2xl border border-forest-100 bg-white px-4 py-3 font-body text-base text-forest-900"
+          placeholderTextColor={brand.mutedSoft}
+          style={styles.input}
           autoCapitalize="none"
           autoCorrect={false}
         />
         {suggestions.length > 0 ? (
-          <View className="mb-3 overflow-hidden rounded-2xl border border-forest-100 bg-white">
+          <View style={styles.suggestBox}>
             {suggestions.map((s) => (
               <Pressable
                 key={s.plant.id}
                 onPress={() => void applyResult(s, query)}
-                className="border-b border-forest-50 px-4 py-3 last:border-b-0"
+                style={styles.suggestRow}
               >
-                <Text className="font-body-bold text-sm text-forest-900">
-                  {s.plant.name_uk}
-                </Text>
-                <Text className="font-body text-xs text-forest-500">
-                  {s.plant.latin}
-                </Text>
+                <Text style={styles.suggestTitle}>{s.plant.name_uk}</Text>
+                <Text style={styles.suggestMeta}>{s.plant.latin}</Text>
               </Pressable>
             ))}
           </View>
@@ -325,12 +325,10 @@ export default function PlantSafetyScreen() {
           disabled={busy}
         />
 
-        <Text className="mb-2 mt-6 font-body-bold text-sm text-forest-700">
+        <Text style={[styles.label, styles.labelGap]}>
           {t('plants.photoLabel')}
         </Text>
-        <Text className="mb-3 font-body text-sm leading-5 text-forest-500">
-          {t('plants.mockHint')}
-        </Text>
+        <Text style={styles.photoHint}>{t('plants.mockHint')}</Text>
         <PhotoAttachField
           label={t('plants.photoAttach')}
           uri={photoUri}
@@ -343,7 +341,7 @@ export default function PlantSafetyScreen() {
           filePrefix="plant"
           emptyHint={t('plants.photoEmpty')}
         />
-        <View className="mt-3">
+        <View style={styles.photoCta}>
           <PrimaryButton
             label={t('plants.checkPhoto')}
             onPress={() => void onCheckPhoto()}
@@ -353,26 +351,177 @@ export default function PlantSafetyScreen() {
         </View>
 
         {busy ? (
-          <View className="mt-4 flex-row items-center gap-2">
-            <ActivityIndicator color={brand.ink} />
-            <Text className="font-body text-sm text-forest-600">
-              {t('plants.checking')}
-            </Text>
+          <View style={styles.busyRow}>
+            <ActivityIndicator color={brand.accent} />
+            <Text style={styles.busyText}>{t('plants.checking')}</Text>
           </View>
         ) : null}
 
         {actionError ? (
-          <Text className="mt-4 font-body text-sm leading-5 text-score-poor">
-            {actionError}
-          </Text>
+          <Text style={styles.error}>{actionError}</Text>
         ) : null}
 
         {result ? <ResultCard result={result} /> : null}
 
-        <Text className="mt-6 font-body text-xs leading-5 text-forest-500">
-          {t('plants.disclaimer')}
-        </Text>
+        <Text style={styles.disclaimer}>{t('plants.disclaimer')}</Text>
       </ScrollView>
     </AppScreen>
   );
 }
+
+const styles = StyleSheet.create({
+  scroll: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 40,
+  },
+  subtitle: {
+    fontFamily: fonts.body,
+    fontSize: 15,
+    lineHeight: 22,
+    color: brand.muted,
+  },
+  hint: {
+    marginTop: 4,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  forPet: {
+    marginTop: 8,
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  label: {
+    marginTop: 18,
+    marginBottom: 8,
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.label,
+  },
+  labelGap: { marginTop: 22 },
+  speciesRow: { flexDirection: 'row', gap: 8, marginBottom: 4 },
+  speciesChip: {
+    flex: 1,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.chipTrack,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  speciesActive: { backgroundColor: brand.successTint },
+  speciesText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  speciesTextActive: { color: brand.successDark },
+  input: {
+    borderRadius: brand.radius.pill,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+    marginBottom: 10,
+  },
+  suggestBox: {
+    marginBottom: 10,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    overflow: 'hidden',
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
+  },
+  suggestRow: {
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: brand.mistBorder,
+  },
+  suggestTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  suggestMeta: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.muted,
+  },
+  photoHint: {
+    marginBottom: 10,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    lineHeight: 18,
+    color: brand.mutedSoft,
+  },
+  photoCta: { marginTop: 12 },
+  busyRow: {
+    marginTop: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  busyText: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  error: {
+    marginTop: 12,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.score.poor,
+  },
+  resultCard: {
+    marginTop: 16,
+    borderRadius: brand.radius.md,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  resultSafe: { backgroundColor: brand.successTint },
+  resultRisk: { backgroundColor: brand.accentTint },
+  resultLevel: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 16,
+  },
+  resultName: {
+    marginTop: 8,
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  resultLatin: {
+    marginTop: 2,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  resultNotes: {
+    marginTop: 10,
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  resultMeta: {
+    marginTop: 10,
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  disclaimer: {
+    marginTop: 22,
+    fontFamily: fonts.body,
+    fontSize: 11,
+    lineHeight: 16,
+    color: brand.mutedSoft,
+  },
+});

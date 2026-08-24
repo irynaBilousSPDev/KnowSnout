@@ -9,6 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
@@ -24,7 +25,7 @@ import {
 import { brand, fonts } from '@/src/theme/brand';
 import type { PetRow } from '@/src/types/pet';
 
-/** Screenshot 04.19 — HTML: dashed photo slot only (no gallery/camera row). */
+/** Screenshot 04.19 — Cancel / Заявка / Надіслати + dashed photo + pill fields */
 export default function SpotlightApplyScreen() {
   const { contestId: contestIdParam } = useLocalSearchParams<{
     contestId?: string;
@@ -102,11 +103,20 @@ export default function SpotlightApplyScreen() {
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
       <View style={styles.bar}>
-        <Pressable onPress={() => router.back()} hitSlop={8}>
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={8}
+          style={styles.barSide}
+        >
           <Text style={styles.cancel}>{t('common.cancel')}</Text>
         </Pressable>
         <Text style={styles.barTitle}>{t('spotlight.applyTitle')}</Text>
-        <Pressable onPress={() => void submit()} disabled={busy} hitSlop={8}>
+        <Pressable
+          onPress={() => void submit()}
+          disabled={busy}
+          hitSlop={8}
+          style={styles.barSide}
+        >
           <Text style={[styles.send, busy && styles.dim]}>
             {t('spotlight.submit')}
           </Text>
@@ -118,15 +128,24 @@ export default function SpotlightApplyScreen() {
             {photoUri ? (
               <Image source={{ uri: photoUri }} style={styles.photoImg} />
             ) : (
-              <Text style={styles.photoHint}>{t('spotlight.addPetPhoto')}</Text>
+              <>
+                <Ionicons
+                  name="image-outline"
+                  size={28}
+                  color={brand.mutedSoft}
+                />
+                <Text style={styles.photoHint}>{t('spotlight.addPetPhoto')}</Text>
+              </>
             )}
           </Pressable>
+
           <Text style={styles.label}>{t('spotlight.pickPet')}</Text>
           <View style={styles.input}>
             <Text style={styles.inputT}>
               {pets.find((p) => p.id === petId)?.name ?? 'Тукан'}
             </Text>
           </View>
+
           <Text style={styles.label}>{t('spotlight.photoCaption')}</Text>
           <TextInput
             value={caption}
@@ -146,51 +165,75 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 14,
+    paddingHorizontal: 16,
+    paddingTop: 12,
     paddingBottom: 8,
   },
-  cancel: { fontFamily: fonts.bodySemi, fontSize: 13, color: brand.muted },
+  barSide: { width: 88 },
+  cancel: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 14,
+    color: brand.muted,
+  },
   barTitle: {
+    flex: 1,
+    textAlign: 'center',
     fontFamily: fonts.title,
     fontSize: 18,
     color: brand.ink,
   },
-  send: { fontFamily: fonts.bodyBold, fontSize: 13, color: brand.accent },
+  send: {
+    textAlign: 'right',
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.accent,
+  },
   dim: { opacity: 0.45 },
-  pad: { paddingHorizontal: 20, paddingBottom: 40, gap: 12 },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40, gap: 10 },
   photoSlot: {
-    height: 200,
+    height: 210,
     borderRadius: 18,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: brand.mistBorder,
     backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 8,
     overflow: 'hidden',
+    marginBottom: 6,
   },
   photoImg: { width: '100%', height: '100%' },
-  photoHint: { fontFamily: fonts.body, fontSize: 13, color: brand.mutedSoft },
+  photoHint: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.mutedSoft,
+  },
   label: {
-    fontFamily: fonts.bodySemi,
+    marginTop: 6,
+    fontFamily: fonts.body,
     fontSize: 12.5,
-    color: brand.muted,
+    color: brand.mutedSoft,
   },
   input: {
-    borderRadius: 14,
+    borderRadius: brand.radius.pill,
     backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    minHeight: 46,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    minHeight: 48,
     justifyContent: 'center',
   },
-  inputT: { fontFamily: fonts.body, fontSize: 14, color: brand.ink },
+  inputT: { fontFamily: fonts.body, fontSize: 15, color: brand.ink },
   area: {
-    minHeight: 70,
+    minHeight: 88,
+    borderRadius: 20,
     alignItems: 'flex-start',
-    paddingTop: 12,
+    paddingTop: 14,
     textAlignVertical: 'top',
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
   },
 });

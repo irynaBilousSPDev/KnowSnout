@@ -99,7 +99,7 @@ export default function BreedResultScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader trailing="bell" bellCount={3} />
+      <AppChromeHeader />
       <ScrHeader title={t('breed.resultTitle')} titleSize={18} />
       <ScrollView
         contentContainerStyle={styles.scroll}
@@ -185,12 +185,12 @@ const styles = StyleSheet.create({
   photo: {
     width: '100%',
     height: 150,
-    borderRadius: brand.radius.lg,
+    borderRadius: 18,
     backgroundColor: brand.creamDeep,
   },
   photoEmpty: {
-    height: 120,
-    borderRadius: brand.radius.lg,
+    height: 150,
+    borderRadius: 18,
     borderWidth: 1,
     borderStyle: 'dashed',
     borderColor: brand.mistBorder,
@@ -227,14 +227,17 @@ const styles = StyleSheet.create({
   matchCard: {
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
     paddingHorizontal: 14,
     paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 10,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   matchName: {
     flex: 1,

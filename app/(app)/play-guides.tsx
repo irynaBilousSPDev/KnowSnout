@@ -7,6 +7,7 @@ import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import {
   getPlayPack,
   playPackForSpecies,
@@ -89,11 +90,12 @@ export default function PlayGuidesScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader
+        title={pet ? t('play.titleFor', { name: pet.name }) : t('play.title')}
+        titleSize={19}
+      />
       <ScrollView contentContainerStyle={styles.pad}>
-        <Text style={styles.title}>
-          {pet ? t('play.titleFor', { name: pet.name }) : t('play.title')}
-        </Text>
-
         {pet ? (
           <View style={styles.metaRow}>
             <View style={[styles.chip, styles.chipGood]}>
@@ -167,26 +169,19 @@ export default function PlayGuidesScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 19,
-    lineHeight: 24,
-    color: brand.ink,
-    marginBottom: 10,
-  },
+  pad: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 40 },
   metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
   chip: {
     borderRadius: brand.radius.pill,
     backgroundColor: brand.chipTrack,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   chipGood: { backgroundColor: brand.successTint },
   chipText: {
-    fontFamily: fonts.bodySemi,
-    fontSize: 11,
-    color: brand.muted,
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12.5,
+    color: brand.ink,
   },
   chipTextGood: { color: brand.successDark },
   seg: {
@@ -202,7 +197,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     minWidth: '30%',
     alignItems: 'center',
-    borderRadius: 12,
+    borderRadius: brand.radius.pill,
     paddingVertical: 10,
   },
   segOptOn: { backgroundColor: brand.accent },

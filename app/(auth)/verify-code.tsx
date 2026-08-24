@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { AuthShell } from '@/src/components/AuthShell';
+import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { requestPasswordReset, verifyResetCode } from '@/src/services/auth';
@@ -17,7 +18,7 @@ import { brand, fonts } from '@/src/theme/brand';
 const CODE_LEN = 6;
 const RESEND_SEC = 42;
 
-/** Screenshot 01.07 · Код із пошти. */
+/** 01.07 · Код із пошти. */
 export default function VerifyCodeScreen() {
   const params = useLocalSearchParams<{ email?: string }>();
   const email =
@@ -131,16 +132,12 @@ export default function VerifyCodeScreen() {
         })}
       </View>
 
-      <Pressable
+      <PrimaryButton
+        label={t('auth.confirmCode')}
         onPress={() => void onConfirm()}
-        disabled={loading}
-        style={styles.textCta}
-        accessibilityRole="button"
-      >
-        <Text style={styles.textCtaLabel}>
-          {loading ? t('common.loading') : t('auth.confirmCode')}
-        </Text>
-      </Pressable>
+        loading={loading}
+        size="md"
+      />
 
       <Pressable
         onPress={() => void onResend()}
@@ -196,15 +193,6 @@ const styles = StyleSheet.create({
   cellActive: {
     borderWidth: 2,
     borderColor: brand.accentSoft,
-  },
-  textCta: {
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  textCtaLabel: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: brand.accentDark,
   },
   resendWrap: { alignItems: 'center' },
   resendMuted: {

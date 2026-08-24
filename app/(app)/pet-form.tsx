@@ -902,11 +902,7 @@ export default function PetFormScreen() {
 
   return (
     <AppScreen edges={['top', 'bottom']}>
-      <AppChromeHeader
-        trailing="bell"
-        bellCount={3}
-        onBellPress={() => router.push('/(app)/notifications' as never)}
-      />
+      <AppChromeHeader />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -1077,17 +1073,17 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   accordion: {
-    borderRadius: brand.radius.lg,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     borderWidth: 2,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
   accordionDone: {
-    borderColor: brand.success,
+    borderColor: brand.successSoft,
   },
   accordionIdle: {
-    borderColor: brand.mistBorder,
+    borderColor: 'transparent',
   },
   accordionMuted: {
     opacity: 0.6,
@@ -1163,15 +1159,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   chip: {
-    borderRadius: brand.radius.lg,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    borderRadius: brand.radius.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   chipActive: {
     backgroundColor: brand.accent,
   },
   chipIdle: {
-    backgroundColor: brand.accentTint,
+    backgroundColor: brand.chipTrack,
   },
   chipText: {
     fontFamily: fonts.bodyBold,
@@ -1181,7 +1177,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   chipTextIdle: {
-    color: brand.accentDark,
+    color: brand.ink,
   },
   hint: {
     marginTop: -8,

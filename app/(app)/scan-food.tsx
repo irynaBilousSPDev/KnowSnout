@@ -342,8 +342,13 @@ export default function ScanFoodScreen() {
               onPress={() => setMode('photo')}
               style={styles.fallbackLink}
             >
+              <Ionicons
+                name="add"
+                size={14}
+                color="rgba(255,255,255,0.6)"
+              />
               <Text style={styles.fallbackMuted}>
-                + {t('scan.notFoundInDb')}
+                {t('scan.notFoundInDb')}
                 <Text style={styles.fallbackAccent}>
                   {t('scan.photoLabelLink')}
                 </Text>
@@ -413,7 +418,7 @@ export default function ScanFoodScreen() {
 const styles = StyleSheet.create({
   darkRoot: {
     flex: 1,
-    backgroundColor: '#0B0F14',
+    backgroundColor: '#111',
   },
   analyzeRoot: {
     flex: 1,
@@ -438,107 +443,112 @@ const styles = StyleSheet.create({
   darkHd: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingBottom: 8,
+    paddingHorizontal: 20,
+    paddingBottom: 6,
   },
   darkBack: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: 'rgba(255,255,255,0.15)',
   },
   darkTitle: {
     flex: 1,
     textAlign: 'center',
     fontFamily: fonts.title,
     fontSize: 18,
-    color: '#F4F3F1',
+    color: '#FFFFFF',
   },
-  darkSpacer: { width: 36 },
+  darkSpacer: { width: 34 },
   stage: {
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingBottom: 28,
+    paddingBottom: 34,
   },
   viewfinder: {
     marginTop: 24,
     overflow: 'hidden',
     borderRadius: 20,
-    backgroundColor: '#111820',
+    backgroundColor: '#111',
   },
-  vfBarcode: { width: '100%', height: 220 },
-  vfLabel: { width: '100%', height: 360 },
+  vfBarcode: { width: '100%', aspectRatio: 1.4 },
+  vfLabel: { width: '100%', flex: 1, minHeight: 280, maxHeight: 440 },
   frame: {
     ...StyleSheet.absoluteFillObject,
-    margin: 18,
-    borderRadius: 16,
-    borderWidth: 2,
-    borderColor: brand.logoGreen,
+    margin: 0,
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: brand.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  frameBarcode: { marginVertical: 48, marginHorizontal: 28 },
-  frameLabel: { margin: 16 },
+  frameBarcode: {},
+  frameLabel: { margin: 30, borderRadius: 16 },
   scanLine: {
     position: 'absolute',
-    left: 12,
-    right: 12,
+    left: 0,
+    right: 0,
     height: 2,
-    backgroundColor: brand.logoGreen,
-    opacity: 0.85,
+    backgroundColor: '#5FBBA6',
+    opacity: 0.95,
   },
   frameHint: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     textAlign: 'center',
     fontFamily: fonts.body,
-    fontSize: 13,
+    fontSize: 12.5,
     lineHeight: 18,
-    color: 'rgba(244,243,241,0.92)',
+    color: 'rgba(255,255,255,0.5)',
   },
-  fallbackLink: { marginTop: 22, paddingHorizontal: 8 },
+  fallbackLink: {
+    marginTop: 16,
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   fallbackMuted: {
     textAlign: 'center',
     fontFamily: fonts.body,
-    fontSize: 13,
-    color: '#B7C0C8',
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.6)',
   },
   fallbackAccent: {
-    fontFamily: fonts.bodyBold,
-    color: brand.logoGreen,
+    fontFamily: fonts.body,
+    color: brand.accentSoft,
   },
   footerHelp: {
     marginTop: 'auto',
     marginBottom: 8,
     fontFamily: fonts.body,
     fontSize: 13,
-    color: '#8b96a0',
+    color: 'rgba(255,255,255,0.75)',
     textAlign: 'center',
   },
   shutter: {
-    marginTop: 28,
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#FFFFFF',
+    marginTop: 18,
+    width: 66,
+    height: 66,
+    borderRadius: 33,
+    borderWidth: 4,
+    borderColor: '#FFFFFF',
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
   },
   shutterInner: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    borderWidth: 3,
-    borderColor: '#0B0F14',
+    width: 0,
+    height: 0,
   },
   shutterDim: { opacity: 0.5 },
   gallery: { marginTop: 14 },
   galleryText: {
     fontFamily: fonts.bodySemi,
     fontSize: 13,
-    color: brand.logoGreen,
+    color: brand.accentSoft,
   },
   helpCenter: {
     marginTop: 40,
@@ -546,16 +556,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: fonts.body,
     fontSize: 14,
-    color: '#D8E8E2',
+    color: 'rgba(255,255,255,0.75)',
   },
   permBox: { flex: 1, justifyContent: 'center', paddingHorizontal: 24 },
   permBtn: {
     marginTop: 16,
     alignSelf: 'center',
-    borderRadius: 14,
+    borderRadius: brand.radius.pill,
     backgroundColor: brand.accent,
     paddingHorizontal: 20,
     paddingVertical: 12,
+    minHeight: 48,
+    justifyContent: 'center',
   },
   permBtnText: {
     fontFamily: fonts.bodyBold,
@@ -564,7 +576,7 @@ const styles = StyleSheet.create({
   },
   webBox: { marginTop: 40, width: '100%', gap: 12 },
   webInput: {
-    borderRadius: 12,
+    borderRadius: 14,
     backgroundColor: '#fff',
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -580,7 +592,7 @@ const styles = StyleSheet.create({
   },
   manualInput: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: 14,
     backgroundColor: 'rgba(255,255,255,0.08)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.15)',
@@ -590,7 +602,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
   },
   manualGo: {
-    borderRadius: 12,
+    borderRadius: brand.radius.pill,
     backgroundColor: brand.accent,
     paddingHorizontal: 14,
     justifyContent: 'center',

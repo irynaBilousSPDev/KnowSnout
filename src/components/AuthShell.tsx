@@ -24,14 +24,11 @@ type Props = {
   badge?: string | null;
   showBack?: boolean;
   onBack?: () => void;
-  /** Design kit on auth phones shows bell+badge */
-  showBell?: boolean;
-  bellCount?: number;
 };
 
 /**
- * Auth layout from screenshots 01.04 / 01.06 / 01.07:
- * app-hd (logo + bell) → scr-hd (back + title) → form.
+ * Auth layout: app-hd (logo + avatar) → scr-hd (back + title) → form.
+ * Bell chrome removed — notifications live on avatar paw badge in-app.
  */
 export function AuthShell({
   headline,
@@ -42,18 +39,11 @@ export function AuthShell({
   badge,
   showBack = true,
   onBack,
-  showBell = true,
-  bellCount = 3,
 }: Props) {
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safe} edges={['bottom']}>
-        <AppChromeHeader
-          trailing={showBell ? 'bell' : 'none'}
-          bellCount={bellCount}
-          onBrandPress={() => undefined}
-          onBellPress={() => undefined}
-        />
+        <AppChromeHeader onBrandPress={() => undefined} />
         <KeyboardAvoidingView
           style={styles.flex}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -138,7 +128,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   subtitle: {
-    fontFamily: fonts.body,
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
     lineHeight: 21,
     color: brand.label,

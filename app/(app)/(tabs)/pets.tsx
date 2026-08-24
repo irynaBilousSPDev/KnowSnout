@@ -90,21 +90,21 @@ export default function PetsScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader
-        trailing="bell"
-        bellCount={3}
-        onBellPress={() => router.push('/(app)/notifications' as never)}
-      />
+      <AppChromeHeader />
       <View style={styles.header}>
         <Text style={styles.title}>{t('pets.title')}</Text>
-        <Pressable
-          onPress={goAdd}
-          style={styles.addCircle}
-          accessibilityRole="button"
-          accessibilityLabel={t('pets.add')}
-        >
-          <Text style={styles.addPlus}>+</Text>
-        </Pressable>
+        {pets.length > 0 ? (
+          <Pressable
+            onPress={goAdd}
+            style={styles.addCircle}
+            accessibilityRole="button"
+            accessibilityLabel={t('pets.add')}
+          >
+            <Text style={styles.addPlus}>+</Text>
+          </Pressable>
+        ) : (
+          <View style={styles.addSpacer} />
+        )}
       </View>
 
       {error ? (
@@ -136,13 +136,12 @@ export default function PetsScreen() {
             />
           }
           ListFooterComponent={
-            <Pressable
+            <PrimaryButton
+              label={`+ ${t('pets.add')}`}
+              variant="secondary"
               onPress={goAdd}
               style={styles.addBtn}
-              accessibilityRole="button"
-            >
-              <Text style={styles.addBtnText}>+ {t('pets.add')}</Text>
-            </Pressable>
+            />
           }
           renderItem={({ item }) => (
             <Pressable
@@ -186,13 +185,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingTop: 14,
     paddingBottom: 8,
   },
   title: {
     fontFamily: fonts.title,
-    fontSize: 28,
-    lineHeight: 34,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
   },
   addCircle: {
@@ -203,6 +202,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  addSpacer: { width: 34, height: 34 },
   addPlus: {
     fontFamily: fonts.body,
     fontSize: 20,
@@ -211,15 +211,17 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 20,
+    paddingTop: 8,
     paddingBottom: 40,
     flexGrow: 1,
     gap: 12,
   },
   emptyWrap: {
     flex: 1,
-    paddingHorizontal: 28,
+    paddingHorizontal: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 14,
     paddingBottom: 80,
   },
   emptyHero: {
@@ -229,7 +231,6 @@ const styles = StyleSheet.create({
     backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
     gap: 6,
   },
   emptyHeroHint: {
@@ -241,28 +242,31 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontFamily: fonts.title,
-    fontSize: 20,
+    fontSize: 18,
     color: brand.ink,
     textAlign: 'center',
+    margin: 0,
   },
   emptyBody: {
-    marginTop: 8,
     fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 19,
     color: brand.muted,
     textAlign: 'center',
   },
-  emptyCta: { marginTop: 22, alignSelf: 'stretch' },
+  emptyCta: { alignSelf: 'stretch', marginTop: 4 },
   petCard: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    borderRadius: 16,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     padding: 14,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: brand.mistBorder,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   pressed: { opacity: 0.9 },
   petCopy: { flex: 1, minWidth: 0 },
@@ -277,20 +281,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: brand.muted,
   },
-  addBtn: {
-    marginTop: 6,
-    marginBottom: 16,
-    minHeight: 46,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: brand.divider,
-    backgroundColor: brand.surfaceElevated,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addBtnText: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 14,
-    color: brand.ink,
-  },
+  addBtn: { marginTop: 6, marginBottom: 16 },
 });

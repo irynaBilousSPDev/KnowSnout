@@ -69,7 +69,7 @@ function PickBox({
         <Image source={{ uri }} style={styles.pickImage} resizeMode="cover" />
       ) : (
         <View style={styles.pickEmpty}>
-          <Ionicons name="image-outline" size={28} color={brand.mutedSoft} />
+          <Ionicons name="image-outline" size={22} color={brand.mutedSoft} />
           <Text style={styles.browse}>{t('compare.browseFiles')}</Text>
         </View>
       )}
@@ -83,9 +83,9 @@ function Mark({ ok }: { ok: boolean | null }) {
   }
   return (
     <Ionicons
-      name={ok ? 'checkmark-circle' : 'close-circle'}
-      size={22}
-              color={ok ? brand.success : brand.mutedSoft}
+      name={ok ? 'checkmark' : 'close'}
+      size={16}
+      color={ok ? brand.successDark : brand.mutedSoft}
     />
   );
 }
@@ -134,7 +134,7 @@ export default function CompareFoodScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
-      <AppChromeHeader trailing="bell" bellCount={3} />
+      <AppChromeHeader />
       <ScrHeader title={t('compare.title')} titleSize={18} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
@@ -158,9 +158,11 @@ export default function CompareFoodScreen() {
                     {scanA?.product_name ?? t('compare.pickA')}
                   </Text>
                   {scanA ? (
-                    <Text style={styles.score}>
-                      {scoreOutOfFive(scanA.score)}
-                    </Text>
+                    <View style={styles.pawBadge}>
+                      <Text style={styles.pawBadgeText}>
+                        {scoreOutOfFive(scanA.score)}
+                      </Text>
+                    </View>
                   ) : null}
                 </View>
 
@@ -172,31 +174,38 @@ export default function CompareFoodScreen() {
                     {scanB?.product_name ?? t('compare.pickB')}
                   </Text>
                   {scanB ? (
-                    <Text style={styles.score}>
-                      {scoreOutOfFive(scanB.score)}
-                    </Text>
+                    <View style={styles.pawBadge}>
+                      <Text style={styles.pawBadgeText}>
+                        {scoreOutOfFive(scanB.score)}
+                      </Text>
+                    </View>
                   ) : null}
                 </View>
               </View>
 
               <View style={styles.table}>
                 <View style={styles.tableRow}>
-                  <Mark ok={scanA ? hasMeatFirst(scanA) : null} />
                   <Text style={styles.tableLabel}>{t('compare.meatFirst')}</Text>
-                  <Mark ok={scanB ? hasMeatFirst(scanB) : null} />
+                  <View style={styles.marks}>
+                    <Mark ok={scanA ? hasMeatFirst(scanA) : null} />
+                    <Mark ok={scanB ? hasMeatFirst(scanB) : null} />
+                  </View>
                 </View>
                 <View style={styles.tableRow}>
-                  <Mark ok={scanA ? noFlavor(scanA) : null} />
                   <Text style={styles.tableLabel}>{t('compare.noFlavor')}</Text>
-                  <Mark ok={scanB ? noFlavor(scanB) : null} />
+                  <View style={styles.marks}>
+                    <Mark ok={scanA ? noFlavor(scanA) : null} />
+                    <Mark ok={scanB ? noFlavor(scanB) : null} />
+                  </View>
                 </View>
                 <View style={styles.tableRow}>
-                  <Text style={styles.price}>
-                    {scanA ? priceStub(scanA) : t('compare.na')}
-                  </Text>
                   <Text style={styles.tableLabel}>{t('compare.priceKg')}</Text>
                   <Text style={styles.price}>
-                    {scanB ? priceStub(scanB) : t('compare.na')}
+                    {scanA || scanB
+                      ? `${scanA ? priceStub(scanA) : t('compare.na')} · ${
+                          scanB ? priceStub(scanB) : t('compare.na')
+                        }`
+                      : t('compare.na')}
                   </Text>
                 </View>
               </View>
@@ -243,28 +252,29 @@ export default function CompareFoodScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40 },
-  title: {
-    marginBottom: 18,
-    fontFamily: 'Inter_700Bold',
-    fontSize: 28,
-    color: brand.ink,
-    letterSpacing: -0.4,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 40,
+    gap: 12,
   },
   muted: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 14,
     color: brand.mutedSoft,
   },
   empty: {
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.mist,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
     padding: 18,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   emptyTitle: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: fonts.body,
     fontSize: 15,
     lineHeight: 22,
     color: brand.muted,
@@ -272,18 +282,20 @@ const styles = StyleSheet.create({
   emptyBtn: { marginTop: 14 },
   compareRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 8,
+    alignItems: 'center',
+    gap: 10,
   },
-  col: { flex: 1, minWidth: 0, alignItems: 'center' },
+  col: {
+    flex: 1,
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 6,
+  },
   pickBox: {
     width: '100%',
-    aspectRatio: 1,
-    borderRadius: 18,
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+    height: 80,
+    borderRadius: 14,
+    backgroundColor: brand.creamDeep,
     overflow: 'hidden',
   },
   pickImage: { width: '100%', height: '100%' },
@@ -291,80 +303,90 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 12,
+    padding: 8,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    borderRadius: 14,
   },
   browse: {
-    marginTop: 6,
-    fontFamily: 'Inter_400Regular',
+    marginTop: 4,
+    fontFamily: fonts.body,
     fontSize: 11,
     color: brand.mutedSoft,
   },
   productName: {
-    marginTop: 10,
-    fontFamily: 'Inter_700Bold',
-    fontSize: 14,
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
     color: brand.ink,
     textAlign: 'center',
   },
-  score: {
-    marginTop: 4,
-    fontFamily: 'Inter_700Bold',
-    fontSize: 20,
-    color: brand.forest,
+  pawBadge: {
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.accentTint,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  pawBadgeText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
   },
   vs: {
-    marginTop: 56,
-    fontFamily: 'Inter_700Bold',
-    fontSize: 13,
-    color: brand.mutedSoft,
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
+    color: '#B0A99D',
   },
   pressed: { opacity: 0.88 },
   table: {
-    marginTop: 20,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
+    borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
-    paddingVertical: 6,
+    paddingVertical: 10,
     paddingHorizontal: 14,
+    gap: 10,
+    shadowColor: brand.shadow.color,
+    shadowOpacity: brand.shadow.opacity,
+    shadowRadius: brand.shadow.radius,
+    shadowOffset: brand.shadow.offset,
+    elevation: 1,
   },
   tableRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: brand.mistBorder,
   },
   tableLabel: {
-    flex: 1,
-    textAlign: 'center',
-    fontFamily: 'Inter_500Medium',
-    fontSize: 13,
+    fontFamily: fonts.body,
+    fontSize: 12.5,
     color: brand.muted,
-    paddingHorizontal: 8,
+    flex: 1,
+    paddingRight: 12,
+  },
+  marks: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    minWidth: 52,
+    justifyContent: 'flex-end',
   },
   price: {
-    minWidth: 52,
-    textAlign: 'center',
-    fontFamily: 'Inter_700Bold',
-    fontSize: 14,
+    fontFamily: fonts.bodyBold,
+    fontSize: 12.5,
     color: brand.ink,
   },
   na: {
-    minWidth: 22,
+    minWidth: 16,
     textAlign: 'center',
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
+    fontSize: 12,
     color: brand.mutedSoft,
   },
-  clearBtn: { marginTop: 14 },
-  picker: { marginTop: 20 },
+  clearBtn: { marginTop: 2 },
+  picker: { marginTop: 8 },
   section: {
     marginBottom: 8,
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    color: brand.mutedSoft,
+    color: brand.muted,
   },
 });
