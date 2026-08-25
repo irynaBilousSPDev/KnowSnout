@@ -1,12 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const XP_KEY = 'knowsnout.gamification.v1';
+const XP_KEY = 'knowsnout.gamification.v2';
+
+export type BadgeIcon = 'ribbon' | 'scans' | 'chat' | 'trophy';
 
 export type Badge = {
   id: string;
   title: string;
   body: string;
   unlocked: boolean;
+  icon: BadgeIcon;
+  /** Shown inside scans circle when icon === 'scans' */
+  progressLabel?: string;
 };
 
 export type LeaderboardRow = {
@@ -15,6 +20,7 @@ export type LeaderboardRow = {
   xp: number;
   rank: number;
   me?: boolean;
+  streakDays?: number;
 };
 
 export type GamificationState = {
@@ -24,45 +30,51 @@ export type GamificationState = {
 
 const SEED_BADGES: Badge[] = [
   {
-    id: 'b-first',
-    title: 'Перший квіз',
-    body: 'Пройди будь-який квіз',
+    id: 'b-streak30',
+    title: 'Серія 30 днів',
+    body: 'Заходь у застосунок 30 днів поспіль',
     unlocked: true,
+    icon: 'ribbon',
   },
   {
-    id: 'b-streak3',
-    title: 'Серія 3',
-    body: 'Грати 3 дні поспіль',
+    id: 'b-scans100',
+    title: '100 сканів корму',
+    body: 'Проскануй 100 етикеток корму',
     unlocked: true,
+    icon: 'scans',
+    progressLabel: '0',
   },
   {
-    id: 'b-zoom',
-    title: 'Зумівець',
-    body: 'Пройди Zoom-квіз',
+    id: 'b-forum10',
+    title: '10 відповідей на форумі',
+    body: 'Напиши 10 відповідей на форумі',
     unlocked: false,
+    icon: 'chat',
   },
   {
-    id: 'b-myth',
-    title: 'Міфобастер',
-    body: 'Розвіяй 5 міфів',
+    id: 'b-spotlight',
+    title: 'Переможець SnoutSpotlight',
+    body: 'Виграй конкурс SnoutSpotlight',
     unlocked: false,
-  },
-  {
-    id: 'b-heavy',
-    title: 'Важковаговик',
-    body: 'Пройди складний квіз без помилок',
-    unlocked: false,
+    icon: 'trophy',
   },
 ];
 
 const LEADERBOARD: Omit<LeaderboardRow, 'rank'>[] = [
-  { id: 'lb-1', name: 'Катя', xp: 2480 },
-  { id: 'lb-2', name: 'Максим', xp: 2110 },
-  { id: 'lb-me', name: 'Ти', xp: 1860, me: true },
-  { id: 'lb-3', name: 'Ірина', xp: 1720 },
-  { id: 'lb-4', name: 'Оля', xp: 1540 },
-  { id: 'lb-5', name: 'Діма', xp: 1320 },
+  { id: 'lb-1', name: 'Оксана', xp: 4820, streakDays: 21 },
+  { id: 'lb-2', name: 'Ігор', xp: 3990, streakDays: 9 },
+  { id: 'lb-3', name: 'Соломія', xp: 3610, streakDays: 14 },
+  { id: 'lb-me', name: 'Марта', xp: 3340, me: true, streakDays: 12 },
+  { id: 'lb-4', name: 'Дмитро', xp: 2980, streakDays: 5 },
 ];
+
+function normalizeBadges(raw: Badge[]): Badge[] {
+  const byId = new Map(raw.map((b) => [b.id, b]));
+  return SEED_BADGES.map((seed) => {
+    const prev = byId.get(seed.id);
+    return prev ? { ...seed, unlocked: prev.unlocked } : seed;
+  });
+}
 
 async function readState(): Promise<GamificationState> {
   try {
@@ -72,7 +84,11 @@ async function readState(): Promise<GamificationState> {
       await AsyncStorage.setItem(XP_KEY, JSON.stringify(seed));
       return seed;
     }
-    return JSON.parse(raw) as GamificationState;
+    const parsed = JSON.parse(raw) as GamificationState;
+    return {
+      xp: typeof parsed.xp === 'number' ? parsed.xp : 1860,
+      badges: normalizeBadges(parsed.badges ?? []),
+    };
   } catch {
     return { xp: 1860, badges: SEED_BADGES };
   }

@@ -1,100 +1,57 @@
-import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { ListRow } from '@/src/components/ListRow';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
-import {
-  listBlogArticles,
-  listBlogCategories,
-  type BlogArticle,
-} from '@/src/services/blog';
+import { listBlogCategories } from '@/src/services/blog';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML · Блог hub with category chips. */
+/** Screenshot 05.19 — category cards with dashed image area */
 export default function BlogScreen() {
   const categories = listBlogCategories();
-  const [categoryId, setCategoryId] = useState<string | null>(null);
-  const [articles, setArticles] = useState<BlogArticle[]>([]);
-
-  useFocusEffect(
-    useCallback(() => {
-      setArticles(listBlogArticles(categoryId ?? undefined));
-    }, [categoryId]),
-  );
 
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader
+        title={t('blog.title')}
+        right={
+          <Pressable
+            onPress={() => router.push('/(app)/blog-bookmarks' as never)}
+            style={styles.bookmarkBtn}
+            accessibilityRole="button"
+            accessibilityLabel={t('blog.bookmarks')}
+          >
+            <Ionicons name="bookmark-outline" size={18} color={brand.accent} />
+          </Pressable>
+        }
+      />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.title}>{t('blog.title')}</Text>
-
-          <PrimaryButton
-            label={t('blog.bookmarks')}
-            variant="secondary"
-            onPress={() => router.push('/(app)/blog-bookmarks' as never)}
-          />
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.chips}
-          >
+          {categories.map((c) => (
             <Pressable
-              onPress={() => setCategoryId(null)}
-              style={[styles.chip, !categoryId && styles.chipActive]}
-            >
-              <Text
-                style={[styles.chipText, !categoryId && styles.chipTextActive]}
-              >
-                {t('blog.all')}
-              </Text>
-            </Pressable>
-            {categories.map((c) => {
-              const active = c.id === categoryId;
-              return (
-                <Pressable
-                  key={c.id}
-                  onPress={() => setCategoryId(c.id)}
-                  style={[styles.chip, active && styles.chipActive]}
-                >
-                  <Text
-                    style={[styles.chipText, active && styles.chipTextActive]}
-                  >
-                    {c.title}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-
-          {articles.map((a) => (
-            <ListRow
-              key={a.id}
-              title={a.title}
-              subtitle={a.excerpt}
-              meta={t('blog.readMin', { n: a.readMinutes })}
-              leading={
-                <View style={styles.leadIcon}>
-                  <Ionicons
-                    name="newspaper-outline"
-                    size={18}
-                    color={brand.accentDark}
-                  />
-                </View>
-              }
+              key={c.id}
               onPress={() =>
                 router.push({
-                  pathname: '/(app)/blog-article',
-                  params: { id: a.id },
+                  pathname: '/(app)/blog-category',
+                  params: { id: c.id },
                 } as never)
               }
-            />
+              style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+            >
+              <View style={styles.cover}>
+                <Ionicons name="image-outline" size={28} color={brand.mutedSoft} />
+                <Text style={styles.coverHint}>
+                  {c.title} {t('blog.categoryBrowse')}
+                </Text>
+              </View>
+              <View style={styles.cardFooter}>
+                <Text style={styles.cardTitle}>{c.title}</Text>
+              </View>
+            </Pressable>
           ))}
         </View>
       </ScrollView>
@@ -103,41 +60,53 @@ export default function BlogScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: {
-    paddingHorizontal: 20,
-    paddingTop: 14,
-    paddingBottom: 40,
-    gap: 12,
-  },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
-  },
-  chips: { flexDirection: 'row', gap: 8, paddingBottom: 4 },
-  chip: {
-    borderRadius: brand.radius.pill,
+  bookmarkBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: brand.creamDeep,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  chipActive: { backgroundColor: brand.successTint },
-  chipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12.5,
-    color: brand.ink,
-  },
-  chipTextActive: {
-    fontFamily: fonts.bodyBold,
-    color: brand.successDark,
-  },
-  leadIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: brand.accentTint,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 40,
+    gap: 14,
+  },
+  card: {
+    borderRadius: 16,
+    backgroundColor: brand.surfaceElevated,
+    overflow: 'hidden',
+  },
+  pressed: { opacity: 0.9 },
+  cover: {
+    minHeight: 140,
+    margin: 12,
+    marginBottom: 0,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  coverHint: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+    textAlign: 'center',
+    paddingHorizontal: 16,
+  },
+  cardFooter: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  cardTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 16,
+    color: brand.ink,
   },
 });

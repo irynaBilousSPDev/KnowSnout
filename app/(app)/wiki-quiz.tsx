@@ -1,22 +1,18 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  type StyleProp,
-  type ViewStyle,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { ErrorState } from '@/src/components/ErrorState';
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScrHeader } from '@/src/components/ScrHeader';
+import { ErrorState } from '@/src/components/ErrorState';
 import { t } from '@/src/i18n';
 import { saveQuizSession } from '@/src/services/quizResults';
 import {
@@ -26,18 +22,25 @@ import {
 } from '@/src/services/wikidataQuiz';
 import { brand, fonts } from '@/src/theme/brand';
 
-const SESSION_ROUNDS = 5;
+const LETTERS = ['A', 'B', 'C', 'D'] as const;
 
 function parseCategory(raw?: string): WikiQuizCategory {
   if (raw === 'animal_group') return 'animal_group';
   return 'breed_origin';
 }
 
+function sessionTotal(category: WikiQuizCategory) {
+  return category === 'animal_group' ? 12 : 10;
+}
+
+/** Screenshots 05.02 (origin) + 05.03 (group) */
 export default function WikiQuizScreen() {
   const { category: categoryParam } = useLocalSearchParams<{
     category?: string;
   }>();
   const category = parseCategory(categoryParam);
+  const total = sessionTotal(category);
+  const isGroup = category === 'animal_group';
 
   const [round, setRound] = useState<WikiQuizRound | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +50,7 @@ export default function WikiQuizScreen() {
   const [roundIndex, setRoundIndex] = useState(0);
   const [avoid, setAvoid] = useState<string[]>([]);
   const [sessionDone, setSessionDone] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [seconds, setSeconds] = useState(7);
   const savedRef = useRef(false);
 
   const loadRound = useCallback(
@@ -55,6 +58,7 @@ export default function WikiQuizScreen() {
       setLoading(true);
       setError(null);
       setPickedId(null);
+      setSeconds(7);
       try {
         const next = await createWikiQuizRound(category, skip);
         setRound(next);
@@ -79,37 +83,52 @@ export default function WikiQuizScreen() {
     }, [loadRound]),
   );
 
+  useEffect(() => {
+    if (isGroup || pickedId || sessionDone || loading) return;
+    const id = setInterval(() => {
+      setSeconds((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [isGroup, pickedId, sessionDone, loading, roundIndex]);
+
   const finishSession = async (finalScore: number) => {
     setSessionDone(true);
     if (savedRef.current) return;
     savedRef.current = true;
-    setSaving(true);
     try {
       await saveQuizSession({
         category,
         score: finalScore,
-        total: SESSION_ROUNDS,
+        total,
       });
+      router.replace({
+        pathname: '/(app)/quiz-results',
+        params: {
+          score: String(finalScore),
+          total: String(total),
+          category,
+        },
+      } as never);
     } catch {
       savedRef.current = false;
-    } finally {
-      setSaving(false);
     }
   };
 
   const onAnswer = (choiceId: string) => {
     if (!round || pickedId) return;
     setPickedId(choiceId);
-    if (choiceId === round.correctId) setScore((s) => s + 1);
-    setAvoid((prev) => [...prev, round.subject].slice(-12));
-  };
-
-  const onNext = () => {
-    if (roundIndex >= SESSION_ROUNDS) {
-      void finishSession(score);
-      return;
-    }
-    void loadRound(roundIndex + 1, avoid);
+    const ok = choiceId === round.correctId;
+    const nextScore = ok ? score + 1 : score;
+    if (ok) setScore(nextScore);
+    const nextAvoid = [...avoid, round.subject].slice(-12);
+    setAvoid(nextAvoid);
+    setTimeout(() => {
+      if (roundIndex >= total) {
+        void finishSession(nextScore);
+      } else {
+        void loadRound(roundIndex + 1, nextAvoid);
+      }
+    }, 650);
   };
 
   const onRestart = () => {
@@ -120,130 +139,135 @@ export default function WikiQuizScreen() {
     void loadRound(1, []);
   };
 
-  const answered = Boolean(pickedId);
-  const isCorrect = answered && pickedId === round?.correctId;
-  const correctLabel =
-    round?.choices.find((c) => c.id === round.correctId)?.label ?? '';
+  if (loading && !round) {
+    return (
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
+        <View style={styles.loading}>
+          <ActivityIndicator color={brand.accent} size="large" />
+        </View>
+      </AppScreen>
+    );
+  }
 
-  const title =
-    category === 'animal_group'
-      ? t('quizHub.groupTitle')
-      : t('quizHub.originTitle');
+  if (error && !round) {
+    return (
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
+        <ErrorState message={error} onRetry={onRestart} />
+      </AppScreen>
+    );
+  }
+
+  if (!round || sessionDone) return null;
+
+  if (isGroup) {
+    return (
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
+        <View style={styles.progressRow}>
+          <View style={styles.progressTrack}>
+            <View
+              style={[
+                styles.progressFill,
+                { width: `${(roundIndex / total) * 100}%` },
+              ]}
+            />
+          </View>
+          <Text style={styles.progressN}>
+            {roundIndex}/{total}
+          </Text>
+        </View>
+        <ScrollView contentContainerStyle={styles.groupPad}>
+          <Text style={styles.qTitle}>{t('quiz.groupPrompt')}</Text>
+          <View style={styles.photoBox}>
+            <Ionicons name="image-outline" size={28} color={brand.mutedSoft} />
+            <Text style={styles.photoHint}>
+              {t('quiz.breedPhotoHint', { name: round.subject })}
+            </Text>
+          </View>
+          <View style={styles.grid}>
+            {round.choices.slice(0, 4).map((choice, i) => {
+              const on = pickedId === choice.id;
+              const icons = [
+                'water-outline',
+                'locate-outline',
+                'checkmark-circle-outline',
+                'briefcase-outline',
+              ] as const;
+              return (
+                <Pressable
+                  key={choice.id}
+                  onPress={() => onAnswer(choice.id)}
+                  style={[styles.gridCard, on && styles.gridCardOn]}
+                >
+                  <Ionicons
+                    name={icons[i] ?? 'ellipse-outline'}
+                    size={22}
+                    color={on ? brand.accent : brand.muted}
+                  />
+                  <Text style={[styles.gridLabel, on && styles.gridLabelOn]}>
+                    {choice.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </ScrollView>
+      </AppScreen>
+    );
+  }
 
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrHeader title={title} />
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.scroll}>
-          <Text style={styles.subtitle}>{t('quiz.wikiSubtitle')}</Text>
-
-          <View style={styles.metaRow}>
-            <Text style={styles.meta}>
-              {t('quiz.progress', {
-                current: Math.min(roundIndex, SESSION_ROUNDS),
-                total: SESSION_ROUNDS,
-              })}
-            </Text>
-            <Text style={styles.meta}>{t('quiz.score', { score })}</Text>
+      <View style={styles.heroWrap}>
+        <View style={styles.hero}>
+          <View style={styles.heroPh}>
+            <Ionicons name="image-outline" size={32} color="#FFFFFF99" />
+            <Text style={styles.heroPhT}>{t('quizHub.dailyPhotoHint')}</Text>
           </View>
-
-          {loading ? (
-            <View style={styles.loading}>
-              <ActivityIndicator color={brand.ink} size="large" />
-              <Text style={styles.loadingText}>{t('quiz.wikiLoading')}</Text>
-            </View>
-          ) : error ? (
-            <ErrorState message={error} onRetry={onRestart} />
-          ) : sessionDone ? (
-            <View style={styles.card}>
-              <Text style={styles.sessionTitle}>{t('quiz.sessionTitle')}</Text>
-              <Text style={styles.sessionBody}>
-                {t('quiz.sessionBody', { score, total: SESSION_ROUNDS })}
-              </Text>
-              <Text style={styles.sessionMeta}>
-                {saving ? t('quiz.saving') : t('quiz.savedToAccount')}
-              </Text>
-              <View style={styles.gap}>
-                <PrimaryButton
-                  label={t('quiz.viewResults')}
-                  variant="secondary"
-                  onPress={() => router.push('/(app)/quiz-results')}
-                />
-                <PrimaryButton label={t('quiz.playAgain')} onPress={onRestart} />
-              </View>
-            </View>
-          ) : round ? (
-            <>
-              <View style={styles.card}>
-                <Text style={styles.prompt}>
-                  {t(round.promptKey, { name: round.subject })}
-                </Text>
-              </View>
-
-              <View style={styles.choices}>
-                {round.choices.map((choice) => {
-                  const selected = pickedId === choice.id;
-                  const isAnswer = choice.id === round.correctId;
-                  const choiceStyle: StyleProp<ViewStyle> = [
-                    styles.choice,
-                    answered && isAnswer && styles.choiceCorrect,
-                    answered && selected && !isAnswer && styles.choiceWrong,
-                  ];
-                  return (
-                    <Pressable
-                      key={choice.id}
-                      disabled={answered}
-                      onPress={() => onAnswer(choice.id)}
-                      style={({ pressed }) => [
-                        pressed && !answered && styles.pressed,
-                      ]}
-                    >
-                      <View style={choiceStyle}>
-                        <Text style={styles.choiceLabel}>{choice.label}</Text>
-                      </View>
-                    </Pressable>
-                  );
-                })}
-              </View>
-
-              {answered ? (
-                <View style={styles.card}>
-                  <Text
-                    style={[
-                      styles.verdict,
-                      isCorrect ? styles.verdictOk : styles.verdictBad,
-                    ]}
-                  >
-                    {isCorrect
-                      ? t('quiz.correct')
-                      : t('quiz.wrong', { name: correctLabel })}
+        </View>
+        <View style={styles.originTop}>
+          <Pressable onPress={() => router.back()} style={styles.originBack}>
+            <Ionicons name="chevron-back" size={18} color="#FFFFFF" />
+          </Pressable>
+          <View style={styles.timerPill}>
+            <Ionicons name="time-outline" size={14} color={brand.ink} />
+            <Text style={styles.timerT}>
+              0:{String(seconds).padStart(2, '0')}
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.segRow}>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <View
+            key={i}
+            style={[styles.seg, i < Math.min(roundIndex, 4) && styles.segOn]}
+          />
+        ))}
+      </View>
+      <ScrollView contentContainerStyle={styles.originPad}>
+        <Text style={styles.qTitle}>{t('quiz.originPrompt')}</Text>
+        <View style={styles.originChoices}>
+          {round.choices.slice(0, 4).map((choice, i) => {
+            const on = pickedId === choice.id;
+            return (
+              <Pressable
+                key={choice.id}
+                onPress={() => onAnswer(choice.id)}
+                style={[styles.letterChoice, on && styles.letterChoiceOn]}
+              >
+                <View style={[styles.letterBadge, on && styles.letterBadgeOn]}>
+                  <Text style={[styles.letterT, on && styles.letterTOn]}>
+                    {LETTERS[i] ?? String(i + 1)}
                   </Text>
-                  <Text style={styles.learnTitle}>
-                    {t('quiz.learnTitle', { name: round.learn.title })}
-                  </Text>
-                  <Text style={styles.learnBody}>{round.learn.detail}</Text>
-                  <Text style={styles.trust}>{t('quiz.wikiTrustNote')}</Text>
-                  <Pressable
-                    onPress={() => void Linking.openURL(round.learn.wikidataUrl)}
-                    style={styles.linkWrap}
-                  >
-                    <Text style={styles.link}>{t('quiz.openWikidata')}</Text>
-                  </Pressable>
-                  <View style={styles.nextWrap}>
-                    <PrimaryButton
-                      label={
-                        roundIndex >= SESSION_ROUNDS
-                          ? t('quiz.seeResult')
-                          : t('quiz.next')
-                      }
-                      onPress={onNext}
-                    />
-                  </View>
                 </View>
-              ) : null}
-            </>
-          ) : null}
+                <Text style={styles.letterLabel}>{choice.label}</Text>
+              </Pressable>
+            );
+          })}
         </View>
       </ScrollView>
     </AppScreen>
@@ -251,126 +275,166 @@ export default function WikiQuizScreen() {
 }
 
 const styles = StyleSheet.create({
-  scroll: {
-    paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 48,
-  },
-  subtitle: {
-    marginTop: 0,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: brand.muted,
-  },
-  metaRow: {
-    marginTop: 16,
-    marginBottom: 16,
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  progressRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  meta: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 14,
-    color: brand.navy,
-  },
-  loading: { alignItems: 'center', paddingVertical: 64 },
-  loadingText: {
-    marginTop: 12,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    color: '#5A6B7D',
-  },
-  card: {
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
+    gap: 10,
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingTop: 10,
+    paddingBottom: 6,
   },
-  prompt: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 18,
-    lineHeight: 26,
+  progressTrack: {
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: brand.creamDeep,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: brand.accent,
+    borderRadius: 2,
+  },
+  progressN: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
+    color: brand.muted,
+  },
+  groupPad: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 40 },
+  qTitle: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
+    marginBottom: 16,
   },
-  choices: { marginTop: 16, gap: 8 },
-  choice: {
-    borderRadius: 16,
-    borderWidth: 1,
+  photoBox: {
+    aspectRatio: 1.4,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
     borderColor: brand.mistBorder,
+    backgroundColor: '#EEEBE6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginBottom: 18,
+  },
+  photoHint: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.mutedSoft,
+  },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  gridCard: {
+    width: '47%',
+    flexGrow: 1,
+    minHeight: 100,
+    borderRadius: 18,
     backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 16,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
+    padding: 16,
+    gap: 10,
+    justifyContent: 'center',
+  },
+  gridCardOn: {
+    borderColor: brand.accent,
+    backgroundColor: brand.accentTint,
+  },
+  gridLabel: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  gridLabelOn: { color: brand.accent },
+  heroWrap: { position: 'relative' },
+  hero: { height: 220, backgroundColor: '#3A3A3A' },
+  heroPh: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    height: 220,
+  },
+  heroPhT: { fontFamily: fonts.body, fontSize: 13, color: '#FFFFFFAA' },
+  originTop: {
+    position: 'absolute',
+    top: 12,
+    left: 16,
+    right: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  originBack: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timerPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  timerT: { fontFamily: fonts.bodySemi, fontSize: 13, color: brand.ink },
+  segRow: {
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+  },
+  seg: {
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: brand.creamDeep,
+  },
+  segOn: { backgroundColor: brand.accent },
+  originPad: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 40 },
+  originChoices: { gap: 10 },
+  letterChoice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderRadius: 16,
+    backgroundColor: brand.surfaceElevated,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
     paddingVertical: 14,
+    paddingHorizontal: 14,
   },
-  choiceCorrect: {
-    borderColor: brand.navy,
-    backgroundColor: brand.mist,
+  letterChoiceOn: {
+    borderColor: brand.accent,
+    backgroundColor: brand.accentTint,
   },
-  choiceWrong: {
-    borderColor: '#F0B4A4',
-    backgroundColor: '#FFF6F3',
+  letterBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  choiceLabel: {
-    fontFamily: 'Inter_700Bold',
+  letterBadgeOn: { backgroundColor: brand.accent },
+  letterT: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.muted,
+  },
+  letterTOn: { color: '#FFFFFF' },
+  letterLabel: {
+    flex: 1,
+    fontFamily: fonts.bodyBold,
     fontSize: 16,
     color: brand.ink,
   },
-  pressed: { opacity: 0.85 },
-  verdict: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 18,
-  },
-  verdictOk: { color: brand.ink },
-  verdictBad: { color: brand.score.poor },
-  learnTitle: {
-    marginTop: 16,
-    fontFamily: 'Inter_700Bold',
-    fontSize: 16,
-    color: brand.ink,
-  },
-  learnBody: {
-    marginTop: 8,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#5A6B7D',
-  },
-  trust: {
-    marginTop: 12,
-    fontFamily: 'Inter_400Regular',
-    fontSize: 12,
-    lineHeight: 18,
-    color: '#8A9AAB',
-  },
-  linkWrap: { marginTop: 12 },
-  link: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 14,
-    color: brand.navy,
-  },
-  nextWrap: { marginTop: 16 },
-  sessionTitle: {
-    textAlign: 'center',
-    fontFamily: 'Manrope_700Bold',
-    fontSize: 24,
-    color: brand.ink,
-  },
-  sessionBody: {
-    marginTop: 12,
-    textAlign: 'center',
-    fontFamily: 'Inter_400Regular',
-    fontSize: 16,
-    color: '#5A6B7D',
-  },
-  sessionMeta: {
-    marginTop: 8,
-    textAlign: 'center',
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    color: '#8A9AAB',
-  },
-  gap: { marginTop: 24, gap: 12 },
 });

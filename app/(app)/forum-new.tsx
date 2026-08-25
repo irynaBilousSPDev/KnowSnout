@@ -11,14 +11,13 @@ import {
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import { createForumThread, listForumCategories } from '@/src/services/forum';
 import { useToast } from '@/src/hooks/useToast';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** Screenshot 05.14 — Cancel | Нове питання | Опубл. + white fields */
 export default function ForumNewScreen() {
   const { categoryId: paramCat } = useLocalSearchParams<{ categoryId?: string }>();
   const { showToast } = useToast();
@@ -26,9 +25,12 @@ export default function ForumNewScreen() {
   const [categoryId, setCategoryId] = useState(
     paramCat || categories[0]?.id || '',
   );
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+  const [title, setTitle] = useState('Як привчити до нашийника?');
+  const [body, setBody] = useState('Цуценя 3 місяці, боїться нашийника...');
   const [busy, setBusy] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
+
+  const selected = categories.find((c) => c.id === categoryId);
 
   const submit = async () => {
     if (!title.trim() || !body.trim()) {
@@ -53,25 +55,60 @@ export default function ForumNewScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <View style={styles.bar}>
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={8}
+          style={styles.barSide}
+        >
+          <Text style={styles.cancel}>{t('common.cancel')}</Text>
+        </Pressable>
+        <Text style={styles.barTitle}>{t('forum.newTitle')}</Text>
+        <Pressable
+          onPress={() => void submit()}
+          disabled={busy}
+          hitSlop={8}
+          style={styles.barSide}
+        >
+          <Text style={[styles.publish, busy && styles.dim]}>
+            {t('forum.publishShort')}
+          </Text>
+        </Pressable>
+      </View>
+
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader title={t('forum.newTitle')} subtitle={t('forum.newSubtitle')} />
-
           <Text style={styles.label}>{t('forum.category')}</Text>
-          {categories.map((c) => {
-            const active = c.id === categoryId;
-            return (
-              <Pressable
-                key={c.id}
-                onPress={() => setCategoryId(c.id)}
-                style={[styles.chip, active && styles.chipActive]}
-              >
-                <Text style={[styles.chipText, active && styles.chipTextActive]}>
-                  {c.title}
-                </Text>
-              </Pressable>
-            );
-          })}
+          <Pressable
+            onPress={() => setCatOpen((v) => !v)}
+            style={styles.field}
+          >
+            <Text style={styles.fieldText}>{selected?.title ?? '—'}</Text>
+          </Pressable>
+          {catOpen
+            ? categories.map((c) => (
+                <Pressable
+                  key={c.id}
+                  onPress={() => {
+                    setCategoryId(c.id);
+                    setCatOpen(false);
+                  }}
+                  style={[
+                    styles.option,
+                    c.id === categoryId && styles.optionActive,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.optionText,
+                      c.id === categoryId && styles.optionTextActive,
+                    ]}
+                  >
+                    {c.title}
+                  </Text>
+                </Pressable>
+              ))
+            : null}
 
           <Text style={styles.label}>{t('forum.threadTitleField')}</Text>
           <TextInput
@@ -79,8 +116,9 @@ export default function ForumNewScreen() {
             onChangeText={setTitle}
             placeholder={t('forum.threadTitlePlaceholder')}
             placeholderTextColor={brand.mutedSoft}
-            style={styles.input}
+            style={styles.field}
           />
+
           <Text style={styles.label}>{t('forum.threadBody')}</Text>
           <TextInput
             value={body}
@@ -88,13 +126,7 @@ export default function ForumNewScreen() {
             placeholder={t('forum.threadBodyPlaceholder')}
             placeholderTextColor={brand.mutedSoft}
             multiline
-            style={[styles.input, styles.area]}
-          />
-          <View style={styles.gap} />
-          <PrimaryButton
-            label={t('forum.publish')}
-            loading={busy}
-            onPress={() => void submit()}
+            style={[styles.field, styles.area]}
           />
         </View>
       </ScrollView>
@@ -103,40 +135,76 @@ export default function ForumNewScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  bar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
+  },
+  barSide: { minWidth: 72 },
+  cancel: {
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.muted,
+  },
+  barTitle: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: fonts.title,
+    fontSize: 17,
+    color: brand.ink,
+  },
+  publish: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 15,
+    color: brand.accent,
+    textAlign: 'right',
+  },
+  dim: { opacity: 0.5 },
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 40,
+  },
   label: {
     marginTop: 14,
-    marginBottom: 6,
-    fontFamily: fonts.bodyBold,
+    marginBottom: 8,
+    fontFamily: fonts.body,
     fontSize: 13,
     color: brand.muted,
   },
-  chip: {
-    marginBottom: 8,
+  field: {
     borderRadius: 14,
-        backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-  },
-  chipActive: {
-    backgroundColor: brand.mist,
-    borderColor: brand.navy,
-  },
-  chipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 15,
-    color: brand.ink,
-  },
-  chipTextActive: { color: brand.navy },
-  input: {
-    borderRadius: 14,
-        backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     fontFamily: fonts.body,
     fontSize: 15,
     color: brand.ink,
   },
-  area: { minHeight: 120, textAlignVertical: 'top' },
-  gap: { height: 14 },
+  fieldText: {
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  area: { minHeight: 110, textAlignVertical: 'top' },
+  option: {
+    marginTop: 6,
+    borderRadius: 12,
+    backgroundColor: brand.creamDeep,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  optionActive: { backgroundColor: brand.mist },
+  optionText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  optionTextActive: {
+    fontFamily: fonts.bodyBold,
+    color: brand.accent,
+  },
 });

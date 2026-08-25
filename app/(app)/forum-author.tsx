@@ -1,12 +1,10 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { ListRow } from '@/src/components/ListRow';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   getForumAuthor,
@@ -16,6 +14,7 @@ import {
 } from '@/src/services/forum';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** Screenshot 05.16 — dashed avatar + rank + topic cards */
 export default function ForumAuthorScreen() {
   const { authorId } = useLocalSearchParams<{ authorId?: string }>();
   const [author, setAuthor] = useState<ForumAuthor | null>(null);
@@ -40,46 +39,61 @@ export default function ForumAuthorScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('forum.authorTitle')} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
-            title={author?.displayName ?? t('forum.authorTitle')}
-            subtitle={author?.bio ?? t('forum.authorMissing')}
-          />
+          <View style={styles.avatar}>
+            <Text style={styles.avatarHint}>{t('forum.avatarHint')}</Text>
+            <Text style={styles.avatarBrowse}>{t('forum.avatarBrowse')}</Text>
+          </View>
+
+          <Text style={styles.name}>
+            {author?.displayName ?? t('forum.authorMissing')}
+          </Text>
           {author ? (
-            <Text style={styles.meta}>
-              {t('forum.authorJoined', {
-                date: new Date(author.joinedAt).toLocaleDateString('uk-UA'),
+            <Text style={styles.stats}>
+              {t('forum.authorStats', {
+                topics: String(author.topicCount ?? threads.length),
+                replies: String(author.replyCount ?? 0),
               })}
             </Text>
           ) : null}
+          {author?.rank ? (
+            <View style={styles.rankPill}>
+              <Text style={styles.rankText}>{author.rank}</Text>
+            </View>
+          ) : null}
 
-          <Text style={styles.section}>{t('forum.authorThreads')}</Text>
-          {threads.length === 0 ? (
-            <Text style={styles.empty}>{t('forum.authorThreadsEmpty')}</Text>
-          ) : (
-            threads.map((th) => (
-              <ListRow
-                key={th.id}
-                title={th.title}
-                subtitle={th.preview}
-                meta={t('forum.replies', { count: th.replies })}
-                leading={
-                  <Ionicons
-                    name="chatbubble-ellipses-outline"
-                    size={22}
-                    color={brand.navy}
-                  />
-                }
-                onPress={() =>
-                  router.push({
-                    pathname: '/(app)/forum-thread',
-                    params: { id: th.id },
-                  } as never)
-                }
-              />
-            ))
-          )}
+          <View style={styles.list}>
+            {threads.length === 0 ? (
+              <Text style={styles.empty}>{t('forum.authorThreadsEmpty')}</Text>
+            ) : (
+              threads.map((th) => (
+                <Pressable
+                  key={th.id}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/(app)/forum-thread',
+                      params: { id: th.id },
+                    } as never)
+                  }
+                  style={({ pressed }) => [
+                    styles.card,
+                    pressed && styles.pressed,
+                  ]}
+                >
+                  <Text style={styles.cardTitle} numberOfLines={2}>
+                    {th.title}
+                  </Text>
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>
+                      {t('forum.repliesShort', { count: th.replies })}
+                    </Text>
+                  </View>
+                </Pressable>
+              ))
+            )}
+          </View>
         </View>
       </ScrollView>
     </AppScreen>
@@ -87,23 +101,94 @@ export default function ForumAuthorScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  meta: {
-    marginBottom: 16,
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 40,
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: brand.creamDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 14,
+  },
+  avatarHint: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  avatarBrowse: {
+    fontFamily: fonts.body,
+    fontSize: 11,
+    color: brand.mutedSoft,
+  },
+  name: {
+    fontFamily: fonts.title,
+    fontSize: 20,
+    color: brand.ink,
+  },
+  stats: {
+    marginTop: 6,
     fontFamily: fonts.body,
     fontSize: 13,
     color: brand.muted,
   },
-  section: {
-    marginBottom: 8,
+  rankPill: {
+    marginTop: 12,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.mist,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+  },
+  rankText: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 13,
+    color: brand.accent,
+  },
+  list: {
+    alignSelf: 'stretch',
+    marginTop: 22,
+    gap: 10,
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderRadius: 14,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 16,
+  },
+  pressed: { opacity: 0.88 },
+  cardTitle: {
+    flex: 1,
     fontFamily: fonts.bodyBold,
-    fontSize: 15,
+    fontSize: 14,
+    lineHeight: 20,
     color: brand.ink,
+  },
+  badge: {
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.creamDeep,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  badgeText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 12,
+    color: brand.muted,
   },
   empty: {
     fontFamily: fonts.body,
     fontSize: 14,
-    lineHeight: 20,
     color: brand.muted,
+    textAlign: 'center',
   },
 });

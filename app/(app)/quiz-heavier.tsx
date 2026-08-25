@@ -1,147 +1,159 @@
+import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { addQuizXp } from '@/src/services/gamification';
 import { getHeavierQuestions } from '@/src/services/quizMocks';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** Screenshot 05.06 — Хто важчий? */
 export default function QuizHeavierScreen() {
   const questions = useMemo(() => getHeavierQuestions(), []);
   const [index, setIndex] = useState(0);
-  const [picked, setPicked] = useState<string | null>(null);
   const [score, setScore] = useState(0);
-  const [done, setDone] = useState(false);
 
   const q = questions[index];
-  const answered = Boolean(picked);
+  const total = questions.length;
 
-  const onPick = (id: string) => {
-    if (picked || !q) return;
-    setPicked(id);
-    if (id === q.correctId) setScore((s) => s + 1);
+  const onPick = async (id: string) => {
+    if (!q) return;
+    const ok = id === q.correctId;
+    const nextScore = ok ? score + 1 : score;
+    if (ok) setScore(nextScore);
+    setTimeout(async () => {
+      if (index + 1 >= total) {
+        await addQuizXp(
+          nextScore * 30,
+          nextScore === total ? 'b-heavy' : undefined,
+        );
+        router.replace({
+          pathname: '/(app)/quiz-results',
+          params: {
+            score: String(nextScore),
+            total: String(total),
+            category: 'heavier',
+          },
+        } as never);
+        return;
+      }
+      setIndex((i) => i + 1);
+    }, 400);
   };
 
-  const onNext = async () => {
-    if (index + 1 >= questions.length) {
-      setDone(true);
-      await addQuizXp(
-        score * 30,
-        score === questions.length ? 'b-heavy' : undefined,
-      );
-      return;
-    }
-    setIndex((i) => i + 1);
-    setPicked(null);
-  };
+  if (!q) return null;
 
-  const restart = () => {
-    setIndex(0);
-    setPicked(null);
-    setScore(0);
-    setDone(false);
-  };
-
-  if (done) {
-    return (
-      <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
-        <ScrollView>
-          <View style={styles.pad}>
-            <ScreenHeader
-              title={t('quizHeavier.title')}
-              subtitle={t('quizHeavier.done')}
-            />
-            <Text style={styles.score}>
-              {t('quizHeavier.score', { score, total: questions.length })}
-            </Text>
-            <PrimaryButton label={t('quizHeavier.again')} onPress={restart} />
-          </View>
-        </ScrollView>
-      </AppScreen>
-    );
-  }
+  const left = q.choices[0];
+  const right = q.choices[1];
 
   return (
-    <AppScreen>
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.pad}>
-          <ScreenHeader
-            title={t('quizHeavier.title')}
-            subtitle={t('quizHeavier.progress', {
-              n: index + 1,
-              total: questions.length,
-            })}
-          />
-          <Text style={styles.prompt}>{q?.prompt}</Text>
-          {q?.choices.map((c) => {
-            const isPicked = picked === c.id;
-            const correct = answered && c.id === q.correctId;
-            const wrong = isPicked && c.id !== q.correctId;
-            return (
-              <Pressable
-                key={c.id}
-                onPress={() => onPick(c.id)}
-                style={[
-                  styles.choice,
-                  correct && styles.choiceOk,
-                  wrong && styles.choiceBad,
-                ]}
-              >
-                <Text style={styles.choiceText}>{c.label}</Text>
-              </Pressable>
-            );
-          })}
-          {answered && q ? (
-            <>
-              <Text style={styles.explain}>{q.explain}</Text>
-              <PrimaryButton label={t('quizHeavier.next')} onPress={() => void onNext()} />
-            </>
-          ) : null}
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader
+        title={t('quizHeavier.titleProgress', {
+          n: index + 1,
+          total,
+        })}
+        titleSize={16}
+      />
+      <View style={styles.pad}>
+        <Text style={styles.prompt}>{t('quizHeavier.prompt')}</Text>
+        <View style={styles.vsRow}>
+          <Pressable
+            onPress={() => void onPick(left.id)}
+            style={styles.vsCard}
+          >
+            <Ionicons name="image-outline" size={26} color={brand.mutedSoft} />
+            <Text style={styles.vsName}>{left.label}</Text>
+          </Pressable>
+          <Text style={styles.vs}>{t('quizHeavier.vs')}</Text>
+          <Pressable
+            onPress={() => void onPick(right.id)}
+            style={styles.vsCard}
+          >
+            <Ionicons name="image-outline" size={26} color={brand.mutedSoft} />
+            <Text style={styles.vsName}>{right.label}</Text>
+          </Pressable>
         </View>
-      </ScrollView>
+        <View style={styles.labels}>
+          <Text style={styles.label}>{left.label}</Text>
+          <Text style={styles.label}>{right.label}</Text>
+        </View>
+        <View style={styles.footer}>
+          <Ionicons name="globe-outline" size={14} color={brand.mutedSoft} />
+          <Text style={styles.footerT}>{t('quizHeavier.wikidataNote')}</Text>
+        </View>
+      </View>
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
+  pad: { flex: 1, paddingHorizontal: 20, paddingTop: 12 },
   prompt: {
-    marginBottom: 14,
-    fontFamily: fonts.bodyBold,
-    fontSize: 18,
-    lineHeight: 26,
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
     color: brand.ink,
+    marginBottom: 22,
   },
-  choice: {
-    marginBottom: 10,
-    borderRadius: 14,
-        backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
+  vsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
-  choiceOk: { borderColor: brand.score.good, backgroundColor: '#E8F8F2' },
-  choiceBad: { borderColor: brand.score.poor, backgroundColor: '#FBEDEA' },
-  choiceText: {
-    fontFamily: fonts.bodyMedium,
+  vsCard: {
+    flex: 1,
+    aspectRatio: 1,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: '#EEEBE6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: 10,
+  },
+  vsName: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 12,
+    color: brand.mutedSoft,
+    textAlign: 'center',
+  },
+  vs: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.mutedSoft,
+  },
+  labels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+    paddingHorizontal: 4,
+  },
+  label: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: fonts.bodyBold,
     fontSize: 15,
     color: brand.ink,
   },
-  explain: {
-    marginVertical: 12,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: brand.muted,
+  footer: {
+    marginTop: 'auto',
+    marginBottom: 28,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    justifyContent: 'center',
   },
-  score: {
-    marginBottom: 16,
-    fontFamily: fonts.bodyBold,
-    fontSize: 22,
-    color: brand.ink,
+  footerT: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
   },
 });

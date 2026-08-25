@@ -7,15 +7,18 @@ import { supabase } from '@/src/services/supabase';
 
 /** Forum: cloud-first when signed in + tables exist; else AsyncStorage. */
 
-const THREADS_KEY = 'knowsnout.forum.threads.v1';
-const POSTS_KEY = 'knowsnout.forum.posts.v1';
-const NOTIFS_KEY = 'knowsnout.forum.notifications.v1';
+const THREADS_KEY = 'knowsnout.forum.threads.v2';
+const POSTS_KEY = 'knowsnout.forum.posts.v2';
+const NOTIFS_KEY = 'knowsnout.forum.notifications.v2';
+
+export type ForumCategoryIcon = 'paw' | 'cat' | 'bowl' | 'heart';
 
 export type ForumCategory = {
   id: string;
   title: string;
   body: string;
   threadCount: number;
+  icon: ForumCategoryIcon;
 };
 
 export type ForumAuthor = {
@@ -23,6 +26,9 @@ export type ForumAuthor = {
   displayName: string;
   bio: string;
   joinedAt: string;
+  topicCount?: number;
+  replyCount?: number;
+  rank?: string;
 };
 
 export type ForumThread = {
@@ -34,6 +40,9 @@ export type ForumThread = {
   preview: string;
   replies: number;
   createdAt: string;
+  /** Preformatted relative time for list cards (mock). */
+  timeLabel?: string;
+  tags?: string[];
 };
 
 export type ForumPost = {
@@ -44,23 +53,43 @@ export type ForumPost = {
   body: string;
   createdAt: string;
   mine?: boolean;
+  votes?: number;
+  isSolution?: boolean;
 };
 
 export type ForumNotification = {
   id: string;
   title: string;
+  /** Plain text; use boldSpans for emphasis in UI. */
   body: string;
+  /** Substrings of body that should render bold. */
+  boldSpans?: string[];
   threadId?: string;
   authorId?: string;
   createdAt: string;
   read: boolean;
+  /** Right-side label e.g. Нове / Вчора / 2 дні */
+  timeLabel?: string;
 };
 
-export const FORUM_RULES_UA = `1. Повага до людей і тварин — без образ.
-2. Не давай медичних призначень — лише досвід і посилання на ветів.
-3. Без спаму, реклами й чужих персональних даних.
-4. Фото — з дозволу; без шок-контенту.
-5. Модерація демо-локальна: порушники потрапляють у «заблоковані» (пізніше).`;
+export const FORUM_RULES: string[] = [
+  'Поважайте інших власників і тварин',
+  'Без реклами й спаму в темах',
+  'Медичні поради — не заміна візиту до лікаря',
+  'Порушення — попередження, потім блокування',
+];
+
+/** @deprecated use FORUM_RULES */
+export const FORUM_RULES_UA = FORUM_RULES.map(
+  (r, i) => `${i + 1}. ${r}`,
+).join('\n');
+
+export const FORUM_SEARCH_TAGS = [
+  'алергія',
+  'цуценя',
+  'переноска',
+  'щеплення',
+] as const;
 
 const ME_AUTHOR_ID = 'fa-me';
 
@@ -70,149 +99,201 @@ const AUTHORS: Record<string, ForumAuthor> = {
     displayName: 'Ти',
     bio: 'Твій локальний профіль на форумі KnowSnout.',
     joinedAt: '2026-08-01T10:00:00.000Z',
+    topicCount: 2,
+    replyCount: 5,
+    rank: 'Новачок',
   },
-  'fa-iryna': {
-    id: 'fa-iryna',
-    displayName: 'Ірина',
-    bio: 'Дві кішки · догляд за шерстю й кігтями.',
-    joinedAt: '2026-06-12T10:00:00.000Z',
+  'fa-oksana': {
+    id: 'fa-oksana',
+    displayName: 'Оксана',
+    bio: 'Кішки й спокійні рутини.',
+    joinedAt: '2026-03-01T10:00:00.000Z',
+    topicCount: 42,
+    replyCount: 210,
+    rank: 'Досвідчений власник кота',
   },
-  'fa-maksym': {
-    id: 'fa-maksym',
-    displayName: 'Максим',
-    bio: 'Рекс і калюжі — шукаю м’які шампуні.',
-    joinedAt: '2026-05-03T10:00:00.000Z',
+  'fa-marta': {
+    id: 'fa-marta',
+    displayName: 'Марта',
+    bio: 'Собаки · нашийники й майданчики.',
+    joinedAt: '2026-05-12T10:00:00.000Z',
+    topicCount: 18,
+    replyCount: 96,
+    rank: 'Досвідчений власник собаки',
   },
-  'fa-olya': {
-    id: 'fa-olya',
-    displayName: 'Оля',
-    bio: 'Переходи кормів і спокійні рутини.',
+  'fa-igor': {
+    id: 'fa-igor',
+    displayName: 'Ігор',
+    bio: 'Київ · прогулянки й тренування.',
     joinedAt: '2026-04-20T10:00:00.000Z',
-  },
-  'fa-dima': {
-    id: 'fa-dima',
-    displayName: 'Діма',
-    bio: 'Луна на повідок — працюємо над спокоєм.',
-    joinedAt: '2026-07-01T10:00:00.000Z',
-  },
-  'fa-katya': {
-    id: 'fa-katya',
-    displayName: 'Катя',
-    bio: 'Поради без паніки · досвід з британцями.',
-    joinedAt: '2026-03-15T10:00:00.000Z',
+    topicCount: 11,
+    replyCount: 64,
+    rank: 'Активний учасник',
   },
 };
 
 const CATEGORIES: ForumCategory[] = [
   {
-    id: 'fc-care',
-    title: 'Догляд',
-    body: 'Гігієна, шерсть, кігті, вуха',
-    threadCount: 2,
+    id: 'fc-dogs',
+    title: 'Собаки',
+    body: 'Нашийники, майданчики, виховання',
+    threadCount: 248,
+    icon: 'paw',
   },
   {
-    id: 'fc-food',
-    title: 'Харчування',
-    body: 'Корми, переходи, алергії (досвід)',
-    threadCount: 1,
+    id: 'fc-cats',
+    title: 'Коти',
+    body: 'Переноски, поведінка, догляд',
+    threadCount: 312,
+    icon: 'cat',
   },
   {
-    id: 'fc-train',
-    title: 'Виховання',
-    body: 'Прогулянки, команди, поведінка',
-    threadCount: 1,
+    id: 'fc-feeding',
+    title: 'Годування',
+    body: 'Корми, алергії, раціон',
+    threadCount: 96,
+    icon: 'bowl',
   },
   {
-    id: 'fc-offtopic',
-    title: 'Офтоп',
-    body: 'Мемчики й знайомства власників',
-    threadCount: 0,
+    id: 'fc-health',
+    title: "Здоров'я",
+    body: 'Щеплення, симптоми, ветдосвід',
+    threadCount: 154,
+    icon: 'heart',
   },
 ];
 
 const SEED_THREADS: ForumThread[] = [
   {
-    id: 'ft-1',
-    categoryId: 'fc-care',
-    title: 'Як часто стригти кігті коту?',
-    author: 'Ірина',
-    authorId: 'fa-iryna',
-    preview: 'У нас британка — щось кусає, коли підходжу…',
-    replies: 3,
-    createdAt: '2026-08-18T10:00:00.000Z',
+    id: 'ft-collar',
+    categoryId: 'fc-dogs',
+    title: 'Як привчити до нашийника?',
+    author: 'Марта',
+    authorId: 'fa-marta',
+    preview: 'Цуценя 3 місяці, боїться нашийника…',
+    replies: 6,
+    createdAt: '2026-08-25T14:40:00.000Z',
+    timeLabel: '20 хв тому',
+    tags: ['цуценя'],
   },
   {
-    id: 'ft-2',
-    categoryId: 'fc-care',
-    title: 'Шампунь для собак після дощу',
-    author: 'Максим',
-    authorId: 'fa-maksym',
-    preview: 'Рекс валяється в калюжах — що м’яко пахне?',
-    replies: 2,
-    createdAt: '2026-08-19T11:00:00.000Z',
+    id: 'ft-parks',
+    categoryId: 'fc-dogs',
+    title: 'Найкращі майданчики у Києві',
+    author: 'Ігор',
+    authorId: 'fa-igor',
+    preview: 'Де зручно для середніх порід?',
+    replies: 41,
+    createdAt: '2026-08-24T12:00:00.000Z',
+    timeLabel: 'вчора',
   },
   {
-    id: 'ft-3',
-    categoryId: 'fc-food',
-    title: 'Перехід на новий сухий корм',
-    author: 'Оля',
-    authorId: 'fa-olya',
-    preview: 'Скільки днів мішати зі старим?',
-    replies: 4,
-    createdAt: '2026-08-17T09:00:00.000Z',
+    id: 'ft-carrier',
+    categoryId: 'fc-cats',
+    title: 'Як привчити кота до переноски?',
+    author: 'Оксана',
+    authorId: 'fa-oksana',
+    preview: 'Кіт панікує щоразу, коли бачить переноску.',
+    replies: 14,
+    createdAt: '2026-08-23T10:00:00.000Z',
+    timeLabel: '2 дні тому',
+    tags: ['переноска'],
   },
   {
-    id: 'ft-4',
-    categoryId: 'fc-train',
-    title: 'Тягне повідок на білок',
-    author: 'Діма',
-    authorId: 'fa-dima',
-    preview: 'Луна зривається — лайфхаки без крику?',
-    replies: 2,
-    createdAt: '2026-08-16T15:00:00.000Z',
+    id: 'ft-fish',
+    categoryId: 'fc-cats',
+    title: 'Чи можна годувати кота рибою щодня?',
+    author: 'Оксана',
+    authorId: 'fa-oksana',
+    preview: 'Чула, що часто — небажано. Як у вас?',
+    replies: 8,
+    createdAt: '2026-08-22T09:00:00.000Z',
+    timeLabel: '3 дні тому',
+  },
+  {
+    id: 'ft-allergy',
+    categoryId: 'fc-feeding',
+    title: 'Алергія на курку — чим годувати?',
+    author: 'Марта',
+    authorId: 'fa-marta',
+    preview: 'Свербіж після курячого корму.',
+    replies: 22,
+    createdAt: '2026-08-21T11:00:00.000Z',
+    timeLabel: '4 дні тому',
+    tags: ['алергія'],
+  },
+  {
+    id: 'ft-chew',
+    categoryId: 'fc-dogs',
+    title: 'Цуценя гризе меблі, що робити?',
+    author: 'Ігор',
+    authorId: 'fa-igor',
+    preview: 'Диван уже «під обстрілом».',
+    replies: 31,
+    createdAt: '2026-08-20T16:00:00.000Z',
+    timeLabel: '5 днів тому',
+    tags: ['цуценя'],
+  },
+  {
+    id: 'ft-vax',
+    categoryId: 'fc-health',
+    title: 'Графік щеплень для цуценяти',
+    author: 'Марта',
+    authorId: 'fa-marta',
+    preview: 'Що обов’язково до року?',
+    replies: 12,
+    createdAt: '2026-08-19T10:00:00.000Z',
+    timeLabel: '6 днів тому',
+    tags: ['щеплення'],
   },
 ];
 
 const SEED_POSTS: ForumPost[] = [
   {
-    id: 'fp-1',
-    threadId: 'ft-1',
-    author: 'Ірина',
-    authorId: 'fa-iryna',
-    body: 'У нас британка — щось кусає, коли підходжу з кусачками. Як ви привчали?',
-    createdAt: '2026-08-18T10:00:00.000Z',
+    id: 'fp-carrier-q',
+    threadId: 'ft-carrier',
+    author: 'Оксана',
+    authorId: 'fa-oksana',
+    body: 'Кіт панікує щоразу, коли бачить переноску. Як ви привчали?',
+    createdAt: '2026-08-23T10:00:00.000Z',
+    votes: 4,
   },
   {
-    id: 'fp-2',
-    threadId: 'ft-1',
-    author: 'Катя',
-    authorId: 'fa-katya',
-    body: 'Починала з 10 секунд + смаколик. І кусачки біля лежака, щоб звикла до звуку.',
-    createdAt: '2026-08-18T12:00:00.000Z',
+    id: 'fp-carrier-sol',
+    threadId: 'ft-carrier',
+    author: 'Марта',
+    authorId: 'fa-marta',
+    body: 'Залишайте переноску відкритою вдома постійно, хай звикає поступово.',
+    createdAt: '2026-08-23T11:30:00.000Z',
+    votes: 24,
+    isSolution: true,
   },
   {
-    id: 'fp-3',
-    threadId: 'ft-1',
-    author: 'Оля',
-    authorId: 'fa-olya',
-    body: 'Нам вет показав правильний кут — менше стресу.',
-    createdAt: '2026-08-18T14:00:00.000Z',
+    id: 'fp-carrier-r2',
+    threadId: 'ft-carrier',
+    author: 'Ігор',
+    authorId: 'fa-igor',
+    body: 'Ще спробуйте класти улюблену ковдру всередину.',
+    createdAt: '2026-08-23T14:00:00.000Z',
+    votes: 6,
   },
   {
-    id: 'fp-4',
-    threadId: 'ft-3',
-    author: 'Оля',
-    authorId: 'fa-olya',
-    body: 'Скільки днів мішати зі старим при переході на новий сухий?',
-    createdAt: '2026-08-17T09:00:00.000Z',
+    id: 'fp-collar-q',
+    threadId: 'ft-collar',
+    author: 'Марта',
+    authorId: 'fa-marta',
+    body: 'Цуценя 3 місяці, боїться нашийника…',
+    createdAt: '2026-08-25T14:40:00.000Z',
+    votes: 2,
   },
   {
-    id: 'fp-5',
-    threadId: 'ft-3',
-    author: 'Максим',
-    authorId: 'fa-maksym',
-    body: 'Ми робили 7–10 днів. Якщо стілець «плаває» — повільніше.',
-    createdAt: '2026-08-17T11:00:00.000Z',
+    id: 'fp-parks-q',
+    threadId: 'ft-parks',
+    author: 'Ігор',
+    authorId: 'fa-igor',
+    body: 'Де зручно для середніх порід у Києві?',
+    createdAt: '2026-08-24T12:00:00.000Z',
+    votes: 5,
   },
 ];
 
@@ -220,27 +301,34 @@ const SEED_NOTIFICATIONS: ForumNotification[] = [
   {
     id: 'fn-1',
     title: 'Нова відповідь',
-    body: 'Катя відповіла в «Як часто стригти кігті коту?»',
-    threadId: 'ft-1',
-    authorId: 'fa-katya',
-    createdAt: '2026-08-18T12:05:00.000Z',
+    body: 'Ігор відповів у твоєму треді «Як привчити до нашийника?»',
+    boldSpans: ['Ігор'],
+    threadId: 'ft-collar',
+    authorId: 'fa-igor',
+    createdAt: '2026-08-25T15:00:00.000Z',
     read: false,
+    timeLabel: 'Нове',
   },
   {
     id: 'fn-2',
-    title: 'Згадка в темі',
-    body: 'Максим згадав про перехід на сухий корм',
-    threadId: 'ft-3',
-    authorId: 'fa-maksym',
-    createdAt: '2026-08-17T11:10:00.000Z',
-    read: false,
+    title: 'Розвʼязання',
+    body: "Твою відповідь позначили як розв'язання",
+    boldSpans: ["розв'язання"],
+    threadId: 'ft-carrier',
+    createdAt: '2026-08-24T10:00:00.000Z',
+    read: true,
+    timeLabel: 'Вчора',
   },
   {
     id: 'fn-3',
-    title: 'Правила форуму',
-    body: 'Нагадування: без медпризначень — лише досвід.',
-    createdAt: '2026-08-15T09:00:00.000Z',
+    title: 'Голос',
+    body: 'Оксана проголосувала за твою відповідь',
+    boldSpans: ['Оксана'],
+    threadId: 'ft-collar',
+    authorId: 'fa-oksana',
+    createdAt: '2026-08-23T10:00:00.000Z',
     read: true,
+    timeLabel: '2 дні',
   },
 ];
 
@@ -389,7 +477,7 @@ export async function getForumThread(id: string): Promise<ForumThread | null> {
           author:
             String(data.author_id) === user.id
               ? 'Ти'
-              : 'Користувач',
+              : AUTHORS[String(data.author_id)]?.displayName ?? 'Користувач',
           authorId: String(data.author_id),
           preview: String(data.preview ?? ''),
           replies: Number(data.reply_count ?? 0),
@@ -498,6 +586,7 @@ export async function createForumThread(input: {
     preview: input.body.trim().slice(0, 80),
     replies: 0,
     createdAt: new Date().toISOString(),
+    timeLabel: 'щойно',
   };
   const post: ForumPost = {
     id: `fp-${Date.now()}`,
@@ -507,6 +596,7 @@ export async function createForumThread(input: {
     body: input.body.trim(),
     createdAt: thread.createdAt,
     mine: true,
+    votes: 0,
   };
   threads.unshift(thread);
   posts.push(post);
@@ -556,6 +646,7 @@ export async function replyForumThread(
           body: text,
           createdAt: String(data.created_at),
           mine: true,
+          votes: 0,
         };
       }
     } catch {
@@ -574,6 +665,7 @@ export async function replyForumThread(
     body: body.trim(),
     createdAt: new Date().toISOString(),
     mine: true,
+    votes: 0,
   };
   posts.push(post);
   const idx = threads.findIndex((t) => t.id === threadId);
@@ -589,16 +681,27 @@ export async function replyForumThread(
   return post;
 }
 
-export async function searchForum(query: string): Promise<ForumThread[]> {
+export async function searchForum(
+  query: string,
+  tag?: string,
+): Promise<ForumThread[]> {
   const q = query.trim().toLowerCase();
+  const tagQ = tag?.trim().toLowerCase();
   const threads = await listForumThreads();
-  if (!q) return threads;
-  return threads.filter(
-    (t) =>
+  return threads.filter((t) => {
+    const tagOk =
+      !tagQ ||
+      (t.tags ?? []).some((x) => x.toLowerCase() === tagQ) ||
+      t.title.toLowerCase().includes(tagQ);
+    if (!tagOk) return false;
+    if (!q) return true;
+    return (
       t.title.toLowerCase().includes(q) ||
       t.preview.toLowerCase().includes(q) ||
-      t.author.toLowerCase().includes(q),
-  );
+      t.author.toLowerCase().includes(q) ||
+      (t.tags ?? []).some((x) => x.toLowerCase().includes(q))
+    );
+  });
 }
 
 export async function listForumNotifications(): Promise<ForumNotification[]> {

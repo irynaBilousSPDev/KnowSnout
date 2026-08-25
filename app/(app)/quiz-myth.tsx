@@ -1,163 +1,107 @@
+import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { addQuizXp } from '@/src/services/gamification';
 import { getMythCards } from '@/src/services/quizMocks';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** Screenshot 05.07 — Правда чи міф */
 export default function QuizMythScreen() {
   const cards = useMemo(() => getMythCards(), []);
   const [index, setIndex] = useState(0);
-  const [answered, setAnswered] = useState(false);
-  const [correctPick, setCorrectPick] = useState(false);
   const [score, setScore] = useState(0);
-  const [done, setDone] = useState(false);
+  const [locked, setLocked] = useState(false);
 
   const card = cards[index];
+  const total = cards.length;
 
   const pick = async (sayMyth: boolean) => {
-    if (answered || !card) return;
+    if (locked || !card) return;
+    setLocked(true);
     const ok = sayMyth === card.isMyth;
-    setCorrectPick(ok);
-    setAnswered(true);
-    if (ok) setScore((s) => s + 1);
+    const nextScore = ok ? score + 1 : score;
+    if (ok) setScore(nextScore);
+    setTimeout(async () => {
+      if (index + 1 >= total) {
+        await addQuizXp(nextScore * 25, nextScore >= 5 ? 'b-myth' : undefined);
+        router.replace({
+          pathname: '/(app)/quiz-results',
+          params: {
+            score: String(nextScore),
+            total: String(total),
+            category: 'myth',
+          },
+        } as never);
+        return;
+      }
+      setIndex((i) => i + 1);
+      setLocked(false);
+    }, 450);
   };
 
-  const onNext = async () => {
-    if (index + 1 >= cards.length) {
-      setDone(true);
-      await addQuizXp(score * 25, score >= 5 ? 'b-myth' : undefined);
-      return;
-    }
-    setIndex((i) => i + 1);
-    setAnswered(false);
-    setCorrectPick(false);
-  };
-
-  const restart = () => {
-    setIndex(0);
-    setAnswered(false);
-    setCorrectPick(false);
-    setScore(0);
-    setDone(false);
-  };
-
-  if (done) {
-    return (
-      <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
-        <ScrollView>
-          <View style={styles.pad}>
-            <ScreenHeader title={t('quizMyth.title')} subtitle={t('quizMyth.done')} />
-            <Text style={styles.score}>
-              {t('quizMyth.score', { score, total: cards.length })}
-            </Text>
-            <PrimaryButton label={t('quizMyth.again')} onPress={restart} />
-          </View>
-        </ScrollView>
-      </AppScreen>
-    );
-  }
+  if (!card) return null;
 
   return (
-    <AppScreen>
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.pad}>
-          <ScreenHeader
-            title={t('quizMyth.title')}
-            subtitle={t('quizMyth.progress', {
-              n: index + 1,
-              total: cards.length,
-            })}
-          />
-          <View style={styles.card}>
-            <Text style={styles.claimLabel}>{t('quizMyth.claim')}</Text>
-            <Text style={styles.claim}>{card?.claim}</Text>
-          </View>
-
-          {!answered ? (
-            <View style={styles.row}>
-              <View style={styles.half}>
-                <PrimaryButton
-                  label={t('quizMyth.myth')}
-                  onPress={() => void pick(true)}
-                />
-              </View>
-              <View style={styles.half}>
-                <PrimaryButton
-                  label={t('quizMyth.fact')}
-                  variant="secondary"
-                  onPress={() => void pick(false)}
-                />
-              </View>
-            </View>
-          ) : (
-            <>
-              <Text style={correctPick ? styles.ok : styles.bad}>
-                {correctPick ? t('quizMyth.correct') : t('quizMyth.wrong')}
-              </Text>
-              <Text style={styles.explain}>{card?.explain}</Text>
-              <PrimaryButton label={t('quizMyth.next')} onPress={() => void onNext()} />
-            </>
-          )}
+    <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader
+        title={t('quizMyth.titleProgress', { n: index + 1, total })}
+        titleSize={16}
+      />
+      <View style={styles.body}>
+        <View style={styles.card}>
+          <Text style={styles.claim}>{card.claim}</Text>
         </View>
-      </ScrollView>
+        <View style={styles.actions}>
+          <Pressable onPress={() => void pick(false)} style={styles.action}>
+            <Text style={styles.actionT}>{t('quizMyth.truth')}</Text>
+          </Pressable>
+          <Pressable onPress={() => void pick(true)} style={styles.action}>
+            <Text style={styles.actionT}>{t('quizMyth.myth')}</Text>
+          </Pressable>
+        </View>
+      </View>
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  card: {
-    marginBottom: 16,
-    borderRadius: brand.radius.md,
-        backgroundColor: brand.surfaceElevated,
-    padding: 18,
+  body: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 28,
   },
-  claimLabel: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
-    color: brand.navy,
+  card: {
+    flex: 1,
+    borderRadius: 24,
+    backgroundColor: brand.surfaceElevated,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 28,
+    marginBottom: 24,
   },
   claim: {
-    marginTop: 10,
-    fontFamily: fonts.bodyBold,
-    fontSize: 20,
-    lineHeight: 28,
-    color: brand.ink,
-  },
-  row: { flexDirection: 'row', gap: 10 },
-  half: { flex: 1 },
-  ok: {
-    marginBottom: 8,
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: brand.score.good,
-  },
-  bad: {
-    marginBottom: 8,
-    fontFamily: fonts.bodyBold,
-    fontSize: 16,
-    color: brand.score.poor,
-  },
-  explain: {
-    marginBottom: 14,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: brand.muted,
-  },
-  score: {
-    marginBottom: 16,
-    fontFamily: fonts.bodyBold,
+    fontFamily: fonts.title,
     fontSize: 22,
+    lineHeight: 30,
+    color: brand.ink,
+    textAlign: 'center',
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 28,
+  },
+  action: { paddingVertical: 12, paddingHorizontal: 8 },
+  actionT: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 17,
     color: brand.ink,
   },
 });

@@ -1,13 +1,10 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { ListRow } from '@/src/components/ListRow';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScreenHeader } from '@/src/components/ScreenHeader';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   getForumCategory,
@@ -16,6 +13,7 @@ import {
 } from '@/src/services/forum';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** Screenshot 05.12 — category thread cards */
 export default function ForumCategoryScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const category = id ? getForumCategory(id) : null;
@@ -31,38 +29,29 @@ export default function ForumCategoryScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={category?.title ?? t('forum.categoryTitle')} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <ScreenHeader
-            title={category?.title ?? t('forum.categoryTitle')}
-            subtitle={category?.body ?? t('forum.subtitle')}
-          />
-          <PrimaryButton
-            label={t('forum.newThread')}
-            onPress={() =>
-              router.push({
-                pathname: '/(app)/forum-new',
-                params: { categoryId: id ?? '' },
-              } as never)
-            }
-          />
-          <View style={styles.gap} />
           {threads.map((th) => (
-            <ListRow
+            <Pressable
               key={th.id}
-              title={th.title}
-              subtitle={th.preview}
-              meta={`${th.author} · ${t('forum.replies', { count: th.replies })}`}
-              leading={
-                <Ionicons name="document-text-outline" size={22} color={brand.navy} />
-              }
               onPress={() =>
                 router.push({
                   pathname: '/(app)/forum-thread',
                   params: { id: th.id },
                 } as never)
               }
-            />
+              style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+            >
+              <Text style={styles.title}>{th.title}</Text>
+              <Text style={styles.meta}>
+                {t('forum.threadMeta', {
+                  author: th.author,
+                  replies: String(th.replies),
+                  time: th.timeLabel ?? '',
+                })}
+              </Text>
+            </Pressable>
           ))}
           {threads.length === 0 ? (
             <Text style={styles.empty}>{t('forum.threadsEmpty')}</Text>
@@ -74,8 +63,31 @@ export default function ForumCategoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 40 },
-  gap: { height: 12 },
+  pad: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 40,
+    gap: 10,
+  },
+  card: {
+    borderRadius: 14,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 6,
+  },
+  pressed: { opacity: 0.88 },
+  title: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    lineHeight: 22,
+    color: brand.ink,
+  },
+  meta: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+  },
   empty: {
     fontFamily: fonts.body,
     fontSize: 14,

@@ -1,7 +1,6 @@
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Pressable,
   RefreshControl,
@@ -9,60 +8,62 @@ import {
   Text,
   View,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
-import { IconButton } from '@/src/components/IconButton';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScrHeader } from '@/src/components/ScrHeader';
-import { Section } from '@/src/components/Section';
 import { t } from '@/src/i18n';
-import { confirmAction } from '@/src/lib/confirm';
 import {
-  deleteQuizSession,
+  emptyQuizStats,
   getQuizStats,
   listQuizSessions,
-  type QuizCategory,
   type QuizSessionRow,
   type QuizStats,
-  emptyQuizStats,
 } from '@/src/services/quizResults';
+import {
+  emptyQuizStreak,
+  getQuizStreak,
+  type QuizStreakState,
+} from '@/src/services/quizStreak';
 import { brand, fonts } from '@/src/theme/brand';
 
-function categoryLabel(category: QuizCategory) {
-  switch (category) {
-    case 'breed_origin':
-      return t('quizHub.originTitle');
-    case 'animal_group':
-      return t('quizHub.groupTitle');
-    case 'animals_trivia':
-      return t('quizHub.triviaTitle');
-    default:
-      return t('quizHub.breedTitle');
-  }
-}
-
-/** HTML kit · Історія результатів квізу. */
+/** Screenshot 05.08 celebration when score params present; else history. */
 export default function QuizResultsScreen() {
+  const params = useLocalSearchParams<{
+    score?: string;
+    total?: string;
+  }>();
+  const scoreN = Number(params.score);
+  const totalN = Number(params.total);
+  const showCelebration =
+    Number.isFinite(scoreN) &&
+    Number.isFinite(totalN) &&
+    totalN > 0 &&
+    params.score != null;
+
   const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [stats, setStats] = useState<QuizStats>(emptyQuizStats());
-  const [loading, setLoading] = useState(true);
+  const [streak, setStreak] = useState<QuizStreakState>(emptyQuizStreak());
+  const [loading, setLoading] = useState(!showCelebration);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async (isRefresh = false) => {
-    if (isRefresh) setRefreshing(true);
-    else setLoading(true);
+  const load = useCallback(async (soft?: boolean) => {
+    if (!soft) setLoading(true);
     setError(null);
     try {
-      const [list, nextStats] = await Promise.all([
+      const [list, nextStats, nextStreak] = await Promise.all([
         listQuizSessions(80),
         getQuizStats(),
+        getQuizStreak(),
       ]);
       setSessions(list);
       setStats(nextStats);
+      setStreak(nextStreak);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('quiz.resultsLoadError'));
     } finally {
@@ -73,36 +74,83 @@ export default function QuizResultsScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      void load();
-    }, [load]),
+      void getQuizStreak().then(setStreak).catch(() => undefined);
+      if (!showCelebration) void load();
+    }, [load, showCelebration]),
   );
 
-  const onDelete = async (row: QuizSessionRow) => {
-    const ok = await confirmAction({
-      title: t('quiz.deleteTitle'),
-      message: t('quiz.deleteMessage'),
-      confirmLabel: t('history.delete'),
-      cancelLabel: t('common.cancel'),
-      destructive: true,
-    });
-    if (!ok) return;
-    try {
-      await deleteQuizSession(row.id);
-      setSessions((prev) => prev.filter((s) => s.id !== row.id));
-      setStats(await getQuizStats());
-    } catch (err) {
-      Alert.alert(
-        t('history.deleteFailed'),
-        err instanceof Error ? err.message : t('common.error'),
-      );
-    }
-  };
+  if (showCelebration) {
+    const speed = 20;
+    const accuracy = Math.round((scoreN / totalN) * 40);
+    const streakBonus = 50;
+    const streakDays = streak.currentStreak || 13;
+    const great = scoreN / totalN >= 0.7;
+
+    return (
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
+        <View style={styles.celeb}>
+          <View style={styles.ring}>
+            <Text style={styles.ringScore}>
+              {scoreN}/{totalN}
+            </Text>
+          </View>
+          <Text style={styles.celebTitle}>
+            {great ? t('quiz.greatResult') : t('quiz.sessionTitle')}
+          </Text>
+          <View style={styles.streakLine}>
+            <Ionicons name="paw" size={14} color={brand.accent} />
+            <Text style={styles.streakT}>
+              {t('quiz.streakNow', { count: streakDays })}
+            </Text>
+          </View>
+          <View style={styles.xpCard}>
+            {(
+              [
+                ['quiz.xpSpeed', speed],
+                ['quiz.xpAccuracy', accuracy],
+                ['quiz.xpStreakBonus', streakBonus],
+              ] as const
+            ).map(([key, xp]) => (
+              <View key={key} style={styles.xpRow}>
+                <Text style={styles.xpLabel}>{t(key)}</Text>
+                <Text style={styles.xpVal}>+{xp} XP</Text>
+              </View>
+            ))}
+          </View>
+          <PrimaryButton
+            label={t('quiz.nextQuiz')}
+            onPress={() => router.replace('/(app)/(tabs)/quiz' as never)}
+          />
+          <PrimaryButton
+            label={t('quiz.viewResults')}
+            variant="secondary"
+            onPress={() =>
+              router.replace('/(app)/quiz-results' as never)
+            }
+            style={{ marginTop: 10 }}
+          />
+        </View>
+      </AppScreen>
+    );
+  }
 
   if (loading) {
     return (
       <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
-        <LoadingState message={t('quiz.resultsLoading')} />
+        <AppChromeHeader />
+        <ScrHeader title={t('quiz.resultsTitle')} />
+        <LoadingState />
+      </AppScreen>
+    );
+  }
+
+  if (error) {
+    return (
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
+        <ScrHeader title={t('quiz.resultsTitle')} />
+        <ErrorState message={error} onRetry={() => void load()} />
       </AppScreen>
     );
   }
@@ -110,260 +158,137 @@ export default function QuizResultsScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrHeader title={t('quiz.resultsTitle')} titleSize={20} />
-      {error ? (
-        <View style={styles.pad}>
-          <Text style={styles.sub}>{t('quiz.resultsSubtitle')}</Text>
-          <ErrorState message={error} onRetry={() => void load()} />
-        </View>
-      ) : (
-        <FlatList
-          data={sessions}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => void load(true)}
-              tintColor={brand.accent}
-            />
-          }
-          ListHeaderComponent={
-            <View style={styles.headerBlock}>
-              <Text style={styles.sub}>{t('quiz.resultsSubtitle')}</Text>
-              <View style={styles.statsCard}>
-                <Text style={styles.statsLabel}>{t('quiz.avgLabel')}</Text>
-                <Text style={styles.statsValue}>
-                  {stats.games > 0
-                    ? t('quiz.avgValue', { value: stats.averagePercent })
-                    : '—'}
-                </Text>
-                <Text style={styles.statsMeta}>
-                  {t('quiz.statsLine', {
-                    games: stats.games,
-                    best: stats.bestPercent,
-                  })}
-                </Text>
-              </View>
-
-              {(
-                [
-                  'breed',
-                  'breed_origin',
-                  'animal_group',
-                  'animals_trivia',
-                ] as QuizCategory[]
-              ).map((cat) => {
-                const c = stats.byCategory[cat];
-                return (
-                  <View key={cat} style={styles.catCard}>
-                    <Text style={styles.catTitle}>{categoryLabel(cat)}</Text>
-                    <Text style={styles.catMeta}>
-                      {c.games === 0
-                        ? t('quiz.categoryEmpty')
-                        : t('quiz.categoryStats', {
-                            games: c.games,
-                            avg: c.averagePercent,
-                            best: c.bestPercent,
-                          })}
-                    </Text>
-                  </View>
-                );
-              })}
-
-              <Text style={styles.historyTitle}>{t('quiz.historyTitle')}</Text>
-            </View>
-          }
-          ListEmptyComponent={
-            <Section tone="mist" title={t('quiz.historyEmptyTitle')}>
-              <Text style={styles.emptyBody}>{t('quiz.historyEmptyBody')}</Text>
-              <View style={styles.emptyBtn}>
-                <PrimaryButton
-                  label={t('quiz.backToHub')}
-                  variant="secondary"
-                  onPress={() => router.replace('/(app)/(tabs)/quiz')}
-                />
-              </View>
-            </Section>
-          }
-          renderItem={({ item }) => (
-            <View style={styles.sessionCard}>
-              <Pressable style={styles.sessionRow}>
-                <View style={styles.sessionCopy}>
-                  <Text style={styles.sessionTitle}>
-                    {categoryLabel(item.category)}
-                  </Text>
-                  <Text style={styles.sessionMeta}>
-                    {item.species === 'dog'
-                      ? t('quiz.speciesDog')
-                      : item.species === 'cat'
-                        ? t('quiz.speciesCat')
-                        : t('quiz.speciesAny')}
-                    {' · '}
-                    {new Date(item.created_at).toLocaleString('uk-UA')}
-                  </Text>
-                  <Text style={styles.sessionScore}>
-                    {t('quiz.sessionScoreLine', {
-                      score: item.score,
-                      total: item.total,
-                      percent: item.percent,
-                    })}
-                  </Text>
-                </View>
-                <View style={styles.percentBadge}>
-                  <Text style={styles.percentText}>
-                    {Math.round(item.percent)}%
-                  </Text>
-                </View>
-              </Pressable>
-              <View style={styles.deleteRow}>
-                <IconButton
-                  name="trash-outline"
-                  color={brand.score.poor}
-                  accessibilityLabel={t('history.delete')}
-                  onPress={() => void onDelete(item)}
-                />
-              </View>
-            </View>
-          )}
-        />
-      )}
+      <ScrHeader title={t('quiz.resultsTitle')} />
+      <FlatList
+        data={sessions}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              setRefreshing(true);
+              void load(true);
+            }}
+            tintColor={brand.accent}
+          />
+        }
+        ListHeaderComponent={
+          <Text style={styles.stats}>
+            {t('quiz.gamesPlayed', { n: stats.games })} ·{' '}
+            {t('quiz.avgScore', {
+              avg: stats.games ? Math.round(stats.averagePercent) : 0,
+            })}
+          </Text>
+        }
+        ListEmptyComponent={
+          <Text style={styles.empty}>{t('quiz.resultsEmpty')}</Text>
+        }
+        renderItem={({ item }) => (
+          <Pressable style={styles.row}>
+            <Text style={styles.rowTitle}>
+              {item.score}/{item.total}
+            </Text>
+            <Text style={styles.rowMeta}>{item.category}</Text>
+          </Pressable>
+        )}
+      />
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  pad: { paddingHorizontal: 20, paddingTop: 16 },
-  list: {
+  celeb: {
+    flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 28,
     paddingBottom: 40,
+    alignItems: 'center',
   },
-  headerBlock: { marginBottom: 8, paddingHorizontal: 20, paddingTop: 4 },
-  sub: {
-    marginBottom: 10,
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.muted,
+  ring: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 8,
+    borderColor: brand.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 18,
   },
-  statsCard: {
-    marginBottom: 12,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+  ringScore: {
+    fontFamily: fonts.titleExtra,
+    fontSize: 28,
+    color: brand.ink,
   },
-  statsLabel: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.muted,
-  },
-  statsValue: {
-    marginTop: 4,
+  celebTitle: {
     fontFamily: fonts.title,
-    fontSize: 36,
-    lineHeight: 42,
+    fontSize: 24,
     color: brand.ink,
+    textAlign: 'center',
   },
-  statsMeta: {
-    marginTop: 6,
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.muted,
-  },
-  catCard: {
-    marginBottom: 8,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
-  },
-  catTitle: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 14,
-    color: brand.ink,
-  },
-  catMeta: {
-    marginTop: 4,
-    fontFamily: fonts.body,
-    fontSize: 12,
-    color: brand.muted,
-  },
-  historyTitle: {
-    marginTop: 16,
-    marginBottom: 10,
-    fontFamily: fonts.bodyBold,
-    fontSize: 15,
-    color: brand.ink,
-  },
-  emptyBody: {
-    fontFamily: fonts.body,
-    fontSize: 14,
-    lineHeight: 20,
-    color: brand.muted,
-  },
-  emptyBtn: { marginTop: 12 },
-  sessionCard: {
-    marginBottom: 10,
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
-  },
-  sessionRow: {
+  streakLine: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 6,
+    marginTop: 10,
+    marginBottom: 20,
   },
-  sessionCopy: { flex: 1, paddingRight: 12 },
-  sessionTitle: {
+  streakT: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    color: brand.accent,
+  },
+  xpCard: {
+    alignSelf: 'stretch',
+    backgroundColor: brand.surfaceElevated,
+    borderRadius: 18,
+    padding: 16,
+    gap: 12,
+    marginBottom: 24,
+  },
+  xpRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  xpLabel: {
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: brand.ink,
+  },
+  xpVal: {
     fontFamily: fonts.bodyBold,
     fontSize: 15,
     color: brand.ink,
   },
-  sessionMeta: {
+  list: { paddingHorizontal: 20, paddingBottom: 40 },
+  stats: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.muted,
+    marginBottom: 12,
+  },
+  empty: {
+    textAlign: 'center',
+    marginTop: 40,
+    fontFamily: fonts.body,
+    color: brand.muted,
+  },
+  row: {
+    backgroundColor: brand.surfaceElevated,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 10,
+  },
+  rowTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 16,
+    color: brand.ink,
+  },
+  rowMeta: {
     marginTop: 4,
     fontFamily: fonts.body,
     fontSize: 12,
     color: brand.mutedSoft,
-  },
-  sessionScore: {
-    marginTop: 8,
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.label,
-  },
-  percentBadge: {
-    height: 48,
-    width: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: brand.accentTint,
-  },
-  percentText: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 13,
-    color: brand.accentDark,
-  },
-  deleteRow: {
-    marginTop: 4,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
   },
 });

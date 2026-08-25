@@ -415,6 +415,10 @@ export default function AppLayout() {
         options={{ headerShown: false, title: t('blog.title') }}
       />
       <Stack.Screen
+        name="blog-category"
+        options={{ headerShown: false, title: t('blog.title') }}
+      />
+      <Stack.Screen
         name="blog-article"
         options={{ headerShown: false, title: t('blog.title') }}
       />

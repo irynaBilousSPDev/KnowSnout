@@ -2,7 +2,6 @@ import { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
-  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,13 +9,11 @@ import {
   View,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { ErrorState } from '@/src/components/ErrorState';
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { PrimaryButton } from '@/src/components/PrimaryButton';
-import { ScrHeader } from '@/src/components/ScrHeader';
-import { SourceLangNote } from '@/src/components/SourceLangNote';
+import { ErrorState } from '@/src/components/ErrorState';
 import { t } from '@/src/i18n';
 import {
   clearBreedQuizCatalogCache,
@@ -24,17 +21,12 @@ import {
   type BreedQuizRound,
 } from '@/src/services/breedQuiz';
 import { saveQuizSession } from '@/src/services/quizResults';
-import {
-  enrichBreedFromWikidata,
-  type BreedEnrichment,
-} from '@/src/services/wikidataQuiz';
-import { brand } from '@/src/theme/brand';
-import type { CompanionBreedSpecies } from '@/src/types/breed';
+import { brand, fonts } from '@/src/theme/brand';
 
-const SESSION_ROUNDS = 5;
+const SESSION_ROUNDS = 15;
 
+/** Screenshot 05.04 — Вгадай породу за фото */
 export default function BreedQuizScreen() {
-  const [species, setSpecies] = useState<CompanionBreedSpecies>('dog');
   const [round, setRound] = useState<BreedQuizRound | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,401 +35,198 @@ export default function BreedQuizScreen() {
   const [score, setScore] = useState(0);
   const [roundIndex, setRoundIndex] = useState(0);
   const [recentCorrectIds, setRecentCorrectIds] = useState<string[]>([]);
-  const [sessionDone, setSessionDone] = useState(false);
-  const [wiki, setWiki] = useState<BreedEnrichment | null>(null);
-  const [wikiLoading, setWikiLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
   const savedRef = useRef(false);
 
-  const loadRound = useCallback(
-    async (
-      nextSpecies: CompanionBreedSpecies,
-      avoid: string[],
-      index: number,
-    ) => {
-      setLoading(true);
-      setError(null);
-      setImageFailed(false);
-      setPickedId(null);
-      setWiki(null);
-      try {
-        const next = await createBreedQuizRound(nextSpecies, avoid);
-        if (!next.imageUrl) {
-          throw new Error(t('quiz.catalogUnavailable'));
-        }
-        setRound(next);
-        setRoundIndex(index);
-        setSessionDone(false);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : t('quiz.catalogUnavailable'),
-        );
-        setRound(null);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
+  const loadRound = useCallback(async (avoid: string[], index: number) => {
+    setLoading(true);
+    setError(null);
+    setImageFailed(false);
+    setPickedId(null);
+    try {
+      const next = await createBreedQuizRound('dog', avoid);
+      setRound(next);
+      setRoundIndex(index);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : t('quiz.catalogUnavailable'),
+      );
+      setRound(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       setScore(0);
       setRecentCorrectIds([]);
       savedRef.current = false;
-      void loadRound(species, [], 1);
-    }, [loadRound, species]),
+      void loadRound([], 1);
+    }, [loadRound]),
   );
 
-  const finishSession = async (finalScore: number) => {
-    setSessionDone(true);
+  const finish = async (finalScore: number) => {
     if (savedRef.current) return;
     savedRef.current = true;
-    setSaving(true);
     try {
       await saveQuizSession({
         category: 'breed',
         score: finalScore,
         total: SESSION_ROUNDS,
-        species,
+        species: 'dog',
       });
+      router.replace({
+        pathname: '/(app)/quiz-results',
+        params: {
+          score: String(finalScore),
+          total: String(SESSION_ROUNDS),
+          category: 'breed',
+        },
+      } as never);
     } catch {
       savedRef.current = false;
-    } finally {
-      setSaving(false);
     }
-  };
-
-  const onPickSpecies = (next: CompanionBreedSpecies) => {
-    if (next === species) return;
-    setSpecies(next);
-    setScore(0);
-    setRecentCorrectIds([]);
-    setSessionDone(false);
-    savedRef.current = false;
   };
 
   const onAnswer = (choiceId: string) => {
     if (!round || pickedId) return;
     setPickedId(choiceId);
-    const correct = choiceId === round.correctId;
-    if (correct) setScore((s) => s + 1);
-    setRecentCorrectIds((prev) =>
-      [...prev, round.correctId].slice(-12),
+    const ok = choiceId === round.correctId;
+    const nextScore = ok ? score + 1 : score;
+    if (ok) setScore(nextScore);
+    const nextAvoid = [...recentCorrectIds, round.correctId].slice(-12);
+    setRecentCorrectIds(nextAvoid);
+    setTimeout(() => {
+      if (roundIndex >= SESSION_ROUNDS) {
+        void finish(nextScore);
+      } else {
+        void loadRound(nextAvoid, roundIndex + 1);
+      }
+    }, 550);
+  };
+
+  if (loading && !round) {
+    return (
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
+        <View style={styles.center}>
+          <ActivityIndicator color={brand.accent} size="large" />
+        </View>
+      </AppScreen>
     );
-    const name = round.fact.name;
-    setWikiLoading(true);
-    void enrichBreedFromWikidata(name)
-      .then((hit) => setWiki(hit))
-      .finally(() => setWikiLoading(false));
-  };
+  }
 
-  const onNext = () => {
-    if (roundIndex >= SESSION_ROUNDS) {
-      void finishSession(score);
-      return;
-    }
-    void loadRound(species, recentCorrectIds, roundIndex + 1);
-  };
+  if (error && !round) {
+    return (
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
+        <ErrorState
+          message={error}
+          onRetry={() => {
+            clearBreedQuizCatalogCache();
+            void loadRound([], 1);
+          }}
+        />
+      </AppScreen>
+    );
+  }
 
-  const onRestart = () => {
-    clearBreedQuizCatalogCache();
-    setScore(0);
-    setRecentCorrectIds([]);
-    setSessionDone(false);
-    savedRef.current = false;
-    void loadRound(species, [], 1);
-  };
+  if (!round) return null;
 
-  const answered = Boolean(pickedId);
-  const isCorrect = answered && pickedId === round?.correctId;
-  const correctName =
-    round?.choices.find((c) => c.id === round.correctId)?.name ?? '';
+  const choices = round.choices.slice(0, 3);
 
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrHeader title={t('quizHub.breedTitle')} />
-      <ScrollView
-        contentContainerClassName="px-5 pb-12 pt-2"
-        keyboardShouldPersistTaps="handled"
-      >
-        <Text className="font-body text-base leading-6 text-forest-600">
-          {t('quiz.subtitle')}
-        </Text>
-
-        <Text className="mb-2 mt-5 font-body-bold text-sm text-forest-700">
-          {t('quiz.speciesLabel')}
-        </Text>
-        <View className="mb-4 flex-row gap-2">
-          {(['dog', 'cat'] as CompanionBreedSpecies[]).map((s) => {
-            const active = species === s;
+      <View style={styles.progressTrack}>
+        <View
+          style={[
+            styles.progressFill,
+            { width: `${(roundIndex / SESSION_ROUNDS) * 100}%` },
+          ]}
+        />
+      </View>
+      <ScrollView contentContainerStyle={styles.pad}>
+        <Text style={styles.title}>{t('quiz.breedPrompt')}</Text>
+        <View style={styles.photo}>
+          {round.imageUrl && !imageFailed ? (
+            <Image
+              source={{ uri: round.imageUrl }}
+              style={styles.photoImg}
+              onError={() => setImageFailed(true)}
+            />
+          ) : (
+            <>
+              <Ionicons name="image-outline" size={28} color={brand.mutedSoft} />
+              <Text style={styles.photoHint}>{t('quiz.photoBreed')}</Text>
+            </>
+          )}
+        </View>
+        <View style={styles.choices}>
+          {choices.map((c) => {
+            const on = pickedId === c.id;
             return (
               <Pressable
-                key={s}
-                onPress={() => onPickSpecies(s)}
-                className={`flex-1 rounded-2xl border px-3 py-3 ${
-                  active
-                    ? 'border-forest-700 bg-forest-700'
-                    : 'border-forest-100 bg-white'
-                }`}
+                key={c.id}
+                onPress={() => onAnswer(c.id)}
+                style={styles.choiceRow}
               >
-                <Text
-                  className={`text-center font-body-bold text-sm ${
-                    active ? 'text-white' : 'text-forest-800'
-                  }`}
-                >
-                  {s === 'cat' ? t('quiz.speciesCat') : t('quiz.speciesDog')}
+                <Text style={[styles.choiceT, on && styles.choiceOn]}>
+                  {c.name}
                 </Text>
               </Pressable>
             );
           })}
         </View>
-
-        <View className="mb-4 flex-row items-center justify-between">
-          <Text className="font-body-bold text-sm text-forest-700">
-            {t('quiz.progress', {
-              current: Math.min(roundIndex, SESSION_ROUNDS),
-              total: SESSION_ROUNDS,
-            })}
-          </Text>
-          <Text className="font-body-bold text-sm text-forest-700">
-            {t('quiz.score', { score })}
-          </Text>
-        </View>
-
-        {loading ? (
-          <View className="items-center py-16">
-            <ActivityIndicator color={brand.ink} size="large" />
-            <Text className="mt-3 font-body text-sm text-forest-600">
-              {t('quiz.loading')}
-            </Text>
-          </View>
-        ) : error ? (
-          <ErrorState message={error} onRetry={onRestart} />
-        ) : sessionDone ? (
-          <View className="rounded-3xl border border-forest-100 bg-white px-5 py-8">
-            <Text className="text-center font-display text-2xl text-forest-800">
-              {t('quiz.sessionTitle')}
-            </Text>
-            <Text className="mt-3 text-center font-body text-base text-forest-600">
-              {t('quiz.sessionBody', { score, total: SESSION_ROUNDS })}
-            </Text>
-            <Text className="mt-2 text-center font-body text-sm text-forest-500">
-              {saving ? t('quiz.saving') : t('quiz.savedToAccount')}
-            </Text>
-            <View className="mt-6 gap-3">
-              <PrimaryButton
-                label={t('quiz.viewResults')}
-                variant="secondary"
-                onPress={() => router.push('/(app)/quiz-results')}
-              />
-              <PrimaryButton
-                label={t('quiz.playAgain')}
-                onPress={onRestart}
-              />
-            </View>
-          </View>
-        ) : round ? (
-          <>
-            <View className="overflow-hidden rounded-3xl border border-forest-100 bg-white">
-              {imageFailed ? (
-                <View
-                  style={styles.quizImage}
-                  className="items-center justify-center bg-forest-50 px-6"
-                >
-                  <Text className="text-center font-body text-sm text-forest-600">
-                    {t('quiz.imageFailed')}
-                  </Text>
-                  <View className="mt-3 w-full max-w-xs">
-                    <PrimaryButton
-                      label={t('common.tryAgain')}
-                      size="sm"
-                      variant="secondary"
-                      onPress={onRestart}
-                    />
-                  </View>
-                </View>
-              ) : (
-                <Image
-                  source={{ uri: round.imageUrl }}
-                  style={styles.quizImage}
-                  resizeMode="cover"
-                  accessibilityIgnoresInvertColors
-                  onError={() => setImageFailed(true)}
-                />
-              )}
-              <Text className="px-4 py-3 font-body-bold text-base text-forest-900">
-                {t('quiz.prompt')}
-              </Text>
-            </View>
-
-            <View className="mt-4 gap-2">
-              {round.choices.map((choice) => {
-                const selected = pickedId === choice.id;
-                const isAnswer = choice.id === round.correctId;
-                let style =
-                  'border-forest-100 bg-white active:opacity-80';
-                if (answered && isAnswer) {
-                  style = 'border-forest-600 bg-forest-100';
-                } else if (answered && selected && !isAnswer) {
-                  style = 'border-red-300 bg-sand-100';
-                } else if (selected) {
-                  style = 'border-forest-700 bg-forest-50';
-                }
-                return (
-                  <Pressable
-                    key={choice.id}
-                    disabled={answered}
-                    onPress={() => onAnswer(choice.id)}
-                    className={`rounded-2xl border px-4 py-3.5 ${style}`}
-                  >
-                    <Text className="font-body-bold text-base text-forest-900">
-                      {choice.name}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
-            {answered ? (
-              <View className="mt-5 rounded-3xl border border-forest-100 bg-white px-5 py-5">
-                <Text
-                  className={`font-body-bold text-lg ${
-                    isCorrect ? 'text-forest-800' : 'text-score-poor'
-                  }`}
-                >
-                  {isCorrect
-                    ? t('quiz.correct')
-                    : t('quiz.wrong', { name: correctName })}
-                </Text>
-
-                <Text className="mt-4 font-body-bold text-base text-forest-900">
-                  {t('quiz.learnTitle', { name: round.fact.name })}
-                </Text>
-
-                {round.fact.description ? (
-                  <SourceLangNote
-                    value={round.fact.description}
-                    className="mt-2"
-                  />
-                ) : null}
-
-                <View className="mt-3 gap-2">
-                  {round.fact.breedGroup ? (
-                    <View>
-                      <Text className="font-body text-sm text-forest-700">
-                        {t('quiz.factGroupLabel')}
-                      </Text>
-                      <SourceLangNote value={round.fact.breedGroup} />
-                    </View>
-                  ) : null}
-                  {round.fact.temperament ? (
-                    <View>
-                      <Text className="font-body text-sm text-forest-700">
-                        {t('quiz.factTemperamentLabel')}
-                      </Text>
-                      <SourceLangNote value={round.fact.temperament} />
-                    </View>
-                  ) : null}
-                  {round.fact.origin ? (
-                    <View>
-                      <Text className="font-body text-sm text-forest-700">
-                        {t('quiz.factOriginLabel')}
-                      </Text>
-                      <SourceLangNote value={round.fact.origin} />
-                    </View>
-                  ) : null}
-                  {round.fact.bredFor ? (
-                    <View>
-                      <Text className="font-body text-sm text-forest-700">
-                        {t('quiz.factBredForLabel')}
-                      </Text>
-                      <SourceLangNote value={round.fact.bredFor} />
-                    </View>
-                  ) : null}
-                  {round.fact.lifeSpan ? (
-                    <Text className="font-body text-sm text-forest-700">
-                      {t('quiz.factLifeSpan', { value: round.fact.lifeSpan })}
-                    </Text>
-                  ) : null}
-                  {round.fact.weightMetric ? (
-                    <Text className="font-body text-sm text-forest-700">
-                      {t('quiz.factWeight', {
-                        value: round.fact.weightMetric,
-                      })}
-                    </Text>
-                  ) : null}
-                  {round.fact.heightMetric ? (
-                    <Text className="font-body text-sm text-forest-700">
-                      {t('quiz.factHeight', {
-                        value: round.fact.heightMetric,
-                      })}
-                    </Text>
-                  ) : null}
-                </View>
-
-                <Text className="mt-4 font-body text-xs leading-5 text-forest-500">
-                  {t('quiz.trustNote', {
-                    source:
-                      round.fact.sourceLabel === 'thedogapi'
-                        ? 'TheDogAPI'
-                        : 'TheCatAPI',
-                  })}
-                </Text>
-
-                {wikiLoading ? (
-                  <Text className="mt-3 font-body text-xs text-forest-500">
-                    {t('quiz.wikiLoading')}
-                  </Text>
-                ) : null}
-                {wiki?.description ? (
-                  <SourceLangNote
-                    value={wiki.description}
-                    className="mt-3"
-                  />
-                ) : null}
-                {wiki?.origin ? (
-                  <SourceLangNote value={wiki.origin} className="mt-1" />
-                ) : null}
-                {wiki?.wikidataUrl ? (
-                  <Pressable
-                    onPress={() => void Linking.openURL(wiki.wikidataUrl)}
-                    className="mt-2"
-                  >
-                    <Text className="font-body-bold text-sm text-forest-700">
-                      {t('quiz.openWikidata')}
-                    </Text>
-                  </Pressable>
-                ) : null}
-
-                <View className="mt-4">
-                  <PrimaryButton
-                    label={
-                      roundIndex >= SESSION_ROUNDS
-                        ? t('quiz.seeResult')
-                        : t('quiz.next')
-                    }
-                    onPress={onNext}
-                  />
-                </View>
-              </View>
-            ) : null}
-          </>
-        ) : null}
-
-        <Text className="mt-6 font-body text-xs leading-5 text-forest-500">
-          {t('quiz.attribution')}
-        </Text>
       </ScrollView>
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  quizImage: {
-    width: '100%',
-    height: 256,
-    backgroundColor: brand.mist,
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  progressTrack: {
+    height: 3,
+    backgroundColor: brand.creamDeep,
+    marginHorizontal: 0,
+  },
+  progressFill: { height: '100%', backgroundColor: brand.accent },
+  pad: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 40 },
+  title: {
+    fontFamily: fonts.title,
+    fontSize: 22,
+    lineHeight: 28,
+    color: brand.ink,
+    marginBottom: 16,
+  },
+  photo: {
+    aspectRatio: 1.25,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: '#EEEBE6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    overflow: 'hidden',
+    marginBottom: 20,
+  },
+  photoImg: { width: '100%', height: '100%' },
+  photoHint: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.mutedSoft,
+  },
+  choices: { gap: 4 },
+  choiceRow: { paddingVertical: 14 },
+  choiceT: {
+    fontFamily: fonts.body,
+    fontSize: 17,
+    color: brand.ink,
+  },
+  choiceOn: {
+    fontFamily: fonts.bodyBold,
+    color: brand.accent,
   },
 });
