@@ -3,6 +3,8 @@ import type { CompanionBreedSpecies } from '@/src/types/breed';
 
 export type QuizBreed = {
   id: string;
+  /** Raw API breed id for /images/search (number for dogs, string for cats). */
+  apiBreedId: string;
   name: string;
   species: CompanionBreedSpecies;
   imageUrl: string;
@@ -96,9 +98,10 @@ function toFact(breed: QuizBreed): BreedQuizFact {
 const FALLBACK_DOG: QuizBreed[] = [
   {
     id: 'dog-fallback-lab',
+    apiBreedId: '149',
     name: 'Labrador Retriever',
     species: 'dog',
-    imageUrl: 'https://cdn2.thedogapi.com/images/B1uW7l5VX.jpg',
+    imageUrl: 'https://images.dog.ceo/breeds/labrador/n02099712_1384.jpg',
     temperament: 'Friendly, Active, Outgoing',
     origin: 'Canada / UK',
     bredFor: 'Water retrieving',
@@ -111,9 +114,10 @@ const FALLBACK_DOG: QuizBreed[] = [
   },
   {
     id: 'dog-fallback-husky',
+    apiBreedId: '250',
     name: 'Siberian Husky',
     species: 'dog',
-    imageUrl: 'https://cdn2.thedogapi.com/images/S17ZilChm.jpg',
+    imageUrl: 'https://images.dog.ceo/breeds/husky/n02110185_10047.jpg',
     temperament: 'Outgoing, Friendly, Alert',
     origin: 'Russia',
     bredFor: 'Sled pulling',
@@ -126,9 +130,10 @@ const FALLBACK_DOG: QuizBreed[] = [
   },
   {
     id: 'dog-fallback-corgi',
+    apiBreedId: '201',
     name: 'Pembroke Welsh Corgi',
     species: 'dog',
-    imageUrl: 'https://cdn2.thedogapi.com/images/BJF-llzqV.jpg',
+    imageUrl: 'https://images.dog.ceo/breeds/corgi-pembroke/n02113023_1205.jpg',
     temperament: 'Playful, Outgoing, Friendly',
     origin: 'United Kingdom',
     bredFor: 'Cattle herding',
@@ -141,9 +146,10 @@ const FALLBACK_DOG: QuizBreed[] = [
   },
   {
     id: 'dog-fallback-beagle',
+    apiBreedId: '28',
     name: 'Beagle',
     species: 'dog',
-    imageUrl: 'https://cdn2.thedogapi.com/images/SydP1xeE7.jpg',
+    imageUrl: 'https://images.dog.ceo/breeds/beagle/n02088364_11136.jpg',
     temperament: 'Amiable, Even Tempered, Excitable',
     origin: 'United Kingdom',
     bredFor: 'Rabbit hunting',
@@ -159,6 +165,7 @@ const FALLBACK_DOG: QuizBreed[] = [
 const FALLBACK_CAT: QuizBreed[] = [
   {
     id: 'cat-fallback-siamese',
+    apiBreedId: 'siam',
     name: 'Siamese',
     species: 'cat',
     imageUrl: 'https://cdn2.thecatapi.com/images/ai6Jps4sx.jpg',
@@ -175,6 +182,7 @@ const FALLBACK_CAT: QuizBreed[] = [
   },
   {
     id: 'cat-fallback-persian',
+    apiBreedId: 'pers',
     name: 'Persian',
     species: 'cat',
     imageUrl: 'https://cdn2.thecatapi.com/images/0XYvRd7oD.jpg',
@@ -190,6 +198,7 @@ const FALLBACK_CAT: QuizBreed[] = [
   },
   {
     id: 'cat-fallback-bengal',
+    apiBreedId: 'beng',
     name: 'Bengal',
     species: 'cat',
     imageUrl: 'https://cdn2.thecatapi.com/images/O3btzLlsO.jpg',
@@ -206,6 +215,7 @@ const FALLBACK_CAT: QuizBreed[] = [
   },
   {
     id: 'cat-fallback-maine',
+    apiBreedId: 'mcoo',
     name: 'Maine Coon',
     species: 'cat',
     imageUrl: 'https://cdn2.thecatapi.com/images/OOD3VSYVX.jpg',
@@ -271,8 +281,8 @@ async function loadDogCatalog(): Promise<QuizBreed[]> {
         (b.reference_image_id
           ? `https://cdn2.thedogapi.com/images/${b.reference_image_id}.jpg`
           : null);
-      // Catalog often omits nested image.url; reference_image_id is enough.
-      if (!imageUrl) continue;
+      // Keep breeds even without a nested image — we resolve a live URL per round.
+      if (!imageUrl && !b.id) continue;
       const temperament = clean(b.temperament);
       const origin = clean(b.origin);
       const bredFor = clean(b.bred_for);
@@ -282,9 +292,10 @@ async function loadDogCatalog(): Promise<QuizBreed[]> {
       const heightMetric = clean(b.height?.metric);
       mapped.push({
         id: `dog-${b.id}`,
+        apiBreedId: String(b.id),
         name: b.name,
         species: 'dog',
-        imageUrl,
+        imageUrl: imageUrl ?? '',
         temperament,
         origin,
         bredFor,
@@ -326,7 +337,7 @@ async function loadCatCatalog(): Promise<QuizBreed[]> {
         (b.reference_image_id
           ? `https://cdn2.thecatapi.com/images/${b.reference_image_id}.jpg`
           : null);
-      if (!imageUrl) continue;
+      if (!b.id) continue;
       const temperament = clean(b.temperament);
       const origin = clean(b.origin);
       const description = clean(b.description);
@@ -334,9 +345,10 @@ async function loadCatCatalog(): Promise<QuizBreed[]> {
       const weightMetric = clean(b.weight?.metric);
       mapped.push({
         id: `cat-${b.id}`,
+        apiBreedId: b.id,
         name: b.name,
         species: 'cat',
-        imageUrl,
+        imageUrl: imageUrl ?? '',
         temperament,
         origin,
         bredFor: null,
@@ -367,42 +379,135 @@ export async function loadQuizCatalog(
   return species === 'dog' ? loadDogCatalog() : loadCatCatalog();
 }
 
+/** Dog CEO breed path heuristics from English display name. */
+function dogCeoPaths(name: string): string[] {
+  const words = name
+    .toLowerCase()
+    .replace(/[^a-z\s-]/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (words.length === 0) return [];
+  const paths: string[] = [];
+  if (words.length === 1) paths.push(words[0]);
+  if (words.length >= 2) {
+    // golden retriever → retriever/golden ; siberian husky → husky
+    paths.push(`${words[words.length - 1]}/${words.slice(0, -1).join('-')}`);
+    paths.push(words[words.length - 1]);
+    paths.push(words.join('-'));
+  }
+  return [...new Set(paths)];
+}
+
+async function fetchJsonOk<T>(url: string, headers?: HeadersInit): Promise<T | null> {
+  try {
+    const res = await fetch(url, { headers });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Prefer a fresh /images/search URL (cdn4 / GCS) — catalog cdn2 reference links
+ * often 404. Dogs also fall back to dog.ceo.
+ */
+export async function resolveBreedImageUrl(
+  breed: QuizBreed,
+): Promise<string | null> {
+  if (breed.species === 'dog') {
+    const found = await fetchJsonOk<{ url?: string }[]>(
+      `https://api.thedogapi.com/v1/images/search?breed_ids=${encodeURIComponent(breed.apiBreedId)}&limit=1`,
+      apiHeaders(env.dogApiKey),
+    );
+    const live = clean(found?.[0]?.url);
+    if (live) return live;
+
+    for (const path of dogCeoPaths(breed.name)) {
+      const ceo = await fetchJsonOk<{ message?: string; status?: string }>(
+        `https://dog.ceo/api/breed/${path}/images/random`,
+      );
+      if (ceo?.status === 'success' && clean(ceo.message)) return ceo.message!;
+    }
+  } else {
+    const found = await fetchJsonOk<{ url?: string }[]>(
+      `https://api.thecatapi.com/v1/images/search?breed_ids=${encodeURIComponent(breed.apiBreedId)}&limit=1`,
+      apiHeaders(env.catApiKey),
+    );
+    const live = clean(found?.[0]?.url);
+    if (live) return live;
+  }
+
+  return clean(breed.imageUrl);
+}
+
 export async function createBreedQuizRound(
   species: CompanionBreedSpecies,
   avoidCorrectIds: string[] = [],
 ): Promise<BreedQuizRound> {
   const catalog = await loadQuizCatalog(species);
-  const withImage = catalog.filter((b) => Boolean(b.imageUrl));
-  const informative = informativePool(
-    withImage.length >= 8 ? withImage : catalog,
-  );
+  const informative = informativePool(catalog);
   const base =
     informative.filter((b) => !avoidCorrectIds.includes(b.id)).length >= 4
       ? informative.filter((b) => !avoidCorrectIds.includes(b.id))
       : informative.length >= 4
         ? informative
-        : catalog;
+        : catalog.filter((b) => !avoidCorrectIds.includes(b.id)).length >= 4
+          ? catalog.filter((b) => !avoidCorrectIds.includes(b.id))
+          : catalog;
 
-  const ranked = [...base].sort((a, b) => b.richness - a.richness);
-  const top = ranked.slice(0, Math.max(12, Math.floor(ranked.length * 0.6)));
-  const correct = pickDistinct(top.length >= 1 ? top : ranked, 1)[0];
+  const ranked = shuffle(
+    [...base].sort((a, b) => b.richness - a.richness).slice(0, Math.max(16, Math.floor(base.length * 0.5))),
+  );
+
+  let correct: QuizBreed | null = null;
+  let imageUrl: string | null = null;
+  const tried = new Set<string>();
+
+  for (const candidate of ranked) {
+    if (tried.has(candidate.id)) continue;
+    tried.add(candidate.id);
+    const resolved = await resolveBreedImageUrl(candidate);
+    if (resolved) {
+      correct = candidate;
+      imageUrl = resolved;
+      break;
+    }
+  }
+
+  if (!correct || !imageUrl) {
+    // Last resort: offline fallbacks with known-good dog.ceo / cat CDN URLs.
+    const fallbacks = species === 'dog' ? FALLBACK_DOG : FALLBACK_CAT;
+    for (const fb of fallbacks) {
+      if (avoidCorrectIds.includes(fb.id)) continue;
+      const resolved = (await resolveBreedImageUrl(fb)) ?? fb.imageUrl;
+      if (resolved) {
+        correct = fb;
+        imageUrl = resolved;
+        break;
+      }
+    }
+  }
+
+  if (!correct || !imageUrl) {
+    throw new Error('BREED_IMAGE_UNAVAILABLE');
+  }
 
   const distractors = pickDistinct(
-    base.filter((b) => b.id !== correct.id),
+    base.filter((b) => b.id !== correct!.id),
     3,
   );
   while (distractors.length < 3) {
     const extra = catalog.find(
       (b) =>
-        b.id !== correct.id && !distractors.some((d) => d.id === b.id),
+        b.id !== correct!.id && !distractors.some((d) => d.id === b.id),
     );
     if (!extra) break;
     distractors.push(extra);
   }
 
   const picks = [correct, ...distractors].slice(0, 4);
-  // Always the breed's official catalog image — never an untagged random photo.
-  const imageUrl = correct.imageUrl;
   const choices = shuffle(picks.map((b) => ({ id: b.id, name: b.name })));
 
   return {

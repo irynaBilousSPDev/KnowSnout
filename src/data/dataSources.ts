@@ -76,7 +76,18 @@ export const DATA_SOURCES: DataSourceEntry[] = [
     ],
     homepage: 'https://thedogapi.com/',
     licenseOrTerms: 'TheDogAPI terms of use',
-    attributionUk: 'Каталог і фото порід собак: TheDogAPI. Без API-ключа /v1/breeds часто 403 — квіз має offline fallback.',
+    attributionUk:
+      'Каталог і фото порід собак: TheDogAPI (/images/search). Без ключа /v1/breeds часто 403 — є offline fallback.',
+  },
+  {
+    id: 'dogceo',
+    name: 'Dog CEO',
+    kind: 'api',
+    usedForUk: 'Запасні фото собак для квізу, якщо CDN TheDogAPI не відкривається',
+    codePaths: ['src/services/breedQuiz.ts'],
+    homepage: 'https://dog.ceo/dog-api/',
+    licenseOrTerms: 'Public domain / Dog CEO terms',
+    attributionUk: 'Резервні фото собак: Dog CEO API.',
   },
   {
     id: 'thecatapi',

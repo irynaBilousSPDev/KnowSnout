@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
@@ -24,28 +23,33 @@ import { saveQuizSession } from '@/src/services/quizResults';
 import { brand, fonts } from '@/src/theme/brand';
 
 const SESSION_ROUNDS = 15;
+const MAX_IMAGE_SKIPS = 6;
 
-/** Screenshot 05.04 — Вгадай породу за фото */
+/** Screenshot 05.04 — Вгадай породу за фото (+ resilient image load) */
 export default function BreedQuizScreen() {
   const [round, setRound] = useState<BreedQuizRound | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imageFailed, setImageFailed] = useState(false);
+  const [imageReady, setImageReady] = useState(false);
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [roundIndex, setRoundIndex] = useState(0);
   const [recentCorrectIds, setRecentCorrectIds] = useState<string[]>([]);
   const savedRef = useRef(false);
+  const imageSkipsRef = useRef(0);
 
   const loadRound = useCallback(async (avoid: string[], index: number) => {
     setLoading(true);
     setError(null);
     setImageFailed(false);
+    setImageReady(false);
     setPickedId(null);
     try {
       const next = await createBreedQuizRound('dog', avoid);
       setRound(next);
       setRoundIndex(index);
+      imageSkipsRef.current = 0;
     } catch (err) {
       setError(
         err instanceof Error ? err.message : t('quiz.catalogUnavailable'),
@@ -61,6 +65,7 @@ export default function BreedQuizScreen() {
       setScore(0);
       setRecentCorrectIds([]);
       savedRef.current = false;
+      imageSkipsRef.current = 0;
       void loadRound([], 1);
     }, [loadRound]),
   );
@@ -88,8 +93,20 @@ export default function BreedQuizScreen() {
     }
   };
 
+  const skipBrokenImage = () => {
+    if (!round) return;
+    if (imageSkipsRef.current >= MAX_IMAGE_SKIPS) {
+      setImageFailed(true);
+      return;
+    }
+    imageSkipsRef.current += 1;
+    const nextAvoid = [...recentCorrectIds, round.correctId].slice(-20);
+    setRecentCorrectIds(nextAvoid);
+    void loadRound(nextAvoid, roundIndex);
+  };
+
   const onAnswer = (choiceId: string) => {
-    if (!round || pickedId) return;
+    if (!round || pickedId || imageFailed || !imageReady) return;
     setPickedId(choiceId);
     const ok = choiceId === round.correctId;
     const nextScore = ok ? score + 1 : score;
@@ -121,7 +138,11 @@ export default function BreedQuizScreen() {
       <AppScreen edges={['bottom']}>
         <AppChromeHeader />
         <ErrorState
-          message={error}
+          message={
+            error === 'BREED_IMAGE_UNAVAILABLE'
+              ? t('quiz.imageFailed')
+              : error
+          }
           onRetry={() => {
             clearBreedQuizCatalogCache();
             void loadRound([], 1);
@@ -147,21 +168,44 @@ export default function BreedQuizScreen() {
         />
       </View>
       <ScrollView contentContainerStyle={styles.pad}>
-        <Text style={styles.title}>{t('quiz.breedPrompt')}</Text>
-        <View style={styles.photo}>
-          {round.imageUrl && !imageFailed ? (
-            <Image
-              source={{ uri: round.imageUrl }}
-              style={styles.photoImg}
-              onError={() => setImageFailed(true)}
-            />
+        <View style={styles.photoCard}>
+          {imageFailed ? (
+            <View style={styles.photoFail}>
+              <Text style={styles.failText}>{t('quiz.imageFailed')}</Text>
+              <Pressable
+                onPress={() => {
+                  imageSkipsRef.current = 0;
+                  const nextAvoid = [...recentCorrectIds, round.correctId];
+                  setRecentCorrectIds(nextAvoid);
+                  void loadRound(nextAvoid, roundIndex);
+                }}
+                style={styles.failBtn}
+              >
+                <Text style={styles.failBtnT}>{t('common.tryAgain')}</Text>
+              </Pressable>
+            </View>
           ) : (
-            <>
-              <Ionicons name="image-outline" size={28} color={brand.mutedSoft} />
-              <Text style={styles.photoHint}>{t('quiz.photoBreed')}</Text>
-            </>
+            <View style={styles.photoWrap}>
+              {!imageReady ? (
+                <View style={styles.photoLoading}>
+                  <ActivityIndicator color={brand.accent} />
+                </View>
+              ) : null}
+              <Image
+                key={round.imageUrl}
+                source={{ uri: round.imageUrl }}
+                style={[styles.photoImg, !imageReady && styles.photoHidden]}
+                resizeMode="cover"
+                onLoad={() => setImageReady(true)}
+                onError={skipBrokenImage}
+              />
+            </View>
           )}
+          <View style={styles.photoFooter}>
+            <Text style={styles.title}>{t('quiz.breedPrompt')}</Text>
+          </View>
         </View>
+
         <View style={styles.choices}>
           {choices.map((c) => {
             const on = pickedId === c.id;
@@ -169,6 +213,7 @@ export default function BreedQuizScreen() {
               <Pressable
                 key={c.id}
                 onPress={() => onAnswer(c.id)}
+                disabled={!imageReady || imageFailed}
                 style={styles.choiceRow}
               >
                 <Text style={[styles.choiceT, on && styles.choiceOn]}>
@@ -188,35 +233,62 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 3,
     backgroundColor: brand.creamDeep,
-    marginHorizontal: 0,
   },
   progressFill: { height: '100%', backgroundColor: brand.accent },
   pad: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 40 },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 22,
-    lineHeight: 28,
-    color: brand.ink,
+  photoCard: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    backgroundColor: brand.surfaceElevated,
     marginBottom: 16,
   },
-  photo: {
-    aspectRatio: 1.25,
-    borderRadius: 18,
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
-    borderColor: brand.mistBorder,
-    backgroundColor: '#EEEBE6',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    overflow: 'hidden',
-    marginBottom: 20,
+  photoWrap: {
+    aspectRatio: 1.2,
+    backgroundColor: brand.accentTint,
   },
   photoImg: { width: '100%', height: '100%' },
-  photoHint: {
+  photoHidden: { opacity: 0 },
+  photoLoading: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+  },
+  photoFail: {
+    aspectRatio: 1.2,
+    backgroundColor: brand.accentTint,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    gap: 14,
+  },
+  failText: {
     fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.mutedSoft,
+    fontSize: 15,
+    lineHeight: 22,
+    color: brand.ink,
+    textAlign: 'center',
+  },
+  failBtn: {
+    backgroundColor: brand.surfaceElevated,
+    borderRadius: 999,
+    paddingHorizontal: 22,
+    paddingVertical: 12,
+  },
+  failBtnT: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  photoFooter: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: brand.surfaceElevated,
+  },
+  title: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 17,
+    color: brand.ink,
   },
   choices: { gap: 4 },
   choiceRow: { paddingVertical: 14 },
