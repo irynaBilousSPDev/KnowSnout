@@ -16,12 +16,16 @@ import { DIRECTORY_HUB_CATEGORIES } from '@/src/services/directories';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
+/** Module 10 hub tile — not a legacy directory-list category. */
+const BEHAVIOR_HUB_TILE = { id: 'behavior' as const };
+
 /** 06.01 · Хаб довідників */
 const ICONS: Record<
   string,
   { icon: keyof typeof Ionicons.glyphMap; bg: string; fg: string }
 > = {
   vets: { icon: 'medkit-outline', bg: brand.accentTint, fg: brand.accentDark },
+  behavior: { icon: 'school-outline', bg: brand.accentTint, fg: brand.accentDark },
   breeders: { icon: 'star-outline', bg: brand.accentTint, fg: brand.accentDark },
   transport: { icon: 'car-outline', bg: brand.accentTint, fg: brand.accentDark },
   sitters: { icon: 'checkmark-outline', bg: brand.accentTint, fg: brand.accentDark },
@@ -33,9 +37,14 @@ export default function DirectoriesHubScreen() {
   const [query, setQuery] = useState('');
 
   const cats = useMemo(() => {
+    const all = [
+      DIRECTORY_HUB_CATEGORIES[0],
+      BEHAVIOR_HUB_TILE,
+      ...DIRECTORY_HUB_CATEGORIES.slice(1),
+    ];
     const q = query.trim().toLowerCase();
-    if (!q) return DIRECTORY_HUB_CATEGORIES;
-    return DIRECTORY_HUB_CATEGORIES.filter((cat) => {
+    if (!q) return all;
+    return all.filter((cat) => {
       const title = t(`directories.cat.${cat.id}`).toLowerCase();
       const body = t(`directories.catBody.${cat.id}`).toLowerCase();
       return title.includes(q) || body.includes(q);
@@ -77,7 +86,7 @@ export default function DirectoriesHubScreen() {
                       router.push('/(app)/vet-hub' as never);
                       return;
                     }
-                    if (cat.id === 'sitters') {
+                    if (cat.id === 'behavior') {
                       router.push('/(app)/specialist-behavior' as never);
                       return;
                     }
