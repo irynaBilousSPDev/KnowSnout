@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -15,16 +15,25 @@ import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
+import { getDirectoryPlace } from '@/src/services/directories';
 import { saveDirectoryReview } from '@/src/services/directoryReviews';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML phone “F5 · Залишити відгук”. */
+/** 06.07 · Залишити відгук */
 export default function DirectoryReviewScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
+  const [placeName, setPlaceName] = useState('');
   const [rating, setRating] = useState(5);
   const [cost, setCost] = useState('');
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    void getDirectoryPlace(id).then((p) => {
+      if (p) setPlaceName(p.name);
+    });
+  }, [id]);
 
   const submit = async () => {
     if (!id) return;
@@ -53,6 +62,10 @@ export default function DirectoryReviewScreen() {
       <ScrHeader title={t('directories.reviewTitle')} titleSize={18} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
+          {placeName ? (
+            <Text style={styles.placeName}>{placeName}</Text>
+          ) : null}
+
           <View style={styles.stars}>
             {[1, 2, 3, 4, 5].map((n) => (
               <Pressable key={n} onPress={() => setRating(n)}>
@@ -70,7 +83,7 @@ export default function DirectoryReviewScreen() {
             style={styles.input}
           />
 
-          <Text style={styles.label}>{t('directories.reviewText')}</Text>
+          <Text style={styles.label}>{t('directories.reviewYourText')}</Text>
           <TextInput
             value={text}
             onChangeText={setText}
@@ -95,19 +108,26 @@ export default function DirectoryReviewScreen() {
 const styles = StyleSheet.create({
   pad: {
     paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingTop: 4,
     paddingBottom: 40,
     gap: 8,
+  },
+  placeName: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: brand.ink,
+    textAlign: 'center',
+    marginBottom: 4,
   },
   stars: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 6,
-    marginBottom: 8,
+    gap: 8,
+    marginBottom: 10,
   },
   star: {
-    fontSize: 28,
-    color: brand.accentDark,
+    fontSize: 30,
+    color: brand.ink,
   },
   label: {
     marginTop: 6,
@@ -126,6 +146,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: brand.ink,
   },
-  area: { minHeight: 90, textAlignVertical: 'top' },
+  area: { minHeight: 100, textAlignVertical: 'top' },
   btn: { marginTop: 10 },
 });

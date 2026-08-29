@@ -7,6 +7,11 @@
 - Backend & Database: Supabase (PostgreSQL, Auth, Storage, Edge Functions)
 - AI Integration: OpenAI GPT-4o Vision via Supabase Edge Function only (never expose OPENAI_API_KEY in the client)
 
+## UI / Screenshots (GLOBAL)
+- **Screenshot-first for the whole app:** user screenshots are layout truth below `AppChromeHeader`.
+- **Old code has no weight** — rebuild to match the screen; if mock conflicts with existing code, **mock wins** (no merge/hybrid).
+- See `.cursor/rules/pixel-screens.mdc` for pixel-perfect process.
+
 ## Code Standards
 - Use TypeScript for all components and functions.
 - Keep components modular and reusable under `src/`.

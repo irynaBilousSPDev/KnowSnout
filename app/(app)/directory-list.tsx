@@ -5,20 +5,25 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import {
+  DirectoryComplaintsBadge,
+  DirectoryDashedThumb,
+  DirectoryLangBadge,
+  DirectoryRatingChip,
+  verificationBadgeLabel,
+} from '@/src/components/directories/DirectoryUi';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   listDirectoryPlaces,
   type DirectoryCategoryId,
   type DirectoryPlace,
-  type VerificationStatus,
 } from '@/src/services/directories';
 import { brand, fonts } from '@/src/theme/brand';
 
@@ -34,41 +39,31 @@ function isCategory(v: string | undefined): v is DirectoryCategoryId {
   );
 }
 
-function verificationLabel(v: VerificationStatus, cat: DirectoryCategoryId) {
-  if (v === 'verified') {
-    return cat === 'breeders'
-      ? t('directories.verifiedFci')
-      : t('directories.verifiedCheck');
-  }
-  if (v === 'pending') return t('directories.pending');
-  return t('directories.unverifiedShort');
-}
-
-const FILTERS = [
+const VET_FILTERS = [
   { id: 'specialty', labelKey: 'directories.filterSpecialty', active: true },
   { id: 'lang', labelKey: 'directories.filterLang', active: false },
   { id: 'city', labelKey: 'directories.filterCity', active: false },
   { id: '24h', labelKey: 'directories.filter24h', active: false },
 ] as const;
 
-/** HTML phones F2 / F4 — list + chips. */
+/** 06.02 / 06.04 — vets & breeders lists */
 export default function DirectoryListScreen() {
   const { category } = useLocalSearchParams<{ category?: string }>();
   const cat = isCategory(category) ? category : 'vets';
-  const [city, setCity] = useState('');
   const [places, setPlaces] = useState<DirectoryPlace[]>([]);
 
   useEffect(() => {
     let alive = true;
-    void listDirectoryPlaces(cat, city).then((rows) => {
+    void listDirectoryPlaces(cat).then((rows) => {
       if (alive) setPlaces(rows);
     });
     return () => {
       alive = false;
     };
-  }, [cat, city]);
+  }, [cat]);
 
   const showBreedersWarn = cat === 'breeders';
+  const showVetFilters = cat === 'vets';
 
   return (
     <AppScreen edges={['bottom']}>
@@ -87,35 +82,33 @@ export default function DirectoryListScreen() {
             </View>
           ) : null}
 
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.chips}
-          >
-            {FILTERS.map((f) => (
-              <View
-                key={f.id}
-                style={[styles.chip, f.active && styles.chipGood]}
-              >
-                <Text
-                  style={[styles.chipText, f.active && styles.chipTextGood]}
+          {showVetFilters ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.chips}
+            >
+              {VET_FILTERS.map((f) => (
+                <View
+                  key={f.id}
+                  style={[styles.chip, f.active && styles.chipGood]}
                 >
-                  {t(f.labelKey)}
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
-
-          <TextInput
-            value={city}
-            onChangeText={setCity}
-            placeholder={t('directories.cityPlaceholder')}
-            placeholderTextColor={brand.mutedSoft}
-            style={styles.input}
-          />
+                  <Text
+                    style={[styles.chipText, f.active && styles.chipTextGood]}
+                  >
+                    {t(f.labelKey)}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          ) : null}
 
           {places.map((place) => {
-            const verified = place.verification === 'verified';
+            const badge = verificationBadgeLabel(place, cat);
+            const thumb =
+              place.thumbLabel ??
+              (cat === 'breeders' ? t('directories.thumbDog') : t('directories.thumbClinic'));
+
             return (
               <Pressable
                 key={place.id}
@@ -127,46 +120,40 @@ export default function DirectoryListScreen() {
                 }
                 style={({ pressed }) => [styles.card, pressed && styles.pressed]}
               >
-                <View style={styles.thumb}>
-                  <Ionicons
-                    name="location-outline"
-                    size={22}
-                    color={brand.accentDark}
-                  />
-                </View>
+                <DirectoryDashedThumb label={thumb} />
                 <View style={styles.cardCopy}>
                   <View style={styles.cardTop}>
                     <Text style={styles.cardTitle} numberOfLines={1}>
                       {place.name}
                     </Text>
-                    {verified || place.verification === 'unverified' ? (
+                    {badge ? (
                       <Text
                         style={[
                           styles.badge,
-                          verified ? styles.badgeGood : styles.badgeMuted,
+                          place.verification === 'verified'
+                            ? styles.badgeGood
+                            : styles.badgeMuted,
                         ]}
                       >
-                        {verificationLabel(place.verification, cat)}
+                        {badge}
                       </Text>
                     ) : null}
                   </View>
-                  <Text style={styles.cardMeta} numberOfLines={1}>
-                    {place.specialty
-                      ? `${place.specialty} · ${place.city}`
-                      : place.city}
+                  <Text style={styles.cardMeta} numberOfLines={2}>
+                    {place.listSubtitle ?? place.specialty ?? place.city}
                   </Text>
-                  <View style={styles.metaChips}>
-                    <View style={styles.metaChip}>
-                      <Text style={styles.metaChipText}>
-                        ★ {place.rating.toFixed(1)}
-                      </Text>
+                  {cat === 'vets' ? (
+                    <View style={styles.metaRow}>
+                      {place.languages?.map((lang) => (
+                        <DirectoryLangBadge key={`${lang.flag}-${lang.label}`} lang={lang} />
+                      ))}
+                      <DirectoryRatingChip rating={place.rating} />
                     </View>
-                    <View style={styles.metaChip}>
-                      <Text style={styles.metaChipText}>
-                        {place.reviewCount}
-                      </Text>
+                  ) : cat === 'breeders' ? null : (
+                    <View style={styles.metaRow}>
+                      <DirectoryRatingChip rating={place.rating} />
                     </View>
-                  </View>
+                  )}
                 </View>
               </Pressable>
             );
@@ -219,17 +206,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodyBold,
     color: brand.successDark,
   },
-  input: {
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.ink,
-  },
   card: {
     flexDirection: 'row',
     gap: 12,
@@ -243,14 +219,6 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   pressed: { opacity: 0.88 },
-  thumb: {
-    width: 52,
-    height: 52,
-    borderRadius: 12,
-    backgroundColor: brand.accentTint,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   cardCopy: { flex: 1 },
   cardTop: {
     flexDirection: 'row',
@@ -276,18 +244,7 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     color: brand.muted,
   },
-  metaChips: { flexDirection: 'row', gap: 6, marginTop: 6 },
-  metaChip: {
-    borderRadius: brand.radius.pill,
-    backgroundColor: brand.creamDeep,
-    paddingHorizontal: 9,
-    paddingVertical: 3,
-  },
-  metaChipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 10.5,
-    color: brand.ink,
-  },
+  metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
   empty: {
     fontFamily: fonts.body,
     fontSize: 14,

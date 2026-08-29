@@ -1,45 +1,41 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import {
+  DirectoryComplaintsBadge,
+  DirectoryDashedThumb,
+  DirectoryRatingChip,
+  DirectoryTripsChip,
+  verificationBadgeLabel,
+} from '@/src/components/directories/DirectoryUi';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
-import {
-  listCarrierCities,
-  listCarriers,
-  type DirectoryPlace,
-} from '@/src/services/directories';
+import { listCarriers, type DirectoryPlace } from '@/src/services/directories';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML phone “F4b · Перевізники”. */
-export default function DirectoryCarriersScreen() {
-  const params = useLocalSearchParams<{ city?: string }>();
-  const initialCity =
-    typeof params.city === 'string' ? params.city.trim() : '';
+const CARRIER_FILTERS = [
+  { id: 'route', labelKey: 'directories.filterRoute', active: true },
+  { id: 'species', labelKey: 'directories.filterSpecies', active: false },
+  { id: 'rating', labelKey: 'directories.filterRating', active: false },
+] as const;
 
-  const [city, setCity] = useState(initialCity);
+/** 06.05 · Перевізники — список */
+export default function DirectoryCarriersScreen() {
   const [places, setPlaces] = useState<DirectoryPlace[]>([]);
-  const cities = useMemo(() => listCarrierCities(), []);
 
   useEffect(() => {
     let alive = true;
-    void listCarriers(city).then((rows) => {
+    void listCarriers().then((rows) => {
       if (alive) setPlaces(rows);
     });
     return () => {
       alive = false;
     };
-  }, [city]);
+  }, []);
 
   return (
     <AppScreen edges={['bottom']}>
@@ -61,62 +57,28 @@ export default function DirectoryCarriersScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.chips}
           >
-            {(
-              [
-                ['route', 'directories.filterRoute', true],
-                ['species', 'directories.filterSpecies', false],
-                ['rating', 'directories.filterRating', false],
-              ] as const
-            ).map(([id, key, active]) => (
-              <View key={id} style={[styles.chip, active && styles.chipGood]}>
+            {CARRIER_FILTERS.map((f) => (
+              <View
+                key={f.id}
+                style={[styles.chip, f.active && styles.chipGood]}
+              >
                 <Text
-                  style={[styles.chipText, active && styles.chipTextGood]}
+                  style={[styles.chipText, f.active && styles.chipTextGood]}
                 >
-                  {t(key)}
+                  {t(f.labelKey)}
                 </Text>
               </View>
             ))}
           </ScrollView>
 
-          <TextInput
-            value={city}
-            onChangeText={setCity}
-            placeholder={t('directories.cityPlaceholder')}
-            placeholderTextColor={brand.mutedSoft}
-            style={styles.input}
-          />
-
-          <View style={styles.cityChips}>
-            <Pressable
-              onPress={() => setCity('')}
-              style={[styles.cityChip, !city && styles.cityChipOn]}
-            >
-              <Text
-                style={[styles.cityChipText, !city && styles.cityChipTextOn]}
-              >
-                {t('directories.carriersAllCities')}
-              </Text>
-            </Pressable>
-            {cities.map((c) => {
-              const on = city === c;
-              return (
-                <Pressable
-                  key={c}
-                  onPress={() => setCity(c)}
-                  style={[styles.cityChip, on && styles.cityChipOn]}
-                >
-                  <Text
-                    style={[styles.cityChipText, on && styles.cityChipTextOn]}
-                  >
-                    {c}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-
           {places.map((place) => {
             const verified = place.verification === 'verified';
+            const hasComplaints =
+              place.complaintCount != null && place.complaintCount > 0;
+            const badge = hasComplaints
+              ? null
+              : verificationBadgeLabel(place, 'transport');
+
             return (
               <Pressable
                 key={place.id}
@@ -128,40 +90,35 @@ export default function DirectoryCarriersScreen() {
                 }
                 style={({ pressed }) => [styles.card, pressed && styles.pressed]}
               >
-                <View style={styles.thumb}>
-                  <Ionicons name="car-outline" size={22} color={brand.ink} />
-                </View>
+                <DirectoryDashedThumb
+                  label={place.thumbLabel ?? t('directories.thumbCar')}
+                />
                 <View style={styles.copy}>
                   <View style={styles.top}>
                     <Text style={styles.name} numberOfLines={1}>
                       {place.name}
                     </Text>
-                    <Text
-                      style={[
-                        styles.badge,
-                        verified ? styles.badgeGood : styles.badgeWarn,
-                      ]}
-                    >
-                      {verified
-                        ? t('directories.verifiedCheck')
-                        : t('directories.unverifiedShort')}
-                    </Text>
+                    {hasComplaints ? (
+                      <DirectoryComplaintsBadge count={place.complaintCount!} />
+                    ) : badge ? (
+                      <Text
+                        style={[
+                          styles.badge,
+                          verified ? styles.badgeGood : styles.badgeWarn,
+                        ]}
+                      >
+                        {badge}
+                      </Text>
+                    ) : null}
                   </View>
                   <Text style={styles.meta} numberOfLines={2}>
-                    {place.routes?.join(' · ') || place.city}
-                    {place.vehicleType ? ` · ${place.vehicleType}` : ''}
+                    {place.listSubtitle ?? place.specialty ?? place.city}
                   </Text>
-                  <View style={styles.metaChips}>
-                    <View style={styles.metaChip}>
-                      <Text style={styles.metaChipText}>
-                        ★ {place.rating.toFixed(1)}
-                      </Text>
-                    </View>
-                    <View style={styles.metaChip}>
-                      <Text style={styles.metaChipText}>
-                        {place.reviewCount}
-                      </Text>
-                    </View>
+                  <View style={styles.metaRow}>
+                    <DirectoryRatingChip rating={place.rating} />
+                    {place.tripCount != null && place.tripCount > 0 ? (
+                      <DirectoryTripsChip count={place.tripCount} />
+                    ) : null}
                   </View>
                 </View>
               </Pressable>
@@ -215,34 +172,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodyBold,
     color: brand.successDark,
   },
-  input: {
-    borderRadius: brand.radius.md,
-    backgroundColor: brand.surfaceElevated,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.ink,
-  },
-  cityChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
-  cityChip: {
-    borderRadius: brand.radius.pill,
-    backgroundColor: brand.creamDeep,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-  },
-  cityChipOn: { backgroundColor: brand.accentTint },
-  cityChipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 12,
-    color: brand.ink,
-  },
-  cityChipTextOn: {
-    fontFamily: fonts.bodyBold,
-    color: brand.accentDark,
-  },
   card: {
     flexDirection: 'row',
     gap: 12,
@@ -256,14 +185,6 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   pressed: { opacity: 0.88 },
-  thumb: {
-    width: 52,
-    height: 52,
-    borderRadius: 12,
-    backgroundColor: brand.creamDeep,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   copy: { flex: 1 },
   top: {
     flexDirection: 'row',
@@ -286,18 +207,7 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     color: brand.muted,
   },
-  metaChips: { flexDirection: 'row', gap: 6, marginTop: 6 },
-  metaChip: {
-    borderRadius: brand.radius.pill,
-    backgroundColor: brand.creamDeep,
-    paddingHorizontal: 9,
-    paddingVertical: 3,
-  },
-  metaChipText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 10.5,
-    color: brand.ink,
-  },
+  metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
   empty: {
     fontFamily: fonts.body,
     fontSize: 14,

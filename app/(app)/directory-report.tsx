@@ -4,6 +4,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { DirectoryReportSheet } from '@/src/components/directories/DirectoryReportSheet';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
@@ -17,11 +18,12 @@ const REASONS = [
   'directories.reportReasonAnimal',
 ] as const;
 
-/** HTML phone “F6 · Повідомити про шахрайство”. */
+/** Legacy full-screen report — prefer DirectoryReportSheet from detail. */
 export default function DirectoryReportScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const [reasonKey, setReasonKey] = useState<string>(REASONS[0]);
   const [busy, setBusy] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(true);
 
   const submit = async () => {
     setBusy(true);
@@ -39,6 +41,22 @@ export default function DirectoryReportScreen() {
       setBusy(false);
     }
   };
+
+  if (id) {
+    return (
+      <AppScreen edges={['bottom']}>
+        <AppChromeHeader />
+        <DirectoryReportSheet
+          visible={sheetOpen}
+          onClose={() => {
+            setSheetOpen(false);
+            router.back();
+          }}
+          placeId={id}
+        />
+      </AppScreen>
+    );
+  }
 
   return (
     <AppScreen edges={['bottom']}>

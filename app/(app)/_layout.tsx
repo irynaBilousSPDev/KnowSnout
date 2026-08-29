@@ -490,6 +490,34 @@ export default function AppLayout() {
         name="directory-report"
         options={{ headerShown: false, title: t('directories.reportTitle') }}
       />
+      <Stack.Screen
+        name="vet-hub"
+        options={{ headerShown: false, title: t('vets.hubTitle') }}
+      />
+      <Stack.Screen
+        name="vet-doctors-search"
+        options={{ headerShown: false, title: t('vets.cardiologistsTitle') }}
+      />
+      <Stack.Screen
+        name="vet-clinic-profile"
+        options={{ headerShown: false, title: t('vets.clinicTitle') }}
+      />
+      <Stack.Screen
+        name="vet-doctor-profile"
+        options={{ headerShown: false, title: t('vets.doctorTitle') }}
+      />
+      <Stack.Screen
+        name="vet-doctor-review"
+        options={{ headerShown: false, title: t('vets.reviewBarTitle') }}
+      />
+      <Stack.Screen
+        name="vet-pro-setup"
+        options={{ headerShown: false, title: t('vets.proSetupTitle') }}
+      />
+      <Stack.Screen
+        name="vet-pro-cabinet"
+        options={{ headerShown: false, title: t('vets.cabinetTitle') }}
+      />
     </Stack>
   );
 }

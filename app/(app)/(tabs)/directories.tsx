@@ -12,25 +12,21 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
-import { DIRECTORY_CATEGORIES } from '@/src/services/directories';
+import { DIRECTORY_HUB_CATEGORIES } from '@/src/services/directories';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML phone “F1 · Хаб довідників”. */
+/** 06.01 · Хаб довідників */
 const ICONS: Record<
   string,
-  {
-    icon: keyof typeof Ionicons.glyphMap;
-    tone: 'accent' | 'success' | 'neutral';
-  }
+  { icon: keyof typeof Ionicons.glyphMap; bg: string; fg: string }
 > = {
-  vets: { icon: 'medkit-outline', tone: 'accent' },
-  breeders: { icon: 'ribbon-outline', tone: 'success' },
-  transport: { icon: 'car-outline', tone: 'neutral' },
-  sitters: { icon: 'checkmark-outline', tone: 'accent' },
-  insurance: { icon: 'shield-checkmark-outline', tone: 'success' },
-  lodging: { icon: 'bed-outline', tone: 'neutral' },
-  shops: { icon: 'storefront-outline', tone: 'success' },
+  vets: { icon: 'medkit-outline', bg: brand.accentTint, fg: brand.accentDark },
+  breeders: { icon: 'star-outline', bg: brand.accentTint, fg: brand.accentDark },
+  transport: { icon: 'car-outline', bg: brand.accentTint, fg: brand.accentDark },
+  sitters: { icon: 'checkmark-outline', bg: brand.accentTint, fg: brand.accentDark },
+  insurance: { icon: 'shield-checkmark-outline', bg: brand.accentTint, fg: brand.accentDark },
+  lodging: { icon: 'home-outline', bg: brand.accentTint, fg: brand.accentDark },
 };
 
 export default function DirectoriesHubScreen() {
@@ -38,8 +34,8 @@ export default function DirectoriesHubScreen() {
 
   const cats = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return DIRECTORY_CATEGORIES;
-    return DIRECTORY_CATEGORIES.filter((cat) => {
+    if (!q) return DIRECTORY_HUB_CATEGORIES;
+    return DIRECTORY_HUB_CATEGORIES.filter((cat) => {
       const title = t(`directories.cat.${cat.id}`).toLowerCase();
       const body = t(`directories.catBody.${cat.id}`).toLowerCase();
       return title.includes(q) || body.includes(q);
@@ -68,28 +64,17 @@ export default function DirectoriesHubScreen() {
 
           <View style={styles.grid}>
             {cats.map((cat) => {
-              const meta = ICONS[cat.id] ?? {
-                icon: 'location-outline' as const,
-                tone: 'accent' as const,
-              };
-              const bg =
-                meta.tone === 'accent'
-                  ? brand.accentTint
-                  : meta.tone === 'success'
-                    ? brand.successTint
-                    : brand.creamDeep;
-              const fg =
-                meta.tone === 'accent'
-                  ? brand.accentDark
-                  : meta.tone === 'success'
-                    ? brand.successDark
-                    : brand.ink;
+              const meta = ICONS[cat.id] ?? ICONS.vets;
               return (
                 <Pressable
                   key={cat.id}
                   onPress={() => {
                     if (cat.id === 'transport') {
                       router.push('/(app)/directory-carriers' as never);
+                      return;
+                    }
+                    if (cat.id === 'vets') {
+                      router.push('/(app)/vet-hub' as never);
                       return;
                     }
                     router.push({
@@ -102,8 +87,8 @@ export default function DirectoriesHubScreen() {
                     pressed && styles.pressed,
                   ]}
                 >
-                  <View style={[styles.tileIcon, { backgroundColor: bg }]}>
-                    <Ionicons name={meta.icon} size={18} color={fg} />
+                  <View style={[styles.tileIcon, { backgroundColor: meta.bg }]}>
+                    <Ionicons name={meta.icon} size={18} color={meta.fg} />
                   </View>
                   <Text style={styles.tileTitle} numberOfLines={2}>
                     {t(`directories.cat.${cat.id}`)}
@@ -115,18 +100,6 @@ export default function DirectoriesHubScreen() {
               );
             })}
           </View>
-
-          <Pressable
-            onPress={() => router.push('/(app)/directory-report' as never)}
-            style={styles.reportLink}
-          >
-            <Ionicons
-              name="warning-outline"
-              size={18}
-              color={brand.terracotta}
-            />
-            <Text style={styles.reportText}>{t('directories.reportFraud')}</Text>
-          </Pressable>
         </View>
       </ScrollView>
     </AppScreen>
@@ -209,17 +182,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 11.5,
     color: brand.muted,
-  },
-  reportLink: {
-    marginTop: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingVertical: 8,
-  },
-  reportText: {
-    fontFamily: fonts.bodyMedium,
-    fontSize: 14,
-    color: brand.terracotta,
   },
 });

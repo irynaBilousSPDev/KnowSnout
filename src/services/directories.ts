@@ -1,5 +1,6 @@
 import { getCloudUser } from '@/src/lib/cloudUser';
 import { isMissingSchemaError } from '@/src/lib/schemaErrors';
+import { t } from '@/src/i18n';
 import { supabase } from '@/src/services/supabase';
 
 export type DirectoryCategoryId =
@@ -13,6 +14,11 @@ export type DirectoryCategoryId =
 
 export type VerificationStatus = 'verified' | 'pending' | 'unverified';
 
+export type DirectoryLanguage = {
+  flag: string;
+  label: string;
+};
+
 export type DirectoryPlace = {
   id: string;
   category: DirectoryCategoryId;
@@ -24,7 +30,19 @@ export type DirectoryPlace = {
   reviewCount: number;
   phone?: string;
   blurb: string;
-  /** Transport / carriers (F4b/c) */
+  address?: string;
+  specialties?: string[];
+  languages?: DirectoryLanguage[];
+  priceLevel?: number;
+  tripCount?: number;
+  complaintCount?: number;
+  featuredReview?: string;
+  thumbLabel?: string;
+  heroLabel?: string;
+  listSubtitle?: string;
+  species?: string[];
+  reportContext?: string;
+  /** Transport / carriers */
   routes?: string[];
   vehicleType?: string;
   reviewsBlurb?: string;
@@ -40,88 +58,140 @@ export const DIRECTORY_CATEGORIES: { id: DirectoryCategoryId }[] = [
   { id: 'shops' },
 ];
 
+/** 06.01 hub grid — six tiles on mock (shops elsewhere). */
+export const DIRECTORY_HUB_CATEGORIES: { id: DirectoryCategoryId }[] = [
+  { id: 'vets' },
+  { id: 'breeders' },
+  { id: 'transport' },
+  { id: 'sitters' },
+  { id: 'insurance' },
+  { id: 'lodging' },
+];
+
 /**
  * Local seed + cloud merge (directory_places).
  * SQL: 20260321242000_directories_trust.sql + 244000 seeds.
  */
 const SEED: DirectoryPlace[] = [
   {
-    id: 'vet-1',
+    id: 'vet-specvet',
     category: 'vets',
-    name: 'Клініка «Лапка»',
-    city: 'Київ',
-    specialty: 'Загальна практика',
+    name: 'SpecVet Mokotów',
+    city: 'Варшава',
+    specialty: 'Стоматологія · Офтальмологія',
+    listSubtitle: 'Стоматологія · Офтальмологія',
+    specialties: ['Стоматологія', 'Офтальмологія'],
+    languages: [
+      { flag: 'UA', label: 'укр' },
+      { flag: 'GB', label: 'англ' },
+    ],
+    address: 'Józefa i Jana Rostafińskich 4, Варшава',
     verification: 'verified',
     rating: 4.8,
-    reviewCount: 124,
-    phone: '+380441112233',
-    blurb: 'Mock клініка для тестів довідника.',
+    reviewCount: 126,
+    priceLevel: 2,
+    phone: '+48221234567',
+    blurb:
+      'Прийом англійською та українською, запис онлайн. Стоматологічні операції — від 2000 zł (без аналізів).',
+    thumbLabel: 'Клініка',
+    heroLabel: 'Фото клініки',
   },
   {
-    id: 'vet-2',
+    id: 'vet-saska',
     category: 'vets',
-    name: 'VetCare Lviv',
-    city: 'Львів',
-    specialty: 'Хірургія',
-    verification: 'pending',
-    rating: 4.5,
-    reviewCount: 38,
-    blurb: 'Очікує верифікацію (mock).',
+    name: 'SaskaVet',
+    city: 'Варшава',
+    specialty: 'Загальна практика · Вакцинація',
+    listSubtitle: 'Загальна практика · Вакцинація',
+    languages: [{ flag: 'UA', label: 'укр' }],
+    verification: 'verified',
+    rating: 4.9,
+    reviewCount: 89,
+    blurb: 'Загальна практика та вакцинація (mock).',
+    thumbLabel: 'Клініка',
+    heroLabel: 'Фото клініки',
   },
   {
-    id: 'br-1',
-    category: 'breeders',
-    name: 'FCI Kennel Nord',
+    id: 'vet-zwiro',
+    category: 'vets',
+    name: 'ZwiroPolis',
     city: 'Варшава',
-    specialty: 'Лабрадор',
-    verification: 'verified',
+    specialty: 'Цілодобово · Невролог',
+    listSubtitle: 'Цілодобово · Невролог',
+    languages: [{ flag: 'PL', label: 'пол' }],
+    verification: 'unverified',
     rating: 4.6,
-    reviewCount: 22,
-    blurb: 'Mock заводчик з FCI-статусом у UI.',
+    reviewCount: 34,
+    blurb: 'Цілодобова клініка, неврологія (mock).',
+    thumbLabel: 'Клініка',
+    heroLabel: 'Фото клініки',
   },
   {
-    id: 'tr-1',
-    category: 'transport',
-    name: 'PetRide UA',
-    city: 'Київ',
-    specialty: 'Міжміські рейси',
-    verification: 'verified',
-    rating: 4.2,
-    reviewCount: 15,
-    phone: '+380501112233',
-    blurb: 'Перевезення тварин Київ ↔ Польща (mock).',
-    routes: ['Київ → Варшава', 'Київ → Краків', 'Львів → Вроцлав'],
-    vehicleType: 'Мінівен з клітками + клімат-контроль',
-    reviewsBlurb: 'Власники хвалять спокійну посадку і SMS-статус у дорозі.',
-  },
-  {
-    id: 'tr-2',
-    category: 'transport',
-    name: 'Snout Shuttle PL',
-    city: 'Варшава',
-    specialty: 'Аеропорт / EU',
+    id: 'br-shiba',
+    category: 'breeders',
+    name: 'Shiba Magical Bijin',
+    city: 'під Краковом',
+    specialty: 'Шиба-іну',
+    listSubtitle: 'Шиба-іну · під Краковом',
     verification: 'verified',
     rating: 4.7,
-    reviewCount: 48,
-    phone: '+48221234567',
-    blurb: 'Трансфер до аеропорту з вет-документами в чеклісті (mock).',
-    routes: ['Варшава Chopin ↔ місто', 'Варшава → Берлін', 'Краків → Прага'],
-    vehicleType: 'Фургон IATA-клітки',
-    reviewsBlurb: 'Зручно для виїзду за кордон; просять паспорт тварини заздалегідь.',
+    reviewCount: 18,
+    blurb: 'Заводчик шиба-іну з FCI (mock).',
+    thumbLabel: 'Собака',
+    heroLabel: 'Фото розплідника',
   },
   {
-    id: 'tr-3',
+    id: 'br-poodle',
+    category: 'breeders',
+    name: 'Toy Poodle Варшава',
+    city: 'Варшава',
+    specialty: 'Той-пудель',
+    listSubtitle: 'Той-пудель',
+    verification: 'unverified',
+    rating: 4.2,
+    reviewCount: 6,
+    blurb: 'Той-пудель без підтвердження FCI (mock).',
+    thumbLabel: 'Собака',
+    heroLabel: 'Фото розплідника',
+  },
+  {
+    id: 'tr-pettrans',
     category: 'transport',
-    name: 'Лапка Експрес',
-    city: 'Львів',
-    specialty: 'Локальні поїздки',
-    verification: 'pending',
-    rating: 4.0,
-    reviewCount: 11,
-    blurb: 'Короткі рейси Львів область + Київ (mock, на перевірці).',
-    routes: ['Львів → Київ', 'Львів → Ужгород'],
-    vehicleType: 'Легковий автомобіль + переноска',
-    reviewsBlurb: 'Добре для коротких поїздок; міжміські ще в тесті.',
+    name: 'PetTrans UA-PL',
+    city: 'UA → PL',
+    specialty: 'Україна → Польща · Собаки, коти',
+    listSubtitle: 'Україна → Польща · Собаки, коти',
+    species: ['Собаки', 'Коти'],
+    verification: 'verified',
+    rating: 4.7,
+    reviewCount: 42,
+    tripCount: 42,
+    complaintCount: 0,
+    phone: '+380501112233',
+    blurb: 'Регулярні рейси через Рава-Руська та Угринів',
+    featuredReview:
+      'Перевірили всі документи заздалегідь, попередили про 48-годинне вікно обробки від паразитів. Все пройшло без проблем.',
+    routes: ['Україна → Польща'],
+    vehicleType: 'Мінівен з клітками',
+    thumbLabel: 'Авто',
+    heroLabel: 'Фото перевізника',
+    reportContext: 'Домовились за гроші, тварину не забрали вчасно',
+  },
+  {
+    id: 'tr-private',
+    category: 'transport',
+    name: 'Приватний водій (Устилуг)',
+    city: 'Устилуг',
+    specialty: "Пропонує «вирішити на кордоні»",
+    listSubtitle: "Пропонує «вирішити на кордоні»",
+    verification: 'unverified',
+    rating: 3.1,
+    reviewCount: 8,
+    complaintCount: 2,
+    blurb: 'Приватний перевізник без верифікації (mock).',
+    thumbLabel: 'Авто',
+    heroLabel: 'Фото перевізника',
+    reportContext: 'Домовились за гроші, тварину не забрали вчасно',
   },
   {
     id: 'sit-1',
@@ -132,6 +202,8 @@ const SEED: DirectoryPlace[] = [
     rating: 4.9,
     reviewCount: 9,
     blurb: 'Догляд вдома (mock).',
+    thumbLabel: 'Профіль',
+    heroLabel: 'Фото профілю',
   },
   {
     id: 'ins-1',
@@ -142,6 +214,8 @@ const SEED: DirectoryPlace[] = [
     rating: 4.0,
     reviewCount: 5,
     blurb: 'Страхування — лише UI shell.',
+    thumbLabel: 'Пакет',
+    heroLabel: 'Логотип',
   },
   {
     id: 'lod-1',
@@ -152,6 +226,8 @@ const SEED: DirectoryPlace[] = [
     rating: 4.7,
     reviewCount: 41,
     blurb: 'Pet-friendly житло (mock).',
+    thumbLabel: 'Житло',
+    heroLabel: 'Фото житла',
   },
   {
     id: 'shop-1',
@@ -163,6 +239,8 @@ const SEED: DirectoryPlace[] = [
     rating: 4.5,
     reviewCount: 210,
     blurb: 'Mock пет-магазин UA. Живі офери — пізніше (партнер/API).',
+    thumbLabel: 'Магазин',
+    heroLabel: 'Фото магазину',
   },
   {
     id: 'shop-2',
@@ -174,6 +252,8 @@ const SEED: DirectoryPlace[] = [
     rating: 4.4,
     reviewCount: 88,
     blurb: 'Mock стаціонарний магазин PL (≤30 км на результаті скану — мок).',
+    thumbLabel: 'Магазин',
+    heroLabel: 'Фото магазину',
   },
   {
     id: 'shop-3',
@@ -185,6 +265,8 @@ const SEED: DirectoryPlace[] = [
     rating: 4.6,
     reviewCount: 0,
     blurb: 'Один з PL онлайн-каналів, не єдина платформа.',
+    thumbLabel: 'Магазин',
+    heroLabel: 'Фото магазину',
   },
 ];
 
@@ -208,15 +290,36 @@ function mapCloudPlace(row: Record<string, unknown>): DirectoryPlace {
   };
 }
 
+function sortSeed(category: DirectoryCategoryId, rows: DirectoryPlace[]): DirectoryPlace[] {
+  const order: Partial<Record<DirectoryCategoryId, string[]>> = {
+    vets: ['vet-specvet', 'vet-saska', 'vet-zwiro'],
+    breeders: ['br-shiba', 'br-poodle'],
+    transport: ['tr-pettrans', 'tr-private'],
+  };
+  const ids = order[category];
+  if (!ids) return rows;
+  return [...rows].sort((a, b) => {
+    const ai = ids.indexOf(a.id);
+    const bi = ids.indexOf(b.id);
+    if (ai === -1 && bi === -1) return 0;
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+}
+
 export async function listDirectoryPlaces(
   category: DirectoryCategoryId,
   cityFilter?: string,
 ): Promise<DirectoryPlace[]> {
   const city = cityFilter?.trim().toLowerCase();
-  const local = SEED.filter(
-    (p) =>
-      p.category === category &&
-      (!city || p.city.toLowerCase().includes(city)),
+  const local = sortSeed(
+    category,
+    SEED.filter(
+      (p) =>
+        p.category === category &&
+        (!city || p.city.toLowerCase().includes(city)),
+    ),
   );
 
   const user = await getCloudUser();
@@ -239,7 +342,7 @@ export async function listDirectoryPlaces(
     const cloud = data.map((row) => mapCloudPlace(row as Record<string, unknown>));
     const byId = new Map<string, DirectoryPlace>();
     for (const p of [...local, ...cloud]) byId.set(p.id, p);
-    return [...byId.values()];
+    return sortSeed(category, [...byId.values()]);
   } catch {
     return local;
   }
@@ -279,4 +382,10 @@ export function listCarrierCities(): string[] {
     SEED.filter((p) => p.category === 'transport').map((p) => p.city),
   );
   return [...set].sort((a, b) => a.localeCompare(b, 'uk'));
+}
+
+export function directoryReportContextLine(place: DirectoryPlace): string | undefined {
+  if (!place.reportContext) return undefined;
+  const type = t(`directories.reportType.${place.category}`);
+  return `${type} · «${place.reportContext}»`;
 }
