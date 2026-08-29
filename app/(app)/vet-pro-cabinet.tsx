@@ -147,7 +147,7 @@ export default function VetProCabinetScreen() {
             <View style={styles.promoActions}>
               <PrimaryButton
                 label={t('vets.comparePlans')}
-                onPress={() => router.push('/(app)/subscription' as never)}
+                onPress={() => router.push('/(app)/specialist-tariffs' as never)}
                 style={styles.promoBtn}
               />
               <PrimaryButton

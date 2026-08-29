@@ -61,5 +61,16 @@ See `.cursor/rules/pixel-screens.mdc` — **screenshot wins** for the whole app;
 | `08.07-save-success.png` | Успішне збереження (toast) |
 | `08.08-camera-gallery.png` | Камера / галерея |
 
+## Module 10 — Кінологи / спеціалісти
+
+| File | Screen |
+|--|--|
+| `10.01-behavior-hub.png` | Поведінка й навчання |
+| `10.02-specialist-search.png` | Підбір спеціалістів під проблему |
+| `10.03-specialist-profile.png` | Профіль спеціаліста (hero) |
+| `10.03-specialist-profile-scroll.png` | Профіль спеціаліста (scroll) |
+| `10.04-booking.png` | Запис |
+| `10.05-specialist-tariffs.png` | Тарифи для спеціалістів |
+
 ## Not design
 - `.tmp-screens/` — QA captures

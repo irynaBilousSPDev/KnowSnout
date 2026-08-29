@@ -77,6 +77,10 @@ export default function DirectoriesHubScreen() {
                       router.push('/(app)/vet-hub' as never);
                       return;
                     }
+                    if (cat.id === 'sitters') {
+                      router.push('/(app)/specialist-behavior' as never);
+                      return;
+                    }
                     router.push({
                       pathname: '/(app)/directory-list',
                       params: { category: cat.id },

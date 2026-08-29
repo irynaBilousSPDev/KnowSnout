@@ -550,6 +550,26 @@ export default function AppLayout() {
         name="vet-pro-cabinet"
         options={{ headerShown: false, title: t('vets.cabinetTitle') }}
       />
+      <Stack.Screen
+        name="specialist-behavior"
+        options={{ headerShown: false, title: t('specialist.behaviorTitle') }}
+      />
+      <Stack.Screen
+        name="specialist-search"
+        options={{ headerShown: false, title: t('specialist.searchTitle') }}
+      />
+      <Stack.Screen
+        name="specialist-profile"
+        options={{ headerShown: false, title: t('specialist.profileTitle') }}
+      />
+      <Stack.Screen
+        name="specialist-booking"
+        options={{ headerShown: false, title: t('specialist.booking.title') }}
+      />
+      <Stack.Screen
+        name="specialist-tariffs"
+        options={{ headerShown: false, title: t('specialist.tariff.screenTitle') }}
+      />
     </Stack>
   );
 }
