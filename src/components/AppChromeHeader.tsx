@@ -34,7 +34,7 @@ type Props = {
 
 /**
  * HTML `.app-hd` — logo + Know/Snout + avatar (46) with optional paw notify.
- * Bell chrome is removed: unread = paw on avatar (never a separate bell).
+ * Tap avatar → **Мій профіль** (never straight to Activity). Bell lives on profile.
  */
 export function AppChromeHeader({
   onBrandPress,
@@ -63,10 +63,6 @@ export function AppChromeHeader({
       onAvatarPress();
       return;
     }
-    if (unread > 0) {
-      router.push('/(app)/activity' as never);
-      return;
-    }
     router.push('/(app)/my-profile' as never);
   };
 
@@ -92,11 +88,7 @@ export function AppChromeHeader({
           onPress={openAvatar}
           style={styles.avatarBtn}
           accessibilityRole="button"
-          accessibilityLabel={
-            unread > 0
-              ? `${t('activity.title')}, ${unread}`
-              : t('me.title')
-          }
+          accessibilityLabel={t('profile.mine')}
         >
           <UserAvatar
             avatarKey={profile?.avatar_key}

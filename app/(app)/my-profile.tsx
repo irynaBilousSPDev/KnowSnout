@@ -15,6 +15,7 @@ import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
 import { petAgeShortUk } from '@/src/lib/petAge';
+import { getActivityUnreadCount } from '@/src/services/activity';
 import { listFriends, type FriendUser } from '@/src/services/friends';
 import { listPets } from '@/src/services/pets';
 import { listStoryPostsByUser } from '@/src/services/stories';
@@ -37,17 +38,20 @@ export default function MyProfileScreen() {
   const [pets, setPets] = useState<PetRow[]>([]);
   const [friends, setFriends] = useState<FriendUser[]>([]);
   const [postCount, setPostCount] = useState(18);
+  const [activityUnread, setActivityUnread] = useState(0);
 
   const load = useCallback(async () => {
     const me = await getCurrentUser();
-    const [nextProfile, nextPets, nextFriends] = await Promise.all([
+    const [nextProfile, nextPets, nextFriends, unread] = await Promise.all([
       getUserProfile(),
       listPets().catch(() => [] as PetRow[]),
       listFriends().catch(() => [] as FriendUser[]),
+      getActivityUnreadCount().catch(() => 0),
     ]);
     setProfile(nextProfile);
     setPets(nextPets);
     setFriends(nextFriends);
+    setActivityUnread(unread);
     if (me) {
       const posts = await listStoryPostsByUser(me.id);
       setPostCount(Math.max(posts.length, 18));
@@ -83,9 +87,20 @@ export default function MyProfileScreen() {
           <Pressable
             onPress={() => router.push('/(app)/activity' as never)}
             style={styles.iconBtn}
-            accessibilityLabel={t('activity.title')}
+            accessibilityLabel={
+              activityUnread > 0
+                ? `${t('activity.title')}, ${activityUnread}`
+                : t('activity.title')
+            }
           >
             <Ionicons name="notifications-outline" size={16} color={brand.ink} />
+            {activityUnread > 0 ? (
+              <View style={styles.bellBadge}>
+                <Text style={styles.bellBadgeT}>
+                  {activityUnread > 99 ? '99' : String(activityUnread)}
+                </Text>
+              </View>
+            ) : null}
           </Pressable>
         </View>
       </View>
@@ -255,7 +270,7 @@ const styles = StyleSheet.create({
     color: brand.ink,
   },
   headIcons: {
-    width: 72,
+    minWidth: 72,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: 8,
@@ -267,6 +282,26 @@ const styles = StyleSheet.create({
     backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  bellBadge: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    minWidth: 16,
+    height: 16,
+    paddingHorizontal: 3,
+    borderRadius: 8,
+    backgroundColor: brand.terracotta,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: brand.canvas,
+  },
+  bellBadgeT: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 9,
+    lineHeight: 11,
+    color: '#FFFFFF',
   },
   pad: { paddingHorizontal: 20, paddingBottom: 40, gap: 8 },
   hero: { flexDirection: 'row', alignItems: 'center', gap: 16, marginTop: 6 },
