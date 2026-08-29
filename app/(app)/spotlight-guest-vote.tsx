@@ -3,6 +3,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
@@ -33,6 +34,7 @@ export default function SpotlightGuestVoteScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('spotlight.guestVoteTitle')} titleSize={18} />
       <View style={styles.pad}>
         <Text style={styles.url}>knowsnout.app/vote</Text>
         <Text style={styles.title}>{t('spotlight.voteFor', { name })}</Text>

@@ -8,7 +8,7 @@ import { getUserProfile } from '@/src/services/userProfile';
 import type { UserProfile } from '@/src/types/userProfile';
 
 type Props = {
-  /** Show “Мої дані” under the avatar */
+  /** Show label under the avatar */
   showLabel?: boolean;
   size?: number;
 };
@@ -24,9 +24,9 @@ export function ProfileEntry({ showLabel = true, size = 44 }: Props) {
 
   return (
     <Pressable
-      onPress={() => router.push('/(app)/my-data')}
+      onPress={() => router.push('/(app)/my-profile' as never)}
       accessibilityRole="button"
-      accessibilityLabel={t('me.title')}
+      accessibilityLabel={t('profile.mine')}
       className="items-center active:opacity-75"
     >
       <UserAvatar
@@ -34,11 +34,11 @@ export function ProfileEntry({ showLabel = true, size = 44 }: Props) {
         avatarUri={profile?.avatar_uri}
         gender={profile?.gender}
         size={size}
-        name={profile?.display_name ?? t('me.title')}
+        name={profile?.display_name ?? t('profile.mine')}
       />
       {showLabel ? (
         <Text className="mt-1 max-w-[72px] text-center font-body-medium text-[10px] text-forest-700">
-          {profile?.display_name?.trim() || t('me.title')}
+          {profile?.display_name?.trim() || t('profile.mine')}
         </Text>
       ) : null}
     </Pressable>

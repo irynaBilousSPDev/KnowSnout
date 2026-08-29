@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
 import { listLeaderboard } from '@/src/services/gamification';
@@ -16,8 +17,8 @@ export default function QuizLeaderboardScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('leaderboard.title')} titleSize={22} />
       <ScrollView contentContainerStyle={styles.pad}>
-        <Text style={styles.title}>{t('leaderboard.title')}</Text>
         <View style={styles.seg}>
           <Pressable
             onPress={() => setTab('friends')}

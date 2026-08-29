@@ -13,6 +13,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { ErrorState } from '@/src/components/ErrorState';
 import { t } from '@/src/i18n';
 import {
@@ -127,6 +128,7 @@ export default function BreedQuizScreen() {
     return (
       <AppScreen edges={['bottom']}>
         <AppChromeHeader />
+        <ScrHeader title={t('quizHub.breedTitle')} titleSize={18} />
         <View style={styles.center}>
           <ActivityIndicator color={brand.accent} size="large" />
         </View>
@@ -138,6 +140,7 @@ export default function BreedQuizScreen() {
     return (
       <AppScreen edges={['bottom']}>
         <AppChromeHeader />
+        <ScrHeader title={t('quizHub.breedTitle')} titleSize={18} />
         <ErrorState
           message={
             error === 'BREED_IMAGE_UNAVAILABLE'
@@ -160,6 +163,7 @@ export default function BreedQuizScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('quizHub.breedTitle')} titleSize={18} />
       <View style={styles.progressTrack}>
         <View
           style={[

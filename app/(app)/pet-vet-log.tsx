@@ -17,6 +17,7 @@ import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { TextField } from '@/src/components/TextField';
 import { t } from '@/src/i18n';
 import { confirmAction } from '@/src/lib/confirm';
@@ -178,9 +179,10 @@ export default function PetVetLogScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <View style={styles.header}>
-        <View style={styles.headerRow}>
-          <Text style={styles.title}>{t('vetLog.title')}</Text>
+      <ScrHeader
+        title={t('vetLog.title')}
+        titleSize={20}
+        right={
           <Pressable
             onPress={openCompose}
             style={styles.addCircle}
@@ -189,8 +191,8 @@ export default function PetVetLogScreen() {
           >
             <Text style={styles.addPlus}>+</Text>
           </Pressable>
-        </View>
-      </View>
+        }
+      />
 
       <FlatList
         data={rows}

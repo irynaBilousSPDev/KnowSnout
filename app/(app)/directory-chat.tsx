@@ -15,6 +15,7 @@ import { AppScreen } from '@/src/components/AppScreen';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   listDirectoryChatMessages,
@@ -93,13 +94,16 @@ export default function DirectoryChatScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader
+        title={placeName || t('directories.chatTitle')}
+        titleSize={18}
+      />
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={80}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>{placeName}</Text>
           <Text style={styles.hint}>{t('directories.chatHint')}</Text>
         </View>
 

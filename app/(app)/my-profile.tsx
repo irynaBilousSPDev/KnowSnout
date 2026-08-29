@@ -12,6 +12,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { UserAvatar } from '@/src/components/UserAvatar';
 import { t } from '@/src/i18n';
 import { petAgeShortUk } from '@/src/lib/petAge';
@@ -32,7 +33,7 @@ function speciesLabel(species: PetRow['species']): string {
   return t('pets.pickOther');
 }
 
-/** Screenshot 04.25 — HTML Мій профіль */
+/** Screenshot 04.25 — соціальний «Мій профіль» (без меню акаунта). */
 export default function MyProfileScreen() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [pets, setPets] = useState<PetRow[]>([]);
@@ -73,44 +74,39 @@ export default function MyProfileScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <View style={styles.head}>
-        <View style={styles.headSpacer} />
-        <Text style={styles.headTitle}>{t('profile.mine')}</Text>
-        <View style={styles.headIcons}>
-          <Pressable
-            onPress={() => router.push('/(app)/story-compose' as never)}
-            style={styles.iconBtn}
-            accessibilityLabel={t('stories.composeTitle')}
-          >
-            <Ionicons name="camera-outline" size={16} color={brand.ink} />
-          </Pressable>
-          <Pressable
-            onPress={() => router.push('/(app)/settings' as never)}
-            style={styles.iconBtn}
-            accessibilityLabel={t('settings.langAndPlan')}
-          >
-            <Ionicons name="settings-outline" size={16} color={brand.ink} />
-          </Pressable>
-          <Pressable
-            onPress={() => router.push('/(app)/activity' as never)}
-            style={styles.iconBtn}
-            accessibilityLabel={
-              activityUnread > 0
-                ? `${t('activity.title')}, ${activityUnread}`
-                : t('activity.title')
-            }
-          >
-            <Ionicons name="notifications-outline" size={16} color={brand.ink} />
-            {activityUnread > 0 ? (
-              <View style={styles.bellBadge}>
-                <Text style={styles.bellBadgeT}>
-                  {activityUnread > 99 ? '99' : String(activityUnread)}
-                </Text>
-              </View>
-            ) : null}
-          </Pressable>
-        </View>
-      </View>
+      <ScrHeader
+        title={t('profile.mine')}
+        titleSize={18}
+        right={
+          <View style={styles.headIcons}>
+            <Pressable
+              onPress={() => router.push('/(app)/story-compose' as never)}
+              style={styles.iconBtn}
+              accessibilityLabel={t('stories.composeTitle')}
+            >
+              <Ionicons name="camera-outline" size={16} color={brand.ink} />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/(app)/activity' as never)}
+              style={styles.iconBtn}
+              accessibilityLabel={
+                activityUnread > 0
+                  ? `${t('activity.title')}, ${activityUnread}`
+                  : t('activity.title')
+              }
+            >
+              <Ionicons name="notifications-outline" size={16} color={brand.ink} />
+              {activityUnread > 0 ? (
+                <View style={styles.bellBadge}>
+                  <Text style={styles.bellBadgeT}>
+                    {activityUnread > 99 ? '99' : String(activityUnread)}
+                  </Text>
+                </View>
+              ) : null}
+            </Pressable>
+          </View>
+        }
+      />
 
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
@@ -141,52 +137,23 @@ export default function MyProfileScreen() {
           <Text style={styles.handle}>
             {handle} · {city}
           </Text>
-          <View style={{ marginTop: 10, gap: 8 }}>
+          <View style={styles.editWrap}>
             <PrimaryButton
               label={t('profile.edit')}
               variant="secondary"
               onPress={() => router.push('/(app)/edit-account' as never)}
             />
-            <PrimaryButton
-              label={t('me.title')}
-              variant="secondary"
-              onPress={() => router.push('/(app)/my-data' as never)}
-            />
           </View>
 
-          <Text style={styles.section}>{t('profile.personal')}</Text>
-          <View style={styles.card}>
-            <Row label={t('profile.email')} value="marta.k@mail.com" />
-            <Row label={t('profile.phone')} value="+48 •••• 421" border />
-            <Row label={t('profile.language')} value="Українська" border />
-            <Pressable
-              onPress={() => router.push('/(app)/settings' as never)}
-              style={[styles.row, styles.rowBorder, styles.rowPress]}
-            >
-              <Text style={styles.rowL}>{t('settings.langAndPlan')}</Text>
-              <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
-            </Pressable>
-            <Pressable
-              onPress={() => router.push('/(app)/appearance' as never)}
-              style={[styles.row, styles.rowBorder, styles.rowPress]}
-            >
-              <Text style={styles.rowL}>{t('appearance.title')}</Text>
-              <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
-            </Pressable>
-            <Pressable
-              onPress={() => router.push('/(app)/payments' as never)}
-              style={[styles.row, styles.rowBorder, styles.rowPress]}
-            >
-              <Text style={styles.rowL}>{t('payments.title')}</Text>
-              <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
-            </Pressable>
-            <View style={[styles.row, styles.rowBorder]}>
-              <Text style={styles.rowL}>{t('profile.subscription')}</Text>
-              <View style={styles.plusChip}>
-                <Text style={styles.plusT}>Plus</Text>
-              </View>
-            </View>
-          </View>
+          <Pressable
+            onPress={() => router.push('/(app)/my-data' as never)}
+            style={styles.accountRow}
+            accessibilityRole="button"
+            accessibilityLabel={t('me.title')}
+          >
+            <Text style={styles.accountLabel}>{t('me.title')}</Text>
+            <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
+          </Pressable>
 
           <View style={styles.sectionRow}>
             <Text style={styles.section}>{t('profile.myPets')}</Text>
@@ -269,44 +236,12 @@ export default function MyProfileScreen() {
   );
 }
 
-function Row({
-  label,
-  value,
-  border,
-}: {
-  label: string;
-  value: string;
-  border?: boolean;
-}) {
-  return (
-    <View style={[styles.row, border && styles.rowBorder]}>
-      <Text style={styles.rowL}>{label}</Text>
-      <Text style={styles.rowV}>{value}</Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  head: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 6,
-  },
-  headSpacer: { width: 72 },
-  headTitle: {
-    flex: 1,
-    textAlign: 'center',
-    fontFamily: fonts.title,
-    fontSize: 18,
-    color: brand.ink,
-  },
   headIcons: {
-    minWidth: 72,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: 8,
+    minWidth: 76,
   },
   iconBtn: {
     width: 34,
@@ -349,6 +284,22 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   handle: { fontFamily: fonts.body, fontSize: 13, color: brand.muted },
+  editWrap: { marginTop: 10 },
+  accountRow: {
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 16,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  accountLabel: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 14,
+    color: brand.ink,
+  },
   section: {
     marginTop: 16,
     fontFamily: fonts.title,
@@ -362,29 +313,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   link: { fontFamily: fonts.bodyBold, fontSize: 12, color: brand.accent },
-  card: {
-    borderRadius: 18,
-    backgroundColor: brand.surfaceElevated,
-    overflow: 'hidden',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-  },
-  rowBorder: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: brand.divider },
-  rowPress: { justifyContent: 'space-between' },
-  rowL: { fontFamily: fonts.body, fontSize: 13, color: brand.muted },
-  rowV: { fontFamily: fonts.bodySemi, fontSize: 13, color: brand.ink },
-  plusChip: {
-    borderRadius: 999,
-    backgroundColor: brand.accentTint,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  plusT: { fontFamily: fonts.bodySemi, fontSize: 12, color: brand.accent },
   petRow: { flexDirection: 'row', gap: 10, paddingVertical: 4 },
   petCard: {
     flexDirection: 'row',

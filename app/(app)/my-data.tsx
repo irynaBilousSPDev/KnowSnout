@@ -11,24 +11,37 @@ import { ScrHeader } from '@/src/components/ScrHeader';
 import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { listPets } from '@/src/services/pets';
+import { getSettingsPrefs } from '@/src/services/settingsPrefs';
 import { getUserProfile } from '@/src/services/userProfile';
 import { brand, fonts } from '@/src/theme/brand';
 import type { UserProfile } from '@/src/types/userProfile';
 
-/** 07.08 · Мій акаунт */
+/** Screenshot 07.08 — «Мій акаунт»: налаштування, не соціальний профіль. */
 export default function MyDataScreen() {
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [petCount, setPetCount] = useState(0);
+  const [langMeta, setLangMeta] = useState('UA · Free');
   const [loading, setLoading] = useState(true);
 
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-      void Promise.all([getUserProfile(), listPets().catch(() => [])])
-        .then(([next, pets]) => {
+      void Promise.all([
+        getUserProfile(),
+        listPets().catch(() => []),
+        getSettingsPrefs().catch(() => null),
+      ])
+        .then(([next, pets, prefs]) => {
           setProfile(next);
           setPetCount(pets.length);
+          const lang =
+            prefs?.language === 'pl'
+              ? 'PL'
+              : prefs?.language === 'en'
+                ? 'EN'
+                : 'UA';
+          setLangMeta(`${lang} · Free`);
         })
         .finally(() => setLoading(false));
     }, []),
@@ -63,25 +76,7 @@ export default function MyDataScreen() {
       title: t('settings.langAndPlan'),
       icon: 'globe-outline' as const,
       href: '/(app)/settings',
-      meta: t('settings.langPlanMeta'),
-    },
-    {
-      key: 'appearance',
-      title: t('appearance.title'),
-      icon: 'color-palette-outline' as const,
-      href: '/(app)/appearance',
-    },
-    {
-      key: 'payments',
-      title: t('payments.title'),
-      icon: 'card-outline' as const,
-      href: '/(app)/payments',
-    },
-    {
-      key: 'blocked',
-      title: t('blocked.title'),
-      icon: 'ban-outline' as const,
-      href: '/(app)/blocked-users',
+      meta: langMeta,
     },
     {
       key: 'privacy',
@@ -106,6 +101,8 @@ export default function MyDataScreen() {
           <Pressable
             onPress={() => router.push('/(app)/edit-account' as never)}
             style={styles.hero}
+            accessibilityRole="button"
+            accessibilityLabel={t('editAccount.title')}
           >
             <AccountDashedAvatar size={96} />
             <Text style={styles.heroName}>{shownName}</Text>

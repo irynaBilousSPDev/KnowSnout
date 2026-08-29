@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { ErrorState } from '@/src/components/ErrorState';
 import { LoadingState } from '@/src/components/LoadingState';
 import {
@@ -84,7 +85,8 @@ export default function PetTravelScreen() {
   if (error || !pet) {
     return (
       <AppScreen edges={['bottom']}>
-      <AppChromeHeader />
+        <AppChromeHeader />
+        <ScrHeader title={t('travel.title')} titleSize={20} />
         <ErrorState
           message={error ?? t('pets.notFound')}
           onRetry={() => void load()}
@@ -95,8 +97,9 @@ export default function PetTravelScreen() {
 
   return (
     <AppScreen edges={['bottom']}>
+      <AppChromeHeader />
+      <ScrHeader title={t('travel.title')} titleSize={20} />
       <ScrollView contentContainerStyle={styles.pad}>
-        <Text style={styles.title}>{t('travel.title')}</Text>
         <Text style={styles.subtitle}>
           {pet.name} · {t('travel.subtitle')}
         </Text>

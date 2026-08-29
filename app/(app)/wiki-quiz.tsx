@@ -12,6 +12,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { ErrorState } from '@/src/components/ErrorState';
 import { t } from '@/src/i18n';
 import { saveQuizSession } from '@/src/services/quizResults';
@@ -31,6 +32,12 @@ function parseCategory(raw?: string): WikiQuizCategory {
 
 function sessionTotal(category: WikiQuizCategory) {
   return category === 'animal_group' ? 12 : 10;
+}
+
+function wikiQuizTitle(category: WikiQuizCategory) {
+  return category === 'animal_group'
+    ? t('quizHub.groupTitle')
+    : t('quizHub.originTitle');
 }
 
 /** Screenshots 05.02 (origin) + 05.03 (group) */
@@ -143,6 +150,7 @@ export default function WikiQuizScreen() {
     return (
       <AppScreen edges={['bottom']}>
         <AppChromeHeader />
+        <ScrHeader title={wikiQuizTitle(category)} titleSize={18} />
         <View style={styles.loading}>
           <ActivityIndicator color={brand.accent} size="large" />
         </View>
@@ -154,6 +162,7 @@ export default function WikiQuizScreen() {
     return (
       <AppScreen edges={['bottom']}>
         <AppChromeHeader />
+        <ScrHeader title={wikiQuizTitle(category)} titleSize={18} />
         <ErrorState message={error} onRetry={onRestart} />
       </AppScreen>
     );
@@ -165,6 +174,7 @@ export default function WikiQuizScreen() {
     return (
       <AppScreen edges={['bottom']}>
         <AppChromeHeader />
+        <ScrHeader title={wikiQuizTitle(category)} titleSize={18} />
         <View style={styles.progressRow}>
           <View style={styles.progressTrack}>
             <View

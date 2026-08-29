@@ -12,6 +12,7 @@ import {
 } from '@/src/components/directories/DirectoryUi';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   directoryReportContextLine,
@@ -54,6 +55,7 @@ export default function DirectoryDetailScreen() {
     return (
       <AppScreen edges={['bottom']}>
         <AppChromeHeader />
+        <ScrHeader title={t('directories.detailTitle')} titleSize={20} />
         <View style={styles.pad}>
           <Text style={styles.title}>{t('directories.missing')}</Text>
         </View>
@@ -84,6 +86,7 @@ export default function DirectoryDetailScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={place.name} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <DirectoryDashedHero label={heroLabel} />
         <View style={styles.pad}>

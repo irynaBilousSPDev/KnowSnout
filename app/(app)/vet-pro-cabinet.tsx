@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
 import {
@@ -96,6 +97,10 @@ export default function VetProCabinetScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader
+        title={t(isCynologist ? 'specialist.cabinetTitle' : 'vets.cabinetTitle')}
+        titleSize={20}
+      />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <View style={styles.segment}>
@@ -120,9 +125,6 @@ export default function VetProCabinetScreen() {
             })}
           </View>
 
-          <Text style={styles.title}>
-            {t(isCynologist ? 'specialist.cabinetTitle' : 'vets.cabinetTitle')}
-          </Text>
           <Text style={styles.sub}>
             {t(isCynologist ? 'specialist.cabinetSub' : 'vets.cabinetSub')}
           </Text>

@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { useToast } from '@/src/hooks/useToast';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
@@ -18,9 +19,9 @@ export default function PetSaveDemoScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('pets.profileSavedTitle')} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
-          <Text style={styles.title}>{t('pets.profileSavedTitle')}</Text>
           <View style={styles.card}>
             <Text style={styles.row}>{t('pets.demoNameLine')}</Text>
             <Text style={styles.row}>{t('pets.demoBreedLine')}</Text>
