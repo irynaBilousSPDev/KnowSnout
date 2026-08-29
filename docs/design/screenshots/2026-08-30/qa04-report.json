@@ -1,0 +1,177 @@
+[
+  {
+    "id": "04.01-story-post",
+    "route": "/(app)/story-post",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Пост  Фото 🐶 Марта та Тукан Знайшли новий парк для вигулу біля Оболоні!  48  12  "
+  },
+  {
+    "id": "04.02-story-comments",
+    "route": "/(app)/story-comments",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩  Коментарі 🐶 Оксана Який милий парк 😍 🐶 Ігор Де саме це, підкажіть адресу?  Написати коментар…"
+  },
+  {
+    "id": "04.03-story-compose",
+    "route": "/(app)/story-compose",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Скасувати Новий пост Опублікувати 👩 Марта Ковальчук Усі Додати фото Додати фото З галереї Зняти фото  Позначити улюбленців —   Локація  Подати"
+  },
+  {
+    "id": "04.04-story-tag",
+    "route": "/(app)/story-tag",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "Скасувати Позначити Готово Фото для позначення Тукан Оксана Торкніться фото, щоб додати позначку "
+  },
+  {
+    "id": "04.07-search",
+    "route": "/(app)/search?q=%D0%BA%D0%BE%D1%80%D0%B3%D0%B8",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩  ЛЮДИ 🐶 Марта та Тукан Власниця корги СТАТТІ Все, що варто знати про корги КВІЗИ Звідки ця порода? Містить «корги» корги корги"
+  },
+  {
+    "id": "04.08-friends",
+    "route": "/(app)/friends",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Друзі Підписки (12) Пропозиції 👩 Марта та Тукан Собаки Відписатись 👩 Оксана Коти Відписатись "
+  },
+  {
+    "id": "04.09-friend-search",
+    "route": "/(app)/friend-search",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩  Контакти Поруч Ті самі породи 🐶 Ярослава К. @yaroslava · 2 спільні друзі + Додати 🐶 Дмитро П. @dpetrov · Корги, як у тебе Запрошено 🐶 Марта та"
+  },
+  {
+    "id": "04.10-friend-requests",
+    "route": "/(app)/friend-requests",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩  Запити (3) 🐶 Ігор С. Хоче додати тебе в друзі Прийняти Відхилити 🐶 Соломія В. Хоче додати тебе в друзі Прийняти Відхилити 🐶 Андрій К. Хоче дод"
+  },
+  {
+    "id": "04.11-friend-invite",
+    "route": "/(app)/friend-invite",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩  Запросити друга  knowsnout.app/u/marta_tukan Копіювати Поділитися Код: 4TAN4YGC "
+  },
+  {
+    "id": "04.12-user-profile",
+    "route": "/(app)/user-profile?userId=fu-1",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩  Профіль ⋯ 👩 34 Пости 128 Друзі 2 Улюбленці Оксана Мельник Волонтерка притулку «На Палюху». Кокер-спанієль і два коти вдома. 📍 Варшава 🇺🇦 укр "
+  },
+  {
+    "id": "04.13-messages",
+    "route": "/(app)/messages",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Чат 👩 Оксана Дякую за пораду про корм! 14:20 👨 Ігор Де саме той парк? "
+  },
+  {
+    "id": "04.14-dm",
+    "route": "/(app)/dm/fu-1",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩  Оксана  Прогулянка Парк на Оболоні Субота, 2 серпня · 10:00 Прийду Не можу Привіт! Дякую за пораду про корм Нема за що! Як Сіра відреагувала?  "
+  },
+  {
+    "id": "04.15-walk-plan",
+    "route": "/(app)/walk-plan",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Скасувати Прогулянка Створити Що робимо? Прогулянка Поїздка Дата і час Місце Запросити друзів 👩 Оксана 👨 Ігор +  Додати в Google Календар Субота"
+  },
+  {
+    "id": "04.16-dm-walk",
+    "route": "/(app)/dm/fu-1",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩  Оксана  Прогулянка Парк на Оболоні Субота, 2 серпня · 10:00 Прийду Не можу Привіт! Дякую за пораду про корм Нема за що! Як Сіра відреагувала?  "
+  },
+  {
+    "id": "04.17-spotlight-hub",
+    "route": "/(app)/spotlight-hub",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 SnoutSpotlight Активний конкурс Найкумедніша поза тижня  Закінчується через 2 дні · 214 учасників  Учасник  Учасник  Учасник  Учасник Взяти уч"
+  },
+  {
+    "id": "04.18-spotlight-rules",
+    "route": "/(app)/spotlight-rules",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "Обкладинка конкурсу  Найкумедніша поза тижня Закінчується за 2 дні 214 учасників Правила 1 фото на тварину. Без чужих знімків. Переможець — за кількістю голосі"
+  },
+  {
+    "id": "04.19-spotlight-apply",
+    "route": "/(app)/spotlight-apply",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Скасувати Заявка Надіслати Додати фото улюбленця Оберіть улюбленця Тукан Підпис до фото Найкраща поза після відкриття морозива Чому ця мордочка зір"
+  },
+  {
+    "id": "04.20-spotlight-entry",
+    "route": "/(app)/spotlight-entry",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩  Учасник Фото учасника Тукан бере участь! 128 голосів · #47 у рейтингу  Поділитися і зібрати голоси Проголосувати "
+  },
+  {
+    "id": "04.21-spotlight-ranking",
+    "route": "/(app)/spotlight-ranking",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Рейтинг 1 Аполлон 312 голосів 2 Муся 276 голосів 47 Тукан (ти) 128 голосів "
+  },
+  {
+    "id": "04.22-spotlight-winners",
+    "route": "/(app)/spotlight-winners",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Переможці Рекс — «Найдобріші очі» Липень 2026 · 402 голоси Соня — «Найсмішніший стрибок» Червень 2026 · 388 голосів "
+  },
+  {
+    "id": "04.23-spotlight-won",
+    "route": "/(app)/spotlight-won",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "Переможець тижня Тукан переміг! 312 голосів · Приз: KnowSnout Plus на рік Поділитися перемогою "
+  },
+  {
+    "id": "04.24-spotlight-vote",
+    "route": "/spotlight-vote",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 knowsnout.app/vote Голосуй за Тукана  Фото учасника 128 голосів наразі  Проголосувати Без реєстрації · Завантажити KnowSnout щоб брати участь сам"
+  },
+  {
+    "id": "04.25-my-profile",
+    "route": "/(app)/my-profile",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Мій профіль   👩 18 Пости 64 Друзі 3 Улюбленці Марта Ковальчук @marta.k · Варшава Редагувати профіль Персональні дані Пошта marta.k@mail.com Теле"
+  },
+  {
+    "id": "04.26-activity",
+    "route": "/(app)/activity",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Активність 👨 Ігор вподобав твій пост 2 год 👩 Оксана прокоментувала твій пост 5 год 👱‍♀️ Марта тепер підписана на тебе Новий "
+  },
+  {
+    "id": "04.feed-stories",
+    "route": "/(app)/(tabs)/stories",
+    "status": "PASS",
+    "missing": [],
+    "snippet": "KnowSnout 👩 Стрічка  SnoutSpotlight  Друзі  Чат  Активність  Пошук Усі Підписки Коти Собаки Мої Додати пост  🐶 🐶 Марта · Тукан Знайшли новий парк для в"
+  }
+]

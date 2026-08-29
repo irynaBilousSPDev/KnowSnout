@@ -39,6 +39,7 @@ yarn-error.*
 
 # local helper artifacts
 expo-go-qr.png
+.tmp-screens/
 
 # editor / agent local
 .cursor/
