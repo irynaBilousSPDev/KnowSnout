@@ -26,6 +26,9 @@ export default function EditAccountScreen() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [displayName, setDisplayName] = useState('');
   const [city, setCity] = useState('');
+  const [handle, setHandle] = useState('');
+  const [bio, setBio] = useState('');
+  const [languages, setLanguages] = useState('');
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
 
@@ -37,6 +40,9 @@ export default function EditAccountScreen() {
           setProfile(p);
           setDisplayName(p?.display_name?.trim() || t('account.demoName'));
           setCity(p?.city?.trim() || t('account.demoCity'));
+          setHandle(p?.handle?.replace(/^@/, '') ?? '');
+          setBio(p?.bio?.trim() ?? '');
+          setLanguages(p?.languages?.trim() || t('profile.langs'));
         })
         .finally(() => setLoading(false));
     }, []),
@@ -53,6 +59,9 @@ export default function EditAccountScreen() {
       const next = await saveUserProfile({
         display_name: name,
         city: city.trim() || null,
+        handle: handle.trim() || null,
+        bio: bio.trim() || null,
+        languages: languages.trim() || null,
       });
       setProfile(next);
       notify(t('me.savedTitle'), t('editAccount.saved'));
@@ -111,6 +120,37 @@ export default function EditAccountScreen() {
             value={city}
             onChangeText={setCity}
             style={styles.input}
+            placeholderTextColor={brand.mutedSoft}
+          />
+
+          <Text style={styles.section}>{t('editAccount.socialSection')}</Text>
+
+          <Text style={styles.label}>{t('editAccount.handleLabel')}</Text>
+          <TextInput
+            value={handle}
+            onChangeText={setHandle}
+            style={styles.input}
+            placeholder={t('editAccount.handlePlaceholder')}
+            placeholderTextColor={brand.mutedSoft}
+            autoCapitalize="none"
+          />
+
+          <Text style={styles.label}>{t('editAccount.bioLabel')}</Text>
+          <TextInput
+            value={bio}
+            onChangeText={setBio}
+            style={[styles.input, styles.inputMultiline]}
+            placeholder={t('editAccount.bioPlaceholder')}
+            placeholderTextColor={brand.mutedSoft}
+            multiline
+          />
+
+          <Text style={styles.label}>{t('editAccount.languagesLabel')}</Text>
+          <TextInput
+            value={languages}
+            onChangeText={setLanguages}
+            style={styles.input}
+            placeholder={t('editAccount.languagesPlaceholder')}
             placeholderTextColor={brand.mutedSoft}
           />
 
@@ -185,6 +225,11 @@ const styles = StyleSheet.create({
     color: brand.ink,
   },
   inputReadonly: { color: brand.muted },
+  inputMultiline: {
+    minHeight: 88,
+    textAlignVertical: 'top',
+    paddingTop: 12,
+  },
   section: {
     marginTop: 20,
     marginBottom: 8,

@@ -117,7 +117,7 @@ export default function CareHubScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrHeader title={t('care.hubTitle')} titleSize={22} showBack={false} />
+      <ScrHeader title={t('care.hubTitle')} titleSize={22} />
       <ScrollView
         refreshControl={
           <RefreshControl

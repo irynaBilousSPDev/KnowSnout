@@ -7,6 +7,7 @@ import { AppScreen } from '@/src/components/AppScreen';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
+  forumAuthorRoute,
   listForumNotifications,
   markForumNotificationRead,
   type ForumNotification,
@@ -85,10 +86,7 @@ export default function ForumNotificationsScreen() {
       return;
     }
     if (item.authorId) {
-      router.push({
-        pathname: '/(app)/forum-author',
-        params: { authorId: item.authorId },
-      } as never);
+      router.push(forumAuthorRoute(item.authorId) as never);
     }
   };
 

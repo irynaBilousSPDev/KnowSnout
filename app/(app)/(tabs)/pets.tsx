@@ -94,14 +94,23 @@ export default function PetsScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>{t('pets.title')}</Text>
         {pets.length > 0 ? (
-          <Pressable
-            onPress={goAdd}
-            style={styles.addCircle}
-            accessibilityRole="button"
-            accessibilityLabel={t('pets.add')}
-          >
-            <Text style={styles.addPlus}>+</Text>
-          </Pressable>
+          <View style={styles.headerActions}>
+            <Pressable
+              onPress={() => router.push('/(app)/care-hub' as never)}
+              style={styles.careLink}
+            >
+              <Ionicons name="water-outline" size={14} color={brand.accent} />
+              <Text style={styles.careLinkT}>{t('care.hubTitle')}</Text>
+            </Pressable>
+            <Pressable
+              onPress={goAdd}
+              style={styles.addCircle}
+              accessibilityRole="button"
+              accessibilityLabel={t('pets.add')}
+            >
+              <Text style={styles.addPlus}>+</Text>
+            </Pressable>
+          </View>
         ) : (
           <View style={styles.addSpacer} />
         )}
@@ -187,6 +196,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 14,
     paddingBottom: 8,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  careLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    borderRadius: brand.radius.pill,
+    backgroundColor: brand.accentTint,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  careLinkT: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 11,
+    color: brand.accentDark,
   },
   title: {
     fontFamily: fonts.title,

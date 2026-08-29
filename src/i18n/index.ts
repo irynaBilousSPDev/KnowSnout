@@ -1471,6 +1471,8 @@ const uk: Dict = {
   'profile.posts': 'Пости',
   'profile.postsEmpty': 'Поки немає постів',
   'profile.alreadyFriend': 'Уже в друзях',
+  'profile.accountHint': 'Налаштування, приватність, вихід',
+  'profile.friendsCount': '{count} друзів',
 
   'stories.tagPets': 'Позначити улюбленців',
   'stories.tagTitle': 'Позначити',
@@ -1860,9 +1862,16 @@ const uk: Dict = {
   'subscription.mockTitle': 'Mock',
   'subscription.mockBody': 'Підписку не створено — це лише демо-кнопка.',
 
-  'editAccount.title': 'Редагувати',
-  'editAccount.subtitle': 'Ім’я та місто',
+  'editAccount.title': 'Редагувати профіль',
+  'editAccount.subtitle': 'Ім’я, біо та місто',
   'editAccount.saved': 'Профіль оновлено на цьому пристрої',
+  'editAccount.socialSection': 'Соціальний профіль',
+  'editAccount.handleLabel': 'Нік (@)',
+  'editAccount.handlePlaceholder': 'marta.k',
+  'editAccount.bioLabel': 'Про себе',
+  'editAccount.bioPlaceholder': 'Коротко про тебе та улюбленців',
+  'editAccount.languagesLabel': 'Мови',
+  'editAccount.languagesPlaceholder': 'UA укр · PL пол',
 
   'blocked.title': 'Заблоковані',
   'blocked.subtitle': 'Список із story moderation',

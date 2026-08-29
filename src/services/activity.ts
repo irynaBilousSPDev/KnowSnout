@@ -6,6 +6,9 @@ export type ActivityItem = {
   title: string;
   body: string;
   createdAt: string;
+  /** Deep-link target when user taps the row. */
+  userId?: string;
+  href?: '/(app)/spotlight-hub' | '/(app)/(tabs)/stories';
 };
 
 const SEEN_KEY = 'knowsnout.activity.seenAt.v1';
@@ -17,6 +20,8 @@ const SEED: ActivityItem[] = [
     title: 'Ігор',
     body: 'вподобав твій пост',
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    userId: 'fu-3',
+    href: '/(app)/(tabs)/stories',
   },
   {
     id: 'act-2',
@@ -24,6 +29,8 @@ const SEED: ActivityItem[] = [
     title: 'Оксана',
     body: 'прокоментувала твій пост',
     createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+    userId: 'fu-1',
+    href: '/(app)/(tabs)/stories',
   },
   {
     id: 'act-3',
@@ -31,6 +38,7 @@ const SEED: ActivityItem[] = [
     title: 'Марта',
     body: 'тепер підписана на тебе',
     createdAt: new Date().toISOString(),
+    userId: 'seed-marta',
   },
 ];
 

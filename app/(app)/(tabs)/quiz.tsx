@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
   emptyQuizStats,
@@ -27,6 +28,13 @@ const ROWS: {
   chip: 'count' | 'new';
   chipKey: string;
 }[] = [
+  {
+    id: 'trivia',
+    titleKey: 'quizHub.triviaTitle',
+    href: '/(app)/trivia-quiz',
+    chip: 'count',
+    chipKey: 'quizHub.chipQuestions',
+  },
   {
     id: 'animal_group',
     titleKey: 'quizHub.groupTitle',
@@ -90,12 +98,11 @@ export default function QuizHubScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
+      <ScrHeader title={t('quizHub.title')} titleSize={22} />
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.scroll}
       >
-        <Text style={styles.title}>{t('quizHub.title')}</Text>
-
         <View style={styles.streakCard}>
           <View style={styles.streakRing}>
             <Ionicons name="paw" size={22} color={brand.accent} />
@@ -160,6 +167,23 @@ export default function QuizHubScreen() {
             </Pressable>
           );
         })}
+
+        <View style={styles.footerLinks}>
+          <Pressable
+            onPress={() => router.push('/(app)/quiz-leaderboard' as never)}
+            style={styles.footerLink}
+          >
+            <Text style={styles.footerLinkT}>{t('leaderboard.title')}</Text>
+            <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
+          </Pressable>
+          <Pressable
+            onPress={() => router.push('/(app)/achievements' as never)}
+            style={styles.footerLink}
+          >
+            <Text style={styles.footerLinkT}>{t('achievements.title')}</Text>
+            <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
+          </Pressable>
+        </View>
       </ScrollView>
     </AppScreen>
   );
@@ -307,5 +331,17 @@ const styles = StyleSheet.create({
   chipTNew: {
     fontFamily: fonts.bodySemi,
     color: brand.accent,
+  },
+  footerLinks: { marginTop: 4, gap: 4 },
+  footerLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+  },
+  footerLinkT: {
+    fontFamily: fonts.bodySemi,
+    fontSize: 14,
+    color: brand.accentDark,
   },
 });

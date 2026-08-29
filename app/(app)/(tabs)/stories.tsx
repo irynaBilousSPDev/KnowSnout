@@ -60,6 +60,14 @@ function FeedCard({
       params: { postId: post.id },
     } as never);
 
+  const openAuthor = () => {
+    if (!post.userId) return;
+    router.push({
+      pathname: '/(app)/user-profile',
+      params: { userId: post.userId },
+    } as never);
+  };
+
   const meta = [post.location, formatStoryTimeAgo(post.createdAt)]
     .filter(Boolean)
     .join(' · ');
@@ -67,7 +75,7 @@ function FeedCard({
   return (
     <View style={[styles.card, themed.card]}>
       <View style={styles.cardHead}>
-        <Pressable onPress={openPost} style={styles.cardHeadMain}>
+        <Pressable onPress={openAuthor} style={styles.cardHeadMain}>
           <UserAvatar
             avatarKey={post.avatarKey}
             size={40}

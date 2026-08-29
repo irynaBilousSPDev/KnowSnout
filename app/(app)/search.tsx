@@ -31,7 +31,7 @@ const SECTIONS: {
 
 /** Screenshot 04.07 · Глобальний пошук */
 export default function GlobalSearchScreen() {
-  const [query, setQuery] = useState('корги');
+  const [query, setQuery] = useState('');
   const results = useMemo(() => searchGlobal(query), [query]);
 
   return (

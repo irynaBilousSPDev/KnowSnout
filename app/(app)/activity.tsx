@@ -1,6 +1,6 @@
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
@@ -43,6 +43,29 @@ export default function ActivityScreen() {
     }, []),
   );
 
+  const openItem = (item: ActivityItem) => {
+    if (
+      (item.kind === 'follow' || item.kind === 'friend') &&
+      item.userId
+    ) {
+      router.push({
+        pathname: '/(app)/user-profile',
+        params: { userId: item.userId },
+      } as never);
+      return;
+    }
+    if (item.href) {
+      router.push(item.href as never);
+      return;
+    }
+    if (item.userId) {
+      router.push({
+        pathname: '/(app)/user-profile',
+        params: { userId: item.userId },
+      } as never);
+    }
+  };
+
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
@@ -52,8 +75,9 @@ export default function ActivityScreen() {
           {items.map((item) => {
             const isNew = item.kind === 'follow';
             return (
-              <View
+              <Pressable
                 key={item.id}
+                onPress={() => openItem(item)}
                 style={[styles.card, isNew && styles.cardNew]}
               >
                 <UserAvatar
@@ -68,7 +92,7 @@ export default function ActivityScreen() {
                 <Text style={[styles.time, isNew && styles.timeNew]}>
                   {isNew ? t('activity.badgeNew') : relativeTime(item.createdAt)}
                 </Text>
-              </View>
+              </Pressable>
             );
           })}
           {items.length === 0 ? (

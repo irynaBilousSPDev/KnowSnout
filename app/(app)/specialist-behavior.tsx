@@ -1,6 +1,6 @@
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
@@ -10,15 +10,35 @@ import {
 } from '@/src/components/specialists/SpecialistUi';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
-import {
-  BEHAVIOR_PROBLEMS,
-  DEMO_PETS,
-} from '@/src/services/specialistDirectory';
+import { petAgeLabel, speciesLabel } from '@/src/lib/petMeta';
+import { listPets } from '@/src/services/pets';
+import { BEHAVIOR_PROBLEMS } from '@/src/services/specialistDirectory';
 import { brand, fonts } from '@/src/theme/brand';
+import type { PetRow } from '@/src/types/pet';
+
+function petMetaLine(pet: PetRow) {
+  const parts: string[] = [speciesLabel(pet.species)];
+  const age = petAgeLabel(pet.birth_date);
+  if (age) parts.push(age);
+  return parts.join(' · ');
+}
 
 /** 10.01 · Поведінка й навчання */
 export default function SpecialistBehaviorScreen() {
-  const [petId, setPetId] = useState('tukan');
+  const [pets, setPets] = useState<PetRow[]>([]);
+  const [petId, setPetId] = useState('');
+
+  useFocusEffect(
+    useCallback(() => {
+      void listPets().then((rows) => {
+        setPets(rows);
+        setPetId((prev) => {
+          if (prev && rows.some((p) => p.id === prev)) return prev;
+          return rows[0]?.id ?? '';
+        });
+      });
+    }, []),
+  );
 
   return (
     <AppScreen edges={['bottom']}>
@@ -27,19 +47,29 @@ export default function SpecialistBehaviorScreen() {
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <Text style={styles.lbl}>{t('specialist.forPet')}</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.petRow}>
-              {DEMO_PETS.map((pet) => (
-                <SpecialistPetCard
-                  key={pet.id}
-                  name={t(pet.nameKey)}
-                  meta={t(pet.metaKey)}
-                  selected={petId === pet.id}
-                  onPress={() => setPetId(pet.id)}
-                />
-              ))}
-            </View>
-          </ScrollView>
+          {pets.length === 0 ? (
+            <Pressable
+              onPress={() => router.push('/(app)/pet-species' as never)}
+              style={styles.emptyPet}
+            >
+              <Text style={styles.emptyPetText}>{t('pets.emptyTitle')}</Text>
+              <Text style={styles.emptyPetLink}>{t('pets.add')}</Text>
+            </Pressable>
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.petRow}>
+                {pets.map((pet) => (
+                  <SpecialistPetCard
+                    key={pet.id}
+                    name={pet.name}
+                    meta={petMetaLine(pet)}
+                    selected={petId === pet.id}
+                    onPress={() => setPetId(pet.id)}
+                  />
+                ))}
+              </View>
+            </ScrollView>
+          )}
 
           <Text style={styles.lbl}>{t('specialist.helpQuestion')}</Text>
           <View style={styles.list}>
@@ -80,18 +110,34 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: brand.muted,
   },
-  petRow: { flexDirection: 'row', gap: 10, paddingVertical: 4 },
-  list: { gap: 10 },
-  note: {
-    marginTop: 8,
+  petRow: { flexDirection: 'row', gap: 10 },
+  emptyPet: {
     borderRadius: brand.radius.md,
-    backgroundColor: brand.accentTint,
+    backgroundColor: brand.creamDeep,
     padding: 14,
+    gap: 4,
+  },
+  emptyPetText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  emptyPetLink: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
+  },
+  list: { gap: 8 },
+  note: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.creamDeep,
+    padding: 12,
+    marginTop: 4,
   },
   noteText: {
     fontFamily: fonts.body,
     fontSize: 12,
-    lineHeight: 18,
-    color: brand.accentDark,
+    color: brand.muted,
+    lineHeight: 17,
   },
 });

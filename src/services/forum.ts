@@ -29,7 +29,13 @@ export type ForumAuthor = {
   topicCount?: number;
   replyCount?: number;
   rank?: string;
+  /** Linked SnoutStories profile when the forum persona maps to a social user. */
+  socialUserId?: string;
 };
+
+export type ForumAuthorRoute =
+  | { pathname: '/(app)/user-profile'; params: { userId: string } }
+  | { pathname: '/(app)/forum-author'; params: { authorId: string } };
 
 export type ForumThread = {
   id: string;
@@ -111,6 +117,7 @@ const AUTHORS: Record<string, ForumAuthor> = {
     topicCount: 42,
     replyCount: 210,
     rank: 'Досвідчений власник кота',
+    socialUserId: 'fu-1',
   },
   'fa-marta': {
     id: 'fa-marta',
@@ -120,6 +127,7 @@ const AUTHORS: Record<string, ForumAuthor> = {
     topicCount: 18,
     replyCount: 96,
     rank: 'Досвідчений власник собаки',
+    socialUserId: 'seed-marta',
   },
   'fa-igor': {
     id: 'fa-igor',
@@ -129,6 +137,7 @@ const AUTHORS: Record<string, ForumAuthor> = {
     topicCount: 11,
     replyCount: 64,
     rank: 'Активний учасник',
+    socialUserId: 'fu-3',
   },
 };
 
@@ -407,6 +416,20 @@ export function getForumAuthor(id: string): ForumAuthor | null {
     };
   }
   return null;
+}
+
+export function forumAuthorRoute(authorId: string): ForumAuthorRoute {
+  const author = getForumAuthor(authorId);
+  if (author?.socialUserId) {
+    return {
+      pathname: '/(app)/user-profile',
+      params: { userId: author.socialUserId },
+    };
+  }
+  return {
+    pathname: '/(app)/forum-author',
+    params: { authorId },
+  };
 }
 
 export async function listForumThreads(

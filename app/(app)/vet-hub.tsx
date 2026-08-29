@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import { useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -12,19 +12,36 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { PetAvatar } from '@/src/components/PetAvatar';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
+import { speciesLabel } from '@/src/lib/petMeta';
+import { listPets } from '@/src/services/pets';
 import {
-  VET_PET_CHIPS,
+  findClinicIdForSpecialization,
   VET_SPECIALIZATIONS,
 } from '@/src/services/vetDirectory';
 import { brand, fonts } from '@/src/theme/brand';
+import type { PetRow } from '@/src/types/pet';
 
 /** 09.01 · Хаб ветеринарів */
 export default function VetHubScreen() {
   const [query, setQuery] = useState('');
   const [tab, setTab] = useState<'clinics' | 'doctors'>('clinics');
-  const [petId, setPetId] = useState(VET_PET_CHIPS[0]?.id ?? '');
+  const [pets, setPets] = useState<PetRow[]>([]);
+  const [petId, setPetId] = useState('');
+
+  useFocusEffect(
+    useCallback(() => {
+      void listPets().then((rows) => {
+        setPets(rows);
+        setPetId((prev) => {
+          if (prev && rows.some((p) => p.id === prev)) return prev;
+          return rows[0]?.id ?? '';
+        });
+      });
+    }, []),
+  );
 
   const openSearch = (spec?: string) => {
     router.push({
@@ -70,23 +87,39 @@ export default function VetHubScreen() {
           </View>
 
           <Text style={styles.sectionLbl}>{t('vets.forPet')}</Text>
-          <View style={styles.petRow}>
-            {VET_PET_CHIPS.map((pet) => {
-              const on = petId === pet.id;
-              return (
-                <Pressable
-                  key={pet.id}
-                  onPress={() => setPetId(pet.id)}
-                  style={[styles.petChip, on && styles.petChipOn]}
-                >
-                  <View style={styles.petAvatar} />
-                  <Text style={[styles.petText, on && styles.petTextOn]}>
-                    {pet.name} · {pet.speciesLabel}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+          {pets.length === 0 ? (
+            <Pressable
+              onPress={() => router.push('/(app)/pet-species' as never)}
+              style={styles.emptyPet}
+            >
+              <Text style={styles.emptyPetText}>{t('pets.emptyTitle')}</Text>
+              <Text style={styles.emptyPetLink}>{t('pets.add')}</Text>
+            </Pressable>
+          ) : (
+            <View style={styles.petRow}>
+              {pets.map((pet) => {
+                const on = petId === pet.id;
+                return (
+                  <Pressable
+                    key={pet.id}
+                    onPress={() => setPetId(pet.id)}
+                    style={[styles.petChip, on && styles.petChipOn]}
+                  >
+                    <PetAvatar
+                      avatarKey={pet.avatar_key}
+                      avatarUri={pet.avatar_uri}
+                      species={pet.species}
+                      size={28}
+                      name={pet.name}
+                    />
+                    <Text style={[styles.petText, on && styles.petTextOn]}>
+                      {pet.name} · {speciesLabel(pet.species)}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
 
           <Text style={styles.sectionLbl}>{t('vets.freqSpecs')}</Text>
           <View style={styles.specGrid}>
@@ -97,7 +130,9 @@ export default function VetHubScreen() {
                   if (tab === 'clinics') {
                     router.push({
                       pathname: '/(app)/vet-clinic-profile',
-                      params: { id: 'clinic-vetcare' },
+                      params: {
+                        id: findClinicIdForSpecialization(spec.label),
+                      },
                     } as never);
                   } else {
                     openSearch(spec.label);
@@ -189,6 +224,22 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   petRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  emptyPet: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.creamDeep,
+    padding: 14,
+    gap: 4,
+  },
+  emptyPetText: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    color: brand.ink,
+  },
+  emptyPetLink: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accentDark,
+  },
   petChip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -199,12 +250,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   petChipOn: { backgroundColor: brand.accentTint },
-  petAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: brand.mistBorder,
-  },
   petText: {
     fontFamily: fonts.bodyMedium,
     fontSize: 12.5,

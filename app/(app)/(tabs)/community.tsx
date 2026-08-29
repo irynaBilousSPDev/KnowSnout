@@ -46,12 +46,11 @@ const PRIMARY = [
 const SECONDARY = [
   { titleKey: 'community.leaderboard', href: '/(app)/quiz-leaderboard' },
   { titleKey: 'community.achievements', href: '/(app)/achievements' },
+  { titleKey: 'friends.title', href: '/(app)/friends' },
   { titleKey: 'forum.search', href: '/(app)/forum-search' },
   { titleKey: 'forum.rules', href: '/(app)/forum-rules' },
   { titleKey: 'forum.notifications', href: '/(app)/forum-notifications' },
   { titleKey: 'blog.bookmarks', href: '/(app)/blog-bookmarks' },
-  { titleKey: 'profile.mine', href: '/(app)/my-profile' },
-  { titleKey: 'me.title', href: '/(app)/my-data' },
 ];
 
 export default function CommunityHubScreen() {

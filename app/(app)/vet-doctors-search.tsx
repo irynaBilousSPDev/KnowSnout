@@ -13,13 +13,16 @@ import { brand, fonts } from '@/src/theme/brand';
 /** 09.02 · Пошук лікарів (кардіологи) */
 export default function VetDoctorsSearchScreen() {
   const { spec } = useLocalSearchParams<{ spec?: string }>();
-  const title = spec?.trim() || t('vets.cardiologistsTitle');
-  const doctors = listVetDoctors({
-    specialization: spec?.trim() || 'Кардіологія',
-  });
+  const specLabel = spec?.trim();
+  const title = specLabel || t('vets.tabDoctors');
+  const doctors = listVetDoctors(
+    specLabel ? { specialization: specLabel } : undefined,
+  );
 
   const filters = [
-    { label: `${spec?.trim() || 'Кардіологія'} ✕`, active: true },
+    ...(specLabel
+      ? [{ label: `${specLabel} ✕`, active: true }]
+      : []),
     { label: `${t('vets.filterPet')} ✕`, active: true },
     { label: 'Варшава', active: false },
     { label: t('vets.filterLangUk'), active: false },

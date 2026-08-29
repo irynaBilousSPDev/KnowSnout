@@ -90,13 +90,6 @@ export default function NotificationsScreen() {
             </View>
           ))}
 
-          <Pressable
-            onPress={() => router.push('/(app)/blocked-users' as never)}
-            style={styles.linkRow}
-          >
-            <Text style={styles.linkLabel}>{t('blocked.title')}</Text>
-            <Text style={styles.linkChevron}>›</Text>
-          </Pressable>
         </View>
       </ScrollView>
     </AppScreen>

@@ -18,6 +18,7 @@ import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { notify } from '@/src/lib/notify';
 import {
+  forumAuthorRoute,
   getForumCategory,
   getForumThread,
   listForumPosts,
@@ -28,10 +29,7 @@ import {
 import { brand, fonts } from '@/src/theme/brand';
 
 function openAuthor(authorId: string) {
-  router.push({
-    pathname: '/(app)/forum-author',
-    params: { authorId },
-  } as never);
+  router.push(forumAuthorRoute(authorId) as never);
 }
 
 /** Screenshot 05.13 — question + votes + solution + reply pill */

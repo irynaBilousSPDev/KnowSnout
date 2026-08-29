@@ -248,8 +248,24 @@ export function getVetClinic(id: string): VetClinic | null {
   return CLINICS.find((c) => c.id === id) ?? null;
 }
 
-export function listVetClinics(): VetClinic[] {
-  return [...CLINICS];
+export function listVetClinics(filters?: {
+  specialization?: string;
+}): VetClinic[] {
+  if (!filters?.specialization?.trim()) return [...CLINICS];
+  const q = filters.specialization.trim().toLowerCase();
+  const clinicIds = new Set(
+    DOCTORS.filter((d) =>
+      d.specializations.some((s) => s.toLowerCase().includes(q)),
+    ).flatMap((d) => d.clinics.map((c) => c.id)),
+  );
+  const matched = CLINICS.filter((c) => clinicIds.has(c.id));
+  return matched.length ? matched : [...CLINICS];
+}
+
+/** Pick a clinic that has a doctor for the given specialization label. */
+export function findClinicIdForSpecialization(specialization: string): string {
+  const clinics = listVetClinics({ specialization });
+  return clinics[0]?.id ?? CLINICS[0]?.id ?? 'clinic-vetcare';
 }
 
 export type ProProfileDraft = {
