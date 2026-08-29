@@ -431,6 +431,30 @@ export default function AppLayout() {
         options={{ headerShown: false, title: t('notifications.title') }}
       />
       <Stack.Screen
+        name="network-error"
+        options={{ headerShown: false, title: t('network.title') }}
+      />
+      <Stack.Screen
+        name="camera-permission"
+        options={{ headerShown: false, title: t('permission.cameraTitle') }}
+      />
+      <Stack.Screen
+        name="notification-permission"
+        options={{ headerShown: false, title: t('permission.notifyTitle') }}
+      />
+      <Stack.Screen
+        name="pet-photos"
+        options={{ headerShown: false, title: t('photo.albumTitle') }}
+      />
+      <Stack.Screen
+        name="camera-gallery"
+        options={{ headerShown: false, title: t('photo.camera') }}
+      />
+      <Stack.Screen
+        name="pet-save-demo"
+        options={{ headerShown: false, title: t('pets.profileSavedTitle') }}
+      />
+      <Stack.Screen
         name="help"
         options={{ headerShown: false, title: t('help.title') }}
       />

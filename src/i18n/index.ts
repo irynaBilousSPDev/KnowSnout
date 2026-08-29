@@ -19,7 +19,8 @@ const uk: Dict = {
   'common.soon': 'Скоро',
   'common.ok': 'Готово',
   'common.notFoundTitle': 'Сторінку не знайдено',
-  'common.notFoundBody': 'Цього екрана немає або посилання застаріле.',
+  'common.notFoundBody':
+    'Здається, тут нічого немає. Спробуйте повернутись на головну.',
   'common.goHome': 'На головну',
   'photo.gallery': 'З галереї',
   'photo.camera': 'Зняти фото',
@@ -978,6 +979,9 @@ const uk: Dict = {
   'pets.notFound': 'Улюбленця не знайдено',
   'pets.kg': 'кг',
   'pets.profileTitle': 'Профіль',
+  'pets.profileSavedTitle': 'Профіль тварини',
+  'pets.demoNameLine': 'Ім\'я: Тукан',
+  'pets.demoBreedLine': 'Порода: Коргі',
   'pets.avatar': 'Аватар',
   'pets.avatarHint': 'Фото профілю або мордочка за видом (без лапок)',
   'pets.avatarPhoto': 'Фото з камери / галереї',
@@ -1659,6 +1663,7 @@ const uk: Dict = {
   'petHub.empty': 'Спочатку додай улюбленця у вкладці «Улюбленці»',
   'petHub.loading': 'Завантаження хабу…',
 
+  'toast.changesSaved': 'Зміни збережено',
   'toast.aiLoading': 'Аналізуємо етикетку…',
   'toast.networkError': 'Немає мережі або сервер не відповідає',
   'toast.habitSaved': 'Звичку збережено',
@@ -1700,6 +1705,28 @@ const uk: Dict = {
   'notifications.empty': 'Поки тихо',
   'notifications.read': 'Прочитано',
   'notifications.unread': 'Нове',
+
+  'network.title': 'Немає з\'єднання',
+  'network.body':
+    'Перевір інтернет і спробуй ще раз. Останні скани збережені офлайн.',
+  'network.retry': 'Повторити',
+
+  'permission.cameraTitle': 'Дозволити доступ до камери?',
+  'permission.cameraBody':
+    'Потрібно для сканування штрихкодів, етикеток, рослин і породи тварини.',
+  'permission.allow': 'Дозволити',
+  'permission.notNow': 'Не зараз',
+  'permission.notifyTitle': 'Не пропускай важливе',
+  'permission.notifyBody':
+    'Нагадаємо про щеплення, гру з улюбленцем і серію квізів.',
+  'permission.enableNotify': 'Увімкнути сповіщення',
+  'permission.later': 'Пізніше',
+
+  'photo.albumTitle': 'Фото',
+  'photo.albumEmptyHint': 'Ще немає фото — додайте перше',
+  'photo.addPhoto': 'Додати фото',
+  'photo.addTitle': 'Додати фото',
+  'photo.addSoon': 'Завантаження фото — скоро (мок).',
 
   'help.title': 'Довідка',
   'help.subtitle': 'Короткі теми',

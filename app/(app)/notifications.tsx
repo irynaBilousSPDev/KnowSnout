@@ -26,7 +26,7 @@ const TOGGLES: { key: ToggleKey; titleKey: string }[] = [
   { key: 'notifyFeed', titleKey: 'notifications.toggleFeed' },
 ];
 
-/** HTML phone “43 · Сповіщення”. */
+/** 08.01 · Сповіщення */
 export default function NotificationsScreen() {
   const [prefs, setPrefs] = useState<SettingsPrefs | null>(null);
 

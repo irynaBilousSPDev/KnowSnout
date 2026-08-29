@@ -2,6 +2,7 @@
 
 type ToastHandlers = {
   showToast: (message: string) => void;
+  showSavedToast: (message?: string) => void;
   showAiLoading: (visible: boolean) => void;
   showNetworkError: (onRetry?: () => void) => void;
   dismissNetworkError: () => void;
@@ -15,6 +16,10 @@ export function registerToastHandlers(next: ToastHandlers | null) {
 
 export function showToast(message: string) {
   handlers?.showToast(message);
+}
+
+export function showSavedToast(message?: string) {
+  handlers?.showSavedToast(message);
 }
 
 export function showAiLoading(visible: boolean) {

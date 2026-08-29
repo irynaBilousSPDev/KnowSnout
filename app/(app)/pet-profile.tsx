@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -22,6 +22,7 @@ import { ListRow } from '@/src/components/ListRow';
 import { LoadingState } from '@/src/components/LoadingState';
 import { PetAvatar } from '@/src/components/PetAvatar';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
+import { useToast } from '@/src/hooks/useToast';
 import { t } from '@/src/i18n';
 import { petProfileMeta } from '@/src/lib/petMeta';
 import {
@@ -154,8 +155,16 @@ function Section({
 }
 
 export default function PetProfileScreen() {
-  const params = useLocalSearchParams<{ id?: string }>();
+  const params = useLocalSearchParams<{ id?: string; saved?: string }>();
   const petId = typeof params.id === 'string' ? params.id : undefined;
+  const { showSavedToast } = useToast();
+
+  useEffect(() => {
+    if (params.saved === '1') {
+      showSavedToast();
+      router.setParams({ saved: '' });
+    }
+  }, [params.saved, showSavedToast]);
 
   const [pet, setPet] = useState<PetRow | null>(null);
   const [photos, setPhotos] = useState<PetPhotoRow[]>([]);

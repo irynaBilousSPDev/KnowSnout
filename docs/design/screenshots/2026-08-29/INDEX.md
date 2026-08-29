@@ -48,5 +48,18 @@ See `.cursor/rules/pixel-screens.mdc` — **screenshot wins** for the whole app;
 | `07.11-support.png` | Звернення в підтримку |
 | `07.12-delete-account-modal.png` | Видалення акаунта (modal) |
 
+## Module 08 — Системні / службові
+
+| File | Screen |
+|--|--|
+| `08.01-notifications.png` | Сповіщення (toggles) |
+| `08.02-network-error.png` | Помилка мережі |
+| `08.03-not-found.png` | Сторінка 404 |
+| `08.04-camera-permission.png` | Дозвіл на камеру |
+| `08.05-notification-permission.png` | Дозвіл на сповіщення |
+| `08.06-photo-empty.png` | Порожній стан фото |
+| `08.07-save-success.png` | Успішне збереження (toast) |
+| `08.08-camera-gallery.png` | Камера / галерея |
+
 ## Not design
 - `.tmp-screens/` — QA captures

@@ -471,13 +471,13 @@ export default function PetFormScreen() {
         await updatePet(petId, payload);
         router.replace({
           pathname: '/(app)/pet-profile',
-          params: { id: petId },
+          params: { id: petId, saved: '1' },
         });
       } else {
         const created = await createPet(payload);
         router.replace({
           pathname: '/(app)/pet-profile',
-          params: { id: created.id },
+          params: { id: created.id, saved: '1' },
         });
       }
     } catch (err) {

@@ -9,17 +9,20 @@ import {
   type ReactNode,
 } from 'react';
 
-import { AppToast } from '@/src/components/AppToast';
+import { AppToast, type ToastKind } from '@/src/components/AppToast';
+import { t } from '@/src/i18n';
 import {
   registerToastHandlers,
   showAiLoading as bridgeShowAiLoading,
   showNetworkError as bridgeShowNetworkError,
+  showSavedToast as bridgeShowSavedToast,
   showToast as bridgeShowToast,
   dismissNetworkError as bridgeDismissNetworkError,
 } from '@/src/lib/toast';
 
 type ToastContextValue = {
   showToast: (message: string) => void;
+  showSavedToast: (message?: string) => void;
   showAiLoading: (visible: boolean) => void;
   showNetworkError: (onRetry?: () => void) => void;
   dismissNetworkError: () => void;
@@ -31,6 +34,7 @@ const TOAST_MS = 2800;
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toastKind, setToastKind] = useState<ToastKind>('default');
   const [aiLoading, setAiLoading] = useState(false);
   const [networkVisible, setNetworkVisible] = useState(false);
   const networkRetryRef = useRef<(() => void) | null>(null);
@@ -46,9 +50,24 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const showToast = useCallback(
     (message: string) => {
       clearToastTimer();
+      setToastKind('default');
       setToastMessage(message);
       toastTimerRef.current = setTimeout(() => {
         setToastMessage(null);
+        toastTimerRef.current = null;
+      }, TOAST_MS);
+    },
+    [clearToastTimer],
+  );
+
+  const showSavedToast = useCallback(
+    (message = t('toast.changesSaved')) => {
+      clearToastTimer();
+      setToastKind('saved');
+      setToastMessage(message);
+      toastTimerRef.current = setTimeout(() => {
+        setToastMessage(null);
+        setToastKind('default');
         toastTimerRef.current = null;
       }, TOAST_MS);
     },
@@ -72,6 +91,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     registerToastHandlers({
       showToast,
+      showSavedToast,
       showAiLoading,
       showNetworkError,
       dismissNetworkError,
@@ -82,6 +102,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     };
   }, [
     showToast,
+    showSavedToast,
     showAiLoading,
     showNetworkError,
     dismissNetworkError,
@@ -91,11 +112,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const value = useMemo<ToastContextValue>(
     () => ({
       showToast,
+      showSavedToast,
       showAiLoading,
       showNetworkError,
       dismissNetworkError,
     }),
-    [showToast, showAiLoading, showNetworkError, dismissNetworkError],
+    [showToast, showSavedToast, showAiLoading, showNetworkError, dismissNetworkError],
   );
 
   return (
@@ -103,11 +125,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <AppToast
         toastMessage={toastMessage}
+        toastKind={toastKind}
         aiLoading={aiLoading}
         networkVisible={networkVisible}
         onDismissToast={() => {
           clearToastTimer();
           setToastMessage(null);
+          setToastKind('default');
         }}
         onRetryNetwork={() => {
           const fn = networkRetryRef.current;
@@ -125,6 +149,7 @@ export function useToast(): ToastContextValue {
   if (!ctx) {
     return {
       showToast: bridgeShowToast,
+      showSavedToast: bridgeShowSavedToast,
       showAiLoading: bridgeShowAiLoading,
       showNetworkError: bridgeShowNetworkError,
       dismissNetworkError: bridgeDismissNetworkError,

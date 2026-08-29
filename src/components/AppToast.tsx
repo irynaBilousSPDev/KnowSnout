@@ -6,12 +6,16 @@ import {
   Text,
   View,
 } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { t } from '@/src/i18n';
-import { brand } from '@/src/theme/brand';
+import { brand, fonts } from '@/src/theme/brand';
+
+export type ToastKind = 'default' | 'saved';
 
 type Props = {
   toastMessage: string | null;
+  toastKind: ToastKind;
   aiLoading: boolean;
   networkVisible: boolean;
   onDismissToast: () => void;
@@ -21,6 +25,7 @@ type Props = {
 
 export function AppToast({
   toastMessage,
+  toastKind,
   aiLoading,
   networkVisible,
   onDismissToast,
@@ -35,8 +40,28 @@ export function AppToast({
           onPress={onDismissToast}
           accessibilityRole="alert"
         >
-          <View style={styles.toast}>
-            <Text style={styles.toastText}>{toastMessage}</Text>
+          <View
+            style={[
+              styles.toast,
+              toastKind === 'saved' ? styles.toastSaved : null,
+            ]}
+          >
+            {toastKind === 'saved' ? (
+              <Ionicons
+                name="checkmark-circle"
+                size={18}
+                color={brand.success}
+                style={styles.toastIcon}
+              />
+            ) : null}
+            <Text
+              style={[
+                styles.toastText,
+                toastKind === 'saved' ? styles.toastTextSaved : null,
+              ]}
+            >
+              {toastMessage}
+            </Text>
           </View>
         </Pressable>
       ) : null}
@@ -50,9 +75,9 @@ export function AppToast({
                 onPress={onRetryNetwork}
                 style={styles.networkBtn}
                 accessibilityRole="button"
-                accessibilityLabel={t('common.tryAgain')}
+                accessibilityLabel={t('network.retry')}
               >
-                <Text style={styles.networkBtnText}>{t('common.tryAgain')}</Text>
+                <Text style={styles.networkBtnText}>{t('network.retry')}</Text>
               </Pressable>
               <Pressable
                 onPress={onDismissNetwork}
@@ -93,12 +118,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: brand.navyDeep,
   },
+  toastSaved: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1A2430',
+    borderColor: '#253040',
+    paddingVertical: 12,
+  },
+  toastIcon: { marginRight: 8 },
   toastText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 14,
     lineHeight: 20,
     color: brand.surface,
     textAlign: 'center',
+  },
+  toastTextSaved: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13.5,
   },
   networkWrap: {
     position: 'absolute',
@@ -114,7 +152,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   networkText: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 14,
     color: brand.surface,
   },
@@ -130,7 +168,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   networkBtnText: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.score.poor,
   },
@@ -140,7 +178,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   networkBtnGhostText: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 13,
     color: brand.surface,
   },
@@ -153,7 +191,7 @@ const styles = StyleSheet.create({
   },
   aiText: {
     marginTop: 16,
-    fontFamily: 'Inter_500Medium',
+    fontFamily: fonts.bodyMedium,
     fontSize: 16,
     color: brand.surface,
     textAlign: 'center',

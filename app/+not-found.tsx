@@ -1,55 +1,28 @@
-import { Link, Stack } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Stack, router } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { AppChromeHeader } from '@/src/components/AppChromeHeader';
+import { AppScreen } from '@/src/components/AppScreen';
+import { SystemCenterScreen } from '@/src/components/system/SystemUi';
 import { t } from '@/src/i18n';
-import { brand, fonts } from '@/src/theme/brand';
+import { brand } from '@/src/theme/brand';
 
+/** 08.03 · Сторінка 404 */
 export default function NotFoundScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <View style={styles.root}>
-        <AppChromeHeader showAvatar={false} />
-        <View style={styles.body}>
-          <Text style={styles.title}>{t('common.notFoundTitle')}</Text>
-          <Text style={styles.bodyText}>{t('common.notFoundBody')}</Text>
-          <Link href="/(app)/(tabs)" asChild>
-            <Pressable style={styles.linkBtn}>
-              <Text style={styles.link}>{t('common.goHome')}</Text>
-            </Pressable>
-          </Link>
-        </View>
-      </View>
+      <Stack.Screen options={{ headerShown: false, title: t('common.notFoundTitle') }} />
+      <AppScreen edges={['top', 'bottom']}>
+        <SystemCenterScreen
+          icon={
+            <Ionicons name="help-circle-outline" size={34} color={brand.muted} />
+          }
+          title={t('common.notFoundTitle')}
+          body={t('common.notFoundBody')}
+          primaryLabel={t('common.goHome')}
+          onPrimary={() => router.replace('/(app)/(tabs)' as never)}
+          primaryBlock
+        />
+      </AppScreen>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: brand.canvas },
-  body: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  title: {
-    fontFamily: fonts.title,
-    fontSize: 24,
-    color: brand.ink,
-    textAlign: 'center',
-  },
-  bodyText: {
-    marginTop: 8,
-    fontFamily: fonts.body,
-    fontSize: 15,
-    color: brand.muted,
-    textAlign: 'center',
-  },
-  linkBtn: { marginTop: 20, paddingVertical: 8 },
-  link: {
-    fontFamily: fonts.bodySemi,
-    fontSize: 16,
-    color: brand.accent,
-  },
-});
