@@ -31,5 +31,22 @@ See `.cursor/rules/pixel-screens.mdc` — **screenshot wins** for the whole app;
 | `09.06-pro-profile-setup.png` | Створити професійний профіль |
 | `09.07-pro-cabinet.png` | Кабінет лікаря |
 
+## Module 07 — Профіль / налаштування / сервіс
+
+| File | Screen |
+|--|--|
+| `07.01-lang-subscription.png` | Мова та підписка |
+| `07.02-payments.png` | Платежі |
+| `07.03-privacy.png` | Приватність |
+| `07.04-blocked.png` | Заблоковані |
+| `07.05-appearance.png` | Вигляд — перемикач теми |
+| `07.06-dark-theme-preview.png` | Приклад темної теми (preview у Вигляд) |
+| `07.07-edit-account.png` | Редагування акаунта |
+| `07.08-my-account.png` | Мій акаунт |
+| `07.09-help-hub.png` | Довідка і підтримка |
+| `07.10-help-article.png` | Довідка: детальна стаття |
+| `07.11-support.png` | Звернення в підтримку |
+| `07.12-delete-account-modal.png` | Видалення акаунта (modal) |
+
 ## Not design
 - `.tmp-screens/` — QA captures

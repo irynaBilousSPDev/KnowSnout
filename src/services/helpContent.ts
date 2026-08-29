@@ -2,25 +2,22 @@ export type HelpTopic = {
   id: string;
   titleKey: string;
   bodyKey: string;
+  articleTitleKey?: string;
 };
 
+/** 07.09 / 07.10 — mock FAQ topics only. */
 export const HELP_TOPICS: HelpTopic[] = [
-  { id: 'start', titleKey: 'help.topic.start', bodyKey: 'help.body.start' },
-  { id: 'scan', titleKey: 'help.topic.scan', bodyKey: 'help.body.scan' },
   {
-    id: 'stories',
-    titleKey: 'help.topic.stories',
-    bodyKey: 'help.body.stories',
+    id: 'food-rating',
+    titleKey: 'help.topic.foodRating',
+    articleTitleKey: 'help.article.foodRatingTitle',
+    bodyKey: 'help.body.foodRating',
   },
   {
-    id: 'directories',
-    titleKey: 'help.topic.directories',
-    bodyKey: 'help.body.directories',
-  },
-  {
-    id: 'account',
-    titleKey: 'help.topic.account',
-    bodyKey: 'help.body.account',
+    id: 'microchip',
+    titleKey: 'help.topic.microchip',
+    articleTitleKey: 'help.article.microchipTitle',
+    bodyKey: 'help.body.microchip',
   },
 ];
 

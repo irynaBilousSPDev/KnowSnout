@@ -10,7 +10,7 @@ import { t } from '@/src/i18n';
 import { HELP_TOPICS } from '@/src/services/helpContent';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML phone “46 · Довідка і підтримка”. */
+/** 07.09 · Довідка і підтримка */
 export default function HelpScreen() {
   return (
     <AppScreen edges={['bottom']}>
@@ -64,11 +64,8 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 14,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
   },
   pressed: { opacity: 0.88 },
   label: {

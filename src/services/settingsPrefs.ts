@@ -6,10 +6,12 @@ const KEY = 'knowsnout.settings_prefs.v1';
 
 export type AppLanguage = 'uk' | 'pl' | 'en';
 export type ThemePref = 'light' | 'dark';
+export type ThemeMode = 'light' | 'dark' | 'system';
 
 export type SettingsPrefs = {
   language: AppLanguage;
   theme: ThemePref;
+  themeMode: ThemeMode;
   notifyVaccines: boolean;
   notifyCare: boolean;
   notifyQuiz: boolean;
@@ -25,6 +27,7 @@ export type SettingsPrefs = {
 const DEFAULTS: SettingsPrefs = {
   language: 'uk',
   theme: 'light',
+  themeMode: 'light',
   notifyVaccines: true,
   notifyCare: true,
   notifyQuiz: false,
@@ -45,6 +48,14 @@ export async function getSettingsPrefs(): Promise<SettingsPrefs> {
           ? parsed.language
           : 'uk',
       theme: parsed.theme === 'dark' ? 'dark' : 'light',
+      themeMode:
+        parsed.themeMode === 'dark' ||
+        parsed.themeMode === 'system' ||
+        parsed.themeMode === 'light'
+          ? parsed.themeMode
+          : parsed.theme === 'dark'
+            ? 'dark'
+            : 'light',
       notifyVaccines: parsed.notifyVaccines ?? DEFAULTS.notifyVaccines,
       notifyCare: parsed.notifyCare ?? DEFAULTS.notifyCare,
       notifyQuiz: parsed.notifyQuiz ?? DEFAULTS.notifyQuiz,
@@ -68,6 +79,7 @@ export async function saveSettingsPrefs(
   const next: SettingsPrefs = {
     language: patch.language ?? prev.language,
     theme: patch.theme ?? prev.theme,
+    themeMode: patch.themeMode ?? prev.themeMode,
     notifyVaccines: patch.notifyVaccines ?? prev.notifyVaccines,
     notifyCare: patch.notifyCare ?? prev.notifyCare,
     notifyQuiz: patch.notifyQuiz ?? prev.notifyQuiz,

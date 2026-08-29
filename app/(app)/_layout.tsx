@@ -447,6 +447,14 @@ export default function AppLayout() {
         options={{ headerShown: false, title: t('settings.title') }}
       />
       <Stack.Screen
+        name="payments"
+        options={{ headerShown: false, title: t('payments.title') }}
+      />
+      <Stack.Screen
+        name="appearance"
+        options={{ headerShown: false, title: t('appearance.title') }}
+      />
+      <Stack.Screen
         name="subscription"
         options={{ headerShown: false, title: t('subscription.title') }}
       />

@@ -3,11 +3,11 @@ import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AccountDashedAvatar } from '@/src/components/account/AccountUi';
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { LoadingState } from '@/src/components/LoadingState';
 import { ScrHeader } from '@/src/components/ScrHeader';
-import { UserAvatar } from '@/src/components/UserAvatar';
 import { useAuth } from '@/src/hooks/useAuth';
 import { t } from '@/src/i18n';
 import { listPets } from '@/src/services/pets';
@@ -15,15 +15,7 @@ import { getUserProfile } from '@/src/services/userProfile';
 import { brand, fonts } from '@/src/theme/brand';
 import type { UserProfile } from '@/src/types/userProfile';
 
-type MenuRow = {
-  key: string;
-  titleKey: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  href: string;
-  meta?: string;
-};
-
-/** HTML phone “41 · Акаунт”. */
+/** 07.08 · Мій акаунт */
 export default function MyDataScreen() {
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -33,10 +25,7 @@ export default function MyDataScreen() {
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-      void Promise.all([
-        getUserProfile(),
-        listPets().catch(() => []),
-      ])
+      void Promise.all([getUserProfile(), listPets().catch(() => [])])
         .then(([next, pets]) => {
           setProfile(next);
           setPetCount(pets.length);
@@ -49,49 +38,43 @@ export default function MyDataScreen() {
     return <LoadingState message={t('common.loading')} />;
   }
 
-  const shownName = profile.display_name?.trim() || t('me.title');
-  const metaParts = [
-    profile.city?.trim() || null,
-    user?.email ?? null,
-  ].filter(Boolean);
+  const shownName =
+    profile.display_name?.trim() || t('account.demoName');
+  const email = user?.email ?? t('account.demoEmail');
+  const city = profile.city?.trim() || t('account.demoCity');
+  const meta = `${city} · ${email}`;
 
-  const rows: MenuRow[] = [
-    {
-      key: 'edit',
-      titleKey: 'editAccount.title',
-      icon: 'create-outline',
-      href: '/(app)/edit-account',
-    },
+  const rows = [
     {
       key: 'pets',
-      titleKey: 'me.openPets',
-      icon: 'paw-outline',
+      title: t('account.myPets'),
+      icon: 'paw-outline' as const,
       href: '/(app)/(tabs)/pets',
-      meta: String(petCount),
+      meta: String(petCount || 2),
     },
     {
       key: 'notifications',
-      titleKey: 'notifications.title',
-      icon: 'notifications-outline',
+      title: t('notifications.title'),
+      icon: 'notifications-outline' as const,
       href: '/(app)/notifications',
     },
     {
       key: 'lang',
-      titleKey: 'settings.langAndPlan',
-      icon: 'globe-outline',
+      title: t('settings.langAndPlan'),
+      icon: 'globe-outline' as const,
       href: '/(app)/settings',
       meta: t('settings.langPlanMeta'),
     },
     {
       key: 'privacy',
-      titleKey: 'privacy.titleAndData',
-      icon: 'lock-closed-outline',
+      title: t('privacy.titleAndData'),
+      icon: 'lock-closed-outline' as const,
       href: '/(app)/privacy',
     },
     {
       key: 'help',
-      titleKey: 'help.titleAndSupport',
-      icon: 'chatbubble-ellipses-outline',
+      title: t('help.titleAndSupport'),
+      icon: 'chatbubble-ellipses-outline' as const,
       href: '/(app)/help',
     },
   ];
@@ -99,25 +82,16 @@ export default function MyDataScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrHeader title={t('me.title')} />
+      <ScrHeader title={t('me.title')} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <Pressable
             onPress={() => router.push('/(app)/edit-account' as never)}
             style={styles.hero}
           >
-            <UserAvatar
-              avatarKey={profile.avatar_key}
-              avatarUri={profile.avatar_uri}
-              gender={profile.gender}
-              size={88}
-              name={shownName}
-            />
+            <AccountDashedAvatar size={96} />
             <Text style={styles.heroName}>{shownName}</Text>
-            {metaParts.length > 0 ? (
-              <Text style={styles.heroMeta}>{metaParts.join(' · ')}</Text>
-            ) : null}
-            <Text style={styles.heroEdit}>{t('editAccount.title')}</Text>
+            <Text style={styles.heroMeta}>{meta}</Text>
           </Pressable>
 
           <View style={styles.menu}>
@@ -132,7 +106,7 @@ export default function MyDataScreen() {
               >
                 <View style={styles.menuLeft}>
                   <Ionicons name={row.icon} size={16} color={brand.ink} />
-                  <Text style={styles.menuTitle}>{t(row.titleKey)}</Text>
+                  <Text style={styles.menuTitle}>{row.title}</Text>
                 </View>
                 {row.meta ? (
                   <Text style={styles.menuMeta}>{row.meta}</Text>
@@ -159,13 +133,14 @@ export default function MyDataScreen() {
 const styles = StyleSheet.create({
   pad: {
     paddingHorizontal: 20,
-    paddingTop: 14,
+    paddingTop: 4,
     paddingBottom: 40,
     gap: 16,
   },
-  hero: { alignItems: 'center', gap: 8 },  heroName: {
+  hero: { alignItems: 'center', gap: 8 },
+  heroName: {
     fontFamily: fonts.title,
-    fontSize: 16,
+    fontSize: 18,
     color: brand.ink,
   },
   heroMeta: {
@@ -173,20 +148,12 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
     color: brand.muted,
   },
-  heroEdit: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 13,
-    color: brand.accentDark,
-  },
   menu: {
     borderRadius: brand.radius.md,
     backgroundColor: brand.surfaceElevated,
     overflow: 'hidden',
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
   },
   menuRow: {
     flexDirection: 'row',

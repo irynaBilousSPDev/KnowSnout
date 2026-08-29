@@ -1,22 +1,25 @@
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { DeleteAccountModal } from '@/src/components/account/DeleteAccountModal';
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** HTML phone “45 · Приватність і джерела даних”. */
+/** 07.03 · Приватність */
 export default function PrivacyScreen() {
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   const rows = [
     {
       key: 'policy',
       title: t('privacy.policy'),
       danger: false,
-      onPress: () =>
-        Alert.alert(t('privacy.policy'), t('privacy.body')),
+      onPress: () => Alert.alert(t('privacy.policy'), t('privacy.body')),
     },
     {
       key: 'sources',
@@ -32,23 +35,17 @@ export default function PrivacyScreen() {
         Alert.alert(t('privacy.downloadData'), t('privacy.downloadSoon')),
     },
     {
-      key: 'blocked',
-      title: t('settings.blocked'),
-      danger: false,
-      onPress: () => router.push('/(app)/blocked-users' as never),
-    },
-    {
       key: 'delete',
       title: t('settings.deleteAccount'),
       danger: true,
-      onPress: () => router.push('/(app)/delete-account' as never),
+      onPress: () => setDeleteOpen(true),
     },
   ];
 
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrHeader title={t('privacy.title')} titleSize={18} />
+      <ScrHeader title={t('privacy.title')} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           {rows.map((row) => (
@@ -71,6 +68,11 @@ export default function PrivacyScreen() {
           ))}
         </View>
       </ScrollView>
+
+      <DeleteAccountModal
+        visible={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+      />
     </AppScreen>
   );
 }
@@ -90,11 +92,8 @@ const styles = StyleSheet.create({
     backgroundColor: brand.surfaceElevated,
     paddingHorizontal: 14,
     paddingVertical: 14,
-    shadowColor: brand.shadow.color,
-    shadowOpacity: brand.shadow.opacity,
-    shadowRadius: brand.shadow.radius,
-    shadowOffset: brand.shadow.offset,
-    elevation: 1,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
   },
   pressed: { opacity: 0.88 },
   label: {
