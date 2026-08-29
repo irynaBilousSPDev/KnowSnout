@@ -51,6 +51,8 @@ export default function ScanFoodScreen() {
 
   const busy = loading || lookupLoading || capturing;
   const barcodeContext = getPendingBarcodeContext();
+  /** Web uses manual barcode entry / gallery — expo-camera permissions stay stale in mobile browsers. */
+  const requiresCamera = Platform.OS !== 'web';
 
   useEffect(() => {
     if (params.mode === 'photo') setMode('photo');
@@ -235,7 +237,17 @@ export default function ScanFoodScreen() {
     </View>
   );
 
-  if (!permission) {
+  const requestCameraAccess = async () => {
+    const result = await requestPermission();
+    if (!result.granted) {
+      router.push({
+        pathname: '/(app)/camera-permission',
+        params: { returnTo: 'scan-food' },
+      } as never);
+    }
+  };
+
+  if (requiresCamera && !permission) {
     return (
       <View style={styles.darkRoot}>
         {darkHeader}
@@ -244,19 +256,14 @@ export default function ScanFoodScreen() {
     );
   }
 
-  if (!permission.granted) {
+  if (requiresCamera && !permission?.granted) {
     return (
       <View style={styles.darkRoot}>
         {darkHeader}
         <View style={styles.permBox}>
           <Text style={styles.helpCenter}>{t('barcode.needPermission')}</Text>
           <Pressable
-            onPress={() =>
-              router.push({
-                pathname: '/(app)/camera-permission',
-                params: { returnTo: 'scan-food' },
-              } as never)
-            }
+            onPress={() => void requestCameraAccess()}
             style={styles.permBtn}
           >
             <Text style={styles.permBtnText}>{t('camera.allow')}</Text>
