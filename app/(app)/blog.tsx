@@ -44,9 +44,8 @@ export default function BlogScreen() {
             >
               <View style={styles.cover}>
                 <Ionicons name="image-outline" size={28} color={brand.mutedSoft} />
-                <Text style={styles.coverHint}>
-                  {c.title} {t('blog.categoryBrowse')}
-                </Text>
+                <Text style={styles.coverHint}>{t('blog.coverHint')}</Text>
+                <Text style={styles.coverBrowse}>{t('blog.coverBrowse')}</Text>
               </View>
               <View style={styles.cardFooter}>
                 <Text style={styles.cardTitle}>{c.title}</Text>
@@ -99,6 +98,11 @@ const styles = StyleSheet.create({
     color: brand.mutedSoft,
     textAlign: 'center',
     paddingHorizontal: 16,
+  },
+  coverBrowse: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
   },
   cardFooter: {
     paddingHorizontal: 16,

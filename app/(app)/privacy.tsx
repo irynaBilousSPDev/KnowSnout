@@ -35,6 +35,18 @@ export default function PrivacyScreen() {
         Alert.alert(t('privacy.downloadData'), t('privacy.downloadSoon')),
     },
     {
+      key: 'blocked',
+      title: t('blocked.title'),
+      danger: false,
+      onPress: () => router.push('/(app)/blocked-users' as never),
+    },
+    {
+      key: 'appearance',
+      title: t('appearance.title'),
+      danger: false,
+      onPress: () => router.push('/(app)/appearance' as never),
+    },
+    {
       key: 'delete',
       title: t('settings.deleteAccount'),
       danger: true,

@@ -1,4 +1,4 @@
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
   Alert,
@@ -22,6 +22,7 @@ import {
   type SettingsPrefs,
 } from '@/src/services/settingsPrefs';
 import { brand, fonts } from '@/src/theme/brand';
+import { useAppTheme } from '@/src/theme/AppThemeProvider';
 
 const LANGS: {
   id: AppLanguage | 'de' | 'es';
@@ -37,6 +38,7 @@ const LANGS: {
 
 /** 07.01 · Мова та підписка */
 export default function SettingsScreen() {
+  const { refreshTheme } = useAppTheme();
   const [prefs, setPrefs] = useState<SettingsPrefs | null>(null);
 
   useFocusEffect(
@@ -48,6 +50,7 @@ export default function SettingsScreen() {
   const setLanguage = async (language: AppLanguage) => {
     const next = await saveSettingsPrefs({ language });
     setPrefs(next);
+    await refreshTheme();
   };
 
   return (
@@ -97,14 +100,25 @@ export default function SettingsScreen() {
             <Text style={styles.plusBody}>{t('subscription.plusPitch')}</Text>
             <PrimaryButton
               label={t('subscription.getPlus')}
-              onPress={() =>
-                Alert.alert(
-                  t('subscription.mockTitle'),
-                  t('subscription.mockBody'),
-                )
-              }
+              onPress={() => router.push('/(app)/payments' as never)}
             />
           </View>
+
+          <Pressable
+            onPress={() => router.push('/(app)/payments' as never)}
+            style={styles.linkRow}
+          >
+            <Text style={styles.linkRowLabel}>{t('payments.title')}</Text>
+            <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push('/(app)/appearance' as never)}
+            style={styles.linkRow}
+          >
+            <Text style={styles.linkRowLabel}>{t('appearance.title')}</Text>
+            <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
+          </Pressable>
 
           <View style={styles.planRow}>
             <Text style={styles.planLabel}>{t('subscription.currentPlan')}</Text>
@@ -198,5 +212,21 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 13,
     color: brand.muted,
+  },
+  linkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+  },
+  linkRowLabel: {
+    fontFamily: fonts.body,
+    fontSize: 13.5,
+    color: brand.ink,
   },
 });

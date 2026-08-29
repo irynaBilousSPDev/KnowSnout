@@ -60,7 +60,11 @@ export default function VetProSetupScreen() {
         createdAt: new Date().toISOString(),
       });
       notify(t('common.ok'), t('vets.proCreated'));
-      router.replace('/(app)/vet-pro-cabinet' as never);
+      router.replace(
+        (role === 'cynologist'
+          ? '/(app)/specialist-tariffs'
+          : '/(app)/vet-pro-cabinet') as never,
+      );
     } catch {
       notify(t('common.error'), t('common.error'));
     } finally {

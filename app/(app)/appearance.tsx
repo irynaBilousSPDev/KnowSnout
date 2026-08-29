@@ -11,12 +11,14 @@ import {
   saveSettingsPrefs,
   type ThemeMode,
 } from '@/src/services/settingsPrefs';
+import { useAppTheme } from '@/src/theme/AppThemeProvider';
 import { brand, fonts } from '@/src/theme/brand';
 
 const MODES: ThemeMode[] = ['light', 'dark', 'system'];
 
 /** 07.05 · Вигляд — перемикач теми */
 export default function AppearanceScreen() {
+  const { refreshTheme } = useAppTheme();
   const [mode, setMode] = useState<ThemeMode>('light');
 
   useFocusEffect(
@@ -27,7 +29,8 @@ export default function AppearanceScreen() {
 
   const pick = async (next: ThemeMode) => {
     setMode(next);
-    await saveSettingsPrefs({ themeMode: next });
+    await saveSettingsPrefs({ themeMode: next, theme: next === 'dark' ? 'dark' : 'light' });
+    await refreshTheme();
   };
 
   return (

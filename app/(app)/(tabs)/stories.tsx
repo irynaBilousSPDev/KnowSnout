@@ -29,6 +29,7 @@ import {
 } from '@/src/services/stories';
 import { getUserProfile } from '@/src/services/userProfile';
 import { brand, fonts } from '@/src/theme/brand';
+import { useThemedStyles } from '@/src/theme/AppThemeProvider';
 import type { StoryFeedFilter, StoryPost } from '@/src/types/story';
 import type { UserProfile } from '@/src/types/userProfile';
 
@@ -52,6 +53,7 @@ function FeedCard({
   onReport: () => void;
   onShare: () => void;
 }) {
+  const themed = useThemedStyles();
   const openPost = () =>
     router.push({
       pathname: '/(app)/story-post',
@@ -63,7 +65,7 @@ function FeedCard({
     .join(' · ');
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, themed.card]}>
       <View style={styles.cardHead}>
         <Pressable onPress={openPost} style={styles.cardHeadMain}>
           <UserAvatar
@@ -72,11 +74,11 @@ function FeedCard({
             name={post.author}
           />
           <View style={styles.cardHeadText}>
-            <Text style={styles.cardName} numberOfLines={1}>
+            <Text style={[styles.cardName, themed.text]} numberOfLines={1}>
               {post.author}
             </Text>
             {meta ? (
-              <Text style={styles.cardMeta} numberOfLines={1}>
+              <Text style={[styles.cardMeta, themed.softText]} numberOfLines={1}>
                 {meta}
               </Text>
             ) : null}
@@ -91,7 +93,7 @@ function FeedCard({
         </Pressable>
       </View>
 
-      <Pressable onPress={openPost} style={styles.photo}>
+      <Pressable onPress={openPost} style={[styles.photo, themed.photoPlaceholder]}>
         {post.imageUri ? (
           <Image source={{ uri: post.imageUri }} style={styles.photoImg} />
         ) : (
@@ -103,7 +105,7 @@ function FeedCard({
       </Pressable>
 
       <Pressable onPress={openPost}>
-        <Text style={styles.caption}>{post.caption}</Text>
+        <Text style={[styles.caption, themed.text]}>{post.caption}</Text>
       </Pressable>
 
       <View style={styles.actions}>
@@ -141,6 +143,7 @@ function FeedCard({
 
 /** Screenshot 04.00 — feed layout */
 export default function StoriesScreen() {
+  const themed = useThemedStyles();
   const [tab, setTab] = useState<FeedTab>('friends');
   const [posts, setPosts] = useState<StoryPost[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -200,31 +203,31 @@ export default function StoriesScreen() {
   const listHeader = (
     <View style={styles.headerBlock}>
       <View style={styles.titleRow}>
-        <Text style={styles.title}>{t('tabs.stories')}</Text>
+        <Text style={[styles.title, themed.text]}>{t('tabs.stories')}</Text>
         <View style={styles.titleIcons}>
           <Pressable
             onPress={() => router.push('/(app)/spotlight-hub' as never)}
-            style={styles.iconBtn}
+            style={[styles.iconBtn, themed.chip]}
             accessibilityLabel={t('spotlight.title')}
           >
-            <Ionicons name="trophy-outline" size={18} color={brand.ink} />
+            <Ionicons name="trophy-outline" size={18} color={themed.text.color} />
           </Pressable>
           <Pressable
             onPress={() => router.push('/(app)/search' as never)}
-            style={styles.iconBtn}
+            style={[styles.iconBtn, themed.chip]}
             accessibilityLabel={t('search.placeholder')}
           >
-            <Ionicons name="search-outline" size={18} color={brand.ink} />
+            <Ionicons name="search-outline" size={18} color={themed.text.color} />
           </Pressable>
           <Pressable
             onPress={() => router.push('/(app)/messages' as never)}
-            style={styles.iconBtn}
+            style={[styles.iconBtn, themed.chip]}
             accessibilityLabel={t('dm.title')}
           >
             <Ionicons
               name="chatbubble-ellipses-outline"
               size={18}
-              color={brand.ink}
+              color={themed.text.color}
             />
           </Pressable>
         </View>
@@ -241,9 +244,9 @@ export default function StoriesScreen() {
             <Pressable
               key={item.id}
               onPress={() => setTab(item.id)}
-              style={[styles.tab, on && styles.tabOn]}
+              style={[styles.tab, themed.chip, on && styles.tabOn]}
             >
-              <Text style={[styles.tabT, on && styles.tabTOn]}>
+              <Text style={[styles.tabT, themed.mutedText, on && styles.tabTOn]}>
                 {t(item.labelKey)}
               </Text>
             </Pressable>
@@ -253,7 +256,7 @@ export default function StoriesScreen() {
 
       <Pressable
         onPress={() => router.push('/(app)/story-compose' as never)}
-        style={styles.composer}
+        style={[styles.composer, themed.card]}
       >
         <UserAvatar
           avatarKey={profile?.avatar_key}
@@ -262,7 +265,7 @@ export default function StoriesScreen() {
           size={36}
           name={profile?.display_name ?? t('me.title')}
         />
-        <Text style={styles.composerHint} numberOfLines={1}>
+        <Text style={[styles.composerHint, themed.softText]} numberOfLines={1}>
           {t('stories.composerHint')}
         </Text>
         <View style={styles.composerPlus}>
@@ -406,7 +409,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: brand.surfaceElevated,
     borderRadius: 999,
     paddingVertical: 6,
     paddingLeft: 6,
@@ -437,7 +439,6 @@ const styles = StyleSheet.create({
   },
   card: {
     marginHorizontal: 20,
-    backgroundColor: brand.surfaceElevated,
     borderRadius: 22,
     padding: 14,
     gap: 12,
@@ -474,8 +475,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: brand.mistBorder,
-    backgroundColor: '#EEEBE6',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,

@@ -250,7 +250,15 @@ export default function ScanFoodScreen() {
         {darkHeader}
         <View style={styles.permBox}>
           <Text style={styles.helpCenter}>{t('barcode.needPermission')}</Text>
-          <Pressable onPress={requestPermission} style={styles.permBtn}>
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: '/(app)/camera-permission',
+                params: { returnTo: 'scan-food' },
+              } as never)
+            }
+            style={styles.permBtn}
+          >
             <Text style={styles.permBtnText}>{t('camera.allow')}</Text>
           </Pressable>
         </View>

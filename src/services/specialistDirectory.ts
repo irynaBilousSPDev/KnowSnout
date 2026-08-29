@@ -1,11 +1,17 @@
 import type {
   BehaviorProblem,
   BehaviorProblemId,
-  BookingService,
   SpecialistPet,
   SpecialistProfile,
   SpecialistTariff,
 } from '@/src/types/specialistDirectory';
+
+export {
+  BOOKING_DATES,
+  BOOKING_SERVICES,
+  BOOKING_TIMES,
+  VET_BOOKING_SERVICES,
+} from '@/src/services/booking';
 
 export const DEMO_PETS: SpecialistPet[] = [
   { id: 'tukan', nameKey: 'specialist.pet.tukanName', metaKey: 'specialist.pet.tukanMeta' },
@@ -146,34 +152,6 @@ const SPECIALISTS: SpecialistProfile[] = [
     badges: [{ labelKey: 'specialist.badge.noReviews', tint: 'grey' }],
   },
 ];
-
-export const BOOKING_SERVICES: BookingService[] = [
-  {
-    id: 'home-visit',
-    titleKey: 'specialist.booking.homeTitle',
-    subtitleKey: 'specialist.booking.homeHint',
-    durationMin: 90,
-    priceUah: 1800,
-    format: 'home-visit',
-  },
-  {
-    id: 'online',
-    titleKey: 'specialist.booking.onlineTitle',
-    durationMin: 60,
-    priceUah: 900,
-    format: 'online',
-  },
-];
-
-export const BOOKING_DATES = [
-  { id: 'd1', label: 'Пн', day: '1' },
-  { id: 'd2', label: 'Вт', day: '2' },
-  { id: 'd3', label: 'Ср', day: '3' },
-  { id: 'd4', label: 'Чт', day: '4' },
-  { id: 'd5', label: 'Пт', day: '5' },
-];
-
-export const BOOKING_TIMES = ['10:00', '12:30', '15:00', '17:30'];
 
 export const SPECIALIST_TARIFFS: SpecialistTariff[] = [
   {

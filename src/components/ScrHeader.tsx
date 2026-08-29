@@ -11,6 +11,7 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { brand, fonts } from '@/src/theme/brand';
+import { useAppTheme } from '@/src/theme/AppThemeProvider';
 
 type Props = {
   title: string;
@@ -30,21 +31,26 @@ export function ScrHeader({
   right,
   style,
 }: Props) {
+  const { colors } = useAppTheme();
+
   return (
     <View style={[styles.row, style]}>
       {showBack ? (
         <Pressable
           onPress={onBack ?? (() => router.back())}
-          style={styles.back}
+          style={[styles.back, { backgroundColor: colors.creamDeep }]}
           accessibilityRole="button"
           accessibilityLabel="Назад"
         >
-          <Ionicons name="chevron-back" size={18} color={brand.ink} />
+          <Ionicons name="chevron-back" size={18} color={colors.ink} />
         </Pressable>
       ) : (
         <View style={styles.spacer} />
       )}
-      <Text style={[styles.title, { fontSize: titleSize }]} numberOfLines={1}>
+      <Text
+        style={[styles.title, { fontSize: titleSize, color: colors.ink }]}
+        numberOfLines={1}
+      >
         {title}
       </Text>
       {right ?? <View style={styles.spacer} />}
@@ -65,7 +71,6 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: brand.creamDeep,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -74,7 +79,6 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontFamily: fonts.title,
-    color: brand.ink,
     lineHeight: 28,
   },
 });

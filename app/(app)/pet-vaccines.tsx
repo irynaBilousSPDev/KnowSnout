@@ -1,9 +1,10 @@
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import {
   Alert,
   FlatList,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import * as Notifications from 'expo-notifications';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
@@ -83,6 +85,7 @@ export default function PetVaccinesScreen() {
   const [givenOn, setGivenOn] = useState('');
   const [nextDueOn, setNextDueOn] = useState('');
   const [notes, setNotes] = useState('');
+  const [needsOsPermission, setNeedsOsPermission] = useState(false);
 
   const catalog = useMemo(
     () => vaccinesForSpecies((pet?.species ?? 'dog') as CompanionSpecies),
@@ -113,6 +116,12 @@ export default function PetVaccinesScreen() {
       setReminded(reminderIds);
       const first = vaccinesForSpecies(nextPet.species)[0]?.key ?? 'rabies';
       setVaccineKey(first);
+      if (Platform.OS === 'web') {
+        setNeedsOsPermission(false);
+      } else {
+        const perm = await Notifications.getPermissionsAsync();
+        setNeedsOsPermission(perm.status !== 'granted');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : t('vaccines.loadError'));
     } finally {
@@ -242,10 +251,15 @@ export default function PetVaccinesScreen() {
         }),
       );
     } catch (err) {
-      Alert.alert(
-        t('common.error'),
-        err instanceof Error ? err.message : t('common.error'),
-      );
+      const msg = err instanceof Error ? err.message : t('common.error');
+      if (msg === t('vaccines.reminderPermission')) {
+        router.push({
+          pathname: '/(app)/notification-permission',
+          params: { returnTo: 'pet-vaccines', petId: pet.id },
+        } as never);
+        return;
+      }
+      Alert.alert(t('common.error'), msg);
     }
   };
 
@@ -285,6 +299,27 @@ export default function PetVaccinesScreen() {
         data={rows}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
+        ListHeaderComponent={
+          needsOsPermission ? (
+            <View style={styles.banner}>
+              <Text style={styles.bannerTitle}>{t('permission.notifyTitle')}</Text>
+              <Text style={styles.bannerBody}>{t('vaccines.reminderPermission')}</Text>
+              <PrimaryButton
+                label={t('permission.enableNotify')}
+                size="sm"
+                onPress={() =>
+                  router.push({
+                    pathname: '/(app)/notification-permission',
+                    params: {
+                      returnTo: 'pet-vaccines',
+                      petId: pet.id,
+                    },
+                  } as never)
+                }
+              />
+            </View>
+          ) : null
+        }
         ListEmptyComponent={
           <View style={styles.empty}>
             <Text style={styles.emptyTitle}>{t('vaccines.emptyTitle')}</Text>
@@ -498,7 +533,25 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     color: brand.accentDark,
   },
-  list: { paddingHorizontal: 20, paddingBottom: 40, flexGrow: 1 },
+  list: { paddingHorizontal: 20, paddingBottom: 40, flexGrow: 1, gap: 10 },
+  banner: {
+    marginBottom: 4,
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
+    padding: 14,
+    gap: 8,
+  },
+  bannerTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.accentDark,
+  },
+  bannerBody: {
+    fontFamily: fonts.body,
+    fontSize: 12.5,
+    lineHeight: 18,
+    color: brand.muted,
+  },
   empty: { marginTop: 48, paddingHorizontal: 16, alignItems: 'center' },
   emptyTitle: {
     fontFamily: fonts.bodyBold,

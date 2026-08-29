@@ -11,7 +11,7 @@ import { brand, fonts } from '@/src/theme/brand';
 /** Screenshot 05.09 — Рейтинг */
 export default function QuizLeaderboardScreen() {
   const [tab, setTab] = useState<'friends' | 'global'>('friends');
-  const rows = listLeaderboard();
+  const rows = listLeaderboard(tab);
 
   return (
     <AppScreen edges={['bottom']}>

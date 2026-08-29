@@ -180,7 +180,12 @@ export default function VetDoctorProfileScreen() {
             <PrimaryButton
               label={t('vets.book')}
               variant="secondary"
-              onPress={() => {}}
+              onPress={() =>
+                router.push({
+                  pathname: '/(app)/vet-booking',
+                  params: { id: doctor.id },
+                } as never)
+              }
               style={styles.bottomBtn}
             />
           </View>

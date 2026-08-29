@@ -68,6 +68,7 @@ export default function QuizHeavierScreen() {
             style={styles.vsCard}
           >
             <Ionicons name="image-outline" size={26} color={brand.mutedSoft} />
+            <Text style={styles.vsBrowse}>{t('quiz.photoBrowse')}</Text>
             <Text style={styles.vsName}>{left.label}</Text>
           </Pressable>
           <Text style={styles.vs}>{t('quizHeavier.vs')}</Text>
@@ -76,6 +77,7 @@ export default function QuizHeavierScreen() {
             style={styles.vsCard}
           >
             <Ionicons name="image-outline" size={26} color={brand.mutedSoft} />
+            <Text style={styles.vsBrowse}>{t('quiz.photoBrowse')}</Text>
             <Text style={styles.vsName}>{right.label}</Text>
           </Pressable>
         </View>
@@ -122,6 +124,12 @@ const styles = StyleSheet.create({
   vsName: {
     fontFamily: fonts.bodySemi,
     fontSize: 12,
+    color: brand.mutedSoft,
+    textAlign: 'center',
+  },
+  vsBrowse: {
+    fontFamily: fonts.body,
+    fontSize: 10,
     color: brand.mutedSoft,
     textAlign: 'center',
   },

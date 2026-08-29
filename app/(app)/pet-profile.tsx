@@ -825,7 +825,10 @@ export default function PetProfileScreen() {
             </Pressable>
           </View>
           {photos.length === 0 ? (
-            <Text style={styles.emptyText}>{t('pets.albumEmpty')}</Text>
+            <Pressable onPress={() => router.push('/(app)/pet-photos' as never)}>
+              <Text style={styles.emptyText}>{t('pets.albumEmpty')}</Text>
+              <Text style={styles.albumAddLink}>{t('photo.addPhoto')}</Text>
+            </Pressable>
           ) : (
             <FlatList
               data={photos}
@@ -1180,6 +1183,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   albumAdd: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 13,
+    color: brand.accent,
+  },
+  albumAddLink: {
+    marginTop: 6,
     fontFamily: fonts.bodyBold,
     fontSize: 13,
     color: brand.accent,

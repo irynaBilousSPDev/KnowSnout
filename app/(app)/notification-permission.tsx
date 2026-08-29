@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppScreen } from '@/src/components/AppScreen';
@@ -9,9 +9,25 @@ import { brand } from '@/src/theme/brand';
 
 /** 08.05 · Дозвіл на сповіщення */
 export default function NotificationPermissionScreen() {
+  const { returnTo, petId } = useLocalSearchParams<{
+    returnTo?: string;
+    petId?: string;
+  }>();
+
+  const goBack = () => {
+    if (returnTo === 'pet-vaccines' && petId) {
+      router.replace({
+        pathname: '/(app)/pet-vaccines',
+        params: { petId },
+      } as never);
+      return;
+    }
+    router.back();
+  };
+
   const enable = async () => {
     await ensureNotificationPermission();
-    router.back();
+    goBack();
   };
 
   return (
@@ -25,7 +41,7 @@ export default function NotificationPermissionScreen() {
         primaryLabel={t('permission.enableNotify')}
         onPrimary={() => void enable()}
         secondaryLabel={t('permission.later')}
-        onSecondary={() => router.back()}
+        onSecondary={goBack}
         primaryBlock
       />
     </AppScreen>

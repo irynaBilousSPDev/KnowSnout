@@ -13,8 +13,14 @@ Admin = Wave 7 (last).
 | 03 Улюбленці | brand |
 | 04 Стрічка / Spotlight / friends | brand |
 | Спільнота (quiz / forum / blog) | organic → next |
-| Профіль і службові | organic → next |
-| Довідники | organic → next |
+| Спільнота (quiz / forum / blog detail) | brand |
+| 06 Довідники F | brand |
+| 07 Профіль / налаштування / акаунт | brand |
+| 08 Системні / дозволи / помилки | brand |
+| 09 Ветеринари PRO | brand |
+| 10 Поведінка / кінологи | brand |
+| Профіль і службові (legacy row) | brand |
+| Довідники (legacy row) | brand |
 | Адмінка | later |
 
 Status: `brand` = matched to brandbook + user/HTML screens · `organic` = old pass · next = when screenshots arrive  
@@ -78,11 +84,18 @@ Status: `brand` = matched to brandbook + user/HTML screens · `organic` = old pa
 
 | Screen | Status | Route |
 |--|--|--|
-| Quiz hub + classic quizzes | done | quiz, breed-quiz, wiki-quiz, trivia-quiz |
-| Zoom / heavier / myth quizzes | done | quiz-zoom, quiz-heavier, quiz-myth |
-| Leaderboard / badges | done | quiz-leaderboard, achievements |
-| Forum | done | forum, forum-category, forum-thread, forum-new, forum-rules, forum-search |
-| Blog | done | blog, blog-article, blog-bookmarks |
+| Quiz hub 05.01 | done | `(tabs)/quiz` |
+| Origin / group wiki 05.02–03 | done | `wiki-quiz?category=` |
+| Breed / zoom / heavier 05.04–06 | done | `breed-quiz`, `quiz-zoom`, `quiz-heavier` |
+| Myth / results / ranking 05.07–09 | done | `quiz-myth`, `quiz-results`, `quiz-leaderboard` |
+| Achievements 05.10 | done | `achievements` |
+| Forum cats / feed 05.11–12 | done | `forum`, `forum-category` |
+| Thread / compose / search 05.13–15 | done | `forum-thread`, `forum-new`, `forum-search` |
+| Author / notify / rules 05.16–18 | done | `forum-author`, `forum-notifications`, `forum-rules` |
+| Blog cats / list / article 05.19–21 | done | `blog`, `blog-category`, `blog-article` |
+| Comments / bookmarks 05.22–23 | done | `blog-article` composer, `blog-bookmarks` |
+| Community hub entry | done | `(tabs)/community` |
+| Quiz hub nested | done | `(tabs)/quiz` href null |
 
 ## Wave 5 — Профіль і службові
 
@@ -92,15 +105,63 @@ Status: `brand` = matched to brandbook + user/HTML screens · `organic` = old pa
 | Notifications / help / language | done | `notifications`, `help`, `settings` |
 | Subscription shell | done | `subscription` |
 | Blocked / edit account | done | `blocked-users`, `edit-account` |
+| Settings hub 07.01 | done | `settings` → payments, appearance, privacy |
+| Payments 07.02 | done mock | `payments` |
+| Privacy 07.03 | done | `privacy` → blocked-users |
+| Appearance 07.05 | done | `appearance` + `AppThemeProvider` |
+| Edit account 07.07 | done | `edit-account` |
+| My account 07.08 | done | `my-data` ← my-profile, community, settings |
+| Help / support / delete 07.09–07.12 | done | `help`, `help-article`, `support`, delete modal |
+| Social profile 04.25 | done | `my-profile` → my-data, settings, appearance, payments |
+
+## Wave 5b — Системні (08)
+
+| Screen | Status | Route / wiring |
+|--|--|--|
+| Network error full screen | done | `network-error` ← toast banner «Детальніше» |
+| Camera permission | done | `camera-permission` ← `scan-food` |
+| Notification permission | done | `notification-permission` ← notifications banner |
+| Pet photos empty | done | `pet-photos` ← pet-profile album empty |
+| Camera gallery / save demo | done | `camera-gallery`, `pet-save-demo` |
+| Toast / AI loading | done | `ToastProvider`, `AppToast` |
 
 ## Wave 6 — Довідники F
 
 | Screen | Status | Route |
 |--|--|--|
 | Hub / list / detail / review / report | done | `directories/*` via tab + stack |
-| Категорія Магазини (P1e) | done mock | `shops` + `marketOffers` · SQL `20260321245000` unrun |
+| Категорія Магазини (P1e) | done mock | hub tile `shops` → `directory-list?category=shops` · SQL `20260321245000` unrun |
+| Поведінка й навчання (10 hub entry) | done | tile `behavior` → `specialist-behavior` |
 | Chat із закладом (local) | done | `directory-chat` |
 | Перевізники F4b/c (routes / vehicle) | done | `directory-carriers` + transport detail |
+
+## Wave 6b — Ветеринари (09)
+
+| Screen | Status | Route |
+|--|--|--|
+| Hub / search / filters | done | `vet-hub`, `vet-search` |
+| Doctor profile + reviews | done | `vet-doctor-profile`, `vet-doctor-review` |
+| Clinic profile + actions | done | `vet-clinic-profile` (site / route / call) |
+| Booking | done mock | `vet-booking` ← doctor profile «Записатися» |
+| PRO setup / cabinet / tariffs link | done | `vet-pro-setup`, `vet-pro-cabinet` → `specialist-tariffs` |
+
+## Wave 6c — Кінологи / поведінка (10)
+
+| Screen | Status | Route |
+|--|--|--|
+| Hub | done | `specialist-behavior` |
+| Search + profile | done | `specialist-search`, `specialist-profile` |
+| Booking + tariffs | done mock | `specialist-booking`, `specialist-tariffs` |
+| Entry | done | Довідники → секція «Також»: behavior + shops · 06.01 grid = 6 tiles |
+
+## Gap-close waves (2026-08-29)
+
+| Wave | Scope | Status |
+|--|--|--|
+| **A** Navigation | my-profile gear → settings · my-data blocked · payments · 08.04/08.05 in scan + vaccines | done |
+| **B** Pixel + docs | 05 quiz/forum/blog 05.01–05.23 · roadmap 06–10 · 06.01 six-grid | done |
+| **C** Product depth | `booking.ts` unified mock · cynologist pro → tariffs/cabinet · PL `plCore` | done mock |
+| **D** Backend | Supabase specialists · social SQL · Stripe | stub — see REMINDERS |
 
 ## Wave 7 — Адмінка
 
@@ -135,4 +196,9 @@ Status: `brand` = matched to brandbook + user/HTML screens · `organic` = old pa
 | Google Calendar useful stub | done — deep link + ICS share |
 | Cloud SQL scaffolds | stub — migrations `240000`–`243000` (запустити) |
 | Pixel-perfect `.dc.html` | missing — no HTML mockups in repo; structure + brand only |
+| Account nav wiring (07 ↔ 04) | done — my-profile ↔ my-data, settings, appearance, payments |
+| Global dark theme apply | done — `AppThemeProvider` + appearance refresh |
+| Module 08 permission flows | done — camera/notify screens in real paths |
+| Vet booking 09.04 | done mock — `vet-booking` |
+| Directory shops hub tile | done — `directories` tab |
 

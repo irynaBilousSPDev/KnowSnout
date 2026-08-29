@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 
@@ -17,50 +16,47 @@ import { VetDashedPhoto } from '@/src/components/vets/VetUi';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
+  BOOKING_DATES,
+  BOOKING_TIMES,
+  VET_BOOKING_SERVICES,
   confirmBooking,
   formatBookingWhen,
 } from '@/src/services/booking';
-import {
-  BOOKING_DATES,
-  BOOKING_SERVICES,
-  BOOKING_TIMES,
-  getSpecialist,
-} from '@/src/services/specialistDirectory';
+import { getVetDoctor } from '@/src/services/vetDirectory';
 import { brand, fonts } from '@/src/theme/brand';
 
-/** 10.04 · Запис до спеціаліста */
-export default function SpecialistBookingScreen() {
-  const { id = 'natalia-dmytruk' } = useLocalSearchParams<{ id?: string }>();
-  const specialist = getSpecialist(id);
-  const [serviceId, setServiceId] = useState('home-visit');
+/** 09 · Запис до лікаря (shared booking UI with 10.04) */
+export default function VetBookingScreen() {
+  const { id = 'dr-kravets' } = useLocalSearchParams<{ id?: string }>();
+  const doctor = getVetDoctor(id);
+  const [serviceId, setServiceId] = useState('online');
   const [dateId, setDateId] = useState('d2');
   const [time, setTime] = useState('12:30');
-  const [address, setAddress] = useState('ul. Marszałkowska 12, Варшава');
 
-  if (!specialist) return null;
+  if (!doctor) return null;
 
   const service =
-    BOOKING_SERVICES.find((s) => s.id === serviceId) ?? BOOKING_SERVICES[0];
+    VET_BOOKING_SERVICES.find((s) => s.id === serviceId) ??
+    VET_BOOKING_SERVICES[0];
 
   const confirm = async () => {
     const date = BOOKING_DATES.find((d) => d.id === dateId) ?? BOOKING_DATES[1];
     await confirmBooking({
-      providerKind: 'specialist',
-      providerId: specialist.id,
-      providerName: specialist.name,
+      providerKind: 'vet',
+      providerId: doctor.id,
+      providerName: doctor.name,
       serviceId: service.id,
       serviceTitleKey: service.titleKey,
       dateId,
       dateLabel: date.label,
       day: date.day,
       time,
-      address: serviceId === 'home-visit' ? address : undefined,
       priceUah: service.priceUah,
       durationMin: service.durationMin,
     });
     Alert.alert(
       t('specialist.booking.confirmedTitle'),
-      `${t('specialist.booking.confirmedBody')} · ${formatBookingWhen({ dateId, time })}`,
+      `${t('vets.bookNote')} · ${formatBookingWhen({ dateId, time })}`,
     );
     router.back();
   };
@@ -68,44 +64,33 @@ export default function SpecialistBookingScreen() {
   return (
     <AppScreen edges={['bottom']}>
       <AppChromeHeader />
-      <ScrHeader title={t('specialist.booking.title')} titleSize={20} />
+      <ScrHeader title={t('vets.book')} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
           <View style={styles.specRow}>
-            <VetDashedPhoto label="or brows..." size={44} />
+            <VetDashedPhoto label={t('vets.photoLabel')} size={44} />
             <View style={styles.specCopy}>
-              <Text style={styles.specName}>{specialist.name}</Text>
+              <Text style={styles.specName}>{doctor.name}</Text>
               <Text style={styles.specMeta}>
-                {t('specialist.pet.tukanName')} · {t('specialist.topic.separationShort')}
+                {doctor.title} · {doctor.specializations[0] ?? t('vets.doctorTitle')}
               </Text>
             </View>
           </View>
 
           <Text style={styles.lbl}>{t('specialist.booking.serviceLabel')}</Text>
           <View style={styles.list}>
-            {BOOKING_SERVICES.map((svc) => (
+            {VET_BOOKING_SERVICES.map((svc) => (
               <ServiceOfferCard
                 key={svc.id}
                 title={`${t(svc.titleKey)} · ${svc.durationMin} ${t('specialist.booking.min')}`}
                 subtitle={svc.subtitleKey ? t(svc.subtitleKey) : undefined}
                 price={`₴${svc.priceUah.toLocaleString('uk-UA')}`}
-                iconTint={svc.format === 'home-visit' ? brand.accentTint : brand.creamDeep}
+                iconTint={brand.accentTint}
                 selected={serviceId === svc.id}
                 onPress={() => setServiceId(svc.id)}
               />
             ))}
           </View>
-
-          {service.format === 'home-visit' ? (
-            <>
-              <Text style={styles.lbl}>{t('specialist.booking.addressLabel')}</Text>
-              <TextInput
-                value={address}
-                onChangeText={setAddress}
-                style={styles.input}
-              />
-            </>
-          ) : null}
 
           <Text style={styles.lbl}>{t('specialist.booking.dateLabel')}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -140,24 +125,15 @@ export default function SpecialistBookingScreen() {
           </View>
 
           <View style={styles.summary}>
-            <View style={styles.summaryTop}>
-              <Text style={styles.summaryLbl}>
-                {t(service.titleKey)} · 2 вересня, {time}
-              </Text>
-              <Text style={styles.summaryPrice}>
-                ₴{service.priceUah.toLocaleString('uk-UA')}
-              </Text>
-            </View>
-            <Text style={styles.summaryNote}>{t('specialist.booking.cancelNote')}</Text>
+            <Text style={styles.summaryNote}>
+              {t('vets.bookNote')} · {t(service.titleKey)} · {time}
+            </Text>
           </View>
         </View>
       </ScrollView>
 
       <View style={styles.footer}>
-        <PrimaryButton
-          label={t('specialist.booking.confirm')}
-          onPress={confirm}
-        />
+        <PrimaryButton label={t('specialist.booking.confirm')} onPress={confirm} />
       </View>
     </AppScreen>
   );
@@ -198,47 +174,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   list: { gap: 8 },
-  input: {
-    borderRadius: brand.radius.md,
-    borderWidth: 1,
-    borderColor: brand.mistBorder,
-    backgroundColor: brand.surfaceElevated,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    color: brand.ink,
-  },
   dateRow: { flexDirection: 'row', gap: 8, paddingVertical: 4 },
   dateBtn: { minWidth: 52 },
-  timeRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
+  timeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   timeBtn: { minWidth: 72 },
   summary: {
     marginTop: 8,
     borderRadius: brand.radius.md,
     backgroundColor: brand.accentTint,
     padding: 14,
-    gap: 8,
-  },
-  summaryTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  summaryLbl: {
-    flex: 1,
-    fontFamily: fonts.bodyBold,
-    fontSize: 13,
-    color: brand.ink,
-  },
-  summaryPrice: {
-    fontFamily: fonts.bodyBold,
-    fontSize: 14,
-    color: brand.ink,
   },
   summaryNote: {
     fontFamily: fonts.body,

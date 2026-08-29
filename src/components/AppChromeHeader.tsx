@@ -17,6 +17,7 @@ import { t } from '@/src/i18n';
 import { getActivityUnreadCount } from '@/src/services/activity';
 import { getUserProfile } from '@/src/services/userProfile';
 import { brand, fonts } from '@/src/theme/brand';
+import { useAppTheme } from '@/src/theme/AppThemeProvider';
 import type { UserProfile } from '@/src/types/userProfile';
 
 const logoEmerald = require('../../assets/images/logo_emerald.png');
@@ -44,6 +45,7 @@ export function AppChromeHeader({
   style,
 }: Props) {
   const insets = useSafeAreaInsets();
+  const { colors } = useAppTheme();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [unread, setUnread] = useState(0);
 
@@ -67,7 +69,17 @@ export function AppChromeHeader({
   };
 
   return (
-    <View style={[styles.hd, { paddingTop: Math.max(insets.top, 12) }, style]}>
+    <View
+      style={[
+        styles.hd,
+        {
+          paddingTop: Math.max(insets.top, 12),
+          backgroundColor: colors.canvas,
+          borderBottomColor: colors.mistBorder,
+        },
+        style,
+      ]}
+    >
       <Pressable
         onPress={
           onBrandPress ?? (() => router.push('/(app)/(tabs)' as never))
@@ -78,7 +90,7 @@ export function AppChromeHeader({
       >
         <Image source={logoEmerald} style={styles.logo} resizeMode="contain" />
         <Text style={styles.word}>
-          <Text style={styles.know}>Know</Text>
+          <Text style={[styles.know, { color: colors.ink }]}>Know</Text>
           <Text style={styles.snout}>Snout</Text>
         </Text>
       </Pressable>
@@ -114,9 +126,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 8,
     gap: 12,
-    backgroundColor: brand.canvas,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: brand.creamDeep,
     zIndex: 2,
   },
   brand: {
@@ -137,7 +147,6 @@ const styles = StyleSheet.create({
   },
   know: {
     fontFamily: fonts.titleExtra,
-    color: brand.ink,
   },
   snout: {
     fontFamily: fonts.titleExtra,

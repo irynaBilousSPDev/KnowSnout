@@ -246,7 +246,7 @@ function matchesFeedFilter(
   if (filter === 'following' || filter === 'friends') {
     return following.has(p.userId) || p.userId === 'fu-1' || p.userId === 'fu-2';
   }
-  if (p.mine && p.privacy === 'private' && filter !== 'mine') return false;
+  if (p.mine && p.privacy === 'private') return false;
   if (filter === 'cat' || filter === 'myBreed') return p.species === 'cat' || p.species === 'dog';
   if (filter === 'dog') return p.species === 'dog';
   if (filter === 'nearby') return Boolean(p.location);

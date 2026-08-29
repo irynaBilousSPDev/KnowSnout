@@ -66,6 +66,24 @@ export default function MyDataScreen() {
       meta: t('settings.langPlanMeta'),
     },
     {
+      key: 'appearance',
+      title: t('appearance.title'),
+      icon: 'color-palette-outline' as const,
+      href: '/(app)/appearance',
+    },
+    {
+      key: 'payments',
+      title: t('payments.title'),
+      icon: 'card-outline' as const,
+      href: '/(app)/payments',
+    },
+    {
+      key: 'blocked',
+      title: t('blocked.title'),
+      icon: 'ban-outline' as const,
+      href: '/(app)/blocked-users',
+    },
+    {
       key: 'privacy',
       title: t('privacy.titleAndData'),
       icon: 'lock-closed-outline' as const,

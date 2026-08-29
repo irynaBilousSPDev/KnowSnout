@@ -66,24 +66,6 @@ export default function ForumScreen() {
             onPress={() => router.push('/(app)/forum-new' as never)}
             style={styles.addBtn}
           />
-
-          <View style={styles.links}>
-            {(
-              [
-                ['forum.search', '/(app)/forum-search'],
-                ['forum.rules', '/(app)/forum-rules'],
-                ['forum.notifications', '/(app)/forum-notifications'],
-              ] as const
-            ).map(([key, href]) => (
-              <Pressable
-                key={href}
-                onPress={() => router.push(href as never)}
-                hitSlop={6}
-              >
-                <Text style={styles.linkText}>{t(key)}</Text>
-              </Pressable>
-            ))}
-          </View>
         </View>
       </ScrollView>
     </AppScreen>
@@ -126,17 +108,4 @@ const styles = StyleSheet.create({
     color: brand.muted,
   },
   addBtn: { marginTop: 8 },
-  links: {
-    marginTop: 4,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 16,
-  },
-  linkText: {
-    fontFamily: fonts.body,
-    fontSize: 13,
-    color: brand.muted,
-    textDecorationLine: 'underline',
-  },
 });

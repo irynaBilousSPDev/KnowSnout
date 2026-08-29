@@ -6,7 +6,7 @@ export type BehaviorProblemId =
   | 'shelter-adaptation'
   | 'other';
 
-export type WorkFormatId = 'online' | 'home-visit' | 'at-specialist';
+export type WorkFormatId = 'online' | 'home-visit' | 'at-specialist' | 'clinic';
 
 export type SpecialistPet = {
   id: string;

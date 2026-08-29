@@ -64,7 +64,8 @@ export default function QuizZoomScreen() {
         </View>
         <View style={styles.zoomStage}>
           <Ionicons name="image-outline" size={36} color="#FFFFFF66" />
-          <Text style={styles.zoomHint}>{q.hint}</Text>
+          <Text style={styles.zoomHint}>{t('quizZoom.photoHint')}</Text>
+          <Text style={styles.zoomBrowse}>{t('quiz.photoBrowse')}</Text>
           <Text style={styles.zoomLevel}>×{1 + zoomLevel * 0.5}</Text>
         </View>
       </View>
@@ -137,6 +138,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#FFFFFF99',
     textAlign: 'center',
+  },
+  zoomBrowse: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: '#FFFFFF66',
   },
   zoomLevel: {
     fontFamily: fonts.bodySemi,

@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
+import { useAppTheme } from '@/src/theme/AppThemeProvider';
 
 /**
  * Bottom tabs from design sheets 2026-08-24 (04.00 pack):
@@ -44,6 +45,7 @@ function TabLabel({ label, focused }: { label: string; focused: boolean }) {
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const { colors } = useAppTheme();
   const bottom = Math.max(insets.bottom, 6);
 
   return (
@@ -52,8 +54,8 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: brand.surfaceElevated,
-          borderTopColor: brand.chipTrack,
+          backgroundColor: colors.surfaceElevated,
+          borderTopColor: colors.mistBorder,
           borderTopWidth: StyleSheet.hairlineWidth,
           height: 56 + bottom,
           paddingBottom: bottom,

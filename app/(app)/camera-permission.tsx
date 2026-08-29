@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useCameraPermissions } from 'expo-camera';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -9,15 +9,20 @@ import { brand } from '@/src/theme/brand';
 
 /** 08.04 · Дозвіл на камеру */
 export default function CameraPermissionScreen() {
+  const { returnTo } = useLocalSearchParams<{ returnTo?: string }>();
   const [, requestPermission] = useCameraPermissions();
 
   const allow = async () => {
     const result = await requestPermission();
     if (result.granted) {
+      if (returnTo === 'scan-food') {
+        router.back();
+        return;
+      }
       router.replace('/(app)/camera-gallery' as never);
-    } else {
-      router.back();
+      return;
     }
+    router.back();
   };
 
   return (

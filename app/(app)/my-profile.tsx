@@ -85,6 +85,13 @@ export default function MyProfileScreen() {
             <Ionicons name="camera-outline" size={16} color={brand.ink} />
           </Pressable>
           <Pressable
+            onPress={() => router.push('/(app)/settings' as never)}
+            style={styles.iconBtn}
+            accessibilityLabel={t('settings.langAndPlan')}
+          >
+            <Ionicons name="settings-outline" size={16} color={brand.ink} />
+          </Pressable>
+          <Pressable
             onPress={() => router.push('/(app)/activity' as never)}
             style={styles.iconBtn}
             accessibilityLabel={
@@ -134,11 +141,16 @@ export default function MyProfileScreen() {
           <Text style={styles.handle}>
             {handle} · {city}
           </Text>
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 10, gap: 8 }}>
             <PrimaryButton
               label={t('profile.edit')}
               variant="secondary"
               onPress={() => router.push('/(app)/edit-account' as never)}
+            />
+            <PrimaryButton
+              label={t('me.title')}
+              variant="secondary"
+              onPress={() => router.push('/(app)/my-data' as never)}
             />
           </View>
 
@@ -147,6 +159,27 @@ export default function MyProfileScreen() {
             <Row label={t('profile.email')} value="marta.k@mail.com" />
             <Row label={t('profile.phone')} value="+48 •••• 421" border />
             <Row label={t('profile.language')} value="Українська" border />
+            <Pressable
+              onPress={() => router.push('/(app)/settings' as never)}
+              style={[styles.row, styles.rowBorder, styles.rowPress]}
+            >
+              <Text style={styles.rowL}>{t('settings.langAndPlan')}</Text>
+              <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/(app)/appearance' as never)}
+              style={[styles.row, styles.rowBorder, styles.rowPress]}
+            >
+              <Text style={styles.rowL}>{t('appearance.title')}</Text>
+              <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/(app)/payments' as never)}
+              style={[styles.row, styles.rowBorder, styles.rowPress]}
+            >
+              <Text style={styles.rowL}>{t('payments.title')}</Text>
+              <Ionicons name="chevron-forward" size={14} color={brand.mutedSoft} />
+            </Pressable>
             <View style={[styles.row, styles.rowBorder]}>
               <Text style={styles.rowL}>{t('profile.subscription')}</Text>
               <View style={styles.plusChip}>
@@ -342,6 +375,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   rowBorder: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: brand.divider },
+  rowPress: { justifyContent: 'space-between' },
   rowL: { fontFamily: fonts.body, fontSize: 13, color: brand.muted },
   rowV: { fontFamily: fonts.bodySemi, fontSize: 13, color: brand.ink },
   plusChip: {

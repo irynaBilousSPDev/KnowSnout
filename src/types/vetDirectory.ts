@@ -61,6 +61,8 @@ export type VetClinic = {
   communityRating: number;
   communityCount: number;
   doctors: { id: string; name: string; subtitle: string; rating: number }[];
+  phone?: string;
+  website?: string;
   featuredReview?: {
     author: string;
     rating: number;

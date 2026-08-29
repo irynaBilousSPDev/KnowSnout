@@ -543,6 +543,10 @@ export default function AppLayout() {
         options={{ headerShown: false, title: t('vets.reviewBarTitle') }}
       />
       <Stack.Screen
+        name="vet-booking"
+        options={{ headerShown: false, title: t('vets.book') }}
+      />
+      <Stack.Screen
         name="vet-pro-setup"
         options={{ headerShown: false, title: t('vets.proSetupTitle') }}
       />

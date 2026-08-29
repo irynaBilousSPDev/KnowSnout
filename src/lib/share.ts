@@ -83,12 +83,14 @@ export function buildScanShareMessage(input: {
 }
 
 export function buildStoryShareMessage(input: {
-  petName: string;
+  petName?: string;
+  author?: string;
   caption: string;
   postId?: string | null;
 }): string {
+  const pet = input.petName ?? input.author ?? '';
   const base = t('share.storyMessage', {
-    pet: input.petName,
+    pet,
     caption: input.caption,
   });
   if (!input.postId) return base;

@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { router } from 'expo-router';
 
 import { t } from '@/src/i18n';
 import { brand, fonts } from '@/src/theme/brand';
@@ -86,6 +87,16 @@ export function AppToast({
                 accessibilityLabel={t('common.close')}
               >
                 <Text style={styles.networkBtnGhostText}>{t('common.close')}</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  onDismissNetwork();
+                  router.push('/(app)/network-error' as never);
+                }}
+                style={styles.networkBtnGhost}
+                accessibilityRole="button"
+              >
+                <Text style={styles.networkBtnGhostText}>{t('network.openFull')}</Text>
               </Pressable>
             </View>
           </View>

@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
@@ -20,6 +20,27 @@ export default function VetClinicProfileScreen() {
   if (!clinic) {
     return <LoadingState message={t('directories.missing')} />;
   }
+
+  const openSite = () => {
+    const url = clinic.website ?? 'https://knowsnout.app';
+    void Linking.openURL(url).catch(() =>
+      Alert.alert(t('common.error'), t('vets.actionSite')),
+    );
+  };
+
+  const openRoute = () => {
+    const query = encodeURIComponent(`${clinic.address}, ${clinic.city}`);
+    void Linking.openURL(`https://maps.google.com/?q=${query}`).catch(() =>
+      Alert.alert(t('common.error'), t('vets.actionRoute')),
+    );
+  };
+
+  const openCall = () => {
+    const phone = clinic.phone ?? '+48220000000';
+    void Linking.openURL(`tel:${phone}`).catch(() =>
+      Alert.alert(t('common.error'), t('vets.actionCall')),
+    );
+  };
 
   return (
     <AppScreen edges={['bottom']}>
@@ -78,7 +99,7 @@ export default function VetClinicProfileScreen() {
               size="sm"
               block={false}
               style={styles.actionBtn}
-              onPress={() => {}}
+              onPress={openSite}
             />
             <PrimaryButton
               label={t('vets.actionRoute')}
@@ -86,14 +107,14 @@ export default function VetClinicProfileScreen() {
               size="sm"
               block={false}
               style={styles.actionBtn}
-              onPress={() => {}}
+              onPress={openRoute}
             />
             <PrimaryButton
               label={t('vets.actionCall')}
               size="sm"
               block={false}
               style={styles.actionBtn}
-              onPress={() => {}}
+              onPress={openCall}
             />
           </View>
 

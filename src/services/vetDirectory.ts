@@ -8,6 +8,8 @@ import type {
   VetSpecializationId,
 } from '@/src/types/vetDirectory';
 
+export type { ProRoleId } from '@/src/types/vetDirectory';
+
 const PRO_PROFILE_KEY = 'knowsnout:vet-pro-profile';
 
 export const VET_PET_CHIPS: VetPetChip[] = [
@@ -138,6 +140,7 @@ const DOCTORS: VetDoctor[] = [
     verificationTags: ['Документи', 'Особу'],
   },
   {
+    id: 'dr-nowak',
     name: 'Др. Anna Nowak',
     title: 'Ветеринарний лікар',
     yearsPractice: 4,
@@ -178,6 +181,8 @@ const CLINICS: VetClinic[] = [
     googleCount: 580,
     communityRating: 4.8,
     communityCount: 124,
+    phone: '+48221234567',
+    website: 'https://vetcare.example.pl',
     doctors: [
       {
         id: 'dr-zielinski',
@@ -209,6 +214,8 @@ const CLINICS: VetClinic[] = [
     googleCount: 210,
     communityRating: 4.7,
     communityCount: 56,
+    phone: '+48229876543',
+    website: 'https://vola-vet.example.pl',
     doctors: [
       {
         id: 'dr-kravets',

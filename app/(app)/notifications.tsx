@@ -1,9 +1,11 @@
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import * as Notifications from 'expo-notifications';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
+import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { ScrHeader } from '@/src/components/ScrHeader';
 import { t } from '@/src/i18n';
 import {
@@ -29,11 +31,23 @@ const TOGGLES: { key: ToggleKey; titleKey: string }[] = [
 /** 08.01 · Сповіщення */
 export default function NotificationsScreen() {
   const [prefs, setPrefs] = useState<SettingsPrefs | null>(null);
+  const [needsOsPermission, setNeedsOsPermission] = useState(false);
+
+  const load = useCallback(async () => {
+    const next = await getSettingsPrefs();
+    setPrefs(next);
+    if (Platform.OS === 'web') {
+      setNeedsOsPermission(false);
+      return;
+    }
+    const perm = await Notifications.getPermissionsAsync();
+    setNeedsOsPermission(perm.status !== 'granted');
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      void getSettingsPrefs().then(setPrefs);
-    }, []),
+      void load();
+    }, [load]),
   );
 
   const setToggle = async (key: ToggleKey, value: boolean) => {
@@ -47,6 +61,20 @@ export default function NotificationsScreen() {
       <ScrHeader title={t('notifications.title')} titleSize={20} />
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.pad}>
+          {needsOsPermission ? (
+            <View style={styles.banner}>
+              <Text style={styles.bannerTitle}>{t('permission.notifyTitle')}</Text>
+              <Text style={styles.bannerBody}>{t('permission.notifyBody')}</Text>
+              <PrimaryButton
+                label={t('permission.enableNotify')}
+                size="sm"
+                onPress={() =>
+                  router.push('/(app)/notification-permission' as never)
+                }
+              />
+            </View>
+          ) : null}
+
           {TOGGLES.map((item) => (
             <View key={item.key} style={styles.row}>
               <Text style={styles.label}>{t(item.titleKey)}</Text>
@@ -61,6 +89,14 @@ export default function NotificationsScreen() {
               />
             </View>
           ))}
+
+          <Pressable
+            onPress={() => router.push('/(app)/blocked-users' as never)}
+            style={styles.linkRow}
+          >
+            <Text style={styles.linkLabel}>{t('blocked.title')}</Text>
+            <Text style={styles.linkChevron}>›</Text>
+          </Pressable>
         </View>
       </ScrollView>
     </AppScreen>
@@ -73,6 +109,23 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 40,
     gap: 10,
+  },
+  banner: {
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.accentTint,
+    padding: 14,
+    gap: 8,
+  },
+  bannerTitle: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 14,
+    color: brand.ink,
+  },
+  bannerBody: {
+    fontFamily: fonts.body,
+    fontSize: 12.5,
+    lineHeight: 18,
+    color: brand.muted,
   },
   row: {
     flexDirection: 'row',
@@ -94,5 +147,27 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 13.5,
     color: brand.ink,
+  },
+  linkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: brand.radius.md,
+    backgroundColor: brand.surfaceElevated,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: brand.mistBorder,
+    marginTop: 4,
+  },
+  linkLabel: {
+    fontFamily: fonts.body,
+    fontSize: 13.5,
+    color: brand.ink,
+  },
+  linkChevron: {
+    fontFamily: fonts.body,
+    fontSize: 18,
+    color: brand.mutedSoft,
   },
 });

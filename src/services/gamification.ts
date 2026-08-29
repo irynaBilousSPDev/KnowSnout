@@ -60,14 +60,6 @@ const SEED_BADGES: Badge[] = [
   },
 ];
 
-const LEADERBOARD: Omit<LeaderboardRow, 'rank'>[] = [
-  { id: 'lb-1', name: 'Оксана', xp: 4820, streakDays: 21 },
-  { id: 'lb-2', name: 'Ігор', xp: 3990, streakDays: 9 },
-  { id: 'lb-3', name: 'Соломія', xp: 3610, streakDays: 14 },
-  { id: 'lb-me', name: 'Марта', xp: 3340, me: true, streakDays: 12 },
-  { id: 'lb-4', name: 'Дмитро', xp: 2980, streakDays: 5 },
-];
-
 function normalizeBadges(raw: Badge[]): Badge[] {
   const byId = new Map(raw.map((b) => [b.id, b]));
   return SEED_BADGES.map((seed) => {
@@ -117,8 +109,17 @@ export async function addQuizXp(
   return state;
 }
 
-export function listLeaderboard(): LeaderboardRow[] {
-  return [...LEADERBOARD]
-    .sort((a, b) => b.xp - a.xp)
-    .map((row, i) => ({ ...row, rank: i + 1 }));
+export function listLeaderboard(scope: 'friends' | 'global' = 'friends'): LeaderboardRow[] {
+  const friends: LeaderboardRow[] = [
+    { id: 'lb-1', name: 'Оксана', xp: 4820, streakDays: 21, rank: 1 },
+    { id: 'lb-2', name: 'Ігор', xp: 3990, streakDays: 9, rank: 2 },
+    { id: 'lb-me', name: 'Марта', xp: 3340, me: true, streakDays: 12, rank: 4 },
+  ];
+  if (scope === 'friends') return friends;
+
+  return [
+    ...friends,
+    { id: 'lb-3', name: 'Соломія', xp: 3610, streakDays: 14, rank: 3 },
+    { id: 'lb-4', name: 'Дмитро', xp: 2980, streakDays: 5, rank: 5 },
+  ].sort((a, b) => a.rank - b.rank);
 }

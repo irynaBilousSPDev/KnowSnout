@@ -119,13 +119,24 @@ export default function BlogArticleScreen() {
 
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.meta}>
-            {t('blog.readMeta', {
-              n: article.readMinutes,
-              author: article.authorLabel ?? t('blog.editorial'),
-            })}
+            {comments.length > 0
+              ? t('blog.readCommentsMeta', {
+                  n: article.readMinutes,
+                  c: article.commentCount ?? comments.length,
+                })
+              : t('blog.readMeta', {
+                  n: article.readMinutes,
+                  author: article.authorLabel ?? t('blog.editorial'),
+                })}
           </Text>
 
           <Text style={styles.body}>{article.body}</Text>
+
+          {comments.length > 0 ? (
+            <Text style={styles.bodyTail}>
+              {t('blog.articleTail')}
+            </Text>
+          ) : null}
 
           <View style={styles.comments}>
             {comments.map((c) => (
@@ -260,6 +271,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 24,
     color: brand.ink,
+  },
+  bodyTail: {
+    marginTop: 12,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    lineHeight: 24,
+    color: brand.muted,
   },
   comments: {
     marginTop: 22,

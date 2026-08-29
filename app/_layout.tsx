@@ -14,20 +14,47 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import 'react-native-reanimated';
 
 import { LoadingState } from '@/src/components/LoadingState';
+import { ThemedStatusBar } from '@/src/components/ThemedStatusBar';
 import { WebPhoneFrame } from '@/src/components/WebPhoneFrame';
 import { AuthProvider } from '@/src/hooks/useAuth';
 import { ToastProvider } from '@/src/hooks/useToast';
 import { migrateLegacyAuthStorage } from '@/src/services/supabase';
-import { brand } from '@/src/theme/brand';
+import { AppThemeProvider, useAppTheme } from '@/src/theme/AppThemeProvider';
 
 export { ErrorBoundary } from 'expo-router';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
+
+function RootNavigation() {
+  const { colors } = useAppTheme();
+
+  return (
+    <View style={{ flex: 1, width: '100%', height: '100%' }}>
+      <ThemedStatusBar />
+      <WebPhoneFrame>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: colors.canvas, flex: 1 },
+          }}
+        >
+          <Stack.Screen name="index" />
+          <Stack.Screen
+            name="spotlight-vote"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(app)" />
+          <Stack.Screen name="(admin)" />
+        </Stack>
+      </WebPhoneFrame>
+    </View>
+  );
+}
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -58,28 +85,11 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <ToastProvider>
-        <View style={{ flex: 1, width: '100%', height: '100%' }}>
-          <StatusBar style="dark" />
-          <WebPhoneFrame>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: brand.canvas, flex: 1 },
-              }}
-            >
-              <Stack.Screen name="index" />
-              <Stack.Screen
-                name="spotlight-vote"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="(auth)" />
-              <Stack.Screen name="(app)" />
-              <Stack.Screen name="(admin)" />
-            </Stack>
-          </WebPhoneFrame>
-        </View>
-      </ToastProvider>
+      <AppThemeProvider>
+        <ToastProvider>
+          <RootNavigation />
+        </ToastProvider>
+      </AppThemeProvider>
     </AuthProvider>
   );
 }

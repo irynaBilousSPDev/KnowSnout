@@ -1,4 +1,6 @@
-export type Locale = 'uk';
+export type Locale = 'uk' | 'pl' | 'en';
+
+import { plCore } from '@/src/i18n/plCore';
 
 type Dict = Record<string, string>;
 
@@ -346,6 +348,7 @@ const uk: Dict = {
   'quiz.originPrompt': 'Звідки ця порода родом?',
   'quiz.groupPrompt': 'До якої групи належить ця порода?',
   'quiz.photoBreed': 'Фото породи',
+  'quiz.photoBrowse': 'or browse files',
   'quiz.breedPhotoHint': 'Фото {name}',
   'quiz.greatResult': 'Чудовий результат!',
   'quiz.nextQuiz': 'Наступний квіз',
@@ -1543,6 +1546,7 @@ const uk: Dict = {
   'quizZoom.title': 'Зум-загадка',
   'quizZoom.prompt': 'Що на фото?',
   'quizZoom.zoomMore': 'Наблизити ще (-10 XP)',
+  'quizZoom.photoHint': 'Фото тварини',
   'quizZoom.zoomHint': 'Крупний план',
   'quizZoom.progress': 'Питання {n} з {total}',
   'quizZoom.next': 'Далі',
@@ -1675,7 +1679,9 @@ const uk: Dict = {
   'blog.all': 'Усі',
   'blog.readMin': '{n} хв читання',
   'blog.readMeta': '{n} хв читання · {author}',
-  'blog.readCommentsMeta': '{n} хв читання · {count} коментарі',
+  'blog.readCommentsMeta': '{n} хв читання · {c} коментарі',
+  'blog.articleTail':
+    '…Тож перед покупкою дивіться на перші 3 інгредієнти складу, а не на ціну чи рекламу.',
   'blog.missing': 'Статтю не знайдено',
   'blog.bookmark': 'У закладки',
   'blog.unbookmark': 'Прибрати з закладок',
@@ -1710,6 +1716,7 @@ const uk: Dict = {
   'network.body':
     'Перевір інтернет і спробуй ще раз. Останні скани збережені офлайн.',
   'network.retry': 'Повторити',
+  'network.openFull': 'Детальніше',
 
   'permission.cameraTitle': 'Дозволити доступ до камери?',
   'permission.cameraBody':
@@ -1902,6 +1909,7 @@ const uk: Dict = {
   'directories.reportReasonFraud': 'Шахрайство / вимагання грошей',
   'directories.reportReasonAnimal': 'Неналежне поводження з твариною',
   'directories.lead': 'Перевірені контакти навколо тварини',
+  'directories.alsoSection': 'Також',
   'directories.hint': 'Обери категорію — список і деталі локальні (мок).',
   'directories.listTitle': 'Список',
   'directories.listSubtitle': 'Фільтр за містом опційний',
@@ -2062,6 +2070,8 @@ const uk: Dict = {
   'specialist.booking.homeTitle': 'Візит додому',
   'specialist.booking.homeHint': 'Найкраще для тривоги розлуки',
   'specialist.booking.onlineTitle': 'Онлайн',
+  'specialist.booking.clinicTitle': 'Прийом у клініці',
+  'specialist.booking.clinicHint': 'Очний візит за записом',
   'specialist.booking.addressLabel': 'Адреса візиту',
   'specialist.booking.dateLabel': 'Дата',
   'specialist.booking.timeLabel': 'Час',
@@ -2072,6 +2082,11 @@ const uk: Dict = {
   'specialist.booking.confirmedTitle': 'Запис підтверджено (мок)',
   'specialist.booking.confirmedBody': 'Календар і нагадування — скоро.',
   'specialist.tariff.screenTitle': 'Тарифи',
+  'specialist.cabinetTitle': 'Кабінет спеціаліста',
+  'specialist.cabinetSub': 'Профіль, послуги та просування',
+  'specialist.cabinetProfile': 'Мій профіль спеціаліста',
+  'specialist.cabinetServices': 'Послуги та формати',
+  'specialist.cabinetVisibility': 'Видимість у пошуку',
   'specialist.tariff.freeTitle': 'Free',
   'specialist.tariff.freePrice': 'Безкоштовно',
   'specialist.tariff.freeBody':
@@ -2261,7 +2276,9 @@ const uk: Dict = {
   'admin.status.rejected': 'відхилено',
 };
 
-const catalogs: Record<Locale, Dict> = { uk };
+const pl: Dict = { ...plCore };
+
+const catalogs: Record<Locale, Dict> = { uk, pl, en: {} };
 
 let currentLocale: Locale = 'uk';
 

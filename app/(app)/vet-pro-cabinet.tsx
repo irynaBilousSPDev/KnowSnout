@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -7,7 +7,11 @@ import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
 import { PrimaryButton } from '@/src/components/PrimaryButton';
 import { t } from '@/src/i18n';
-import { PRO_CABINET_STATS } from '@/src/services/vetDirectory';
+import {
+  loadProProfile,
+  PRO_CABINET_STATS,
+  type ProProfileDraft,
+} from '@/src/services/vetDirectory';
 import { brand, fonts } from '@/src/theme/brand';
 
 type MenuItem = {
@@ -18,7 +22,31 @@ type MenuItem = {
   badgeVars?: Record<string, string | number>;
   badgeTone?: 'warn';
   dimmed?: boolean;
+  href?: string;
 };
+
+const CYNOLOGIST_MENU: MenuItem[] = [
+  { id: 'profile', labelKey: 'specialist.cabinetProfile' },
+  { id: 'services', labelKey: 'specialist.cabinetServices' },
+  {
+    id: 'tariffs',
+    labelKey: 'specialist.tariff.screenTitle',
+    href: '/(app)/specialist-tariffs',
+  },
+  {
+    id: 'search',
+    labelKey: 'specialist.cabinetVisibility',
+    href: '/(app)/specialist-search',
+  },
+  {
+    id: 'reviews',
+    labelKey: 'vets.cabinetReviews',
+    vars: { count: 12 },
+    badgeKey: 'vets.cabinetNewReviews',
+    badgeVars: { count: 1 },
+    badgeTone: 'warn',
+  },
+];
 
 const MENU_ITEMS: MenuItem[] = [
   { id: 'profile', labelKey: 'vets.cabinetProfile' },
@@ -53,9 +81,17 @@ const MENU_ITEMS: MenuItem[] = [
   },
 ];
 
-/** 09.07 · Кабінет лікаря */
+/** 09.07 · Кабінет лікаря / кінолога */
 export default function VetProCabinetScreen() {
   const [mode, setMode] = useState<'personal' | 'pro'>('pro');
+  const [profile, setProfile] = useState<ProProfileDraft | null>(null);
+
+  useEffect(() => {
+    void loadProProfile().then(setProfile);
+  }, []);
+
+  const isCynologist = profile?.role === 'cynologist';
+  const menuItems = isCynologist ? CYNOLOGIST_MENU : MENU_ITEMS;
 
   return (
     <AppScreen edges={['bottom']}>
@@ -84,8 +120,12 @@ export default function VetProCabinetScreen() {
             })}
           </View>
 
-          <Text style={styles.title}>{t('vets.cabinetTitle')}</Text>
-          <Text style={styles.sub}>{t('vets.cabinetSub')}</Text>
+          <Text style={styles.title}>
+            {t(isCynologist ? 'specialist.cabinetTitle' : 'vets.cabinetTitle')}
+          </Text>
+          <Text style={styles.sub}>
+            {t(isCynologist ? 'specialist.cabinetSub' : 'vets.cabinetSub')}
+          </Text>
 
           <View style={styles.stats}>
             <View style={styles.stat}>
@@ -106,8 +146,16 @@ export default function VetProCabinetScreen() {
             </View>
           </View>
 
-          {MENU_ITEMS.map((item) => (
-            <Pressable key={item.id} style={styles.menuRow}>
+          {menuItems.map((item) => (
+            <Pressable
+              key={item.id}
+              style={styles.menuRow}
+              onPress={() => {
+                if (item.href) {
+                  router.push(item.href as never);
+                }
+              }}
+            >
               <Text style={[styles.menuText, item.dimmed && styles.menuDim]}>
                 {t(item.labelKey, item.vars)}
               </Text>
@@ -153,7 +201,9 @@ export default function VetProCabinetScreen() {
               <PrimaryButton
                 label={t('vets.promotion')}
                 variant="secondary"
-                onPress={() => {}}
+                onPress={() =>
+                  router.push('/(app)/specialist-tariffs' as never)
+                }
                 style={styles.promoBtn}
               />
             </View>

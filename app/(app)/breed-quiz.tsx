@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppChromeHeader } from '@/src/components/AppChromeHeader';
 import { AppScreen } from '@/src/components/AppScreen';
@@ -187,8 +188,10 @@ export default function BreedQuizScreen() {
           ) : (
             <View style={styles.photoWrap}>
               {!imageReady ? (
-                <View style={styles.photoLoading}>
-                  <ActivityIndicator color={brand.accent} />
+                <View style={styles.photoPlaceholder}>
+                  <Ionicons name="image-outline" size={28} color={brand.mutedSoft} />
+                  <Text style={styles.photoHint}>{t('quiz.photoBreed')}</Text>
+                  <Text style={styles.photoBrowse}>{t('quiz.photoBrowse')}</Text>
                 </View>
               ) : null}
               <Image
@@ -246,14 +249,29 @@ const styles = StyleSheet.create({
     aspectRatio: 1.2,
     backgroundColor: brand.accentTint,
   },
-  photoImg: { width: '100%', height: '100%' },
-  photoHidden: { opacity: 0 },
-  photoLoading: {
+  photoPlaceholder: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 6,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: brand.mistBorder,
+    backgroundColor: '#EEEBE6',
     zIndex: 1,
   },
+  photoHint: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: brand.mutedSoft,
+  },
+  photoBrowse: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: brand.mutedSoft,
+  },
+  photoImg: { width: '100%', height: '100%' },
+  photoHidden: { opacity: 0 },
   photoFail: {
     aspectRatio: 1.2,
     backgroundColor: brand.accentTint,
